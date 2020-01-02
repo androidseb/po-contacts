@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:po_contacts_flutter/assets/I18n.dart';
+import 'package:po_contacts_flutter/assets/i18n.dart';
 
 void main() => runApp(MyApp());
 
