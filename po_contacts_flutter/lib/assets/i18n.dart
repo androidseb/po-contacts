@@ -1,5 +1,10 @@
 class I18nString {
   final String app_name = 'app_name';
+  final String create_new_contact = 'create_new_contact';
+  final String export_all_as_vcf = 'export_all_as_vcf';
+  final String about = 'about';
+  final String about_message = 'about_message';
+  final String ok = 'ok';
 }
 
 class I18n {
@@ -7,6 +12,11 @@ class I18n {
 
   static Map<String, String> currentTranslation = {
     string.app_name: 'PO Contacts',
+    string.create_new_contact: 'Create new contact',
+    string.export_all_as_vcf: 'Export all as VCF file',
+    string.about: 'About (v%s)',
+    string.about_message: 'About message here',
+    string.ok: 'OK',
   };
 
   static _getObjString(final Object _obj) {
