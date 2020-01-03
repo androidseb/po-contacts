@@ -8,6 +8,18 @@ class MainModel {
 
   Stream<List<Contact>> get contactsListStream => _contactsListSC.stream;
 
+  Contact getContactById(final int contactId) {
+    if (contactId == null) {
+      return null;
+    }
+    for (Contact c in contactsList) {
+      if (c.id == contactId) {
+        return c;
+      }
+    }
+    return null;
+  }
+
   void addContact(final ContactBuilder contactBuilder) {
     //TODO data persistence
     contactBuilder.setId(contactsList.length + 1);

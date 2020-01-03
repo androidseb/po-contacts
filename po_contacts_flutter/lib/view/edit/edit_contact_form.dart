@@ -3,9 +3,10 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
 class EditContactForm extends StatefulWidget {
+  final Contact initialContact;
   final Function(ContactBuilder contactBuilder) onContactSaveRequested;
 
-  EditContactForm({Key key, this.onContactSaveRequested}) : super(key: key);
+  EditContactForm(this.initialContact, {Key key, this.onContactSaveRequested}) : super(key: key);
 
   @override
   _EditContactFormState createState() => _EditContactFormState();
@@ -14,6 +15,21 @@ class EditContactForm extends StatefulWidget {
 class _EditContactFormState extends State<EditContactForm> {
   final _formKey = GlobalKey<FormState>();
   final ContactBuilder _contactBuilder = new ContactBuilder();
+
+  @override
+  void initState() {
+    final Contact initialContact = widget.initialContact;
+    if (initialContact != null) {
+      _contactBuilder.setName(initialContact.name);
+      _contactBuilder.setPhoneInfos(initialContact.phoneInfos);
+      _contactBuilder.setEmailInfos(initialContact.emailInfos);
+      _contactBuilder.setAddress(initialContact.address);
+      _contactBuilder.setOrganizationName(initialContact.organizationName);
+      _contactBuilder.setOrganizationTitle(initialContact.organizationTitle);
+      _contactBuilder.setNotes(initialContact.notes);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +42,7 @@ class _EditContactFormState extends State<EditContactForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
+                initialValue: widget?.initialContact?.name,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.name),
                 ),
