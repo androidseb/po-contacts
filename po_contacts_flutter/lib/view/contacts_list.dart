@@ -42,7 +42,7 @@ class _ContactsListState extends State<ContactsList> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
-            child: Center(child: Text('${_contactsList[index].firstName} ${_contactsList[index].lastName}')),
+            child: Center(child: Text('${_contactsList[index].name}')),
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),

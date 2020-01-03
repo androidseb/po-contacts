@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/view/edit_contact_form.dart';
 
 class EditContactPage extends StatelessWidget {
   final int contactId;
+
   EditContactPage({Key key, this.contactId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String titleText = I18n.getString(contactId == null ? I18n.string.new_contact : I18n.string.edit_contact);
+    final String titleStringKey = contactId == null ? I18n.string.new_contact : I18n.string.edit_contact;
+    final String titleText = I18n.getString(titleStringKey);
     return Scaffold(
       appBar: AppBar(
         title: Text(titleText),
       ),
-      body: const Center(
-        child: Text(
-          'TODO',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      body: EditContactForm(onContactSaveRequested: (ContactBuilder contactBuilder) {
+        MainController.get().saveContact(context, contactId, contactBuilder);
+      }),
     );
   }
-
-  //TODO
-  //final int epochMillis = new DateTime.now().millisecondsSinceEpoch;
-  //this._model.addContact(new ContactBuilder().setFirstName('First $epochMillis').setLastName('Last $epochMillis'));
 }

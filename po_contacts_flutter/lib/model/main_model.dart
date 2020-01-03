@@ -16,4 +16,12 @@ class MainModel {
     contactsList.add(newContact);
     _contactsListSC.add(contactsList);
   }
+
+  void deleteContact(final int contactId) {
+    //TODO
+  }
+
+  void overwriteContact(final int contactId, final ContactBuilder targetContactBuilder) {
+    //TODO
+  }
 }

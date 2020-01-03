@@ -7,6 +7,11 @@ class I18nString {
   final String ok = 'ok';
   final String new_contact = 'new_contact';
   final String edit_contact = 'edit_contact';
+  final String save = 'save';
+  final String name = 'name';
+  final String phone = 'phone';
+  final String email = 'email';
+  final String name_cannot_be_empty = 'name_cannot_be_empty';
 }
 
 class I18n {
@@ -21,6 +26,11 @@ class I18n {
     string.ok: 'OK',
     string.new_contact: 'New contact',
     string.edit_contact: 'Edit contact',
+    string.save: 'Save',
+    string.name: 'Name',
+    string.phone: 'Phone',
+    string.email: 'Email',
+    string.name_cannot_be_empty: 'Name cannot be empty'
   };
 
   static _getObjString(final Object _obj) {

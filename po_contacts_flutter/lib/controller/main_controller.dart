@@ -31,6 +31,21 @@ class MainController {
     ));
   }
 
+  void saveContact(final BuildContext context, final int contactId, final ContactBuilder targetContactBuilder) {
+    if (contactId == null && targetContactBuilder == null) {
+      return;
+    }
+    if (targetContactBuilder == null) {
+      return;
+    }
+    if (contactId == null) {
+      this._model.addContact(targetContactBuilder);
+    } else {
+      this._model.overwriteContact(contactId, targetContactBuilder);
+    }
+    Navigator.pop(context);
+  }
+
   void startExportAllAsVCF() {
     //TODO
   }
