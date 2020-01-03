@@ -29,7 +29,28 @@ class EditEmailsForm extends EditCategorizedItemsForm<EmailInfo> {
 
   @override
   List<TextInputFormatter> getInputFormatters() {
-    return null;
+    return [WhitelistingTextInputFormatter(RegExp(r'[\@\+\-\.0-9a-zA-Z]'))];
+  }
+
+  @override
+  String validateValue(final String value) {
+    bool correctEmail = true;
+    if (value == null) {
+      correctEmail = false;
+    } else {
+      final List<String> atSplit = value.split('@');
+      if (atSplit.length == 2) {
+        final RegExp emailCharsRegExp = RegExp(r'[\+\-\.0-9a-zA-Z]');
+        correctEmail = emailCharsRegExp.hasMatch(atSplit[0]) && emailCharsRegExp.hasMatch(atSplit[1]);
+      } else {
+        correctEmail = false;
+      }
+    }
+    if (correctEmail) {
+      return null;
+    } else {
+      return I18n.getString(I18n.string.incorrect_email_address_format);
+    }
   }
 
   @override

@@ -60,6 +60,10 @@ abstract class EditCategorizedItemsForm<T> extends StatefulWidget {
     return TextInputType.text;
   }
 
+  String validateValue(final String value) {
+    return null;
+  }
+
   String getAddEntryActionStringKey();
 }
 
@@ -82,7 +86,7 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
       final CategorizedEditableItem item = currentItems[itemIndex];
       rows.add(
         Row(
-          key: Key('${item.textValue}${item.labelType}${item.labelValue}'),
+          key: Key('${currentItems.length}'),
           children: <Widget>[
             Expanded(
               child: TextFormField(
@@ -92,11 +96,11 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
                 ),
                 inputFormatters: widget.getInputFormatters(),
                 keyboardType: widget.getInputKeyboardType(),
-                validator: (value) {
+                validator: (final String value) {
                   if (value.isEmpty) {
                     return I18n.getString(I18n.string.field_cannot_be_empty);
                   }
-                  return null;
+                  return widget.validateValue(value);
                 },
                 onChanged: (nameValue) {
                   setState(() {

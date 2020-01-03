@@ -25,6 +25,7 @@ class I18nString {
   final String notes = 'notes';
   final String home_list_empty_placeholder_text = 'home_list_empty_placeholder_text';
   final String remove_entry = 'remove_entry';
+  final String incorrect_email_address_format = 'incorrect_email_address_format';
 }
 
 class I18n {
@@ -57,6 +58,7 @@ class I18n {
     string.notes: 'Notes',
     string.home_list_empty_placeholder_text: 'Your list of contacts is currently empty. You can add a contact by clicking the + button, or you can import contacts by opening a file from your system.',
     string.remove_entry: 'Remove entry',
+    string.incorrect_email_address_format: 'Incorrect email address format',
   };
 
   static _getObjString(final Object _obj) {
