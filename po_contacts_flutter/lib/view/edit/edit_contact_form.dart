@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/view/edit/edit_emails_form.dart';
+import 'package:po_contacts_flutter/view/edit/edit_phones_form.dart';
 
 class EditContactForm extends StatefulWidget {
   final Contact initialContact;
@@ -48,12 +50,64 @@ class _EditContactFormState extends State<EditContactForm> {
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
-                    return I18n.getString(I18n.string.name_cannot_be_empty);
+                    return I18n.getString(I18n.string.field_cannot_be_empty);
                   }
                   return null;
                 },
                 onChanged: (nameValue) {
                   _contactBuilder.setName(nameValue);
+                },
+              ),
+              EditPhonesForm(
+                widget?.initialContact?.phoneInfos,
+                onDataChanged: (updatedPhoneInfos) {
+                  _contactBuilder.setPhoneInfos(updatedPhoneInfos);
+                },
+              ),
+              EditEmailsForm(
+                widget?.initialContact?.emailInfos,
+                onDataChanged: (updatedEmailInfos) {
+                  _contactBuilder.setEmailInfos(updatedEmailInfos);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.address,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.address),
+                ),
+                onChanged: (nameValue) {
+                  _contactBuilder.setAddress(nameValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.organizationName,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.organization_name),
+                ),
+                onChanged: (nameValue) {
+                  _contactBuilder.setOrganizationTitle(nameValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.organizationTitle,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.organization_title),
+                ),
+                onChanged: (nameValue) {
+                  _contactBuilder.setOrganizationTitle(nameValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.notes,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.notes),
+                ),
+                onChanged: (nameValue) {
+                  _contactBuilder.setNotes(nameValue);
                 },
               ),
               Padding(
