@@ -9,6 +9,8 @@ class MainModel {
   Stream<List<Contact>> get contactsListStream => _contactsListSC.stream;
 
   void addContact(final ContactBuilder contactBuilder) {
+    //TODO data persistence
+    contactBuilder.setId(contactsList.length + 1);
     final Contact newContact = contactBuilder.build();
     if (newContact == null) {
       return;
@@ -18,10 +20,31 @@ class MainModel {
   }
 
   void deleteContact(final int contactId) {
-    //TODO
+    //TODO data persistence
+    for (int i = 0; i < contactsList.length; i++) {
+      final Contact contact = contactsList[i];
+      if (contact.id == contactId) {
+        contactsList.removeAt(i);
+      }
+    }
+    _contactsListSC.add(contactsList);
   }
 
-  void overwriteContact(final int contactId, final ContactBuilder targetContactBuilder) {
-    //TODO
+  void overwriteContact(final int contactId, final ContactBuilder contactBuilder) {
+    //TODO data persistence
+    contactBuilder.setId(contactId);
+    final Contact newContact = contactBuilder.build();
+    if (newContact == null) {
+      return;
+    }
+    for (int i = 0; i < contactsList.length; i++) {
+      final Contact contact = contactsList[i];
+      if (contact.id == contactId) {
+        contactsList.removeAt(i);
+        contactsList.insert(i, newContact);
+        break;
+      }
+    }
+    _contactsListSC.add(contactsList);
   }
 }

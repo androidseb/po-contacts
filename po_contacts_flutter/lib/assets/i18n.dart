@@ -12,6 +12,11 @@ class I18nString {
   final String phone = 'phone';
   final String email = 'email';
   final String name_cannot_be_empty = 'name_cannot_be_empty';
+  final String contact_details = 'contact_details';
+  final String delete_contact = 'delete_contact';
+  final String delete_contact_confirmation_message = 'delete_contact_confirmation_message';
+  final String yes = 'yes';
+  final String no = 'no';
 }
 
 class I18n {
@@ -30,7 +35,12 @@ class I18n {
     string.name: 'Name',
     string.phone: 'Phone',
     string.email: 'Email',
-    string.name_cannot_be_empty: 'Name cannot be empty'
+    string.name_cannot_be_empty: 'Name cannot be empty',
+    string.contact_details: 'Contact details',
+    string.delete_contact: 'Delete contact',
+    string.delete_contact_confirmation_message: 'This will delete the contact permanently, are you sure?',
+    string.yes: 'Yes',
+    string.no: 'No',
   };
 
   static _getObjString(final Object _obj) {

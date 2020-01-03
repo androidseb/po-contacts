@@ -42,7 +42,12 @@ class _ContactsListState extends State<ContactsList> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
-            child: Center(child: Text('${_contactsList[index].name}')),
+            child: ListTile(
+              title: Text('${_contactsList[index].name}'),
+              onTap: () {
+                MainController.get().startViewContact(context, _contactsList[index].id);
+              },
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),

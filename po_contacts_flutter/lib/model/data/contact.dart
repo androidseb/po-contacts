@@ -2,6 +2,7 @@ import 'package:po_contacts_flutter/model/data/email_info.dart';
 import 'package:po_contacts_flutter/model/data/phone_info.dart';
 
 class Contact {
+  final int id;
   final String name;
   final List<PhoneInfo> phoneInfos;
   final List<EmailInfo> emailInfos;
@@ -11,6 +12,7 @@ class Contact {
   final String notes;
 
   Contact(
+    this.id,
     this.name,
     this.phoneInfos,
     this.emailInfos,
@@ -22,6 +24,7 @@ class Contact {
 }
 
 class ContactBuilder {
+  int _id;
   String _name;
   List<PhoneInfo> _phoneInfos;
   List<EmailInfo> _emailInfos;
@@ -31,19 +34,15 @@ class ContactBuilder {
   String _notes;
 
   Contact build() {
-    if (_name == null) {
+    if (_id == null || _name == null) {
       return null;
     }
-    String name = '';
     List<PhoneInfo> phoneInfos = [];
     List<EmailInfo> emailInfos = [];
     String address = '';
     String organizationName = '';
     String organizationTitle = '';
     String notes = '';
-    if (_name != null) {
-      name = _name;
-    }
     if (_phoneInfos != null) {
       phoneInfos = _phoneInfos;
     }
@@ -63,7 +62,8 @@ class ContactBuilder {
       notes = _notes;
     }
     return Contact(
-      name,
+      _id,
+      _name,
       phoneInfos,
       emailInfos,
       address,
@@ -71,6 +71,11 @@ class ContactBuilder {
       organizationTitle,
       notes,
     );
+  }
+
+  ContactBuilder setId(final int id) {
+    _id = id;
+    return this;
   }
 
   ContactBuilder setName(final String name) {

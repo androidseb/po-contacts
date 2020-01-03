@@ -7,7 +7,7 @@ import 'package:po_contacts_flutter/view/edit/edit_contact_form.dart';
 class EditContactPage extends StatelessWidget {
   final int contactId;
 
-  EditContactPage({Key key, this.contactId}) : super(key: key);
+  EditContactPage(this.contactId, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
