@@ -23,6 +23,7 @@ class I18nString {
   final String organization_name = 'organization_name';
   final String organization_title = 'organization_title';
   final String notes = 'notes';
+  final String home_list_empty_placeholder_text = 'home_list_empty_placeholder_text';
 }
 
 class I18n {
@@ -53,6 +54,7 @@ class I18n {
     string.organization_name: 'Organization name',
     string.organization_title: 'Organization title',
     string.notes: 'Notes',
+    string.home_list_empty_placeholder_text: 'Your list of contacts is currently empty. You can add a contact by clicking the + button, or you can import contacts by opening a file from your system.',
   };
 
   static _getObjString(final Object _obj) {

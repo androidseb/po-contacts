@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
@@ -35,6 +36,31 @@ class _ContactsListState extends State<ContactsList> {
 
   @override
   Widget build(BuildContext context) {
+    if (_contactsList.length == 0) {
+      return buildIfEmpty(context);
+    } else {
+      return buildIfNonEmpty(context);
+    }
+  }
+
+  Widget buildIfEmpty(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Text(
+            I18n.getString(I18n.string.home_list_empty_placeholder_text),
+            textAlign: TextAlign.center,
+            style: new TextStyle(
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildIfNonEmpty(BuildContext context) {
     return Scrollbar(
       child: ListView.separated(
         padding: const EdgeInsets.all(8),
