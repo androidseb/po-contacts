@@ -3,6 +3,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/view/edit_contact_page.dart';
 
 class MainController {
   static MainController _controller;
@@ -22,10 +23,12 @@ class MainController {
 
   MainModel get model => _model;
 
-  void startAddContact() {
-    //TODO
-    final int epochMillis = new DateTime.now().millisecondsSinceEpoch;
-    this._model.addContact(new ContactBuilder().setFirstName('First $epochMillis').setLastName('Last $epochMillis'));
+  void startAddContact(final BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (BuildContext context) {
+        return EditContactPage();
+      },
+    ));
   }
 
   void startExportAllAsVCF() {

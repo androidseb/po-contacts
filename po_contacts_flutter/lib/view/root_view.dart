@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
-import 'package:po_contacts_flutter/view/main_view.dart';
+import 'package:po_contacts_flutter/view/home_page.dart';
 
 class RootView extends StatelessWidget {
   @override
@@ -10,7 +10,7 @@ class RootView extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: MainView(),
+      home: HomePage(),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
 
-class MainViewDrawer extends StatelessWidget {
+class HomePageDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(

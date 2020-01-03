@@ -5,6 +5,8 @@ class I18nString {
   final String about = 'about';
   final String about_message = 'about_message';
   final String ok = 'ok';
+  final String new_contact = 'new_contact';
+  final String edit_contact = 'edit_contact';
 }
 
 class I18n {
@@ -17,6 +19,8 @@ class I18n {
     string.about: 'About (v%s)',
     string.about_message: 'About message here',
     string.ok: 'OK',
+    string.new_contact: 'New contact',
+    string.edit_contact: 'Edit contact',
   };
 
   static _getObjString(final Object _obj) {
