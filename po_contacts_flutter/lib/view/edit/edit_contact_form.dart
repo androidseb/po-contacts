@@ -6,17 +6,20 @@ import 'package:po_contacts_flutter/view/edit/edit_phones_form.dart';
 
 class EditContactForm extends StatefulWidget {
   final Contact initialContact;
+  final Function(EditContactFormController editContactFormController) onControllerReady;
   final Function(ContactBuilder contactBuilder) onContactSaveRequested;
 
-  EditContactForm(this.initialContact, {Key key, this.onContactSaveRequested}) : super(key: key);
+  EditContactForm(this.initialContact, {Key key, this.onControllerReady, this.onContactSaveRequested})
+      : super(key: key);
 
   @override
   _EditContactFormState createState() => _EditContactFormState();
 }
 
 class _EditContactFormState extends State<EditContactForm> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ContactBuilder _contactBuilder = new ContactBuilder();
+  EditContactFormController editContactFormController;
 
   @override
   void initState() {
@@ -30,6 +33,8 @@ class _EditContactFormState extends State<EditContactForm> {
       _contactBuilder.setOrganizationTitle(initialContact.organizationTitle);
       _contactBuilder.setNotes(initialContact.notes);
     }
+    editContactFormController = EditContactFormController(this, _formKey, _contactBuilder);
+    widget?.onControllerReady(editContactFormController);
     super.initState();
   }
 
@@ -114,10 +119,7 @@ class _EditContactFormState extends State<EditContactForm> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: RaisedButton(
                   onPressed: () {
-                    if (!_formKey.currentState.validate()) {
-                      return;
-                    }
-                    widget.onContactSaveRequested(_contactBuilder);
+                    editContactFormController.startSaveAction();
                   },
                   child: Text(I18n.getString(I18n.string.save)),
                 ),
@@ -127,5 +129,20 @@ class _EditContactFormState extends State<EditContactForm> {
         ),
       ),
     );
+  }
+}
+
+class EditContactFormController {
+  final _EditContactFormState _parentState;
+  final GlobalKey<FormState> _formKey;
+  final ContactBuilder _contactBuilder;
+
+  EditContactFormController(this._parentState, this._formKey, this._contactBuilder);
+
+  void startSaveAction() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _parentState.widget.onContactSaveRequested(_contactBuilder);
   }
 }
