@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/view/edit_contact_form.dart';
+import 'package:po_contacts_flutter/view/edit/edit_contact_form.dart';
 
 class EditContactPage extends StatelessWidget {
   final int contactId;

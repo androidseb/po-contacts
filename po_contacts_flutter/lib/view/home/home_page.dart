@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
-import 'package:po_contacts_flutter/view/contacts_list.dart';
-import 'package:po_contacts_flutter/view/home_page_drawer.dart';
+import 'package:po_contacts_flutter/view/home/contacts_list.dart';
+import 'package:po_contacts_flutter/view/home/home_page_drawer.dart';
 
 class HomePage extends StatelessWidget {
   @override

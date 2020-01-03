@@ -3,7 +3,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
-import 'package:po_contacts_flutter/view/edit_contact_page.dart';
+import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 
 class MainController {
   static MainController _controller;

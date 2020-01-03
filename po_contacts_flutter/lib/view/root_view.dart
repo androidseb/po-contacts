@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
-import 'package:po_contacts_flutter/view/home_page.dart';
+import 'package:po_contacts_flutter/view/home/home_page.dart';
 
 class RootView extends StatelessWidget {
   @override
