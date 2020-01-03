@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/view/contacts_list.dart';
 
 class RootView extends StatelessWidget {
   @override
@@ -22,17 +23,11 @@ class MainView extends StatelessWidget {
   MainView({Key key, this.title}) : super(key: key);
 
   void _onAddButtonClicked() {
-    //TODO
+    MainController.get().startAddContact();
   }
 
   @override
   Widget build(BuildContext context) {
-    //TODO
-    final List<String> contactsList = [];
-    for (int i = 0; i < 100; i++) {
-      contactsList.add('Contact ${i + 1}');
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -49,13 +44,13 @@ class MainView extends StatelessWidget {
               ListTile(
                 title: Text(I18n.getString(I18n.string.export_all_as_vcf)),
                 onTap: () {
-                  //TODO
+                  MainController.get().startExportAllAsVCF();
                 },
               ),
               ListTile(
                 title: Text(I18n.getString(I18n.string.about, POConstants.APP_VERSION)),
                 onTap: () {
-                  MainController.showAboutDialog(context);
+                  MainController.get().showAboutDialog(context);
                 },
               ),
             ],
@@ -63,19 +58,7 @@ class MainView extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Scrollbar(
-          child: ListView.separated(
-            padding: const EdgeInsets.all(8),
-            itemCount: contactsList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
-                child: Center(child: Text('${contactsList[index]}')),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-          ),
-        ),
+        child: ContactsList(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onAddButtonClicked,
