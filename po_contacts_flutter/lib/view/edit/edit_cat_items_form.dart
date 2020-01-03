@@ -77,25 +77,48 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> rows = [];
-    for (final CategorizedEditableItem item in currentItems) {
-      rows.add(TextFormField(
-        initialValue: item.textValue,
-        decoration: InputDecoration(
-          labelText: I18n.getString(widget.getEntryHintStringKey()),
+    for (int i = 0; i < currentItems.length; i++) {
+      final int itemIndex = i;
+      final CategorizedEditableItem item = currentItems[itemIndex];
+      rows.add(
+        Row(
+          key: Key('${item.textValue}${item.labelType}${item.labelValue}'),
+          children: <Widget>[
+            Expanded(
+              child: TextFormField(
+                initialValue: item.textValue,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(widget.getEntryHintStringKey()),
+                ),
+                inputFormatters: widget.getInputFormatters(),
+                keyboardType: widget.getInputKeyboardType(),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return I18n.getString(I18n.string.field_cannot_be_empty);
+                  }
+                  return null;
+                },
+                onChanged: (nameValue) {
+                  setState(() {
+                    item.textValue = nameValue;
+                    widget.notifyDataChanged(currentItems);
+                  });
+                },
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              tooltip: I18n.getString(I18n.string.remove_entry),
+              onPressed: () {
+                setState(() {
+                  currentItems.removeAt(itemIndex);
+                  widget.notifyDataChanged(currentItems);
+                });
+              },
+            ),
+          ],
         ),
-        inputFormatters: widget.getInputFormatters(),
-        keyboardType: widget.getInputKeyboardType(),
-        validator: (value) {
-          if (value.isEmpty) {
-            return I18n.getString(I18n.string.field_cannot_be_empty);
-          }
-          return null;
-        },
-        onChanged: (nameValue) {
-          item.textValue = nameValue;
-          widget.notifyDataChanged(currentItems);
-        },
-      ));
+      );
     }
     rows.add(
       FlatButton(
