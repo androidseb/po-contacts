@@ -10,7 +10,7 @@ class RootView extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: MainView(title: I18n.getString(I18n.string.app_name)),
+      home: MainView(),
     );
   }
 }
