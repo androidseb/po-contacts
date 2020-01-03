@@ -63,16 +63,18 @@ class MainView extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: ListView.separated(
-          padding: const EdgeInsets.all(8),
-          itemCount: contactsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
-              child: Center(child: Text('${contactsList[index]}')),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
+        child: Scrollbar(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(8),
+            itemCount: contactsList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
+                child: Center(child: Text('${contactsList[index]}')),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
