@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
@@ -30,6 +31,7 @@ class ContactsRow extends StatelessWidget {
           MainController.get().startViewContact(context, contact.id);
         },
         trailing: IconButton(
+          tooltip: I18n.getString(I18n.string.quick_actions),
           icon: Icon(Icons.more_vert),
           iconSize: 24,
           onPressed: () {

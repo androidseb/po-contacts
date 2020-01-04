@@ -11,6 +11,8 @@ class I18nString {
   final String name = 'name';
   final String phone = 'phone';
   final String email = 'email';
+  final String phones = 'phones';
+  final String emails = 'emails';
   final String field_cannot_be_empty = 'field_cannot_be_empty';
   final String contact_details = 'contact_details';
   final String delete_contact = 'delete_contact';
@@ -54,6 +56,8 @@ class I18n {
     string.name: 'Name',
     string.phone: 'Phone',
     string.email: 'Email',
+    string.phones: 'Phone(s)',
+    string.emails: 'Email(s)',
     string.field_cannot_be_empty: 'This field cannot be empty',
     string.contact_details: 'Contact details',
     string.delete_contact: 'Delete contact',

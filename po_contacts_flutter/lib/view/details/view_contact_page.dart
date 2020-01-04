@@ -30,7 +30,7 @@ class ViewContactPage extends StatelessWidget {
           ),
         ],
       ),
-      body: ContactDetails(),
+      body: ContactDetails(contactId),
     );
   }
 }

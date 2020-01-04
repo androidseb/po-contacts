@@ -166,6 +166,18 @@ class MainController {
         });
   }
 
+  void startPhoneCall(final String phoneNumber) {
+    launch('tel:$phoneNumber');
+  }
+
+  void startSMS(final String phoneNumber) {
+    launch('sms:$phoneNumber');
+  }
+
+  void startEmail(final String emailAddress) {
+    launch('mailto:$emailAddress');
+  }
+
   void showContactQuickActionsMenu(final BuildContext context, final Contact contact) {
     final List<Widget> listOptions = [];
     for (final PhoneInfo pi in contact.phoneInfos) {
@@ -175,7 +187,7 @@ class MainController {
         title: Text(I18n.getString(I18n.string.call_x, phoneStr)),
         onTap: () {
           Navigator.of(context).pop();
-          launch('tel:${pi.textValue}');
+          startPhoneCall(pi.textValue);
         },
       ));
       listOptions.add(ListTile(
@@ -183,7 +195,7 @@ class MainController {
         title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
         onTap: () {
           Navigator.of(context).pop();
-          launch('sms:${pi.textValue}');
+          startSMS(pi.textValue);
         },
       ));
     }
@@ -194,7 +206,7 @@ class MainController {
         title: Text(I18n.getString(I18n.string.email_x, emailStr)),
         onTap: () {
           Navigator.of(context).pop();
-          launch('mailto:${ei.textValue}');
+          startEmail(ei.textValue);
         },
       ));
     }

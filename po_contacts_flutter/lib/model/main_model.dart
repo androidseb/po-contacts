@@ -5,8 +5,27 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 class MainModel {
   final List<Contact> contactsList = [];
   final StreamController<List<Contact>> _contactsListSC = new StreamController();
+  final StreamController<Contact> _contactChangeSC = new StreamController();
 
-  Stream<List<Contact>> get contactsListStream => _contactsListSC.stream;
+  Stream<List<Contact>> _contactsListStream;
+  Stream<List<Contact>> _getContactsListStream() {
+    if (_contactsListStream == null) {
+      _contactsListStream = _contactsListSC.stream.asBroadcastStream();
+    }
+    return _contactsListStream;
+  }
+
+  Stream<Contact> _contactChangeStream;
+  Stream<Contact> _getContactChangeStream() {
+    if (_contactChangeStream == null) {
+      _contactChangeStream = _contactChangeSC.stream.asBroadcastStream();
+    }
+    return _contactChangeStream;
+  }
+
+  Stream<List<Contact>> get contactsListStream => _getContactsListStream();
+
+  Stream<Contact> get contactChangeStream => _getContactChangeStream();
 
   Contact getContactById(final int contactId) {
     if (contactId == null) {
@@ -58,5 +77,6 @@ class MainModel {
       }
     }
     _contactsListSC.add(contactsList);
+    _contactChangeSC.add(newContact);
   }
 }

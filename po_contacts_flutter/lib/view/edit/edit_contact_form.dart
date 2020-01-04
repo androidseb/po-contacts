@@ -92,7 +92,7 @@ class _EditContactFormState extends State<EditContactForm> {
                   labelText: I18n.getString(I18n.string.organization_name),
                 ),
                 onChanged: (nameValue) {
-                  _contactBuilder.setOrganizationTitle(nameValue);
+                  _contactBuilder.setOrganizationName(nameValue);
                 },
               ),
               TextFormField(
