@@ -26,6 +26,12 @@ class I18nString {
   final String home_list_empty_placeholder_text = 'home_list_empty_placeholder_text';
   final String remove_entry = 'remove_entry';
   final String incorrect_email_address_format = 'incorrect_email_address_format';
+  final String label_type_work = 'label_type_work';
+  final String label_type_home = 'label_type_home';
+  final String label_type_cell = 'label_type_cell';
+  final String label_type_custom = 'label_type_custom';
+  final String custom_label = 'custom_label';
+  final String cancel = 'cancel';
 }
 
 class I18n {
@@ -59,6 +65,12 @@ class I18n {
     string.home_list_empty_placeholder_text: 'Your list of contacts is currently empty. You can add a contact by clicking the + button, or you can import contacts by opening a file from your system.',
     string.remove_entry: 'Remove entry',
     string.incorrect_email_address_format: 'Incorrect email address format',
+    string.label_type_work: 'Work',
+    string.label_type_home: 'Home',
+    string.label_type_cell: 'Cell',
+    string.label_type_custom: 'Custom',
+    string.custom_label: 'Custom label',
+    string.cancel: 'Cancel',
   };
 
   static _getObjString(final Object _obj) {

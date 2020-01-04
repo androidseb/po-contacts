@@ -126,4 +126,39 @@ class MainController {
       },
     );
   }
+
+  void showTextInputDialog(
+    final BuildContext context,
+    final String hintStringKey,
+    final Function(String enteredText) callback,
+  ) {
+    final String hintText = I18n.getString(hintStringKey);
+    final TextEditingController textFieldController = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(hintText),
+            content: TextField(
+              controller: textFieldController,
+              decoration: InputDecoration(hintText: hintText),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text(I18n.getString(I18n.string.cancel)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text(I18n.getString(I18n.string.ok)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  callback(textFieldController.value.text);
+                },
+              ),
+            ],
+          );
+        });
+  }
 }

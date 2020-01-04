@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 
 class CategorizedEditableItem {
@@ -13,6 +14,23 @@ class CategorizedEditableItem {
     this.labelType,
     this.labelValue,
   );
+}
+
+class EditableItemCategory {
+  LabeledFieldLabelType labelType;
+  String labelValue;
+
+  EditableItemCategory(
+    this.labelType,
+    this.labelValue,
+  );
+
+  @override
+  int get hashCode => labelType.hashCode + labelValue.hashCode;
+
+  @override
+  bool operator ==(o) =>
+      o is EditableItemCategory && o.labelType.index == labelType.index && o.labelValue == labelValue;
 }
 
 abstract class EditCategorizedItemsForm<T> extends StatefulWidget {
@@ -68,7 +86,43 @@ abstract class EditCategorizedItemsForm<T> extends StatefulWidget {
 }
 
 class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
+  final Set<String> customLabelTypeNames = Set<String>();
   final List<CategorizedEditableItem> currentItems = [];
+
+  List<DropdownMenuItem<EditableItemCategory>> getDropDownMenuItems() {
+    final List<LabeledFieldLabelType> labelTypes = widget.getAllowedLabelTypes();
+    final List<DropdownMenuItem<EditableItemCategory>> res = [];
+    for (final LabeledFieldLabelType lt in labelTypes) {
+      if (lt == LabeledFieldLabelType.custom) {
+        continue;
+      }
+      final String labelText = I18n.getString(LabeledField.getTypeNameStringKey(lt));
+      res.add(DropdownMenuItem<EditableItemCategory>(
+        value: EditableItemCategory(lt, labelText),
+        child: Text(labelText),
+      ));
+    }
+    for (final String customName in customLabelTypeNames) {
+      res.add(DropdownMenuItem<EditableItemCategory>(
+        value: EditableItemCategory(LabeledFieldLabelType.custom, customName),
+        child: Text(customName),
+      ));
+    }
+    res.add(DropdownMenuItem<EditableItemCategory>(
+      value: EditableItemCategory(LabeledFieldLabelType.custom, ''),
+      child: Text(I18n.getString(LabeledField.getTypeNameStringKey(LabeledFieldLabelType.custom))),
+    ));
+    return res;
+  }
+
+  EditableItemCategory getDropDownValue(final CategorizedEditableItem item) {
+    if (item.labelType == LabeledFieldLabelType.custom) {
+      return EditableItemCategory(item.labelType, item.labelValue);
+    } else {
+      final String labelText = I18n.getString(LabeledField.getTypeNameStringKey(item.labelType));
+      return EditableItemCategory(item.labelType, labelText);
+    }
+  }
 
   @override
   void initState() {
@@ -86,7 +140,7 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
       final CategorizedEditableItem item = currentItems[itemIndex];
       rows.add(
         Row(
-          key: Key('${currentItems.length}'),
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
               child: TextFormField(
@@ -109,6 +163,37 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
                   });
                 },
               ),
+            ),
+            DropdownButton<EditableItemCategory>(
+              value: getDropDownValue(item),
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              onChanged: (EditableItemCategory newValue) {
+                if (newValue.labelType == LabeledFieldLabelType.custom && newValue.labelValue.isEmpty) {
+                  MainController.get().showTextInputDialog(
+                    context,
+                    I18n.string.custom_label,
+                    (final String customLabelString) {
+                      if (customLabelString == null || customLabelString.isEmpty) {
+                        return;
+                      }
+                      setState(() {
+                        item.labelType = LabeledFieldLabelType.custom;
+                        item.labelValue = customLabelString;
+                        customLabelTypeNames.add(customLabelString);
+                        widget.notifyDataChanged(currentItems);
+                      });
+                    },
+                  );
+                  return;
+                }
+                setState(() {
+                  item.labelType = newValue.labelType;
+                  item.labelValue = newValue.labelValue;
+                  widget.notifyDataChanged(currentItems);
+                });
+              },
+              items: getDropDownMenuItems(),
             ),
             IconButton(
               icon: const Icon(Icons.close),
@@ -139,6 +224,7 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
       ),
     );
     return Column(
+      key: Key('${currentItems.length}'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rows,
     );
