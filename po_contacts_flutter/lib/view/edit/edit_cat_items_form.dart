@@ -129,6 +129,11 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
     if (widget.initialItems != null) {
       currentItems.addAll(widget.fromGenericItems(widget.initialItems));
     }
+    for (final CategorizedEditableItem item in currentItems) {
+      if (item.labelType == LabeledFieldLabelType.custom && !item.labelValue.isEmpty) {
+        customLabelTypeNames.add(item.labelValue);
+      }
+    }
     super.initState();
   }
 
