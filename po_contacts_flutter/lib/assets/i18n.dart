@@ -32,6 +32,10 @@ class I18nString {
   final String label_type_custom = 'label_type_custom';
   final String custom_label = 'custom_label';
   final String cancel = 'cancel';
+  final String quick_actions = 'quick_actions';
+  final String call_x = 'call_x';
+  final String text_x = 'text_x';
+  final String email_x = 'email_x';
 }
 
 class I18n {
@@ -71,6 +75,10 @@ class I18n {
     string.label_type_custom: 'Custom',
     string.custom_label: 'Custom label',
     string.cancel: 'Cancel',
+    string.quick_actions: 'Quick actions',
+    string.call_x: 'Call %s',
+    string.text_x: 'Text %s',
+    string.email_x: 'Email %s',
   };
 
   static _getObjString(final Object _obj) {

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/view/home/contact_row.dart';
 
 class ContactsList extends StatefulWidget {
   ContactsList({Key key}) : super(key: key);
@@ -63,18 +63,9 @@ class _ContactsListState extends State<ContactsList> {
   Widget buildIfNonEmpty(BuildContext context) {
     return Scrollbar(
       child: ListView.separated(
-        padding: const EdgeInsets.all(8),
         itemCount: _contactsList.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
-            child: ListTile(
-              title: Text('${_contactsList[index].name}'),
-              onTap: () {
-                MainController.get().startViewContact(context, _contactsList[index].id);
-              },
-            ),
-          );
+          return ContactsRow(_contactsList[index]);
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
       ),
