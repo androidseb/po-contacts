@@ -1,4 +1,4 @@
-package com.example.po_contacts_flutter
+package com.exlyo.pocontacts
 
 import android.os.Bundle
 import io.flutter.app.FlutterActivity
