@@ -217,7 +217,7 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.close),
+              icon: const Icon(Icons.clear),
               tooltip: I18n.getString(I18n.string.remove_entry),
               onPressed: () {
                 setState(() {
