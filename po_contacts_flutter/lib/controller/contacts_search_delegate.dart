@@ -6,6 +6,20 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/misc/contacts_list.dart';
 
 class ContactsSearchDelegate extends SearchDelegate<Contact> {
+  bool searchOpen = false;
+
+  @override
+  void close(BuildContext context, Contact result) {
+    if (!searchOpen) {
+      // If the close function is called when the search is already closed
+      // it will cause some error, preventing the error here by tracking
+      // whether the search is open or not
+      return;
+    }
+    searchOpen = false;
+    super.close(context, result);
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -35,6 +49,7 @@ class ContactsSearchDelegate extends SearchDelegate<Contact> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    searchOpen = true;
     final String searchText = Utils.normalizeString(query.toLowerCase());
     final List<Contact> allContacts = MainController.get().model.contactsList;
     final List<Contact> filteredContacts = [];
