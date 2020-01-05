@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
@@ -19,9 +20,11 @@ class MainController {
   }
 
   MainModel _model;
+  ContactsSearchDelegate _contactsSearchDelegate;
 
   MainController() {
-    this._model = new MainModel();
+    this._model = MainModel();
+    this._contactsSearchDelegate = ContactsSearchDelegate();
   }
 
   MainModel get model => _model;
@@ -39,6 +42,7 @@ class MainController {
   }
 
   void startEditContact(final BuildContext context, final int contactId) {
+    _contactsSearchDelegate.close(context, null);
     _startEditContact(context, contactId);
   }
 
@@ -58,6 +62,7 @@ class MainController {
   }
 
   void startViewContact(final BuildContext context, final int contactId) {
+    _contactsSearchDelegate.close(context, null);
     Navigator.push(context, MaterialPageRoute(
       builder: (BuildContext context) {
         return ViewContactPage(contactId);
@@ -235,5 +240,9 @@ class MainController {
             ],
           );
         });
+  }
+
+  void startSearch(final BuildContext context) {
+    showSearch(context: context, delegate: _contactsSearchDelegate);
   }
 }

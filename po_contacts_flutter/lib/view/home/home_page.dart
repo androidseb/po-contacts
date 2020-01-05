@@ -10,9 +10,17 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.getString(I18n.string.app_name)),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              MainController.get().startSearch(context);
+            },
+          ),
+        ],
       ),
       drawer: HomePageDrawer(),
-      body: ContactsList(),
+      body: AllContactsList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           MainController.get().startAddContact(context);
