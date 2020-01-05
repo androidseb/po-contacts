@@ -37,8 +37,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.po_contacts_flutter"
+        applicationId "com.exlyo.pocontacts"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
@@ -46,11 +45,28 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+	signingConfigs {
+		release {
+			Properties signingProps = new Properties()
+			File signingPropsFile = file('../signing.properties')
+			if (signingPropsFile.exists()) {
+				signingProps.load(new FileInputStream(signingPropsFile))
+				storeFile file(signingProps["store_file_path"])
+				storePassword signingProps["store_password"]
+				keyAlias signingProps["key_alias"]
+				keyPassword signingProps["key_password"]
+			} else {
+				storeFile null
+				keyAlias null
+				storePassword null
+				keyPassword null
+			}
+		}
+	}
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
