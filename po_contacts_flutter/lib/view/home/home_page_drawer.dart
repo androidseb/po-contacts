@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
-import 'package:po_contacts_flutter/po_constants.dart';
 
 class HomePageDrawer extends StatelessWidget {
   @override
@@ -22,7 +21,7 @@ class HomePageDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text(I18n.getString(I18n.string.about, POConstants.APP_VERSION)),
+              title: Text(I18n.getString(I18n.string.about, MainController.get().model.appVersion)),
               onTap: () {
                 MainController.get().showAboutDialog(context);
               },

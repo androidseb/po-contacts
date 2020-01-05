@@ -4,7 +4,6 @@ import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
-import 'package:po_contacts_flutter/po_constants.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -113,7 +112,7 @@ class MainController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(I18n.getString(I18n.string.about, POConstants.APP_VERSION)),
+          title: Text(I18n.getString(I18n.string.about, MainController.get().model.appVersion)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[

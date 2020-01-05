@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
+import 'package:po_contacts_flutter/model/version_info.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class MainModel {
@@ -22,6 +23,7 @@ class MainModel {
     contactsList.sort(MainModel.compareContacts);
   }
 
+  final VersionInfo _versionInfo = VersionInfo();
   final ContactsStorageController _storageController = ContactsStorageController();
   final List<Contact> contactsList = [];
   final StreamController<List<Contact>> _contactsListSC = StreamController();
@@ -50,6 +52,8 @@ class MainModel {
     }
     return _contactChangeStream;
   }
+
+  String get appVersion => _versionInfo.appVersion;
 
   Stream<List<Contact>> get contactsListStream => _getContactsListStream();
 
