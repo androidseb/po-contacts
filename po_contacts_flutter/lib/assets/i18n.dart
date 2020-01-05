@@ -1,3 +1,4 @@
+//ignore_for_file: non_constant_identifier_names
 class I18nString {
   final String app_name = 'app_name';
   final String create_new_contact = 'create_new_contact';
