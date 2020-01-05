@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/model/data/email_info.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
-import 'package:po_contacts_flutter/model/data/phone_info.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
@@ -180,7 +178,7 @@ class MainController {
 
   void showContactQuickActionsMenu(final BuildContext context, final Contact contact) {
     final List<Widget> listOptions = [];
-    for (final PhoneInfo pi in contact.phoneInfos) {
+    for (final LabeledField pi in contact.phoneInfos) {
       final String phoneStr = I18n.getString(LabeledField.getTypeNameStringKey(pi.labelType)) + ' (${pi.textValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.phone),
@@ -199,7 +197,7 @@ class MainController {
         },
       ));
     }
-    for (final EmailInfo ei in contact.emailInfos) {
+    for (final LabeledField ei in contact.emailInfos) {
       final String emailStr = I18n.getString(LabeledField.getTypeNameStringKey(ei.labelType)) + ' (${ei.textValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.mail),

@@ -26,6 +26,8 @@ dependencies:
 
   url_launcher: ^5.4.1
 
+  sqflite:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

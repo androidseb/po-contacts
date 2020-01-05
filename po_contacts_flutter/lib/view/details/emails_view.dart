@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/model/data/email_info.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/view/details/entries_group_view.dart';
 
-class EmailsView extends EntriesGroupView<EmailInfo> {
+class EmailsView extends EntriesGroupView {
   EmailsView(final Contact contact) : super(contact);
 
   @override
@@ -15,26 +14,12 @@ class EmailsView extends EntriesGroupView<EmailInfo> {
   }
 
   @override
-  List<EmailInfo> getEntries(final Contact contact) {
+  List<LabeledField> getEntries(final Contact contact) {
     return contact.emailInfos;
   }
 
   @override
-  String getEntryTitle(final EmailInfo entry) {
-    return entry.textValue;
-  }
-
-  @override
-  String getEntryHint(final EmailInfo entry) {
-    if (entry.labelType == LabeledFieldLabelType.custom) {
-      return entry.labelValue;
-    } else {
-      return I18n.getString(LabeledField.getTypeNameStringKey(entry.labelType));
-    }
-  }
-
-  @override
-  List<EntriesGroupAction> getEntryAvailableActions(final EmailInfo entry) {
+  List<EntriesGroupAction> getEntryAvailableActions(final LabeledField entry) {
     final String emailAddress = entry.textValue;
     return [
       EntriesGroupAction(

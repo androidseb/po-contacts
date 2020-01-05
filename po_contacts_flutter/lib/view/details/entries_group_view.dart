@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/view/misc/list_section_header.dart';
 
 class EntriesGroupAction {
@@ -16,31 +17,39 @@ class EntriesGroupAction {
   );
 }
 
-abstract class EntriesGroupView<T> extends StatelessWidget {
+abstract class EntriesGroupView extends StatelessWidget {
   final Contact _contact;
 
   EntriesGroupView(this._contact);
 
   String getTitleKeyString();
 
-  List<T> getEntries(final Contact contact);
+  List<LabeledField> getEntries(final Contact contact);
 
-  List<EntriesGroupAction> getEntryAvailableActions(final T entry);
+  List<EntriesGroupAction> getEntryAvailableActions(final LabeledField entry);
 
-  String getEntryTitle(final T entry);
+  String getEntryTitle(final LabeledField entry) {
+    return entry.textValue;
+  }
 
-  String getEntryHint(final T entry);
+  String getEntryHint(final LabeledField entry) {
+    if (entry.labelType == LabeledFieldLabelType.custom) {
+      return entry.labelValue;
+    } else {
+      return I18n.getString(LabeledField.getTypeNameStringKey(entry.labelType));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<T> entries = getEntries(_contact);
+    final List<LabeledField> entries = getEntries(_contact);
     if (entries == null || entries.isEmpty) {
       return SizedBox.shrink();
     }
 
     final List<Widget> colChildren = [];
     colChildren.add(ListSectionHeader(I18n.getString(getTitleKeyString())));
-    for (final T entry in entries) {
+    for (final LabeledField entry in entries) {
       final List<Widget> actionButtons = [];
       final List<EntriesGroupAction> actions = getEntryAvailableActions(entry);
       for (final EntriesGroupAction a in actions) {

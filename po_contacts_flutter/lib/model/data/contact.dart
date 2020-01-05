@@ -1,11 +1,12 @@
-import 'package:po_contacts_flutter/model/data/email_info.dart';
-import 'package:po_contacts_flutter/model/data/phone_info.dart';
+import 'dart:convert';
+
+import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 
 class Contact {
   final int id;
   final String name;
-  final List<PhoneInfo> phoneInfos;
-  final List<EmailInfo> emailInfos;
+  final List<LabeledField> phoneInfos;
+  final List<LabeledField> emailInfos;
   final String address;
   final String organizationName;
   final String organizationTitle;
@@ -24,21 +25,53 @@ class Contact {
 }
 
 class ContactBuilder {
-  int _id;
+  static const String JSON_FIELD_NAME = 'name';
+  static const String JSON_FIELD_PHONE_INFOS = 'phone_infos';
+  static const String JSON_FIELD_EMAIL_INFOS = 'email_infos';
+  static const String JSON_FIELD_ADDRESS = 'address';
+  static const String JSON_FIELD_ORGANIZATION_NAME = 'organization_name';
+  static const String JSON_FIELD_ORGANIZATION_TITLE = 'organization_title';
+  static const String JSON_FIELD_NOTES = 'notes';
+
+  static String toJsonString(final ContactBuilder contactBuilder) {
+    return jsonEncode({
+      JSON_FIELD_NAME: contactBuilder._name,
+      JSON_FIELD_PHONE_INFOS: LabeledField.fieldsToMapList(contactBuilder._phoneInfos),
+      JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactBuilder._emailInfos),
+      JSON_FIELD_ADDRESS: contactBuilder._address,
+      JSON_FIELD_ORGANIZATION_NAME: contactBuilder._organizationName,
+      JSON_FIELD_ORGANIZATION_TITLE: contactBuilder._organizationTitle,
+      JSON_FIELD_NOTES: contactBuilder._notes,
+    });
+  }
+
+  static Contact buildFromJson(final int id, final String json) {
+    final Map<String, dynamic> decodedJson = jsonDecode(json);
+    final ContactBuilder contactBuilder = ContactBuilder();
+    contactBuilder.setName(decodedJson[JSON_FIELD_NAME]);
+    contactBuilder.setPhoneInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_PHONE_INFOS]));
+    contactBuilder.setEmailInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_EMAIL_INFOS]));
+    contactBuilder.setAddress(decodedJson[JSON_FIELD_ADDRESS]);
+    contactBuilder.setOrganizationName(decodedJson[JSON_FIELD_ORGANIZATION_NAME]);
+    contactBuilder.setOrganizationTitle(decodedJson[JSON_FIELD_ORGANIZATION_TITLE]);
+    contactBuilder.setNotes(decodedJson[JSON_FIELD_NOTES]);
+    return contactBuilder.build(id);
+  }
+
   String _name;
-  List<PhoneInfo> _phoneInfos;
-  List<EmailInfo> _emailInfos;
+  List<LabeledField> _phoneInfos;
+  List<LabeledField> _emailInfos;
   String _address;
   String _organizationName;
   String _organizationTitle;
   String _notes;
 
-  Contact build() {
-    if (_id == null || _name == null) {
+  Contact build(final int id) {
+    if (id == null || _name == null) {
       return null;
     }
-    List<PhoneInfo> phoneInfos = [];
-    List<EmailInfo> emailInfos = [];
+    List<LabeledField> phoneInfos = [];
+    List<LabeledField> emailInfos = [];
     String address = '';
     String organizationName = '';
     String organizationTitle = '';
@@ -62,7 +95,7 @@ class ContactBuilder {
       notes = _notes;
     }
     return Contact(
-      _id,
+      id,
       _name,
       phoneInfos,
       emailInfos,
@@ -73,22 +106,17 @@ class ContactBuilder {
     );
   }
 
-  ContactBuilder setId(final int id) {
-    _id = id;
-    return this;
-  }
-
   ContactBuilder setName(final String name) {
     _name = name;
     return this;
   }
 
-  ContactBuilder setPhoneInfos(final List<PhoneInfo> phoneInfos) {
+  ContactBuilder setPhoneInfos(final List<LabeledField> phoneInfos) {
     _phoneInfos = phoneInfos;
     return this;
   }
 
-  ContactBuilder setEmailInfos(final List<EmailInfo> emailInfos) {
+  ContactBuilder setEmailInfos(final List<LabeledField> emailInfos) {
     _emailInfos = emailInfos;
     return this;
   }

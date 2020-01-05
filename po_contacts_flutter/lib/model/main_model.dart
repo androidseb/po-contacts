@@ -1,11 +1,20 @@
 import 'dart:async';
 
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 
 class MainModel {
+  final ContactsStorageController _storageController = ContactsStorageController();
   final List<Contact> contactsList = [];
-  final StreamController<List<Contact>> _contactsListSC = new StreamController();
-  final StreamController<Contact> _contactChangeSC = new StreamController();
+  final StreamController<List<Contact>> _contactsListSC = StreamController();
+  final StreamController<Contact> _contactChangeSC = StreamController();
+
+  MainModel() {
+    _storageController.initializeStorage((final List<Contact> loadedContacts) {
+      contactsList.addAll(loadedContacts);
+      _contactsListSC.add(contactsList);
+    });
+  }
 
   Stream<List<Contact>> _contactsListStream;
   Stream<List<Contact>> _getContactsListStream() {
@@ -40,43 +49,54 @@ class MainModel {
   }
 
   void addContact(final ContactBuilder contactBuilder) {
-    //TODO data persistence
-    contactBuilder.setId(contactsList.length + 1);
-    final Contact newContact = contactBuilder.build();
-    if (newContact == null) {
+    if (!_storageController.isInitialized) {
       return;
     }
-    contactsList.add(newContact);
-    _contactsListSC.add(contactsList);
+    _storageController.createContact(contactBuilder, (final Contact createdContact) {
+      if (createdContact == null) {
+        return;
+      }
+      contactsList.add(createdContact);
+      _contactsListSC.add(contactsList);
+    });
   }
 
   void deleteContact(final int contactId) {
-    //TODO data persistence
-    for (int i = 0; i < contactsList.length; i++) {
-      final Contact contact = contactsList[i];
-      if (contact.id == contactId) {
-        contactsList.removeAt(i);
-      }
+    if (!_storageController.isInitialized) {
+      return;
     }
-    _contactsListSC.add(contactsList);
+    _storageController.deleteContact(contactId, (final bool deleteSuccessful) {
+      if (!deleteSuccessful) {
+        return;
+      }
+      for (int i = 0; i < contactsList.length; i++) {
+        final Contact contact = contactsList[i];
+        if (contact.id == contactId) {
+          contactsList.removeAt(i);
+        }
+      }
+      _contactsListSC.add(contactsList);
+    });
   }
 
   void overwriteContact(final int contactId, final ContactBuilder contactBuilder) {
-    //TODO data persistence
-    contactBuilder.setId(contactId);
-    final Contact newContact = contactBuilder.build();
-    if (newContact == null) {
+    if (!_storageController.isInitialized) {
       return;
     }
-    for (int i = 0; i < contactsList.length; i++) {
-      final Contact contact = contactsList[i];
-      if (contact.id == contactId) {
-        contactsList.removeAt(i);
-        contactsList.insert(i, newContact);
-        break;
+    _storageController.updateContact(contactId, contactBuilder, (final Contact updatedContact) {
+      if (updatedContact == null) {
+        return;
       }
-    }
-    _contactsListSC.add(contactsList);
-    _contactChangeSC.add(newContact);
+      for (int i = 0; i < contactsList.length; i++) {
+        final Contact contact = contactsList[i];
+        if (contact.id == contactId) {
+          contactsList.removeAt(i);
+          contactsList.insert(i, updatedContact);
+          break;
+        }
+      }
+      _contactsListSC.add(contactsList);
+      _contactChangeSC.add(updatedContact);
+    });
   }
 }

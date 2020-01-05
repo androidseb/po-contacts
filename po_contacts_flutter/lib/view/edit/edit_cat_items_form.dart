@@ -33,9 +33,9 @@ class EditableItemCategory {
       o is EditableItemCategory && o.labelType.index == labelType.index && o.labelValue == labelValue;
 }
 
-abstract class EditCategorizedItemsForm<T> extends StatefulWidget {
-  final List<T> initialItems;
-  final Function(List<T> updatedItems) onDataChanged;
+abstract class EditCategorizedItemsForm extends StatefulWidget {
+  final List<LabeledField> initialItems;
+  final Function(List<LabeledField> updatedItems) onDataChanged;
 
   EditCategorizedItemsForm(this.initialItems, {this.onDataChanged});
 
@@ -48,16 +48,16 @@ abstract class EditCategorizedItemsForm<T> extends StatefulWidget {
     onDataChanged(_toGenericItems(currentItems));
   }
 
-  List<CategorizedEditableItem> fromGenericItems(final List<T> genericItems) {
+  List<CategorizedEditableItem> fromGenericItems(final List<LabeledField> genericItems) {
     final List<CategorizedEditableItem> res = [];
-    for (final T gi in genericItems) {
+    for (final LabeledField gi in genericItems) {
       res.add(fromGenericItem(gi));
     }
     return res;
   }
 
-  List<T> _toGenericItems(final List<CategorizedEditableItem> categorizedItems) {
-    final List<T> res = [];
+  List<LabeledField> _toGenericItems(final List<CategorizedEditableItem> categorizedItems) {
+    final List<LabeledField> res = [];
     for (final CategorizedEditableItem ci in categorizedItems) {
       res.add(toGenericItem(ci));
     }
@@ -66,9 +66,13 @@ abstract class EditCategorizedItemsForm<T> extends StatefulWidget {
 
   List<LabeledFieldLabelType> getAllowedLabelTypes();
 
-  CategorizedEditableItem fromGenericItem(final T item);
+  CategorizedEditableItem fromGenericItem(final LabeledField item) {
+    return CategorizedEditableItem(item.textValue, item.labelType, item.labelValue);
+  }
 
-  T toGenericItem(final CategorizedEditableItem item);
+  LabeledField toGenericItem(final CategorizedEditableItem item) {
+    return LabeledField(item.textValue, item.labelType, item.labelValue);
+  }
 
   String getEntryHintStringKey();
 
