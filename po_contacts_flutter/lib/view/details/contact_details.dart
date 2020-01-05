@@ -55,7 +55,7 @@ class _ContactDetailsState extends State<ContactDetails> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: ClipRRect(
-                  borderRadius: new BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8.0),
                   child: Image.asset(
                     'lib/assets/images/ic_profile.png',
                     height: 96,
@@ -68,7 +68,7 @@ class _ContactDetailsState extends State<ContactDetails> {
               child: SelectableText(
                 _contact.name,
                 textAlign: TextAlign.center,
-                style: new TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                 ),

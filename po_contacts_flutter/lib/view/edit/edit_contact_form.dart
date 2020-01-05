@@ -18,7 +18,7 @@ class EditContactForm extends StatefulWidget {
 
 class _EditContactFormState extends State<EditContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final ContactBuilder _contactBuilder = new ContactBuilder();
+  final ContactBuilder _contactBuilder = ContactBuilder();
   EditContactFormController editContactFormController;
 
   @override

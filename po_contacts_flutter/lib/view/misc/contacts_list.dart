@@ -26,7 +26,7 @@ class ContactsList extends StatelessWidget {
           child: Text(
             I18n.getString(_emptyStateStringKey),
             textAlign: TextAlign.center,
-            style: new TextStyle(
+            style: TextStyle(
               fontSize: 14.0,
             ),
           ),

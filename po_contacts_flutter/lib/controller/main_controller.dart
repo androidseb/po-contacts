@@ -13,7 +13,7 @@ class MainController {
 
   static MainController get() {
     if (_controller == null) {
-      _controller = new MainController();
+      _controller = MainController();
     }
     return _controller;
   }
@@ -150,14 +150,14 @@ class MainController {
               decoration: InputDecoration(hintText: hintText),
             ),
             actions: <Widget>[
-              new FlatButton(
-                child: new Text(I18n.getString(I18n.string.cancel)),
+              FlatButton(
+                child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              new FlatButton(
-                child: new Text(I18n.getString(I18n.string.ok)),
+              FlatButton(
+                child: Text(I18n.getString(I18n.string.ok)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   callback(textFieldController.value.text);
@@ -230,8 +230,8 @@ class MainController {
               children: listOptions,
             ),
             actions: <Widget>[
-              new FlatButton(
-                child: new Text(I18n.getString(I18n.string.cancel)),
+              FlatButton(
+                child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

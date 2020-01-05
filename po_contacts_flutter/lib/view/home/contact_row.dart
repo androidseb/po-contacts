@@ -20,7 +20,7 @@ class ContactsRow extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         leading: ClipRRect(
-          borderRadius: new BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(8.0),
           child: Image.asset(
             'lib/assets/images/ic_profile.png',
             height: 32,

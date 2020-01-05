@@ -43,7 +43,7 @@ class I18nString {
 }
 
 class I18n {
-  static final I18nString string = new I18nString();
+  static final I18nString string = I18nString();
 
   static Map<String, String> currentTranslation = {
     string.app_name: 'PO Contacts',
