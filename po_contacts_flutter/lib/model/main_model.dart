@@ -2,8 +2,26 @@ import 'dart:async';
 
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 class MainModel {
+  static int compareContacts(final Contact c1, final Contact c2) {
+    if (c1 == null && c2 == null) {
+      return 0;
+    }
+    if (c1 == null) {
+      return -1;
+    }
+    if (c2 == null) {
+      return 1;
+    }
+    return Utils.stringCompare(c1.name, c2.name);
+  }
+
+  static void sortContactsList(final List<Contact> contactsList) {
+    contactsList.sort(MainModel.compareContacts);
+  }
+
   final ContactsStorageController _storageController = ContactsStorageController();
   final List<Contact> contactsList = [];
   final StreamController<List<Contact>> _contactsListSC = StreamController();
@@ -12,6 +30,7 @@ class MainModel {
   MainModel() {
     _storageController.initializeStorage((final List<Contact> loadedContacts) {
       contactsList.addAll(loadedContacts);
+      sortContactsList(contactsList);
       _contactsListSC.add(contactsList);
     });
   }
@@ -57,6 +76,7 @@ class MainModel {
         return;
       }
       contactsList.add(createdContact);
+      sortContactsList(contactsList);
       _contactsListSC.add(contactsList);
     });
   }
@@ -92,6 +112,7 @@ class MainModel {
         if (contact.id == contactId) {
           contactsList.removeAt(i);
           contactsList.insert(i, updatedContact);
+          sortContactsList(contactsList);
           break;
         }
       }
