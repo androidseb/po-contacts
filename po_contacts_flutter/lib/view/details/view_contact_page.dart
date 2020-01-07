@@ -18,14 +18,14 @@ class ViewContactPage extends StatelessWidget {
             icon: const Icon(Icons.delete),
             tooltip: I18n.getString(I18n.string.delete_contact),
             onPressed: () {
-              MainController.get().startDeleteContact(context, contactId);
+              MainController.get().startDeleteContact(contactId);
             },
           ),
           IconButton(
             icon: const Icon(Icons.edit),
             tooltip: I18n.getString(I18n.string.edit_contact),
             onPressed: () {
-              MainController.get().startEditContact(context, contactId);
+              MainController.get().startEditContact(contactId);
             },
           ),
         ],

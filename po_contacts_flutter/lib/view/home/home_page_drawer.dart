@@ -23,7 +23,7 @@ class HomePageDrawer extends StatelessWidget {
             ListTile(
               title: Text(I18n.getString(I18n.string.about, MainController.get().model.appVersion)),
               onTap: () {
-                MainController.get().showAboutDialog(context);
+                MainController.get().showAboutDialog();
               },
             ),
           ],

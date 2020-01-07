@@ -18,34 +18,50 @@ class MainController {
     return _controller;
   }
 
-  MainModel _model;
-  ContactsSearchDelegate _contactsSearchDelegate;
-
-  MainController() {
-    this._model = MainModel();
-    this._contactsSearchDelegate = ContactsSearchDelegate();
-  }
+  final MainModel _model = MainModel();
+  final ContactsSearchDelegate _contactsSearchDelegate = ContactsSearchDelegate();
+  BuildContext _context;
 
   MainModel get model => _model;
 
-  void _startEditContact(final BuildContext context, final int contactId) {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (BuildContext context) {
+
+  void updateBuildContext(final BuildContext context) {
+    if (context == null) {
+      return;
+    }
+    _context = context;
+  }
+
+  void _startEditContact(final int contactId) {
+    if (_context == null) {
+      return;
+    }
+    Navigator.push(_context, MaterialPageRoute(
+      builder: (final BuildContext context) {
         return EditContactPage(contactId);
       },
     ));
   }
 
-  void startAddContact(final BuildContext context) {
-    _startEditContact(context, null);
+  void startAddContact() {
+    if (_context == null) {
+      return;
+    }
+    _startEditContact(null);
   }
 
-  void startEditContact(final BuildContext context, final int contactId) {
-    _contactsSearchDelegate.close(context, null);
-    _startEditContact(context, contactId);
+  void startEditContact(final int contactId) {
+    if (_context == null) {
+      return;
+    }
+    _contactsSearchDelegate.close(_context, null);
+    _startEditContact(contactId);
   }
 
-  void saveContact(final BuildContext context, final int contactId, final ContactBuilder targetContactBuilder) {
+  void saveContact(final int contactId, final ContactBuilder targetContactBuilder) {
+    if (_context == null) {
+      return;
+    }
     if (contactId == null && targetContactBuilder == null) {
       return;
     }
@@ -57,22 +73,28 @@ class MainController {
     } else {
       this._model.overwriteContact(contactId, targetContactBuilder);
     }
-    Navigator.pop(context);
+    Navigator.pop(_context);
   }
 
-  void startViewContact(final BuildContext context, final int contactId) {
-    _contactsSearchDelegate.close(context, null);
-    Navigator.push(context, MaterialPageRoute(
-      builder: (BuildContext context) {
+  void startViewContact(final int contactId) {
+    if (_context == null) {
+      return;
+    }
+    _contactsSearchDelegate.close(_context, null);
+    Navigator.push(_context, MaterialPageRoute(
+      builder: (final BuildContext context) {
         return ViewContactPage(contactId);
       },
     ));
   }
 
-  void startDeleteContact(final BuildContext context, final int contactId) {
+  void startDeleteContact(final int contactId) {
+    if (_context == null) {
+      return;
+    }
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
+      context: _context,
+      builder: (final BuildContext context) {
         return AlertDialog(
           title: Text(I18n.getString(I18n.string.delete_contact)),
           content: SingleChildScrollView(
@@ -107,10 +129,10 @@ class MainController {
     //TODO
   }
 
-  void showAboutDialog(final BuildContext context) {
+  void showAboutDialog() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
+      context: _context,
+      builder: (final BuildContext context) {
         return AlertDialog(
           title: Text(I18n.getString(I18n.string.about, MainController.get().model.appVersion)),
           content: SingleChildScrollView(
@@ -134,14 +156,16 @@ class MainController {
   }
 
   void showTextInputDialog(
-    final BuildContext context,
     final String hintStringKey,
     final Function(String enteredText) callback,
   ) {
+    if (_context == null) {
+      return;
+    }
     final String hintText = I18n.getString(hintStringKey);
     final TextEditingController textFieldController = TextEditingController();
     showDialog(
-        context: context,
+        context: _context,
         builder: (context) {
           return AlertDialog(
             title: Text(hintText),
@@ -180,7 +204,10 @@ class MainController {
     launch('mailto:$emailAddress');
   }
 
-  void showContactQuickActionsMenu(final BuildContext context, final Contact contact) {
+  void showContactQuickActionsMenu(final Contact contact) {
+    if (_context == null) {
+      return;
+    }
     final List<Widget> listOptions = [];
     for (final LabeledField pi in contact.phoneInfos) {
       final String phoneStr = I18n.getString(LabeledField.getTypeNameStringKey(pi.labelType)) + ' (${pi.textValue})';
@@ -188,7 +215,7 @@ class MainController {
         leading: Icon(Icons.phone),
         title: Text(I18n.getString(I18n.string.call_x, phoneStr)),
         onTap: () {
-          Navigator.of(context).pop();
+          Navigator.of(_context).pop();
           startPhoneCall(pi.textValue);
         },
       ));
@@ -196,7 +223,7 @@ class MainController {
         leading: Icon(Icons.message),
         title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
         onTap: () {
-          Navigator.of(context).pop();
+          Navigator.of(_context).pop();
           startSMS(pi.textValue);
         },
       ));
@@ -207,7 +234,7 @@ class MainController {
         leading: Icon(Icons.mail),
         title: Text(I18n.getString(I18n.string.email_x, emailStr)),
         onTap: () {
-          Navigator.of(context).pop();
+          Navigator.of(_context).pop();
           startEmail(ei.textValue);
         },
       ));
@@ -216,12 +243,12 @@ class MainController {
       leading: Icon(Icons.edit),
       title: Text(I18n.getString(I18n.string.edit_contact)),
       onTap: () {
-        Navigator.of(context).pop();
-        MainController.get().startEditContact(context, contact.id);
+        Navigator.of(_context).pop();
+        MainController.get().startEditContact(contact.id);
       },
     ));
     showDialog(
-        context: context,
+        context: _context,
         builder: (context) {
           return AlertDialog(
             title: Text(I18n.getString(I18n.string.quick_actions)),
@@ -241,7 +268,10 @@ class MainController {
         });
   }
 
-  void startSearch(final BuildContext context) {
-    showSearch(context: context, delegate: _contactsSearchDelegate);
+  void startSearch() {
+    if (_context == null) {
+      return;
+    }
+    showSearch(context: _context, delegate: _contactsSearchDelegate);
   }
 }

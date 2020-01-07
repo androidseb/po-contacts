@@ -7,6 +7,7 @@ import 'package:po_contacts_flutter/view/home/home_page_drawer.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    MainController.get().updateBuildContext(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.getString(I18n.string.app_name)),
@@ -14,7 +15,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              MainController.get().startSearch(context);
+              MainController.get().startSearch();
             },
           ),
         ],
@@ -23,7 +24,7 @@ class HomePage extends StatelessWidget {
       body: AllContactsList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          MainController.get().startAddContact(context);
+          MainController.get().startAddContact();
         },
         tooltip: I18n.getString(I18n.string.create_new_contact),
         child: Icon(Icons.add),

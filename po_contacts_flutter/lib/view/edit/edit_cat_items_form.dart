@@ -191,7 +191,6 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
                 onChanged: (EditableItemCategory newValue) {
                   if (newValue.labelType == LabeledFieldLabelType.custom && newValue.labelValue.isEmpty) {
                     MainController.get().showTextInputDialog(
-                      context,
                       I18n.string.custom_label,
                       (final String customLabelString) {
                         if (customLabelString == null || customLabelString.isEmpty) {

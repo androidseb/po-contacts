@@ -28,14 +28,14 @@ class ContactsRow extends StatelessWidget {
           ),
         ),
         onTap: () {
-          MainController.get().startViewContact(context, contact.id);
+          MainController.get().startViewContact(contact.id);
         },
         trailing: IconButton(
           tooltip: I18n.getString(I18n.string.quick_actions),
           icon: Icon(Icons.more_vert),
           iconSize: 24,
           onPressed: () {
-            MainController.get().showContactQuickActionsMenu(context, contact);
+            MainController.get().showContactQuickActionsMenu(contact);
           },
         ),
       ),

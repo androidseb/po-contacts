@@ -39,7 +39,7 @@ class _EditContactPageState extends State<EditContactPage> {
           editContactFormController = controller;
         },
         onContactSaveRequested: (final ContactBuilder contactBuilder) {
-          MainController.get().saveContact(context, widget.contactId, contactBuilder);
+          MainController.get().saveContact(widget.contactId, contactBuilder);
         },
       ),
     );
