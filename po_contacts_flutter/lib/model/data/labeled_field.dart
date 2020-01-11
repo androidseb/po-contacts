@@ -5,18 +5,24 @@ enum LabeledFieldLabelType {
   work,
   home,
   cell,
+  fax,
+  pager,
 }
 
 const String LABEL_FIELD_TYPE_CUSTOM = 'custom';
 const String LABEL_FIELD_TYPE_WORK = 'work';
 const String LABEL_FIELD_TYPE_HOME = 'home';
 const String LABEL_FIELD_TYPE_CELL = 'cell';
+const String LABEL_FIELD_TYPE_FAX = 'fax';
+const String LABEL_FIELD_TYPE_PAGER = 'pager';
 
 const Map<String, LabeledFieldLabelType> _stringToLfLabelType = {
   LABEL_FIELD_TYPE_CUSTOM: LabeledFieldLabelType.custom,
   LABEL_FIELD_TYPE_WORK: LabeledFieldLabelType.work,
   LABEL_FIELD_TYPE_HOME: LabeledFieldLabelType.home,
   LABEL_FIELD_TYPE_CELL: LabeledFieldLabelType.cell,
+  LABEL_FIELD_TYPE_FAX: LabeledFieldLabelType.fax,
+  LABEL_FIELD_TYPE_PAGER: LabeledFieldLabelType.pager,
 };
 
 const Map<LabeledFieldLabelType, String> _lfLabelTypeToString = {
@@ -24,6 +30,8 @@ const Map<LabeledFieldLabelType, String> _lfLabelTypeToString = {
   LabeledFieldLabelType.work: LABEL_FIELD_TYPE_WORK,
   LabeledFieldLabelType.home: LABEL_FIELD_TYPE_HOME,
   LabeledFieldLabelType.cell: LABEL_FIELD_TYPE_CELL,
+  LabeledFieldLabelType.fax: LABEL_FIELD_TYPE_FAX,
+  LabeledFieldLabelType.pager: LABEL_FIELD_TYPE_PAGER,
 };
 
 LabeledFieldLabelType _stringToLabeledFieldLabelType(final String _string) {
@@ -110,6 +118,10 @@ class LabeledField {
         return I18n.string.label_type_home;
       case LabeledFieldLabelType.cell:
         return I18n.string.label_type_cell;
+      case LabeledFieldLabelType.fax:
+        return I18n.string.label_type_fax;
+      case LabeledFieldLabelType.pager:
+        return I18n.string.label_type_pager;
       case LabeledFieldLabelType.custom:
         return I18n.string.label_type_custom;
     }

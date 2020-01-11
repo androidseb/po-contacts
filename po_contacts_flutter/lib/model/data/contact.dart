@@ -66,22 +66,32 @@ class ContactBuilder {
   String _organizationTitle;
   String _notes;
 
+  static List<LabeledField> getSanitizedLabeledField(final List<LabeledField> list) {
+    if (list == null) {
+      return [];
+    }
+    final List<LabeledField> res = [];
+    for (final LabeledField f in list) {
+      if (f.textValue.trim().isNotEmpty) {
+        res.add(f);
+      }
+    }
+    res.sort((a, b) {
+      return a.labelType.index - b.labelType.index;
+    });
+    return res;
+  }
+
   Contact build(final int id) {
     if (id == null || _name == null) {
       return null;
     }
-    List<LabeledField> phoneInfos = [];
-    List<LabeledField> emailInfos = [];
+    final List<LabeledField> phoneInfos = getSanitizedLabeledField(_phoneInfos);
+    List<LabeledField> emailInfos = getSanitizedLabeledField(_emailInfos);
     String address = '';
     String organizationName = '';
     String organizationTitle = '';
     String notes = '';
-    if (_phoneInfos != null) {
-      phoneInfos = _phoneInfos;
-    }
-    if (_emailInfos != null) {
-      emailInfos = _emailInfos;
-    }
     if (_address != null) {
       address = _address;
     }

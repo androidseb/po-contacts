@@ -32,6 +32,8 @@ class I18nString {
   final String label_type_work = 'label_type_work';
   final String label_type_home = 'label_type_home';
   final String label_type_cell = 'label_type_cell';
+  final String label_type_fax = 'label_type_fax';
+  final String label_type_pager = 'label_type_pager';
   final String label_type_custom = 'label_type_custom';
   final String custom_label = 'custom_label';
   final String cancel = 'cancel';
@@ -81,6 +83,8 @@ class I18n {
     string.label_type_work: 'Work',
     string.label_type_home: 'Home',
     string.label_type_cell: 'Cell',
+    string.label_type_fax: 'Fax',
+    string.label_type_pager: 'Pager',
     string.label_type_custom: 'Custom',
     string.custom_label: 'Custom label',
     string.cancel: 'Cancel',

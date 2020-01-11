@@ -13,6 +13,8 @@ class EditPhonesForm extends EditCategorizedItemsForm {
       LabeledFieldLabelType.work,
       LabeledFieldLabelType.home,
       LabeledFieldLabelType.cell,
+      LabeledFieldLabelType.fax,
+      LabeledFieldLabelType.pager,
       LabeledFieldLabelType.custom
     ];
   }

@@ -24,17 +24,19 @@ class EditEmailsForm extends EditCategorizedItemsForm {
 
   @override
   String validateValue(final String value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
     bool correctEmail = true;
-    if (value == null) {
-      correctEmail = false;
+    final List<String> atSplit = value.split('@');
+    if (atSplit.length == 2) {
+      final RegExp prefixRegExp = RegExp(r'[\+\-\.0-9a-zA-Z]');
+      final RegExp domainRegExp = RegExp(r'[\-\.0-9a-zA-Z]\.[\-\.0-9a-zA-Z]');
+      final String prefix = atSplit[0];
+      final String domain = atSplit[1];
+      correctEmail = prefixRegExp.hasMatch(prefix) && domainRegExp.hasMatch(domain);
     } else {
-      final List<String> atSplit = value.split('@');
-      if (atSplit.length == 2) {
-        final RegExp emailCharsRegExp = RegExp(r'[\+\-\.0-9a-zA-Z]');
-        correctEmail = emailCharsRegExp.hasMatch(atSplit[0]) && emailCharsRegExp.hasMatch(atSplit[1]);
-      } else {
-        correctEmail = false;
-      }
+      correctEmail = false;
     }
     if (correctEmail) {
       return null;

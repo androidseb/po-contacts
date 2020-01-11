@@ -49,6 +49,9 @@ abstract class EditCategorizedItemsForm extends StatefulWidget {
   }
 
   List<CategorizedEditableItem> fromGenericItems(final List<LabeledField> genericItems) {
+    if (genericItems == null) {
+      return [];
+    }
     final List<CategorizedEditableItem> res = [];
     for (final LabeledField gi in genericItems) {
       res.add(fromGenericItem(gi));
@@ -138,12 +141,21 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
 
   @override
   void initState() {
-    if (widget.initialItems != null) {
-      currentItems.addAll(widget.fromGenericItems(widget.initialItems));
-    }
-    for (final CategorizedEditableItem item in currentItems) {
-      if (item.labelType == LabeledFieldLabelType.custom && item.labelValue.isNotEmpty) {
-        customLabelTypeNames.add(item.labelValue);
+    final List<LabeledFieldLabelType> orderedLabelTypes = widget.getAllowedLabelTypes();
+    final List<CategorizedEditableItem> editableItems = widget.fromGenericItems(widget.initialItems);
+    for (final LabeledFieldLabelType t in orderedLabelTypes) {
+      bool addedField = false;
+      for (final CategorizedEditableItem cei in editableItems) {
+        if (cei.labelType == t) {
+          if (cei.labelType == LabeledFieldLabelType.custom && cei.labelValue.isNotEmpty) {
+            customLabelTypeNames.add(cei.labelValue);
+          }
+          currentItems.add(cei);
+          addedField = true;
+        }
+      }
+      if (!addedField) {
+        currentItems.add(CategorizedEditableItem('', t, ''));
       }
     }
     super.initState();
@@ -168,9 +180,6 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
                 inputFormatters: widget.getInputFormatters(),
                 keyboardType: widget.getInputKeyboardType(),
                 validator: (final String value) {
-                  if (value.isEmpty) {
-                    return I18n.getString(I18n.string.field_cannot_be_empty);
-                  }
                   return widget.validateValue(value);
                 },
                 onChanged: (nameValue) {
