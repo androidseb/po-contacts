@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
+import 'package:po_contacts_flutter/controller/export_controller.dart';
+import 'package:po_contacts_flutter/controller/import_controller.dart';
+import 'package:po_contacts_flutter/controller/native_apis_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
@@ -14,16 +18,31 @@ class MainController {
   static MainController get() {
     if (_controller == null) {
       _controller = MainController();
+      _controller._initializeMainController();
     }
     return _controller;
   }
 
+  BuildContext _context;
   final MainModel _model = MainModel();
   final ContactsSearchDelegate _contactsSearchDelegate = ContactsSearchDelegate();
-  BuildContext _context;
+  final NativeApisController _nativeApisController = NativeApisController();
+  final ImportController _importController = ImportController();
+  final ExportController _exportController = ExportController();
+
+  void _initializeMainController() {
+    SystemChannels.lifecycle.setMessageHandler((final String msg) async {
+      if (msg == AppLifecycleState.resumed.toString()) {
+        _importController.startImportIfNeeded();
+      }
+      return msg;
+    });
+    _importController.startImportIfNeeded();
+  }
 
   MainModel get model => _model;
 
+  NativeApisController get nativeApisController => _nativeApisController;
 
   void updateBuildContext(final BuildContext context) {
     if (context == null) {
@@ -126,7 +145,7 @@ class MainController {
   }
 
   void startExportAllAsVCF() {
-    //TODO
+    _exportController.exportAllAsVCF();
   }
 
   void showAboutDialog() {
@@ -273,5 +292,40 @@ class MainController {
       return;
     }
     showSearch(context: _context, delegate: _contactsSearchDelegate);
+  }
+
+  void promptUserForFileImport(final Function(bool approved) userApprovedImportCallback) {
+    showDialog(
+      context: _context,
+      barrierDismissible: false,
+      builder: (final BuildContext context) {
+        return AlertDialog(
+          title: Text(I18n.getString(I18n.string.import_file_title)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(I18n.getString(I18n.string.import_file_question)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(I18n.getString(I18n.string.no)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                userApprovedImportCallback(false);
+              },
+            ),
+            FlatButton(
+              child: Text(I18n.getString(I18n.string.yes)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                userApprovedImportCallback(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -40,6 +40,8 @@ class I18nString {
   final String text_x = 'text_x';
   final String email_x = 'email_x';
   final String search_list_empty_placeholder_text = 'search_list_empty_placeholder_text';
+  final String import_file_title = 'import_file_title';
+  final String import_file_question = 'import_file_question';
 }
 
 class I18n {
@@ -86,6 +88,8 @@ class I18n {
     string.text_x: 'Text %s',
     string.email_x: 'Email %s',
     string.search_list_empty_placeholder_text: 'No search results',
+    string.import_file_title: 'Import file',
+    string.import_file_question: 'Do you want to import the file\'s content?',
   };
 
   static _getObjString(final Object _obj) {
