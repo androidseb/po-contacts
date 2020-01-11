@@ -42,6 +42,7 @@ class I18nString {
   final String search_list_empty_placeholder_text = 'search_list_empty_placeholder_text';
   final String import_file_title = 'import_file_title';
   final String import_file_question = 'import_file_question';
+  final String share_prompt_title = 'share_prompt_title';
 }
 
 class I18n {
@@ -90,6 +91,7 @@ class I18n {
     string.search_list_empty_placeholder_text: 'No search results',
     string.import_file_title: 'Import file',
     string.import_file_question: 'Do you want to import the file\'s content?',
+    string.share_prompt_title: 'Share via...',
   };
 
   static _getObjString(final Object _obj) {

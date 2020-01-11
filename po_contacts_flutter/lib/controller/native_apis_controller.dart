@@ -21,7 +21,7 @@ class NativeApisController {
     return await platform.invokeMethod('getOutputFilesDirectoryPath');
   }
 
-  Future<void> shareFileExternally(final String filePath) async {
-    await platform.invokeMethod('shareFileExternally', {'filePath': filePath});
+  Future<void> shareFileExternally(final String sharePromptTitle, final String filePath) async {
+    await platform.invokeMethod('shareFileExternally', {'sharePromptTitle': sharePromptTitle, 'filePath': filePath});
   }
 }

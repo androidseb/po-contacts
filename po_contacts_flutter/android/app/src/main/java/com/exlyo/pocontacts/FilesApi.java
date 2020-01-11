@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -53,8 +54,9 @@ class FilesApi {
                             final String outputFilesDirectoryPath = getOutputFilesDirectoryPath();
                             _result.success(outputFilesDirectoryPath);
                         } else if (_call.method.equals("shareFileExternally")) {
+                            final String sharePromptTitle = _call.argument("sharePromptTitle");
                             final String filePath = _call.argument("filePath");
-                            shareFileExternally(filePath);
+                            shareFileExternally(sharePromptTitle, filePath);
                             _result.success(null);
                         } else {
                             _result.notImplemented();
@@ -114,10 +116,31 @@ class FilesApi {
     }
 
     private String getOutputFilesDirectoryPath() {
-        return "TODO";
+        final File externalFilesDir = mainActivity.getExternalFilesDir(null);
+        if (externalFilesDir == null) {
+            return null;
+        }
+        final String sharedFolderPath = externalFilesDir.getAbsolutePath() + File.separator + "FileProviderFiles";
+        final File sharedFolder = new File(sharedFolderPath);
+        if (!sharedFolder.isDirectory() && !sharedFolder.mkdirs()) {
+            return null;
+        }
+        return sharedFolder.getAbsolutePath();
     }
 
-    private void shareFileExternally(@Nullable final String _filePath) {
-        //TODO start a share intent with the file passed in parameters
+
+    private void shareFileExternally(@Nullable final String _sharePromptTitle, @Nullable final String _filePath) {
+        if (_filePath == null) {
+            return;
+        }
+        final File sharedFile = new File(_filePath);
+        if (!sharedFile.exists()) {
+            return;
+        }
+        final Uri sharingUri = FileProvider.getUriForFile(mainActivity, "com.exlyo.pocontacts.fileprovider", sharedFile);
+        final Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/vcard");
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, sharingUri);
+        mainActivity.startActivity(Intent.createChooser(sharingIntent, _sharePromptTitle));
     }
 }
