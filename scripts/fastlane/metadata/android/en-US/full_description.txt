@@ -1,0 +1,5 @@
+Manage and store contacts inside a dedicated app without saving the data into the system for other apps to see.
+
+This app is open source, you can find the source on github:
+https://github.com/androidseb/po-contacts
+

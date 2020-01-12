@@ -1,0 +1,61 @@
+default_platform(:android)
+
+platform :android do
+  lane :get_latest_version_code do |options|
+    # Get the latest version code from Google Play among alpha/beta/production tracks
+    # Scans the alpha track, then the beta track, and finally the production track.
+    # Returns as soon as a version code is found for any track.
+    #
+    # Usage:
+    # fastlane get_latest_version_code
+    latest_track_version_code = google_play_track_version_codes(
+      track: 'internal',
+    )
+    if latest_track_version_code.empty?
+      latest_track_version_code = google_play_track_version_codes(
+        track: 'alpha',
+      )
+    end
+    if latest_track_version_code.empty?
+      latest_track_version_code = google_play_track_version_codes(
+        track: 'beta',
+      )
+    end
+    if latest_track_version_code.empty?
+      latest_track_version_code = google_play_track_version_codes(
+        track: 'production',
+      )
+    end
+    unless latest_track_version_code.empty?
+      latest_track_version_code = latest_track_version_code[0]
+    end
+    latest_track_version_code
+  end
+
+  lane :internal do
+    sh('sh ../build_apk.sh')
+    upload_to_play_store(
+      track: 'internal',
+      apk: '../po_contacts_flutter/build/app/outputs/apk/release/app-release.apk',
+    )
+  end
+
+  lane :beta do
+    internal()
+    internal_promote()
+  end
+
+  lane :internal_promote do
+    internal_version_code = get_latest_version_code()
+    upload_to_play_store(
+        track: 'internal',
+        version_code: internal_version_code,
+        track_promote_to: 'beta',
+        skip_upload_apk: true,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+    )
+  end
+end
