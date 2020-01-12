@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/controller/vcard/vcf_file_writer.dart';
+import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
+import 'package:po_contacts_flutter/model/data/contact.dart';
 
 class ExportController {
   void exportAllAsVCF() async {
@@ -20,7 +23,7 @@ class ExportController {
       outputFile.deleteSync();
     }
     outputFile.createSync();
-    //TODO actually write contacts as VCF
-    outputFile.writeAsStringSync('Some string');
+    final List<Contact> contacts = MainController.get().model.contactsList;
+    VCFSerializer.writeToVCF(contacts, new VCFFileWriter(outputFile));
   }
 }

@@ -11,6 +11,7 @@ class Contact {
   final String organizationName;
   final String organizationTitle;
   final String notes;
+  final List<String> unknownVCFFieldLines;
 
   Contact(
     this.id,
@@ -21,6 +22,7 @@ class Contact {
     this.organizationName,
     this.organizationTitle,
     this.notes,
+    this.unknownVCFFieldLines,
   );
 }
 
@@ -32,6 +34,7 @@ class ContactBuilder {
   static const String JSON_FIELD_ORGANIZATION_NAME = 'organization_name';
   static const String JSON_FIELD_ORGANIZATION_TITLE = 'organization_title';
   static const String JSON_FIELD_NOTES = 'notes';
+  static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
 
   static String toJsonString(final ContactBuilder contactBuilder) {
     return jsonEncode({
@@ -42,6 +45,7 @@ class ContactBuilder {
       JSON_FIELD_ORGANIZATION_NAME: contactBuilder._organizationName,
       JSON_FIELD_ORGANIZATION_TITLE: contactBuilder._organizationTitle,
       JSON_FIELD_NOTES: contactBuilder._notes,
+      JSON_FIELD_UNKNOWN_VCF_FIELDS: contactBuilder._unknownVCFFieldLines
     });
   }
 
@@ -55,6 +59,12 @@ class ContactBuilder {
     contactBuilder.setOrganizationName(decodedJson[JSON_FIELD_ORGANIZATION_NAME]);
     contactBuilder.setOrganizationTitle(decodedJson[JSON_FIELD_ORGANIZATION_TITLE]);
     contactBuilder.setNotes(decodedJson[JSON_FIELD_NOTES]);
+    final List<dynamic> unknownVCFFieldLines = decodedJson[JSON_FIELD_UNKNOWN_VCF_FIELDS];
+    for (final dynamic line in unknownVCFFieldLines) {
+      if (line is String) {
+        contactBuilder.addUnknownVCFFieldLine(line);
+      }
+    }
     return contactBuilder.build(id);
   }
 
@@ -65,6 +75,7 @@ class ContactBuilder {
   String _organizationName;
   String _organizationTitle;
   String _notes;
+  final List<String> _unknownVCFFieldLines = [];
 
   static List<LabeledField> getSanitizedLabeledField(final List<LabeledField> list) {
     if (list == null) {
@@ -113,6 +124,7 @@ class ContactBuilder {
       organizationName,
       organizationTitle,
       notes,
+      _unknownVCFFieldLines,
     );
   }
 
@@ -148,6 +160,11 @@ class ContactBuilder {
 
   ContactBuilder setNotes(final String notes) {
     _notes = notes;
+    return this;
+  }
+
+  ContactBuilder addUnknownVCFFieldLine(String fieldLine) {
+    _unknownVCFFieldLines.add(fieldLine);
     return this;
   }
 }

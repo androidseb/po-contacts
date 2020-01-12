@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/controller/vcard/vcf_file_reader.dart';
+import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
+import 'package:po_contacts_flutter/model/data/contact.dart';
 
 class ImportController {
   bool _currentlyImporting = false;
@@ -38,8 +43,10 @@ class ImportController {
 
   void _importFileWithId(final String fileId) async {
     final String inboxFilePath = await MainController.get().nativeApisController.getCopiedInboxFilePath(fileId);
-    //TODO
-    print('NEED TO IMPORT THIS FILE: $inboxFilePath');
+    final List<ContactBuilder> readContacts = VCFSerializer.readFromVCF(new VCFFileReader(new File(inboxFilePath)));
+    for (final ContactBuilder cb in readContacts) {
+      MainController.get().model.addContact(cb);
+    }
     _currentlyImporting = false;
   }
 }
