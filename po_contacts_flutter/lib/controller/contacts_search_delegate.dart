@@ -54,7 +54,7 @@ class ContactsSearchDelegate extends SearchDelegate<Contact> {
     final List<Contact> allContacts = MainController.get().model.contactsList;
     final List<Contact> filteredContacts = [];
     for (final Contact c in allContacts) {
-      if (Utils.normalizeString(c.name).contains(searchText)) {
+      if (Utils.normalizeString(c.fullName).contains(searchText)) {
         filteredContacts.add(c);
       }
     }

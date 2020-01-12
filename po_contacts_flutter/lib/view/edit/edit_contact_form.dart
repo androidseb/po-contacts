@@ -25,7 +25,7 @@ class _EditContactFormState extends State<EditContactForm> {
   void initState() {
     final Contact initialContact = widget.initialContact;
     if (initialContact != null) {
-      _contactBuilder.setName(initialContact.name);
+      _contactBuilder.setFullName(initialContact.fullName);
       _contactBuilder.setPhoneInfos(initialContact.phoneInfos);
       _contactBuilder.setEmailInfos(initialContact.emailInfos);
       _contactBuilder.setAddress(initialContact.address);
@@ -49,9 +49,9 @@ class _EditContactFormState extends State<EditContactForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
-                initialValue: widget?.initialContact?.name,
+                initialValue: widget?.initialContact?.fullName,
                 decoration: InputDecoration(
-                  labelText: I18n.getString(I18n.string.name),
+                  labelText: I18n.getString(I18n.string.full_name),
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -60,7 +60,7 @@ class _EditContactFormState extends State<EditContactForm> {
                   return null;
                 },
                 onChanged: (nameValue) {
-                  _contactBuilder.setName(nameValue);
+                  _contactBuilder.setFullName(nameValue);
                 },
               ),
               EditPhonesForm(

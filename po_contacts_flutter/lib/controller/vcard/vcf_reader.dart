@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
@@ -68,7 +66,7 @@ abstract class VCFReader {
     if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_FULL_NAME))) {
       final SingleValueField fnField = SingleValueField.create(VCFConstants.FIELD_FULL_NAME, fieldLine);
       if (fnField != null) {
-        contactBuilder.setName(fnField.fieldValue);
+        contactBuilder.setFullName(fnField.fieldValue);
       }
       return;
     }

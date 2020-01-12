@@ -26,7 +26,7 @@ abstract class VCFWriter {
   }
 
   void writeContactFields(final Contact contact) {
-    _writeVCFStringFieldValue(VCFConstants.FIELD_FULL_NAME, contact.name);
+    _writeVCFStringFieldValue(VCFConstants.FIELD_FULL_NAME, contact.fullName);
     //TODO write the other fields too
   }
 

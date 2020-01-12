@@ -25,5 +25,6 @@ class VCFConstants {
   static const FIELD_TITLE = 'TITLE';
   static const FIELD_ROLE = 'ROLE';
   static const FIELD_ORG = 'ORG';
+  static const FIELD_URL = 'URL';
   static const FIELD_NOTE = 'NOTE';
 }

@@ -16,7 +16,7 @@ class MainModel {
     if (c2 == null) {
       return 1;
     }
-    return Utils.stringCompare(c1.name, c2.name);
+    return Utils.stringCompare(c1.fullName, c2.fullName);
   }
 
   static void sortContactsList(final List<Contact> contactsList) {

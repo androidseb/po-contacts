@@ -15,7 +15,7 @@ class ContactsRow extends StatelessWidget {
       height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
       child: ListTile(
         title: Text(
-          '${contact.name}',
+          '${contact.fullName}',
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

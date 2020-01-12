@@ -4,7 +4,7 @@ import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 
 class Contact {
   final int id;
-  final String name;
+  final String fullName;
   final List<LabeledField> phoneInfos;
   final List<LabeledField> emailInfos;
   final String address;
@@ -15,7 +15,7 @@ class Contact {
 
   Contact(
     this.id,
-    this.name,
+    this.fullName,
     this.phoneInfos,
     this.emailInfos,
     this.address,
@@ -38,7 +38,7 @@ class ContactBuilder {
 
   static String toJsonString(final ContactBuilder contactBuilder) {
     return jsonEncode({
-      JSON_FIELD_NAME: contactBuilder._name,
+      JSON_FIELD_NAME: contactBuilder._fullName,
       JSON_FIELD_PHONE_INFOS: LabeledField.fieldsToMapList(contactBuilder._phoneInfos),
       JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactBuilder._emailInfos),
       JSON_FIELD_ADDRESS: contactBuilder._address,
@@ -52,7 +52,7 @@ class ContactBuilder {
   static Contact buildFromJson(final int id, final String json) {
     final Map<String, dynamic> decodedJson = jsonDecode(json);
     final ContactBuilder contactBuilder = ContactBuilder();
-    contactBuilder.setName(decodedJson[JSON_FIELD_NAME]);
+    contactBuilder.setFullName(decodedJson[JSON_FIELD_NAME]);
     contactBuilder.setPhoneInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_PHONE_INFOS]));
     contactBuilder.setEmailInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_EMAIL_INFOS]));
     contactBuilder.setAddress(decodedJson[JSON_FIELD_ADDRESS]);
@@ -68,7 +68,7 @@ class ContactBuilder {
     return contactBuilder.build(id);
   }
 
-  String _name;
+  String _fullName;
   List<LabeledField> _phoneInfos;
   List<LabeledField> _emailInfos;
   String _address;
@@ -94,7 +94,7 @@ class ContactBuilder {
   }
 
   Contact build(final int id) {
-    if (id == null || _name == null) {
+    if (id == null || _fullName == null) {
       return null;
     }
     final List<LabeledField> phoneInfos = getSanitizedLabeledField(_phoneInfos);
@@ -117,7 +117,7 @@ class ContactBuilder {
     }
     return Contact(
       id,
-      _name,
+      _fullName,
       phoneInfos,
       emailInfos,
       address,
@@ -128,8 +128,8 @@ class ContactBuilder {
     );
   }
 
-  ContactBuilder setName(final String name) {
-    _name = name;
+  ContactBuilder setFullName(final String fullName) {
+    _fullName = fullName;
     return this;
   }
 

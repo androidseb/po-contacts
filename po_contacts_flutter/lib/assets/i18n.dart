@@ -9,7 +9,7 @@ class I18nString {
   final String new_contact = 'new_contact';
   final String edit_contact = 'edit_contact';
   final String save = 'save';
-  final String name = 'name';
+  final String full_name = 'full_name';
   final String phone = 'phone';
   final String email = 'email';
   final String phones = 'phones';
@@ -60,7 +60,7 @@ class I18n {
     string.new_contact: 'New contact',
     string.edit_contact: 'Edit contact',
     string.save: 'Save',
-    string.name: 'Name',
+    string.full_name: 'Full name',
     string.phone: 'Phone',
     string.email: 'Email',
     string.phones: 'Phone(s)',

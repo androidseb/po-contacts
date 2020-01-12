@@ -66,7 +66,7 @@ class _ContactDetailsState extends State<ContactDetails> {
             ),
             Center(
               child: SelectableText(
-                _contact.name,
+                _contact.fullName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
