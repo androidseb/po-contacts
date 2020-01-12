@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
@@ -58,18 +61,15 @@ abstract class VCFReader {
     return res;
   }
 
-  static String getVCFStringFieldValue(final String fieldName, final String fieldLine) {
-    final String fieldRawStr = fieldLine.substring(fieldName.length);
-    return fieldRawStr.replaceAll('\\', '');
-  }
-
   void processContactFieldLine(final ContactBuilder contactBuilder, final String fieldLine) {
     if (fieldLine == null) {
       return;
     }
     if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_FULL_NAME))) {
-      final String fullName = getVCFStringFieldValue(VCFConstants.FIELD_FULL_NAME, fieldLine);
-      contactBuilder.setName(fullName);
+      final SingleValueField fnField = SingleValueField.create(VCFConstants.FIELD_FULL_NAME, fieldLine);
+      if (fnField != null) {
+        contactBuilder.setName(fnField.fieldValue);
+      }
       return;
     }
 
