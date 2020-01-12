@@ -16,5 +16,6 @@ SED_REPLACE_STR=$(echo "\'s/version\: "$V1"\."$V2"\."$V3"\+"$NEW_VERSION_CODE"/"
 sed -i s/version\:.*/"$NEW_VERSION_LINE"/g po_contacts_flutter/pubspec.yaml
 
 git add po_contacts_flutter/pubspec.yaml
-git commit -m "VERSION $NEW_VERSION_LINE"
+git commit -m "$NEW_VERSION_LINE"
 git push
+
