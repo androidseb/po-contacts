@@ -22,7 +22,7 @@ class I18nString {
   final String no = 'no';
   final String add_email = 'add_email';
   final String add_phone = 'add_phone';
-  final String address = 'address';
+  final String address_with_type_x = 'address_with_type_x';
   final String organization_name = 'organization_name';
   final String organization_title = 'organization_title';
   final String notes = 'notes';
@@ -73,7 +73,7 @@ class I18n {
     string.no: 'No',
     string.add_email: 'Add email',
     string.add_phone: 'Add phone',
-    string.address: 'Address',
+    string.address_with_type_x: 'Address (%s)',
     string.organization_name: 'Organization name',
     string.organization_title: 'Organization title',
     string.notes: 'Notes',

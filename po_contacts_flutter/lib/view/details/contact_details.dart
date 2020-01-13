@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/view/details/addresses_view.dart';
 import 'package:po_contacts_flutter/view/details/emails_view.dart';
 import 'package:po_contacts_flutter/view/details/phones_view.dart';
 import 'package:po_contacts_flutter/view/details/titled_details_text_block.dart';
@@ -77,10 +78,7 @@ class _ContactDetailsState extends State<ContactDetails> {
             SizedBox(height: 8),
             PhonesView(_contact),
             EmailsView(_contact),
-            TitledDetailsTextBlock(
-              I18n.getString(I18n.string.address),
-              _contact.address,
-            ),
+            AddressesView(_contact),
             TitledDetailsTextBlock(
               I18n.getString(I18n.string.organization_name),
               _contact.organizationName,

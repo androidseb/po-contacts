@@ -7,6 +7,7 @@ import 'package:po_contacts_flutter/controller/import_controller.dart';
 import 'package:po_contacts_flutter/controller/native_apis_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
@@ -228,14 +229,14 @@ class MainController {
       return;
     }
     final List<Widget> listOptions = [];
-    for (final LabeledField pi in contact.phoneInfos) {
-      final String phoneStr = I18n.getString(LabeledField.getTypeNameStringKey(pi.labelType)) + ' (${pi.textValue})';
+    for (final StringLabeledField pi in contact.phoneInfos) {
+      final String phoneStr = I18n.getString(LabeledField.getTypeNameStringKey(pi.labelType)) + ' (${pi.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.phone),
         title: Text(I18n.getString(I18n.string.call_x, phoneStr)),
         onTap: () {
           Navigator.of(_context).pop();
-          startPhoneCall(pi.textValue);
+          startPhoneCall(pi.fieldValue);
         },
       ));
       listOptions.add(ListTile(
@@ -243,18 +244,18 @@ class MainController {
         title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
         onTap: () {
           Navigator.of(_context).pop();
-          startSMS(pi.textValue);
+          startSMS(pi.fieldValue);
         },
       ));
     }
-    for (final LabeledField ei in contact.emailInfos) {
-      final String emailStr = I18n.getString(LabeledField.getTypeNameStringKey(ei.labelType)) + ' (${ei.textValue})';
+    for (final StringLabeledField ei in contact.emailInfos) {
+      final String emailStr = I18n.getString(LabeledField.getTypeNameStringKey(ei.labelType)) + ' (${ei.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.mail),
         title: Text(I18n.getString(I18n.string.email_x, emailStr)),
         onTap: () {
           Navigator.of(_context).pop();
-          startEmail(ei.textValue);
+          startEmail(ei.fieldValue);
         },
       ));
     }

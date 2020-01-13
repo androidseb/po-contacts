@@ -3,6 +3,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/view/details/entries_group_view.dart';
 
 class EmailsView extends EntriesGroupView {
@@ -19,8 +20,8 @@ class EmailsView extends EntriesGroupView {
   }
 
   @override
-  List<EntriesGroupAction> getEntryAvailableActions(final LabeledField entry) {
-    final String emailAddress = entry.textValue;
+  List<EntriesGroupAction> getEntryAvailableActions(final StringLabeledField entry) {
+    final String emailAddress = entry.fieldValue;
     return [
       EntriesGroupAction(
         Icons.email,

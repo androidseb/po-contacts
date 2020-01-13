@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/view/misc/list_section_header.dart';
 
 class EntriesGroupAction {
@@ -26,13 +27,13 @@ abstract class EntriesGroupView extends StatelessWidget {
 
   List<LabeledField> getEntries(final Contact contact);
 
-  List<EntriesGroupAction> getEntryAvailableActions(final LabeledField entry);
+  List<EntriesGroupAction> getEntryAvailableActions(final StringLabeledField entry);
 
-  String getEntryTitle(final LabeledField entry) {
-    return entry.textValue;
+  String getEntryTitle(final StringLabeledField entry) {
+    return entry.fieldValue;
   }
 
-  String getEntryHint(final LabeledField entry) {
+  String getEntryHint(final StringLabeledField entry) {
     if (entry.labelType == LabeledFieldLabelType.custom) {
       return entry.labelValue;
     } else {
@@ -49,7 +50,7 @@ abstract class EntriesGroupView extends StatelessWidget {
 
     final List<Widget> colChildren = [];
     colChildren.add(ListSectionHeader(I18n.getString(getTitleKeyString())));
-    for (final LabeledField entry in entries) {
+    for (final StringLabeledField entry in entries) {
       final List<Widget> actionButtons = [];
       final List<EntriesGroupAction> actions = getEntryAvailableActions(entry);
       for (final EntriesGroupAction a in actions) {

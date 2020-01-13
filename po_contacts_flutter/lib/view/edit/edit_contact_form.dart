@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/view/edit/edit_addresses_form.dart';
 import 'package:po_contacts_flutter/view/edit/edit_emails_form.dart';
 import 'package:po_contacts_flutter/view/edit/edit_phones_form.dart';
 
@@ -28,7 +29,7 @@ class _EditContactFormState extends State<EditContactForm> {
       _contactBuilder.setFullName(initialContact.fullName);
       _contactBuilder.setPhoneInfos(initialContact.phoneInfos);
       _contactBuilder.setEmailInfos(initialContact.emailInfos);
-      _contactBuilder.setAddress(initialContact.address);
+      _contactBuilder.setAddressInfos(initialContact.addressInfos);
       _contactBuilder.setOrganizationName(initialContact.organizationName);
       _contactBuilder.setOrganizationTitle(initialContact.organizationTitle);
       _contactBuilder.setNotes(initialContact.notes);
@@ -75,15 +76,10 @@ class _EditContactFormState extends State<EditContactForm> {
                   _contactBuilder.setEmailInfos(updatedEmailInfos);
                 },
               ),
-              TextFormField(
-                initialValue: widget?.initialContact?.address,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: InputDecoration(
-                  labelText: I18n.getString(I18n.string.address),
-                ),
-                onChanged: (nameValue) {
-                  _contactBuilder.setAddress(nameValue);
+              EditAddressesForm(
+                widget?.initialContact?.addressInfos,
+                onDataChanged: (updatedAddressInfos) {
+                  _contactBuilder.setAddressInfos(updatedAddressInfos);
                 },
               ),
               TextFormField(

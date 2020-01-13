@@ -52,7 +52,7 @@ String _labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) 
   }
 }
 
-class LabeledField {
+class LabeledField<T> {
   static const String FIELD_TEXT_VALUE = 'text_value';
   static const String FIELD_LABEL_TYPE = 'label_type';
   static const String FIELD_LABEL_VALUE = 'label_value';
@@ -70,7 +70,7 @@ class LabeledField {
 
   static Map<String, dynamic> _fieldToMap(final LabeledField labeledField) {
     return {
-      FIELD_TEXT_VALUE: labeledField.textValue,
+      FIELD_TEXT_VALUE: labeledField.fieldValue,
       FIELD_LABEL_TYPE: _labeledFieldLabelTypeToString(labeledField.labelType),
       FIELD_LABEL_VALUE: labeledField.labelValue,
     };
@@ -92,7 +92,7 @@ class LabeledField {
   static LabeledField _fromMap(final Map<String, dynamic> _map) {
     final String textValue = _map[FIELD_TEXT_VALUE];
     final LabeledFieldLabelType labelType = _stringToLabeledFieldLabelType(_map[FIELD_LABEL_TYPE]);
-    final String labelValue = _map[FIELD_LABEL_VALUE];
+    final dynamic labelValue = _map[FIELD_LABEL_VALUE];
     return LabeledField(
       textValue,
       labelType,
@@ -100,12 +100,12 @@ class LabeledField {
     );
   }
 
-  final String textValue;
+  final T fieldValue;
   final LabeledFieldLabelType labelType;
   final String labelValue;
 
   LabeledField(
-    this.textValue,
+    this.fieldValue,
     this.labelType,
     this.labelValue,
   );

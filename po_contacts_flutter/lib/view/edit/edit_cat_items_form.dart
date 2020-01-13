@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 
 class CategorizedEditableItem {
   String textValue;
@@ -53,7 +54,7 @@ abstract class EditCategorizedItemsForm extends StatefulWidget {
       return [];
     }
     final List<CategorizedEditableItem> res = [];
-    for (final LabeledField gi in genericItems) {
+    for (final StringLabeledField gi in genericItems) {
       res.add(fromGenericItem(gi));
     }
     return res;
@@ -69,12 +70,12 @@ abstract class EditCategorizedItemsForm extends StatefulWidget {
 
   List<LabeledFieldLabelType> getAllowedLabelTypes();
 
-  CategorizedEditableItem fromGenericItem(final LabeledField item) {
-    return CategorizedEditableItem(item.textValue, item.labelType, item.labelValue);
+  CategorizedEditableItem fromGenericItem(final StringLabeledField item) {
+    return CategorizedEditableItem(item.fieldValue, item.labelType, item.labelValue);
   }
 
-  LabeledField toGenericItem(final CategorizedEditableItem item) {
-    return LabeledField(item.textValue, item.labelType, item.labelValue);
+  StringLabeledField toGenericItem(final CategorizedEditableItem item) {
+    return StringLabeledField(item.textValue, item.labelType, item.labelValue);
   }
 
   String getEntryHintStringKey();
