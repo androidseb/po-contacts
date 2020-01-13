@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
-import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
-import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 
-class CategorizedEditableItem {
-  String textValue;
+class CategorizedEditableItem<T> {
+  T textValue;
   LabeledFieldLabelType labelType;
   String labelValue;
 
@@ -34,13 +31,13 @@ class EditableItemCategory {
       o is EditableItemCategory && o.labelType.index == labelType.index && o.labelValue == labelValue;
 }
 
-abstract class EditCategorizedItemsForm extends StatefulWidget {
-  final List<LabeledField> initialItems;
-  final Function(List<LabeledField> updatedItems) onDataChanged;
+abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends StatefulWidget {
+  final List<F> initialItems;
+  final Function(List<F> updatedItems) onDataChanged;
 
   EditCategorizedItemsForm(this.initialItems, {this.onDataChanged});
 
-  _EditCategorizedItemsFormState createState() => _EditCategorizedItemsFormState();
+  EditCategorizedItemsFormState createState() => EditCategorizedItemsFormState<F, T>();
 
   void notifyDataChanged(final List<CategorizedEditableItem> currentItems) {
     if (onDataChanged == null) {
@@ -49,19 +46,19 @@ abstract class EditCategorizedItemsForm extends StatefulWidget {
     onDataChanged(_toGenericItems(currentItems));
   }
 
-  List<CategorizedEditableItem> fromGenericItems(final List<LabeledField> genericItems) {
+  List<CategorizedEditableItem<T>> fromGenericItems(final List<F> genericItems) {
     if (genericItems == null) {
       return [];
     }
-    final List<CategorizedEditableItem> res = [];
-    for (final StringLabeledField gi in genericItems) {
+    final List<CategorizedEditableItem<T>> res = [];
+    for (final F gi in genericItems) {
       res.add(fromGenericItem(gi));
     }
     return res;
   }
 
-  List<LabeledField> _toGenericItems(final List<CategorizedEditableItem> categorizedItems) {
-    final List<LabeledField> res = [];
+  List<F> _toGenericItems(final List<CategorizedEditableItem<T>> categorizedItems) {
+    final List<F> res = [];
     for (final CategorizedEditableItem ci in categorizedItems) {
       res.add(toGenericItem(ci));
     }
@@ -70,32 +67,24 @@ abstract class EditCategorizedItemsForm extends StatefulWidget {
 
   List<LabeledFieldLabelType> getAllowedLabelTypes();
 
-  CategorizedEditableItem fromGenericItem(final StringLabeledField item) {
-    return CategorizedEditableItem(item.fieldValue, item.labelType, item.labelValue);
+  CategorizedEditableItem<T> fromGenericItem(final F item) {
+    return CategorizedEditableItem<T>(item.fieldValue, item.labelType, item.labelValue);
   }
 
-  StringLabeledField toGenericItem(final CategorizedEditableItem item) {
-    return StringLabeledField(item.textValue, item.labelType, item.labelValue);
-  }
+  F toGenericItem(final CategorizedEditableItem<T> item);
 
-  String getEntryHintStringKey();
+  T getEmptyItemValue();
 
-  List<TextInputFormatter> getInputFormatters();
-
-  TextInputType getInputKeyboardType() {
-    return TextInputType.text;
-  }
-
-  String validateValue(final String value) {
-    return null;
-  }
-
-  String getAddEntryActionStringKey();
+  Widget buildState(
+    final EditCategorizedItemsFormState<F, T> parentState,
+    final BuildContext context,
+    final List<CategorizedEditableItem<T>> currentItems,
+  );
 }
 
-class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
+class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<EditCategorizedItemsForm<F, T>> {
   final Set<String> customLabelTypeNames = Set<String>();
-  final List<CategorizedEditableItem> currentItems = [];
+  final List<CategorizedEditableItem<T>> currentItems = [];
 
   static Text dropDownTextWidget(final String text) {
     return Text(
@@ -156,107 +145,51 @@ class _EditCategorizedItemsFormState extends State<EditCategorizedItemsForm> {
         }
       }
       if (!addedField) {
-        currentItems.add(CategorizedEditableItem('', t, ''));
+        currentItems.add(CategorizedEditableItem<T>(widget.getEmptyItemValue(), t, ''));
       }
     }
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final List<Widget> rows = [];
-    for (int i = 0; i < currentItems.length; i++) {
-      final int itemIndex = i;
-      final CategorizedEditableItem item = currentItems[itemIndex];
-      rows.add(
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: TextFormField(
-                initialValue: item.textValue,
-                decoration: InputDecoration(
-                  labelText: I18n.getString(widget.getEntryHintStringKey()),
-                ),
-                inputFormatters: widget.getInputFormatters(),
-                keyboardType: widget.getInputKeyboardType(),
-                validator: (final String value) {
-                  return widget.validateValue(value);
-                },
-                onChanged: (nameValue) {
-                  setState(() {
-                    item.textValue = nameValue;
-                    widget.notifyDataChanged(currentItems);
-                  });
-                },
-              ),
-            ),
-            Container(
-              constraints: BoxConstraints(minWidth: 100, maxWidth: 100),
-              child: DropdownButton<EditableItemCategory>(
-                isExpanded: true,
-                value: getDropDownValue(item),
-                icon: Icon(Icons.arrow_downward),
-                iconSize: 24,
-                onChanged: (EditableItemCategory newValue) {
-                  if (newValue.labelType == LabeledFieldLabelType.custom && newValue.labelValue.isEmpty) {
-                    MainController.get().showTextInputDialog(
-                      I18n.string.custom_label,
-                      (final String customLabelString) {
-                        if (customLabelString == null || customLabelString.isEmpty) {
-                          return;
-                        }
-                        setState(() {
-                          item.labelType = LabeledFieldLabelType.custom;
-                          item.labelValue = customLabelString;
-                          customLabelTypeNames.add(customLabelString);
-                          widget.notifyDataChanged(currentItems);
-                        });
-                      },
-                    );
-                    return;
-                  }
-                  setState(() {
-                    item.labelType = newValue.labelType;
-                    item.labelValue = newValue.labelValue;
-                    widget.notifyDataChanged(currentItems);
-                  });
-                },
-                items: getDropDownMenuItems(),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.clear),
-              tooltip: I18n.getString(I18n.string.remove_entry),
-              onPressed: () {
-                setState(() {
-                  currentItems.removeAt(itemIndex);
-                  widget.notifyDataChanged(currentItems);
-                });
-              },
-            ),
-          ],
-        ),
-      );
-    }
-    rows.add(
-      FlatButton(
-        color: Colors.green,
-        textColor: Colors.white,
-        padding: EdgeInsets.all(8.0),
-        splashColor: Colors.greenAccent,
-        onPressed: () {
-          setState(() {
-            currentItems.add(CategorizedEditableItem('', widget.getAllowedLabelTypes()[0], ''));
-          });
-        },
-        child: Text(I18n.getString(widget.getAddEntryActionStringKey())),
-      ),
-    );
-    return Column(
-      key: Key('${currentItems.length}'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: rows,
-    );
+  Widget build(final BuildContext context) {
+    return widget.buildState(this, context, currentItems);
+  }
+
+  void changeItemValue(final CategorizedEditableItem<T> item, T value) {
+    setState(() {
+      item.textValue = value;
+      widget.notifyDataChanged(currentItems);
+    });
+  }
+
+  void setItemLabelValue(
+    final CategorizedEditableItem<String> item,
+    final LabeledFieldLabelType labelType,
+    final String labelValue,
+  ) {
+    setState(() {
+      item.labelType = LabeledFieldLabelType.custom;
+      item.labelValue = labelValue;
+      customLabelTypeNames.add(labelValue);
+      widget.notifyDataChanged(currentItems);
+    });
+  }
+
+  void removeItemAtIndex(final int itemIndex) {
+    setState(() {
+      currentItems.removeAt(itemIndex);
+      widget.notifyDataChanged(currentItems);
+    });
+  }
+
+  void addEmptyItem() {
+    setState(() {
+      currentItems.add(CategorizedEditableItem<T>(
+        widget.getEmptyItemValue(),
+        widget.getAllowedLabelTypes()[0],
+        '',
+      ));
+    });
   }
 }

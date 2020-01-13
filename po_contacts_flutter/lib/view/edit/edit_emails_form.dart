@@ -1,15 +1,21 @@
 import 'package:flutter/services.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
-import 'package:po_contacts_flutter/view/edit/edit_cat_items_form.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
+import 'package:po_contacts_flutter/view/edit/edit_cat_string_items_form.dart';
 
-class EditEmailsForm extends EditCategorizedItemsForm {
-  EditEmailsForm(final List<LabeledField> initialEmailInfos,
-      {final Function(List<LabeledField> updatedItems) onDataChanged})
+class EditEmailsForm extends EditCategorizedStringItemsForm {
+  EditEmailsForm(final List<StringLabeledField> initialEmailInfos,
+      {final Function(List<StringLabeledField> updatedItems) onDataChanged})
       : super(initialEmailInfos, onDataChanged: onDataChanged);
 
+  @override
   List<LabeledFieldLabelType> getAllowedLabelTypes() {
-    return [LabeledFieldLabelType.work, LabeledFieldLabelType.home, LabeledFieldLabelType.custom];
+    return [
+      LabeledFieldLabelType.work,
+      LabeledFieldLabelType.home,
+      LabeledFieldLabelType.custom,
+    ];
   }
 
   @override

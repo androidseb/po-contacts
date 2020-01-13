@@ -13,7 +13,7 @@ class Contact {
   final String fullName;
   final List<StringLabeledField> phoneInfos;
   final List<StringLabeledField> emailInfos;
-  final List<LabeledField<AddressInfo>> addressInfos;
+  final List<AddressLabeledField> addressInfos;
   final String organizationName;
   final String organizationTitle;
   final String notes;
