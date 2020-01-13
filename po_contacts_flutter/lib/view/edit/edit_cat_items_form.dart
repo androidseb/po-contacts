@@ -198,7 +198,7 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
           addedField = true;
         }
       }
-      if (!addedField) {
+      if (t != LabeledFieldLabelType.custom && !addedField) {
         currentItems.add(CategorizedEditableItem<T>(widget.getEmptyItemValue(), t, ''));
       }
     }
