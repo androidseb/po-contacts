@@ -27,11 +27,15 @@ class _EditContactFormState extends State<EditContactForm> {
     final Contact initialContact = widget.initialContact;
     if (initialContact != null) {
       _contactBuilder.setFullName(initialContact.fullName);
+      _contactBuilder.setFirstName(initialContact.firstName);
+      _contactBuilder.setLastName(initialContact.lastName);
+      _contactBuilder.setNickName(initialContact.nickName);
       _contactBuilder.setPhoneInfos(initialContact.phoneInfos);
       _contactBuilder.setEmailInfos(initialContact.emailInfos);
       _contactBuilder.setAddressInfos(initialContact.addressInfos);
       _contactBuilder.setOrganizationName(initialContact.organizationName);
       _contactBuilder.setOrganizationTitle(initialContact.organizationTitle);
+      _contactBuilder.setWebsite(initialContact.website);
       _contactBuilder.setNotes(initialContact.notes);
     }
     editContactFormController = EditContactFormController(this, _formKey, _contactBuilder);
@@ -54,14 +58,41 @@ class _EditContactFormState extends State<EditContactForm> {
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.full_name),
                 ),
-                validator: (value) {
-                  if (value.isEmpty) {
+                validator: (textValue) {
+                  if (textValue.isEmpty) {
                     return I18n.getString(I18n.string.field_cannot_be_empty);
                   }
                   return null;
                 },
-                onChanged: (nameValue) {
-                  _contactBuilder.setFullName(nameValue);
+                onChanged: (textValue) {
+                  _contactBuilder.setFullName(textValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.firstName,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.first_name),
+                ),
+                onChanged: (textValue) {
+                  _contactBuilder.setFirstName(textValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.lastName,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.last_name),
+                ),
+                onChanged: (textValue) {
+                  _contactBuilder.setLastName(textValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.nickName,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.nickname),
+                ),
+                onChanged: (textValue) {
+                  _contactBuilder.setNickName(textValue);
                 },
               ),
               EditPhonesForm(
@@ -87,8 +118,8 @@ class _EditContactFormState extends State<EditContactForm> {
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.organization_name),
                 ),
-                onChanged: (nameValue) {
-                  _contactBuilder.setOrganizationName(nameValue);
+                onChanged: (textValue) {
+                  _contactBuilder.setOrganizationName(textValue);
                 },
               ),
               TextFormField(
@@ -96,8 +127,17 @@ class _EditContactFormState extends State<EditContactForm> {
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.organization_title),
                 ),
-                onChanged: (nameValue) {
-                  _contactBuilder.setOrganizationTitle(nameValue);
+                onChanged: (textValue) {
+                  _contactBuilder.setOrganizationTitle(textValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.website,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.website),
+                ),
+                onChanged: (textValue) {
+                  _contactBuilder.setWebsite(textValue);
                 },
               ),
               TextFormField(
@@ -107,8 +147,8 @@ class _EditContactFormState extends State<EditContactForm> {
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.notes),
                 ),
-                onChanged: (nameValue) {
-                  _contactBuilder.setNotes(nameValue);
+                onChanged: (textValue) {
+                  _contactBuilder.setNotes(textValue);
                 },
               ),
               Padding(

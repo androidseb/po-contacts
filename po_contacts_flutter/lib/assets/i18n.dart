@@ -51,6 +51,10 @@ class I18nString {
   final String region = 'region';
   final String postal_code = 'postal_code';
   final String country = 'country';
+  final String website = 'website';
+  final String first_name = 'first_name';
+  final String last_name = 'last_name';
+  final String nickname = 'nickname';
 }
 
 class I18n {
@@ -108,6 +112,10 @@ class I18n {
     string.region: 'Region',
     string.postal_code: 'Postal code',
     string.country: 'Country',
+    string.website: 'Website',
+    string.first_name: 'First Name',
+    string.last_name: 'Last Name',
+    string.nickname: 'Nickname',
   };
 
   static _getObjString(final Object _obj) {

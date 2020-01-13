@@ -16,6 +16,7 @@ class Contact {
   final List<AddressLabeledField> addressInfos;
   final String organizationName;
   final String organizationTitle;
+  final String website;
   final String notes;
   final List<String> unknownVCFFieldLines;
 
@@ -30,6 +31,7 @@ class Contact {
     this.addressInfos,
     this.organizationName,
     this.organizationTitle,
+    this.website,
     this.notes,
     this.unknownVCFFieldLines,
   );
@@ -45,6 +47,7 @@ class ContactBuilder {
   static const String JSON_FIELD_ADDRESS_INFOS = 'address_infos';
   static const String JSON_FIELD_ORGANIZATION_NAME = 'organization_name';
   static const String JSON_FIELD_ORGANIZATION_TITLE = 'organization_title';
+  static const String JSON_FIELD_WEBSITE = 'website';
   static const String JSON_FIELD_NOTES = 'notes';
   static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
 
@@ -59,6 +62,7 @@ class ContactBuilder {
       JSON_FIELD_ADDRESS_INFOS: LabeledField.fieldsToMapList(contactBuilder._addressInfos),
       JSON_FIELD_ORGANIZATION_NAME: contactBuilder._organizationName,
       JSON_FIELD_ORGANIZATION_TITLE: contactBuilder._organizationTitle,
+      JSON_FIELD_WEBSITE: contactBuilder._website,
       JSON_FIELD_NOTES: contactBuilder._notes,
       JSON_FIELD_UNKNOWN_VCF_FIELDS: contactBuilder._unknownVCFFieldLines
     });
@@ -88,6 +92,7 @@ class ContactBuilder {
     ));
     contactBuilder.setOrganizationName(decodedJson[JSON_FIELD_ORGANIZATION_NAME]);
     contactBuilder.setOrganizationTitle(decodedJson[JSON_FIELD_ORGANIZATION_TITLE]);
+    contactBuilder.setWebsite(decodedJson[JSON_FIELD_WEBSITE]);
     contactBuilder.setNotes(decodedJson[JSON_FIELD_NOTES]);
     final List<dynamic> unknownVCFFieldLines = decodedJson[JSON_FIELD_UNKNOWN_VCF_FIELDS];
     for (final dynamic line in unknownVCFFieldLines) {
@@ -107,6 +112,7 @@ class ContactBuilder {
   List<LabeledField<AddressInfo>> _addressInfos;
   String _organizationName;
   String _organizationTitle;
+  String _website;
   String _notes;
   final List<String> _unknownVCFFieldLines = [];
 
@@ -172,6 +178,7 @@ class ContactBuilder {
       getSanitizedAddressLabeledField(_addressInfos),
       getNonNullString(_organizationName),
       getNonNullString(_organizationTitle),
+      getNonNullString(_website),
       getNonNullString(_notes),
       _unknownVCFFieldLines,
     );
@@ -219,6 +226,11 @@ class ContactBuilder {
 
   ContactBuilder setOrganizationTitle(final String organizationTitle) {
     _organizationTitle = organizationTitle;
+    return this;
+  }
+
+  ContactBuilder setWebsite(final String website) {
+    _website = website;
     return this;
   }
 
