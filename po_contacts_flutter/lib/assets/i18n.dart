@@ -22,7 +22,8 @@ class I18nString {
   final String no = 'no';
   final String add_email = 'add_email';
   final String add_phone = 'add_phone';
-  final String address_with_type_x = 'address_with_type_x';
+  final String add_address = 'add_address';
+  final String address = 'address';
   final String organization_name = 'organization_name';
   final String organization_title = 'organization_title';
   final String notes = 'notes';
@@ -45,6 +46,11 @@ class I18nString {
   final String import_file_title = 'import_file_title';
   final String import_file_question = 'import_file_question';
   final String share_prompt_title = 'share_prompt_title';
+  final String street_address = 'street_address';
+  final String locality = 'locality';
+  final String region = 'region';
+  final String postal_code = 'postal_code';
+  final String country = 'country';
 }
 
 class I18n {
@@ -73,7 +79,8 @@ class I18n {
     string.no: 'No',
     string.add_email: 'Add email',
     string.add_phone: 'Add phone',
-    string.address_with_type_x: 'Address (%s)',
+    string.add_address: 'Add address',
+    string.address: 'Address',
     string.organization_name: 'Organization name',
     string.organization_title: 'Organization title',
     string.notes: 'Notes',
@@ -96,6 +103,11 @@ class I18n {
     string.import_file_title: 'Import file',
     string.import_file_question: 'Do you want to import the file\'s content?',
     string.share_prompt_title: 'Share via...',
+    string.street_address: 'Street address',
+    string.locality: 'Locality',
+    string.region: 'Region',
+    string.postal_code: 'Postal code',
+    string.country: 'Country',
   };
 
   static _getObjString(final Object _obj) {

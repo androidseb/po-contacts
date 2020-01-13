@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 
 class CategorizedEditableItem<T> {
-  T textValue;
+  T fieldValue;
   LabeledFieldLabelType labelType;
   String labelValue;
 
   CategorizedEditableItem(
-    this.textValue,
+    this.fieldValue,
     this.labelType,
     this.labelValue,
   );
@@ -75,10 +76,63 @@ abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends State
 
   T getEmptyItemValue();
 
-  Widget buildState(
+  String getAddEntryActionStringKey();
+
+  List<Widget> buildDropDownAndDeleteRowWidgets(
     final EditCategorizedItemsFormState<F, T> parentState,
     final BuildContext context,
-    final List<CategorizedEditableItem<T>> currentItems,
+    final CategorizedEditableItem<T> item,
+    final int itemIndex,
+  ) {
+    return [
+      Container(
+        constraints: BoxConstraints(minWidth: 100, maxWidth: 100),
+        child: DropdownButton<EditableItemCategory>(
+          isExpanded: true,
+          value: parentState.getDropDownValue(item),
+          icon: Icon(Icons.arrow_downward),
+          iconSize: 24,
+          onChanged: (EditableItemCategory newValue) {
+            if (newValue.labelType == LabeledFieldLabelType.custom && newValue.labelValue.isEmpty) {
+              MainController.get().showTextInputDialog(
+                I18n.string.custom_label,
+                (final String customLabelString) {
+                  if (customLabelString == null || customLabelString.isEmpty) {
+                    return;
+                  }
+                  parentState.setItemLabelValue(
+                    item,
+                    LabeledFieldLabelType.custom,
+                    customLabelString,
+                  );
+                },
+              );
+              return;
+            }
+            parentState.setItemLabelValue(
+              item,
+              newValue.labelType,
+              newValue.labelValue,
+            );
+          },
+          items: parentState.getDropDownMenuItems(),
+        ),
+      ),
+      IconButton(
+        icon: const Icon(Icons.clear),
+        tooltip: I18n.getString(I18n.string.remove_entry),
+        onPressed: () {
+          parentState.removeItemAtIndex(itemIndex);
+        },
+      ),
+    ];
+  }
+
+  Widget buildWidgetRow(
+    final EditCategorizedItemsFormState<F, T> parentState,
+    final BuildContext context,
+    final CategorizedEditableItem<T> item,
+    final int itemIndex,
   );
 }
 
@@ -153,18 +207,40 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
 
   @override
   Widget build(final BuildContext context) {
-    return widget.buildState(this, context, currentItems);
+    final List<Widget> widgetRows = [];
+    for (int i = 0; i < currentItems.length; i++) {
+      final int itemIndex = i;
+      final CategorizedEditableItem<T> item = currentItems[itemIndex];
+      widgetRows.add(widget.buildWidgetRow(this, context, item, itemIndex));
+    }
+    widgetRows.add(
+      FlatButton(
+        color: Colors.green,
+        textColor: Colors.white,
+        padding: EdgeInsets.all(8.0),
+        splashColor: Colors.greenAccent,
+        onPressed: () {
+          addEmptyItem();
+        },
+        child: Text(I18n.getString(widget.getAddEntryActionStringKey())),
+      ),
+    );
+    return Column(
+      key: Key('${currentItems.length}'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgetRows,
+    );
   }
 
   void changeItemValue(final CategorizedEditableItem<T> item, T value) {
     setState(() {
-      item.textValue = value;
+      item.fieldValue = value;
       widget.notifyDataChanged(currentItems);
     });
   }
 
   void setItemLabelValue(
-    final CategorizedEditableItem<String> item,
+    final CategorizedEditableItem<T> item,
     final LabeledFieldLabelType labelType,
     final String labelValue,
   ) {

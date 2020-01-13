@@ -71,9 +71,21 @@ class ContactBuilder {
     contactBuilder.setLastName(decodedJson[JSON_FIELD_LAST_NAME]);
     contactBuilder.setNickName(decodedJson[JSON_FIELD_NICK_NAME]);
     contactBuilder.setFullName(decodedJson[JSON_FIELD_FULL_NAME]);
-    contactBuilder.setPhoneInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_PHONE_INFOS]));
-    contactBuilder.setEmailInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_EMAIL_INFOS]));
-    contactBuilder.setAddressInfos(LabeledField.fromMapList(decodedJson[JSON_FIELD_ADDRESS_INFOS]));
+    contactBuilder.setPhoneInfos(LabeledField.fromMapList(
+      List<StringLabeledField>(),
+      decodedJson[JSON_FIELD_PHONE_INFOS],
+      StringLabeledField.createFieldFunc,
+    ));
+    contactBuilder.setEmailInfos(LabeledField.fromMapList(
+      List<StringLabeledField>(),
+      decodedJson[JSON_FIELD_EMAIL_INFOS],
+      StringLabeledField.createFieldFunc,
+    ));
+    contactBuilder.setAddressInfos(LabeledField.fromMapList(
+      List<AddressLabeledField>(),
+      decodedJson[JSON_FIELD_ADDRESS_INFOS],
+      AddressLabeledField.createFieldFunc,
+    ));
     contactBuilder.setOrganizationName(decodedJson[JSON_FIELD_ORGANIZATION_NAME]);
     contactBuilder.setOrganizationTitle(decodedJson[JSON_FIELD_ORGANIZATION_TITLE]);
     contactBuilder.setNotes(decodedJson[JSON_FIELD_NOTES]);
@@ -102,7 +114,7 @@ class ContactBuilder {
     if (list == null) {
       return [];
     }
-    final List<LabeledField> res = [];
+    final List<StringLabeledField> res = [];
     for (final StringLabeledField f in list) {
       if (f.fieldValue.trim().isNotEmpty) {
         res.add(f);
@@ -118,7 +130,7 @@ class ContactBuilder {
     if (list == null) {
       return [];
     }
-    final List<LabeledField> res = [];
+    final List<AddressLabeledField> res = [];
     for (final AddressLabeledField f in list) {
       if (f.fieldValue == null) {
         continue;
@@ -151,10 +163,10 @@ class ContactBuilder {
     }
     return Contact(
       id,
-      _fullName,
       getNonNullString(_firstName),
       getNonNullString(_lastName),
       getNonNullString(_nickName),
+      _fullName,
       getSanitizedStringLabeledField(_phoneInfos),
       getSanitizedStringLabeledField(_emailInfos),
       getSanitizedAddressLabeledField(_addressInfos),

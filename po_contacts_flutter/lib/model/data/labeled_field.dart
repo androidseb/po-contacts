@@ -52,7 +52,7 @@ String _labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) 
   }
 }
 
-class LabeledField<T> {
+abstract class LabeledField<T> {
   static const String FIELD_TEXT_VALUE = 'text_value';
   static const String FIELD_LABEL_TYPE = 'label_type';
   static const String FIELD_LABEL_VALUE = 'label_value';
@@ -70,44 +70,62 @@ class LabeledField<T> {
 
   static Map<String, dynamic> _fieldToMap(final LabeledField labeledField) {
     return {
-      FIELD_TEXT_VALUE: labeledField.fieldValue,
       FIELD_LABEL_TYPE: _labeledFieldLabelTypeToString(labeledField.labelType),
       FIELD_LABEL_VALUE: labeledField.labelValue,
+      FIELD_TEXT_VALUE: labeledField.fieldValueToJSONConvertable(),
     };
   }
 
-  static List<LabeledField> fromMapList(final List<dynamic> mapList) {
-    final List<LabeledField> res = [];
+  dynamic fieldValueToJSONConvertable();
+
+  static List<LabeledField> fromMapList(
+    final List<dynamic> destList,
+    final List<dynamic> mapList,
+    final LabeledField Function(
+      LabeledFieldLabelType labelType,
+      String labelText,
+      dynamic fieldValue,
+    )
+        createFieldFunc,
+  ) {
     if (mapList == null) {
-      return res;
+      return destList;
     }
     for (final dynamic map in mapList) {
       if (map is Map<String, dynamic>) {
-        res.add(_fromMap(map));
+        destList.add(_fromMap(map, createFieldFunc));
       }
     }
-    return res;
+    return destList;
   }
 
-  static LabeledField _fromMap(final Map<String, dynamic> _map) {
-    final String textValue = _map[FIELD_TEXT_VALUE];
+  static LabeledField _fromMap(
+    final Map<String, dynamic> _map,
+    final LabeledField Function(
+      LabeledFieldLabelType labelType,
+      String labelText,
+      dynamic fieldValue,
+    )
+        createFieldFunc,
+  ) {
     final LabeledFieldLabelType labelType = _stringToLabeledFieldLabelType(_map[FIELD_LABEL_TYPE]);
-    final dynamic labelValue = _map[FIELD_LABEL_VALUE];
-    return LabeledField(
-      textValue,
+    final String labelText = _map[FIELD_LABEL_VALUE];
+    final dynamic fieldValue = _map[FIELD_TEXT_VALUE];
+    return createFieldFunc(
       labelType,
-      labelValue,
+      labelText,
+      fieldValue,
     );
   }
 
-  final T fieldValue;
   final LabeledFieldLabelType labelType;
   final String labelValue;
+  final T fieldValue;
 
   LabeledField(
-    this.fieldValue,
     this.labelType,
     this.labelValue,
+    this.fieldValue,
   );
 
   static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
