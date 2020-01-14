@@ -4,20 +4,37 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
 
 class ContactsRow extends StatelessWidget {
   final Contact contact;
-  ContactsRow(this.contact, {Key key}) : super(key: key);
+  final HighlightedText highlightedText;
+  ContactsRow(this.contact, {this.highlightedText, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final int maxLines = highlightedText == null ? 2 : 1;
+    final double fontSize = highlightedText == null ? 18.0 : 14.0;
+    final List<Widget> titleChildren = [
+      Text(
+        '${contact.fullName}',
+        maxLines: maxLines,
+        style: TextStyle(
+          fontSize: fontSize,
+        ),
+        overflow: TextOverflow.ellipsis,
+      ),
+    ];
+    if (highlightedText != null) {
+      titleChildren.add(highlightedText);
+    }
     return Container(
       height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
       child: ListTile(
-        title: Text(
-          '${contact.fullName}',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: titleChildren,
         ),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),

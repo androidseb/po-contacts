@@ -3,11 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/view/home/contact_row.dart';
+import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
 
 class ContactsList extends StatelessWidget {
   final List<Contact> _contactsList;
+  final Map<int, HighlightedText> highlightedTexts;
   final String _emptyStateStringKey;
-  ContactsList(this._contactsList, this._emptyStateStringKey, {Key key}) : super(key: key);
+  ContactsList(this._contactsList, this._emptyStateStringKey, {this.highlightedTexts, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,9 @@ class ContactsList extends StatelessWidget {
       child: ListView.separated(
         itemCount: _contactsList.length,
         itemBuilder: (BuildContext context, int index) {
-          return ContactsRow(_contactsList[index]);
+          final Contact contact = _contactsList[index];
+          final HighlightedText highlightedText = highlightedTexts == null ? null : highlightedTexts[contact.id];
+          return ContactsRow(contact, highlightedText: highlightedText);
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
       ),
