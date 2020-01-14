@@ -47,25 +47,25 @@ class _ContactDetailsState extends State<ContactDetails> {
       return SizedBox.shrink();
     }
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Align(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.asset(
-                    'lib/assets/images/ic_profile.png',
-                    height: 96,
-                    width: 96,
-                  ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Align(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  'lib/assets/images/ic_profile.png',
+                  height: 96,
+                  width: 96,
                 ),
               ),
             ),
-            Center(
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               child: SelectableText(
                 _contact.fullName,
                 textAlign: TextAlign.center,
@@ -75,24 +75,41 @@ class _ContactDetailsState extends State<ContactDetails> {
                 ),
               ),
             ),
-            SizedBox(height: 8),
-            PhonesView(_contact),
-            EmailsView(_contact),
-            AddressesView(_contact),
-            TitledDetailsTextBlock(
-              I18n.getString(I18n.string.organization_name),
-              _contact.organizationName,
-            ),
-            TitledDetailsTextBlock(
-              I18n.getString(I18n.string.organization_title),
-              _contact.organizationTitle,
-            ),
-            TitledDetailsTextBlock(
-              I18n.getString(I18n.string.notes),
-              _contact.notes,
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: 8),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.first_name),
+            _contact.firstName,
+          ),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.last_name),
+            _contact.lastName,
+          ),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.nickname),
+            _contact.nickName,
+          ),
+          PhonesView(_contact),
+          EmailsView(_contact),
+          AddressesView(_contact),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.organization_name),
+            _contact.organizationName,
+          ),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.organization_title),
+            _contact.organizationTitle,
+          ),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.website),
+            _contact.website,
+          ),
+          TitledDetailsTextBlock(
+            I18n.getString(I18n.string.notes),
+            _contact.notes,
+          ),
+          SizedBox(height: 16),
+        ],
       ),
     );
   }
