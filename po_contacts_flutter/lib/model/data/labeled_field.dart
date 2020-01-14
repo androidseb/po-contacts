@@ -57,6 +57,32 @@ abstract class LabeledField<T> {
   static const String FIELD_LABEL_TYPE = 'label_type';
   static const String FIELD_LABEL_VALUE = 'label_value';
 
+  static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
+    switch (labelType) {
+      case LabeledFieldLabelType.work:
+        return I18n.string.label_type_work;
+      case LabeledFieldLabelType.home:
+        return I18n.string.label_type_home;
+      case LabeledFieldLabelType.cell:
+        return I18n.string.label_type_cell;
+      case LabeledFieldLabelType.fax:
+        return I18n.string.label_type_fax;
+      case LabeledFieldLabelType.pager:
+        return I18n.string.label_type_pager;
+      case LabeledFieldLabelType.custom:
+        return I18n.string.label_type_custom;
+    }
+    return '???';
+  }
+
+  static String getLabelTypeDisplayText(final LabeledField entry) {
+    if (entry.labelType == LabeledFieldLabelType.custom) {
+      return entry.labelValue;
+    } else {
+      return I18n.getString(LabeledField.getTypeNameStringKey(entry.labelType));
+    }
+  }
+
   static List<Map<String, dynamic>> fieldsToMapList(final List<LabeledField> labeledFields) {
     final List<Map<String, dynamic>> res = [];
     if (labeledFields == null) {
@@ -75,8 +101,6 @@ abstract class LabeledField<T> {
       FIELD_TEXT_VALUE: labeledField.fieldValueToJSONConvertable(),
     };
   }
-
-  dynamic fieldValueToJSONConvertable();
 
   static List<LabeledField> fromMapList(
     final List<dynamic> destList,
@@ -128,21 +152,5 @@ abstract class LabeledField<T> {
     this.fieldValue,
   );
 
-  static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
-    switch (labelType) {
-      case LabeledFieldLabelType.work:
-        return I18n.string.label_type_work;
-      case LabeledFieldLabelType.home:
-        return I18n.string.label_type_home;
-      case LabeledFieldLabelType.cell:
-        return I18n.string.label_type_cell;
-      case LabeledFieldLabelType.fax:
-        return I18n.string.label_type_fax;
-      case LabeledFieldLabelType.pager:
-        return I18n.string.label_type_pager;
-      case LabeledFieldLabelType.custom:
-        return I18n.string.label_type_custom;
-    }
-    return '???';
-  }
+  dynamic fieldValueToJSONConvertable();
 }

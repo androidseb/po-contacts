@@ -33,14 +33,6 @@ abstract class EntriesGroupView extends StatelessWidget {
     return entry.fieldValue;
   }
 
-  String getEntryHint(final StringLabeledField entry) {
-    if (entry.labelType == LabeledFieldLabelType.custom) {
-      return entry.labelValue;
-    } else {
-      return I18n.getString(LabeledField.getTypeNameStringKey(entry.labelType));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final List<LabeledField> entries = getEntries(_contact);
@@ -73,7 +65,7 @@ abstract class EntriesGroupView extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SelectableText(getEntryHint(entry)),
+              SelectableText(LabeledField.getLabelTypeDisplayText(entry)),
             ],
           ),
           trailing: Row(

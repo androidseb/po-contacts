@@ -47,4 +47,27 @@ class AddressInfo {
       return null;
     }
   }
+
+  static bool _addString(final StringBuffer stringBuffer, final String str, final bool hasPreceedingText) {
+    if (str.trim().isNotEmpty) {
+      if (hasPreceedingText) {
+        stringBuffer.write('\n');
+      }
+      stringBuffer.write(str.trim());
+      return true;
+    }
+    return hasPreceedingText;
+  }
+
+  @override
+  String toString() {
+    final StringBuffer res = StringBuffer();
+    bool addedText = false;
+    addedText = _addString(res, streetAddress, addedText);
+    addedText = _addString(res, locality, addedText);
+    addedText = _addString(res, region, addedText);
+    addedText = _addString(res, postalCode, addedText);
+    addedText = _addString(res, country, addedText);
+    return res.toString();
+  }
 }

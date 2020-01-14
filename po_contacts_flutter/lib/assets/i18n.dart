@@ -55,6 +55,8 @@ class I18nString {
   final String first_name = 'first_name';
   final String last_name = 'last_name';
   final String nickname = 'nickname';
+  final String addresses = 'addresses';
+  final String addresses_with_type_x = 'addresses_with_type_x';
 }
 
 class I18n {
@@ -116,6 +118,8 @@ class I18n {
     string.first_name: 'First Name',
     string.last_name: 'Last Name',
     string.nickname: 'Nickname',
+    string.addresses: 'Addresses',
+    string.addresses_with_type_x: 'Address (%s)'
   };
 
   static _getObjString(final Object _obj) {
