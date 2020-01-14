@@ -5,7 +5,7 @@ class VersionInfo {
 
   VersionInfo() {
     PackageInfo.fromPlatform().then((final PackageInfo packageInfo) {
-      _appVersion = packageInfo.version;
+      _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
     });
   }
 
