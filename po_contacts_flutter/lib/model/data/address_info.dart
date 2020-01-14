@@ -35,17 +35,13 @@ class AddressInfo {
   }
 
   static AddressInfo fromMap(final dynamic fieldValue) {
-    if (fieldValue is Map<String, String>) {
-      return AddressInfo(
-        fieldValue[FIELD_STREET_ADDRESS],
-        fieldValue[FIELD_LOCALITY],
-        fieldValue[FIELD_REGION],
-        fieldValue[FIELD_POSTAL_CODE],
-        fieldValue[FIELD_COUNTRY],
-      );
-    } else {
-      return null;
-    }
+    return AddressInfo(
+      fieldValue[FIELD_STREET_ADDRESS],
+      fieldValue[FIELD_LOCALITY],
+      fieldValue[FIELD_REGION],
+      fieldValue[FIELD_POSTAL_CODE],
+      fieldValue[FIELD_COUNTRY],
+    );
   }
 
   static bool _addString(final StringBuffer stringBuffer, final String str, final bool hasPreceedingText) {
