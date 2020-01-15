@@ -12,7 +12,7 @@ abstract class EditCategorizedStringItemsForm extends EditCategorizedItemsForm<S
 
   @override
   StringLabeledField toGenericItem(final CategorizedEditableItem<String> item) {
-    return StringLabeledField(item.labelType, item.labelValue, item.fieldValue);
+    return StringLabeledField(item.labelType, item.labelText, item.fieldValue);
   }
 
   String getEntryHintStringKey();

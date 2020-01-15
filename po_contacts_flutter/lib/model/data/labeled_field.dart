@@ -53,9 +53,9 @@ String _labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) 
 }
 
 abstract class LabeledField<T> {
-  static const String FIELD_TEXT_VALUE = 'text_value';
   static const String FIELD_LABEL_TYPE = 'label_type';
   static const String FIELD_LABEL_VALUE = 'label_value';
+  static const String FIELD_TEXT_VALUE = 'text_value';
 
   static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
     switch (labelType) {
@@ -77,7 +77,7 @@ abstract class LabeledField<T> {
 
   static String getLabelTypeDisplayText(final LabeledField entry) {
     if (entry.labelType == LabeledFieldLabelType.custom) {
-      return entry.labelValue;
+      return entry.labelText;
     } else {
       return I18n.getString(LabeledField.getTypeNameStringKey(entry.labelType));
     }
@@ -97,7 +97,7 @@ abstract class LabeledField<T> {
   static Map<String, dynamic> _fieldToMap(final LabeledField labeledField) {
     return {
       FIELD_LABEL_TYPE: _labeledFieldLabelTypeToString(labeledField.labelType),
-      FIELD_LABEL_VALUE: labeledField.labelValue,
+      FIELD_LABEL_VALUE: labeledField.labelText,
       FIELD_TEXT_VALUE: labeledField.fieldValueToJSONConvertable(),
     };
   }
@@ -143,12 +143,12 @@ abstract class LabeledField<T> {
   }
 
   final LabeledFieldLabelType labelType;
-  final String labelValue;
+  final String labelText;
   final T fieldValue;
 
   LabeledField(
     this.labelType,
-    this.labelValue,
+    this.labelText,
     this.fieldValue,
   );
 

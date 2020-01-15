@@ -22,7 +22,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
 
   @override
   AddressLabeledField toGenericItem(final CategorizedEditableItem<AddressInfo> item) {
-    return AddressLabeledField(item.labelType, item.labelValue, item.fieldValue);
+    return AddressLabeledField(item.labelType, item.labelText, item.fieldValue);
   }
 
   @override

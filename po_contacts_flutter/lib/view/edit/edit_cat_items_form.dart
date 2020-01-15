@@ -4,14 +4,14 @@ import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 
 class CategorizedEditableItem<T> {
-  T fieldValue;
   LabeledFieldLabelType labelType;
-  String labelValue;
+  String labelText;
+  T fieldValue;
 
   CategorizedEditableItem(
-    this.fieldValue,
     this.labelType,
-    this.labelValue,
+    this.labelText,
+    this.fieldValue,
   );
 }
 
@@ -69,7 +69,7 @@ abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends State
   List<LabeledFieldLabelType> getAllowedLabelTypes();
 
   CategorizedEditableItem<T> fromGenericItem(final F item) {
-    return CategorizedEditableItem<T>(item.fieldValue, item.labelType, item.labelValue);
+    return CategorizedEditableItem<T>(item.labelType, item.labelText, item.fieldValue);
   }
 
   F toGenericItem(final CategorizedEditableItem<T> item);
@@ -176,7 +176,7 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
 
   EditableItemCategory getDropDownValue(final CategorizedEditableItem item) {
     if (item.labelType == LabeledFieldLabelType.custom) {
-      return EditableItemCategory(item.labelType, item.labelValue);
+      return EditableItemCategory(item.labelType, item.labelText);
     } else {
       final String labelText = I18n.getString(LabeledField.getTypeNameStringKey(item.labelType));
       return EditableItemCategory(item.labelType, labelText);
@@ -191,15 +191,15 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
       bool addedField = false;
       for (final CategorizedEditableItem cei in editableItems) {
         if (cei.labelType == t) {
-          if (cei.labelType == LabeledFieldLabelType.custom && cei.labelValue.isNotEmpty) {
-            customLabelTypeNames.add(cei.labelValue);
+          if (cei.labelType == LabeledFieldLabelType.custom && cei.labelText.isNotEmpty) {
+            customLabelTypeNames.add(cei.labelText);
           }
           currentItems.add(cei);
           addedField = true;
         }
       }
       if (t != LabeledFieldLabelType.custom && !addedField) {
-        currentItems.add(CategorizedEditableItem<T>(widget.getEmptyItemValue(), t, ''));
+        currentItems.add(CategorizedEditableItem<T>(t, '', widget.getEmptyItemValue()));
       }
     }
     super.initState();
@@ -246,7 +246,7 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
   ) {
     setState(() {
       item.labelType = LabeledFieldLabelType.custom;
-      item.labelValue = labelValue;
+      item.labelText = labelValue;
       customLabelTypeNames.add(labelValue);
       widget.notifyDataChanged(currentItems);
     });
@@ -262,9 +262,9 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
   void addEmptyItem() {
     setState(() {
       currentItems.add(CategorizedEditableItem<T>(
-        widget.getEmptyItemValue(),
         widget.getAllowedLabelTypes()[0],
         '',
+        widget.getEmptyItemValue(),
       ));
     });
   }
