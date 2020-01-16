@@ -1,3 +1,4 @@
+import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_multi_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
@@ -85,7 +86,7 @@ abstract class VCFReader {
     }
   }
 
-  static Map<String, dynamic> getLabeledFieldLabelTypeForFieldParams(final Map<String, String> fieldParams) {
+  static VCFFieldLabelParamValue getLabeledFieldLabelTypeForFieldParams(final Map<String, String> fieldParams) {
     LabeledFieldLabelType resultLabelType;
     String resultLabelText = '';
     for (final String key in fieldParams.keys) {
@@ -112,10 +113,10 @@ abstract class VCFReader {
       }
       break;
     }
-    return {
-      'labelType': resultLabelType,
-      'labelText': resultLabelText,
-    };
+    return VCFFieldLabelParamValue(
+      resultLabelType,
+      resultLabelText,
+    );
   }
 
   void processContactFieldLine(
@@ -154,7 +155,7 @@ abstract class VCFReader {
 
     final MultiValueField addrField = getMultiValueField(fieldLine, VCFConstants.FIELD_ADRESS);
     if (addrField != null && addrField.fieldValues.isNotEmpty) {
-      final Map<String, dynamic> fieldTypeValues = getLabeledFieldLabelTypeForFieldParams(
+      final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
         addrField.fieldParams,
       );
       String streetAddress;
@@ -176,8 +177,8 @@ abstract class VCFReader {
         country = addrField.fieldValues[4];
       }
       addresses.add(AddressLabeledField(
-          fieldTypeValues['labelType'],
-          fieldTypeValues['labelText'],
+          typeFieldValue.labelType,
+          typeFieldValue.labelText,
           AddressInfo(
             streetAddress,
             locality,

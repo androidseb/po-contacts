@@ -1,6 +1,17 @@
 import 'dart:math';
 
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
+import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+
+class VCFFieldLabelParamValue {
+  final LabeledFieldLabelType labelType;
+  final String labelText;
+
+  VCFFieldLabelParamValue(
+    this.labelType,
+    this.labelText,
+  );
+}
 
 abstract class VCFField {
   final Map<String, String> fieldParams;
