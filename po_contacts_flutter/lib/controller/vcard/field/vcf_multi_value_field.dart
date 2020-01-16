@@ -14,13 +14,22 @@ class MultiValueField extends VCFField {
       currentIndex,
       [VCFConstants.VCF_SEPARATOR_SEMICOLON],
     );
-    while (fieldValueEndIndex != -1) {
-      if (fieldValueEndIndex > currentIndex) {
-        final String fieldValueRawStr = fieldValuesStr.substring(currentIndex, fieldValueEndIndex);
+    while (true) {
+      final bool parsingMustEnd = fieldValueEndIndex == -1;
+      String fieldValueRawStr;
+      if (parsingMustEnd) {
+        fieldValueRawStr = fieldValuesStr.substring(currentIndex);
+      } else {
+        fieldValueRawStr = fieldValuesStr.substring(currentIndex, fieldValueEndIndex);
+      }
+      if (fieldValueRawStr.isNotEmpty) {
         final String fieldValueStr = VCFField.unEscapeVCFString(fieldValueRawStr);
         res.add(fieldValueStr);
       }
-      currentIndex = fieldValueEndIndex;
+      if (parsingMustEnd) {
+        break;
+      }
+      currentIndex = fieldValueEndIndex + 1;
       fieldValueEndIndex = VCFField.getNextSeparatorIndex(
         fieldValuesStr,
         currentIndex,

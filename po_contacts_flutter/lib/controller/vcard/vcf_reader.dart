@@ -1,6 +1,11 @@
+import 'package:po_contacts_flutter/controller/vcard/field/vcf_multi_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
+import 'package:po_contacts_flutter/model/data/address_info.dart';
+import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 
 abstract class VCFReader {
   String readLineImpl();
@@ -59,44 +64,109 @@ abstract class VCFReader {
     return res;
   }
 
-  void processContactFieldLine(final ContactBuilder contactBuilder, final String fieldLine) {
+  static bool isLineForField(final String fieldLine, final String fieldName) {
+    return fieldLine.startsWith('$fieldName:') || fieldLine.startsWith('$fieldName;');
+  }
+
+  static SingleValueField getSingleValueField(final String fieldLine, final String fieldName) {
+    if (isLineForField(fieldLine, fieldName)) {
+      return SingleValueField.create(fieldName, fieldLine);
+    } else {
+      return null;
+    }
+  }
+
+  static MultiValueField getMultiValueField(final String fieldLine, final String fieldName) {
+    if (isLineForField(fieldLine, fieldName)) {
+      return MultiValueField.create(fieldName, fieldLine);
+    } else {
+      return null;
+    }
+  }
+
+  void processContactFieldLine(
+    final ContactBuilder contactBuilder,
+    final List<StringLabeledField> phones,
+    final List<StringLabeledField> emails,
+    final List<AddressLabeledField> addresses,
+    final String fieldLine,
+  ) {
     if (fieldLine == null) {
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_FULL_NAME))) {
-      final SingleValueField fnField = SingleValueField.create(VCFConstants.FIELD_FULL_NAME, fieldLine);
-      if (fnField != null) {
-        contactBuilder.setFullName(fnField.fieldValue);
+
+    final SingleValueField fnField = getSingleValueField(fieldLine, VCFConstants.FIELD_FULL_NAME);
+    if (fnField != null) {
+      contactBuilder.setFullName(fnField.fieldValue);
+      return;
+    }
+
+    final MultiValueField nField = getMultiValueField(fieldLine, VCFConstants.FIELD_NAME);
+    if (nField != null) {
+      if (nField.fieldValues.isNotEmpty) {
+        contactBuilder.setLastName(nField.fieldValues[0]);
+        if (nField.fieldValues.length > 1) {
+          contactBuilder.setFirstName(nField.fieldValues[1]);
+        }
       }
       return;
     }
 
-    //TODO read other fields too
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_NAME))) {
+    final SingleValueField nnField = getSingleValueField(fieldLine, VCFConstants.FIELD_NICKNAME);
+    if (nnField != null) {
+      contactBuilder.setNickName(nnField.fieldValue);
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_NICKNAME))) {
+
+    final MultiValueField addrField = getMultiValueField(fieldLine, VCFConstants.FIELD_ADRESS);
+    if (addrField != null && addrField.fieldValues.isNotEmpty) {
+      String streetAddress;
+      String locality;
+      String region;
+      String postalCode;
+      String country;
+      streetAddress = addrField.fieldValues[0];
+      if (addrField.fieldValues.length > 1) {
+        locality = addrField.fieldValues[1];
+      }
+      if (addrField.fieldValues.length > 2) {
+        region = addrField.fieldValues[2];
+      }
+      if (addrField.fieldValues.length > 3) {
+        postalCode = addrField.fieldValues[3];
+      }
+      if (addrField.fieldValues.length > 4) {
+        country = addrField.fieldValues[4];
+      }
+      addresses.add(AddressLabeledField(
+          LabeledFieldLabelType.home,
+          '',
+          AddressInfo(
+            streetAddress,
+            locality,
+            region,
+            postalCode,
+            country,
+          )));
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_ADRESS))) {
+
+    if (isLineForField(fieldLine, VCFConstants.FIELD_PHONE)) {
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_PHONE))) {
+    if (isLineForField(fieldLine, VCFConstants.FIELD_EMAIL)) {
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_EMAIL))) {
+    if (isLineForField(fieldLine, VCFConstants.FIELD_TITLE)) {
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_TITLE))) {
+    if (isLineForField(fieldLine, VCFConstants.FIELD_ROLE)) {
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_ROLE))) {
+    if (isLineForField(fieldLine, VCFConstants.FIELD_ORG)) {
       return;
     }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_ORG))) {
-      return;
-    }
-    if (fieldLine.startsWith(RegExp.escape(VCFConstants.FIELD_NOTE))) {
+    if (isLineForField(fieldLine, VCFConstants.FIELD_NOTE)) {
       return;
     }
 
@@ -111,9 +181,15 @@ abstract class VCFReader {
     if (contactFieldLines.isEmpty) {
       return null;
     }
+    final List<StringLabeledField> phones = [];
+    final List<StringLabeledField> emails = [];
+    final List<AddressLabeledField> addresses = [];
     for (final String fieldLine in contactFieldLines) {
-      processContactFieldLine(res, fieldLine);
+      processContactFieldLine(res, phones, emails, addresses, fieldLine);
     }
+    res.setPhoneInfos(phones);
+    res.setEmailInfos(emails);
+    res.setAddressInfos(addresses);
     return res;
   }
 }

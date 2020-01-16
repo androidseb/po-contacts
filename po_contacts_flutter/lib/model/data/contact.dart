@@ -164,7 +164,7 @@ class ContactBuilder {
   }
 
   Contact build(final int id) {
-    if (id == null || _fullName == null || _fullName.isEmpty) {
+    if (id == null) {
       return null;
     }
     return Contact(
@@ -172,7 +172,7 @@ class ContactBuilder {
       getNonNullString(_firstName),
       getNonNullString(_lastName),
       getNonNullString(_nickName),
-      _fullName,
+      getNonNullString(_fullName),
       getSanitizedStringLabeledField(_phoneInfos),
       getSanitizedStringLabeledField(_emailInfos),
       getSanitizedAddressLabeledField(_addressInfos),
@@ -214,7 +214,7 @@ class ContactBuilder {
     return this;
   }
 
-  ContactBuilder setAddressInfos(final List<LabeledField<AddressInfo>> addressInfos) {
+  ContactBuilder setAddressInfos(final List<AddressLabeledField> addressInfos) {
     _addressInfos = addressInfos;
     return this;
   }

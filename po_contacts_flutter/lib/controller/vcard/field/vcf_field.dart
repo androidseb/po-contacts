@@ -55,7 +55,7 @@ abstract class VCFField {
     fieldParams[fieldName] = fieldValue;
   }
 
-  static int _readFieldParamsFromString(
+  static void _readFieldParamsFromString(
     final String fieldParamsString,
     final Map<String, String> fieldParams,
   ) {
@@ -65,12 +65,26 @@ abstract class VCFField {
       currentIndex,
       [VCFConstants.VCF_SEPARATOR_SEMICOLON],
     );
-    while (fieldParamEndIndex != -1) {
-      if (fieldParamEndIndex > currentIndex) {
+    while (true) {
+      String fieldParamRawString;
+      if (fieldParamEndIndex == -1) {
+        fieldParamRawString = fieldParamsString.substring(currentIndex);
+      } else {
+        fieldParamRawString = fieldParamsString.substring(currentIndex, fieldParamEndIndex);
+      }
+      if (currentIndex == fieldParamEndIndex) {
+        fieldParamEndIndex++;
+        if (fieldParamEndIndex >= fieldParamsString.length) {
+          break;
+        }
+      } else {
         _readFieldParamFromString(
-          fieldParamsString.substring(currentIndex, fieldParamEndIndex),
+          fieldParamRawString,
           fieldParams,
         );
+      }
+      if (fieldParamEndIndex == -1) {
+        break;
       }
       currentIndex = fieldParamEndIndex;
       fieldParamEndIndex = getNextSeparatorIndex(
@@ -79,8 +93,6 @@ abstract class VCFField {
         [VCFConstants.VCF_SEPARATOR_SEMICOLON],
       );
     }
-
-    return currentIndex;
   }
 
   static int readFieldParamsFromLine(
