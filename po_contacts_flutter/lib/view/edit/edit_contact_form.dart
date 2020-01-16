@@ -34,6 +34,7 @@ class _EditContactFormState extends State<EditContactForm> {
       _contactBuilder.setEmailInfos(initialContact.emailInfos);
       _contactBuilder.setAddressInfos(initialContact.addressInfos);
       _contactBuilder.setOrganizationName(initialContact.organizationName);
+      _contactBuilder.setOrganizationDivision(initialContact.organizationDivision);
       _contactBuilder.setOrganizationTitle(initialContact.organizationTitle);
       _contactBuilder.setWebsite(initialContact.website);
       _contactBuilder.setNotes(initialContact.notes);
@@ -120,6 +121,15 @@ class _EditContactFormState extends State<EditContactForm> {
                 ),
                 onChanged: (textValue) {
                   _contactBuilder.setOrganizationName(textValue);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.organizationDivision,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.organization_division),
+                ),
+                onChanged: (textValue) {
+                  _contactBuilder.setOrganizationDivision(textValue);
                 },
               ),
               TextFormField(

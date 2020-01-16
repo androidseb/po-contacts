@@ -217,9 +217,12 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField orgField = getSingleValueField(fieldLine, VCFConstants.FIELD_ORG);
-    if (orgField != null) {
-      contactBuilder.setOrganizationName(orgField.fieldValue);
+    final MultiValueField orgField = getMultiValueField(fieldLine, VCFConstants.FIELD_ORG);
+    if (orgField != null && orgField.fieldValues.isNotEmpty) {
+      contactBuilder.setOrganizationName(orgField.fieldValues[0]);
+      if (orgField.fieldValues.length > 1) {
+        contactBuilder.setOrganizationDivision(orgField.fieldValues[1]);
+      }
       return;
     }
 

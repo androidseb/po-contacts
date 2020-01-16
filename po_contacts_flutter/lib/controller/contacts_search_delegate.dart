@@ -96,6 +96,7 @@ class ContactsSearchDelegate extends SearchDelegate<Contact> {
       if (Utils.normalizeString(address.country).contains(searchText)) return address.country;
     }
     if (Utils.normalizeString(contact.organizationName).contains(searchText)) return contact.organizationName;
+    if (Utils.normalizeString(contact.organizationDivision).contains(searchText)) return contact.organizationDivision;
     if (Utils.normalizeString(contact.organizationTitle).contains(searchText)) return contact.organizationTitle;
     if (Utils.normalizeString(contact.website).contains(searchText)) return contact.website;
     if (Utils.normalizeString(contact.notes).contains(searchText)) return contact.notes;

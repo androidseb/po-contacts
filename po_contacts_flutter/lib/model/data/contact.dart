@@ -15,6 +15,7 @@ class Contact {
   final List<StringLabeledField> emailInfos;
   final List<AddressLabeledField> addressInfos;
   final String organizationName;
+  final String organizationDivision;
   final String organizationTitle;
   final String website;
   final String notes;
@@ -30,6 +31,7 @@ class Contact {
     this.emailInfos,
     this.addressInfos,
     this.organizationName,
+    this.organizationDivision,
     this.organizationTitle,
     this.website,
     this.notes,
@@ -46,6 +48,7 @@ class ContactBuilder {
   static const String JSON_FIELD_EMAIL_INFOS = 'email_infos';
   static const String JSON_FIELD_ADDRESS_INFOS = 'address_infos';
   static const String JSON_FIELD_ORGANIZATION_NAME = 'organization_name';
+  static const String JSON_FIELD_ORGANIZATION_DIVISION = 'organization_division';
   static const String JSON_FIELD_ORGANIZATION_TITLE = 'organization_title';
   static const String JSON_FIELD_WEBSITE = 'website';
   static const String JSON_FIELD_NOTES = 'notes';
@@ -61,6 +64,7 @@ class ContactBuilder {
       JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactBuilder._emailInfos),
       JSON_FIELD_ADDRESS_INFOS: LabeledField.fieldsToMapList(contactBuilder._addressInfos),
       JSON_FIELD_ORGANIZATION_NAME: contactBuilder._organizationName,
+      JSON_FIELD_ORGANIZATION_DIVISION: contactBuilder._organizationDivision,
       JSON_FIELD_ORGANIZATION_TITLE: contactBuilder._organizationTitle,
       JSON_FIELD_WEBSITE: contactBuilder._website,
       JSON_FIELD_NOTES: contactBuilder._notes,
@@ -91,6 +95,7 @@ class ContactBuilder {
       AddressLabeledField.createFieldFunc,
     ));
     contactBuilder.setOrganizationName(decodedJson[JSON_FIELD_ORGANIZATION_NAME]);
+    contactBuilder.setOrganizationDivision(decodedJson[JSON_FIELD_ORGANIZATION_DIVISION]);
     contactBuilder.setOrganizationTitle(decodedJson[JSON_FIELD_ORGANIZATION_TITLE]);
     contactBuilder.setWebsite(decodedJson[JSON_FIELD_WEBSITE]);
     contactBuilder.setNotes(decodedJson[JSON_FIELD_NOTES]);
@@ -111,6 +116,7 @@ class ContactBuilder {
   List<StringLabeledField> _emailInfos;
   List<LabeledField<AddressInfo>> _addressInfos;
   String _organizationName;
+  String _organizationDivision;
   String _organizationTitle;
   String _website;
   String _notes;
@@ -177,6 +183,7 @@ class ContactBuilder {
       getSanitizedStringLabeledField(_emailInfos),
       getSanitizedAddressLabeledField(_addressInfos),
       getNonNullString(_organizationName),
+      getNonNullString(_organizationDivision),
       getNonNullString(_organizationTitle),
       getNonNullString(_website),
       getNonNullString(_notes),
@@ -221,6 +228,11 @@ class ContactBuilder {
 
   ContactBuilder setOrganizationName(final String organizationName) {
     _organizationName = organizationName;
+    return this;
+  }
+
+  ContactBuilder setOrganizationDivision(final String organizationDivision) {
+    _organizationDivision = organizationDivision;
     return this;
   }
 

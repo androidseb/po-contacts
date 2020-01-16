@@ -97,6 +97,10 @@ class _ContactDetailsState extends State<ContactDetails> {
             _contact.organizationName,
           ),
           TitledDetailsTextBlock(
+            I18n.getString(I18n.string.organization_division),
+            _contact.organizationDivision,
+          ),
+          TitledDetailsTextBlock(
             I18n.getString(I18n.string.organization_title),
             _contact.organizationTitle,
           ),
