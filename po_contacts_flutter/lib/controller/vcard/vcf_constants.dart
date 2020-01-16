@@ -22,9 +22,8 @@ class VCFConstants {
   static const FIELD_ADRESS = 'ADR';
   static const FIELD_PHONE = 'TEL';
   static const FIELD_EMAIL = 'EMAIL';
-  static const FIELD_TITLE = 'TITLE';
-  static const FIELD_ROLE = 'ROLE';
   static const FIELD_ORG = 'ORG';
+  static const FIELD_TITLE = 'TITLE';
   static const FIELD_URL = 'URL';
   static const FIELD_NOTE = 'NOTE';
 

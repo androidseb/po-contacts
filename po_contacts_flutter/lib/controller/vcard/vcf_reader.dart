@@ -87,31 +87,33 @@ abstract class VCFReader {
   }
 
   static VCFFieldLabelParamValue getLabeledFieldLabelTypeForFieldParams(final Map<String, String> fieldParams) {
-    LabeledFieldLabelType resultLabelType;
+    LabeledFieldLabelType resultLabelType = LabeledFieldLabelType.work;
     String resultLabelText = '';
     for (final String key in fieldParams.keys) {
       final String value = fieldParams[key];
-      String strToRead;
       if (Utils.stringEqualsIgnoreCase(key, VCFConstants.FIELD_PARAM_TYPE)) {
-        strToRead = value;
-      } else if (value.isEmpty) {
-        strToRead = key;
+        resultLabelType = LabeledField.stringToLabeledFieldLabelType(
+          value,
+          LabeledFieldLabelType.custom,
+        );
+        if (resultLabelType == LabeledFieldLabelType.custom) {
+          resultLabelText = value;
+        }
+        break;
       }
-
-      if (strToRead == null) {
-        continue;
+      if (value.isEmpty && key.startsWith('X-')) {
+        resultLabelType = LabeledFieldLabelType.custom;
+        resultLabelText = VCFField.unEscapeVCFString(key.substring(2));
+        break;
       }
-
-      resultLabelType = LabeledField.stringToLabeledFieldLabelType(
-        strToRead,
-        LabeledFieldLabelType.custom,
+      final LabeledFieldLabelType foundClearType = LabeledField.stringToLabeledFieldLabelType(
+        key,
+        null,
       );
-      if (resultLabelType == LabeledFieldLabelType.custom) {
-        resultLabelText = strToRead;
-      } else {
-        resultLabelText = '';
+      if (foundClearType != null) {
+        resultLabelType = foundClearType;
+        break;
       }
-      break;
     }
     return VCFFieldLabelParamValue(
       resultLabelType,
@@ -189,22 +191,53 @@ abstract class VCFReader {
       return;
     }
 
-    if (isLineForField(fieldLine, VCFConstants.FIELD_PHONE)) {
+    final SingleValueField phoneField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHONE);
+    if (phoneField != null) {
+      final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
+        phoneField.fieldParams,
+      );
+      phones.add(StringLabeledField(
+        typeFieldValue.labelType,
+        typeFieldValue.labelText,
+        phoneField.fieldValue,
+      ));
       return;
     }
-    if (isLineForField(fieldLine, VCFConstants.FIELD_EMAIL)) {
+
+    final SingleValueField emailField = getSingleValueField(fieldLine, VCFConstants.FIELD_EMAIL);
+    if (emailField != null) {
+      final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
+        emailField.fieldParams,
+      );
+      emails.add(StringLabeledField(
+        typeFieldValue.labelType,
+        typeFieldValue.labelText,
+        emailField.fieldValue,
+      ));
       return;
     }
-    if (isLineForField(fieldLine, VCFConstants.FIELD_TITLE)) {
+
+    final SingleValueField orgField = getSingleValueField(fieldLine, VCFConstants.FIELD_ORG);
+    if (orgField != null) {
+      contactBuilder.setOrganizationName(orgField.fieldValue);
       return;
     }
-    if (isLineForField(fieldLine, VCFConstants.FIELD_ROLE)) {
+
+    final SingleValueField titleField = getSingleValueField(fieldLine, VCFConstants.FIELD_TITLE);
+    if (titleField != null) {
+      contactBuilder.setOrganizationTitle(titleField.fieldValue);
       return;
     }
-    if (isLineForField(fieldLine, VCFConstants.FIELD_ORG)) {
+
+    final SingleValueField urlField = getSingleValueField(fieldLine, VCFConstants.FIELD_URL);
+    if (urlField != null) {
+      contactBuilder.setWebsite(urlField.fieldValue);
       return;
     }
-    if (isLineForField(fieldLine, VCFConstants.FIELD_NOTE)) {
+
+    final SingleValueField noteField = getSingleValueField(fieldLine, VCFConstants.FIELD_NOTE);
+    if (noteField != null) {
+      contactBuilder.setNotes(noteField.fieldValue);
       return;
     }
 
