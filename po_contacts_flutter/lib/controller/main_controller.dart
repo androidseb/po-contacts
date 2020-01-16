@@ -136,7 +136,9 @@ class MainController {
               onPressed: () {
                 Navigator.of(context).pop();
                 this._model.deleteContact(contactId);
-                Navigator.pop(context);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
               },
             ),
           ],
@@ -265,6 +267,14 @@ class MainController {
       onTap: () {
         Navigator.of(_context).pop();
         MainController.get().startEditContact(contact.id);
+      },
+    ));
+    listOptions.add(ListTile(
+      leading: Icon(Icons.delete),
+      title: Text(I18n.getString(I18n.string.delete_contact)),
+      onTap: () {
+        Navigator.of(_context).pop();
+        MainController.get().startDeleteContact(contact.id);
       },
     ));
     showDialog(
