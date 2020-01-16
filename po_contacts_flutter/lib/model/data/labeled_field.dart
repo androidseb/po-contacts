@@ -34,15 +34,6 @@ const Map<LabeledFieldLabelType, String> _lfLabelTypeToString = {
   LabeledFieldLabelType.pager: LABEL_FIELD_TYPE_PAGER,
 };
 
-LabeledFieldLabelType _stringToLabeledFieldLabelType(final String _string) {
-  final LabeledFieldLabelType lfLabelType = _stringToLfLabelType[_string];
-  if (lfLabelType == null) {
-    return LabeledFieldLabelType.work;
-  } else {
-    return lfLabelType;
-  }
-}
-
 String _labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) {
   final String lfLabelTypeString = _lfLabelTypeToString[_lfLabelType];
   if (lfLabelTypeString == null) {
@@ -56,6 +47,16 @@ abstract class LabeledField<T> {
   static const String FIELD_LABEL_TYPE = 'label_type';
   static const String FIELD_LABEL_VALUE = 'label_value';
   static const String FIELD_TEXT_VALUE = 'text_value';
+
+  static LabeledFieldLabelType stringToLabeledFieldLabelType(
+      final String str, final LabeledFieldLabelType defaultValue) {
+    final LabeledFieldLabelType lfLabelType = _stringToLfLabelType[str.toLowerCase()];
+    if (lfLabelType == null) {
+      return defaultValue;
+    } else {
+      return lfLabelType;
+    }
+  }
 
   static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
     switch (labelType) {
@@ -132,7 +133,10 @@ abstract class LabeledField<T> {
     )
         createFieldFunc,
   ) {
-    final LabeledFieldLabelType labelType = _stringToLabeledFieldLabelType(_map[FIELD_LABEL_TYPE]);
+    final LabeledFieldLabelType labelType = LabeledField.stringToLabeledFieldLabelType(
+      _map[FIELD_LABEL_TYPE],
+      LabeledFieldLabelType.work,
+    );
     final String labelText = _map[FIELD_LABEL_VALUE];
     final dynamic fieldValue = _map[FIELD_TEXT_VALUE];
     return createFieldFunc(

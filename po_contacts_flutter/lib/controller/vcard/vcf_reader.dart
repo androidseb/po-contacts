@@ -6,6 +6,7 @@ import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class VCFReader {
   String readLineImpl();
@@ -84,6 +85,39 @@ abstract class VCFReader {
     }
   }
 
+  static Map<String, dynamic> getLabeledFieldLabelTypeForFieldParams(final Map<String, String> fieldParams) {
+    LabeledFieldLabelType resultLabelType;
+    String resultLabelText = '';
+    for (final String key in fieldParams.keys) {
+      final String value = fieldParams[key];
+      String strToRead;
+      if (Utils.stringEqualsIgnoreCase(key, VCFConstants.FIELD_PARAM_TYPE)) {
+        strToRead = value;
+      } else if (value.isEmpty) {
+        strToRead = key;
+      }
+
+      if (strToRead == null) {
+        continue;
+      }
+
+      resultLabelType = LabeledField.stringToLabeledFieldLabelType(
+        strToRead,
+        LabeledFieldLabelType.custom,
+      );
+      if (resultLabelType == LabeledFieldLabelType.custom) {
+        resultLabelText = strToRead;
+      } else {
+        resultLabelText = '';
+      }
+      break;
+    }
+    return {
+      'labelType': resultLabelType,
+      'labelText': resultLabelText,
+    };
+  }
+
   void processContactFieldLine(
     final ContactBuilder contactBuilder,
     final List<StringLabeledField> phones,
@@ -120,6 +154,9 @@ abstract class VCFReader {
 
     final MultiValueField addrField = getMultiValueField(fieldLine, VCFConstants.FIELD_ADRESS);
     if (addrField != null && addrField.fieldValues.isNotEmpty) {
+      final Map<String, dynamic> fieldTypeValues = getLabeledFieldLabelTypeForFieldParams(
+        addrField.fieldParams,
+      );
       String streetAddress;
       String locality;
       String region;
@@ -139,8 +176,8 @@ abstract class VCFReader {
         country = addrField.fieldValues[4];
       }
       addresses.add(AddressLabeledField(
-          LabeledFieldLabelType.home,
-          '',
+          fieldTypeValues['labelType'],
+          fieldTypeValues['labelText'],
           AddressInfo(
             streetAddress,
             locality,

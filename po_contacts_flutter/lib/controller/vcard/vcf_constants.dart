@@ -27,4 +27,6 @@ class VCFConstants {
   static const FIELD_ORG = 'ORG';
   static const FIELD_URL = 'URL';
   static const FIELD_NOTE = 'NOTE';
+
+  static const FIELD_PARAM_TYPE = 'type';
 }

@@ -27,4 +27,15 @@ class Utils {
       return lCompare;
     }
   }
+
+  static bool stringEqualsIgnoreCase(final String str1, final String str2) {
+    if (str1 == str2) {
+      return true;
+    }
+    if (str1 != null && str2 != null) {
+      return str1.toLowerCase() == str2.toLowerCase();
+    } else {
+      return false;
+    }
+  }
 }
