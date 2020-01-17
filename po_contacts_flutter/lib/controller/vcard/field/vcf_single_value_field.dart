@@ -8,7 +8,7 @@ class SingleValueField extends VCFField {
     final Map<String, String> fieldParams = {};
     final int fieldValueStartIndex = VCFField.readFieldParamsFromLine(fieldName, fieldLine, fieldParams);
     final String fieldValueRawStr = fieldLine.substring(fieldValueStartIndex);
-    final String fieldValueStr = VCFField.unEscapeVCFString(fieldValueRawStr);
+    final String fieldValueStr = VCFField.unEscapeVCFString(fieldValueRawStr, fieldParams: fieldParams);
     return SingleValueField(fieldParams, fieldValueStr);
   }
 }

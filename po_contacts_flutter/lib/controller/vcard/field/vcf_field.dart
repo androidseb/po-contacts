@@ -17,7 +17,33 @@ abstract class VCFField {
   final Map<String, String> fieldParams;
   VCFField(this.fieldParams);
 
-  static String unEscapeVCFString(final String str) {
+  static String _unEscapeQuotedPrintableEntry(final String str) {
+    try {
+      return String.fromCharCode(int.parse('0x$str'));
+    } catch (e) {
+      return str;
+    }
+  }
+
+  static String _unEscapeQuotedPrintableString(final String str) {
+    final StringBuffer res = StringBuffer();
+    final List<String> quotedStrings = str.split('=');
+    for (final String qs in quotedStrings) {
+      res.write(_unEscapeQuotedPrintableEntry(qs));
+    }
+    return res.toString();
+  }
+
+  static String unEscapeVCFString(
+    final String str, {
+    final Map<String, String> fieldParams,
+  }) {
+    if (fieldParams != null) {
+      final String stringEncoding = fieldParams['ENCODING'];
+      if (stringEncoding == 'QUOTED-PRINTABLE') {
+        return _unEscapeQuotedPrintableString(str);
+      }
+    }
     return str.replaceAll('\\', '');
   }
 

@@ -5,7 +5,7 @@ class MultiValueField extends VCFField {
   final List<String> fieldValues;
   MultiValueField(final Map<String, String> fieldParams, this.fieldValues) : super(fieldParams);
 
-  static List<String> _readFieldValues(final String fieldValuesStr) {
+  static List<String> _readFieldValues(final String fieldValuesStr, final Map<String, String> fieldParams) {
     final List<String> res = [];
 
     int currentIndex = 0;
@@ -23,7 +23,7 @@ class MultiValueField extends VCFField {
         fieldValueRawStr = fieldValuesStr.substring(currentIndex, fieldValueEndIndex);
       }
       if (fieldValueRawStr.isNotEmpty) {
-        final String fieldValueStr = VCFField.unEscapeVCFString(fieldValueRawStr);
+        final String fieldValueStr = VCFField.unEscapeVCFString(fieldValueRawStr, fieldParams: fieldParams);
         res.add(fieldValueStr);
       }
       if (parsingMustEnd) {
@@ -44,7 +44,7 @@ class MultiValueField extends VCFField {
     final Map<String, String> fieldParams = {};
     final int fieldValueStartIndex = VCFField.readFieldParamsFromLine(fieldName, fieldLine, fieldParams);
     final String fieldValuesStr = fieldLine.substring(fieldValueStartIndex);
-    final List<String> fieldValues = _readFieldValues(fieldValuesStr);
+    final List<String> fieldValues = _readFieldValues(fieldValuesStr, fieldParams);
     return MultiValueField(fieldParams, fieldValues);
   }
 }
