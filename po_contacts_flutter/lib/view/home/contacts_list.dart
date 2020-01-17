@@ -36,6 +36,10 @@ class _AllContactsListState extends State<AllContactsList> {
 
   @override
   Widget build(BuildContext context) {
-    return ContactsList(_contactsList, I18n.string.home_list_empty_placeholder_text);
+    if (MainController.get().model.storageInitialized) {
+      return ContactsList(_contactsList, I18n.string.home_list_empty_placeholder_text);
+    } else {
+      return ContactsList(_contactsList, I18n.string.loading);
+    }
   }
 }

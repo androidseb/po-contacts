@@ -58,6 +58,7 @@ class I18nString {
   final String addresses = 'addresses';
   final String addresses_with_type_x = 'addresses_with_type_x';
   final String organization_division = 'organization_division';
+  final String loading = 'loading';
 }
 
 class I18n {
@@ -122,6 +123,7 @@ class I18n {
     string.addresses: 'Addresses',
     string.addresses_with_type_x: 'Address (%s)',
     string.organization_division: 'Organization Division',
+    string.loading: 'Loading...',
   };
 
   static _getObjString(final Object _obj) {

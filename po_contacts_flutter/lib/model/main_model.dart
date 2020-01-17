@@ -23,17 +23,19 @@ class MainModel {
     contactsList.sort(MainModel.compareContacts);
   }
 
+  bool _storageInitialized = false;
   final VersionInfo _versionInfo = VersionInfo();
   final ContactsStorageController _storageController = ContactsStorageController();
-  final List<Contact> contactsList = [];
+  final List<Contact> _contactsList = [];
   final StreamController<List<Contact>> _contactsListSC = StreamController();
   final StreamController<Contact> _contactChangeSC = StreamController();
 
   MainModel() {
     _storageController.initializeStorage((final List<Contact> loadedContacts) {
-      contactsList.addAll(loadedContacts);
-      sortContactsList(contactsList);
-      _contactsListSC.add(contactsList);
+      _contactsList.addAll(loadedContacts);
+      sortContactsList(_contactsList);
+      _storageInitialized = true;
+      _contactsListSC.add(_contactsList);
     });
   }
 
@@ -53,7 +55,11 @@ class MainModel {
     return _contactChangeStream;
   }
 
+  bool get storageInitialized => _storageInitialized;
+
   String get appVersion => _versionInfo.appVersion;
+
+  List<Contact> get contactsList => _contactsList;
 
   Stream<List<Contact>> get contactsListStream => _getContactsListStream();
 
