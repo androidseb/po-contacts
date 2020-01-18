@@ -1,0 +1,11 @@
+default_platform :ios
+
+lane :beta do
+  gym(
+    scheme: "Runner",
+    export_method: "app-store"
+  )
+  # upload to Testflight
+  pilot(skip_waiting_for_build_processing: true)
+end
+
