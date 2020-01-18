@@ -22,7 +22,9 @@ class MultiValueField extends VCFField {
       } else {
         fieldValueRawStr = fieldValuesStr.substring(currentIndex, fieldValueEndIndex);
       }
-      if (fieldValueRawStr.isNotEmpty) {
+      if (fieldValueRawStr.isEmpty) {
+        res.add('');
+      } else {
         final String fieldValueStr = VCFField.unEscapeVCFString(fieldValueRawStr, fieldParams: fieldParams);
         res.add(fieldValueStr);
       }

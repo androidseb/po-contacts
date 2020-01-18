@@ -160,23 +160,25 @@ abstract class VCFReader {
       final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
         addrField.fieldParams,
       );
-      String streetAddress;
-      String locality;
-      String region;
-      String postalCode;
-      String country;
-      streetAddress = addrField.fieldValues[0];
-      if (addrField.fieldValues.length > 1) {
-        locality = addrField.fieldValues[1];
-      }
+      String streetAddress = '';
+      String locality = '';
+      String region = '';
+      String postalCode = '';
+      String country = '';
       if (addrField.fieldValues.length > 2) {
-        region = addrField.fieldValues[2];
+        streetAddress = addrField.fieldValues[2];
       }
       if (addrField.fieldValues.length > 3) {
-        postalCode = addrField.fieldValues[3];
+        locality = addrField.fieldValues[3];
       }
       if (addrField.fieldValues.length > 4) {
-        country = addrField.fieldValues[4];
+        region = addrField.fieldValues[4];
+      }
+      if (addrField.fieldValues.length > 5) {
+        postalCode = addrField.fieldValues[5];
+      }
+      if (addrField.fieldValues.length > 6) {
+        country = addrField.fieldValues[6];
       }
       addresses.add(AddressLabeledField(
           typeFieldValue.labelType,
