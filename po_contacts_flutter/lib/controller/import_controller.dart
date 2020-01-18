@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
@@ -41,12 +42,21 @@ class ImportController {
     MainController.get().nativeApisController.discardInboxFileId(fileId);
   }
 
-  void _importFileWithId(final String fileId) async {
+  Future<void> _importFileWithId(final String fileId) async {
+    final Function(int progress) progressCallback =
+        MainController.get().displayLoadingDialog(I18n.getString(I18n.string.importing));
     final String inboxFilePath = await MainController.get().nativeApisController.getCopiedInboxFilePath(fileId);
-    final List<ContactBuilder> readContacts = VCFSerializer.readFromVCF(new VCFFileReader(new File(inboxFilePath)));
+    final List<ContactBuilder> readContacts = await VCFSerializer.readFromVCF(
+      VCFFileReader(
+        File(inboxFilePath),
+        progressCallback: progressCallback,
+      ),
+    );
     for (final ContactBuilder cb in readContacts) {
       MainController.get().model.addContact(cb);
     }
+    _discardFileWithId(fileId);
     _currentlyImporting = false;
+    progressCallback(101);
   }
 }

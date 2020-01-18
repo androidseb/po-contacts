@@ -10,14 +10,14 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class VCFReader {
-  String readLineImpl();
+  Future<String> readLineImpl();
 
   String _pendingReadLine;
 
-  String _readFieldLine() {
+  Future<String> _readFieldLine() async {
     String readLine;
     if (_pendingReadLine == null) {
-      readLine = readLineImpl();
+      readLine = await readLineImpl();
     } else {
       readLine = _pendingReadLine;
       _pendingReadLine = null;
@@ -29,7 +29,7 @@ abstract class VCFReader {
     while (true) {
       if (readLine != null) {
         res.write(readLine);
-        readLine = readLineImpl();
+        readLine = await readLineImpl();
       }
       if (readLine == null) {
         break;
@@ -41,14 +41,14 @@ abstract class VCFReader {
     return res.toString();
   }
 
-  List<String> _readContactFieldLines() {
+  Future<List<String>> _readContactFieldLines() async {
     final List<String> res = [];
     String fieldLine;
 
     //Process all field lines until we find the BEGIN:VCARD field
-    fieldLine = _readFieldLine();
+    fieldLine = await _readFieldLine();
     while (fieldLine != null && !fieldLine.startsWith(VCFConstants.FIELD_BEGIN_VCARD)) {
-      fieldLine = _readFieldLine();
+      fieldLine = await _readFieldLine();
     }
 
     //If we couldn't get to the BEGIN:VCARD field, we stop here
@@ -57,10 +57,10 @@ abstract class VCFReader {
     }
 
     //We add all lines we find until we hit reach a END:VCARD field or the end of the file
-    fieldLine = _readFieldLine();
+    fieldLine = await _readFieldLine();
     while (fieldLine != null && !fieldLine.startsWith(VCFConstants.FIELD_END_VCARD)) {
       res.add(fieldLine);
-      fieldLine = _readFieldLine();
+      fieldLine = await _readFieldLine();
     }
 
     return res;
@@ -249,9 +249,9 @@ abstract class VCFReader {
     contactBuilder.addUnknownVCFFieldLine(fieldLine);
   }
 
-  ContactBuilder readContact() {
-    final ContactBuilder res = new ContactBuilder();
-    final List<String> contactFieldLines = _readContactFieldLines();
+  Future<ContactBuilder> readContact() async {
+    final ContactBuilder res = ContactBuilder();
+    final List<String> contactFieldLines = await _readContactFieldLines();
     if (contactFieldLines.isEmpty) {
       return null;
     }

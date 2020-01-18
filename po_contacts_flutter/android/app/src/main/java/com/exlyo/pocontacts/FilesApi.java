@@ -65,7 +65,10 @@ class FilesApi {
                 });
     }
 
-    void onNewIntent(@NonNull final Intent _intent) {
+    void onNewIntent(@Nullable final Intent _intent) {
+        if (_intent == null) {
+            return;
+        }
         final Uri uri = _intent.getData();
         if (uri == null) {
             return;

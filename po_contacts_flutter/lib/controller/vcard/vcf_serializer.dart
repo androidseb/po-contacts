@@ -5,11 +5,11 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 //Serializer for vcard based on specs here:
 //https://tools.ietf.org/html/rfc6350
 class VCFSerializer {
-  static List<ContactBuilder> readFromVCF(final VCFReader vcfReader) {
+  static Future<List<ContactBuilder>> readFromVCF(final VCFReader vcfReader) async {
     final List<ContactBuilder> res = [];
     ContactBuilder lastReadContact;
     do {
-      lastReadContact = vcfReader.readContact();
+      lastReadContact = await vcfReader.readContact();
       if (lastReadContact != null) {
         res.add(lastReadContact);
       }

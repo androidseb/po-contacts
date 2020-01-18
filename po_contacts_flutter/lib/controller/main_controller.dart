@@ -45,6 +45,12 @@ class MainController {
 
   NativeApisController get nativeApisController => _nativeApisController;
 
+  //Releases the current execution thread to allow other queued items to execute
+  //Used during file import/export operations
+  Future<void> yieldMainQueue() async {
+    return await _nativeApisController.getOutputFilesDirectoryPath();
+  }
+
   void updateBuildContext(final BuildContext context) {
     if (context == null) {
       return;
@@ -338,5 +344,48 @@ class MainController {
         );
       },
     );
+  }
+
+  // Displays a loading dialog and returns a function to control updating the progress
+  // Calling the function with a value of 101 will terminate the loading dialog
+  // Calling the function with any other value will update the progress text with <value>%
+  Function(int progress) displayLoadingDialog(final String title) {
+    final TextEditingController textController = TextEditingController();
+    showDialog(
+      context: _context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(title),
+                SizedBox(height: 16),
+                CircularProgressIndicator(),
+                TextField(
+                  textAlign: TextAlign.center,
+                  enabled: false,
+                  controller: textController,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    final Function(int progress) progressCallback = (final int progress) {
+      if (progress == 101) {
+        if (Navigator.canPop(_context)) {
+          Navigator.pop(_context);
+        }
+      } else {
+        textController.text = '$progress%';
+      }
+    };
+    textController.text = '0%';
+    return progressCallback;
   }
 }

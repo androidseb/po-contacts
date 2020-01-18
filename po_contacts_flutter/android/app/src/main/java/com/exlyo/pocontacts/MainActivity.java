@@ -1,6 +1,7 @@
 package com.exlyo.pocontacts;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
@@ -14,6 +15,12 @@ public class MainActivity extends FlutterActivity {
     public MainActivity() {
         super();
         filesApi = new FilesApi(this);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        filesApi.onNewIntent(getIntent());
     }
 
     @Override
