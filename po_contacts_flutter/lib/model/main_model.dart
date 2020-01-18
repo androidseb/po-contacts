@@ -80,18 +80,17 @@ class MainModel {
     return null;
   }
 
-  void addContact(final ContactBuilder contactBuilder) {
+  Future<void> addContact(final ContactBuilder contactBuilder) async {
     if (!_storageController.isInitialized) {
       return;
     }
-    _storageController.createContact(contactBuilder, (final Contact createdContact) {
-      if (createdContact == null) {
-        return;
-      }
-      contactsList.add(createdContact);
-      sortContactsList(contactsList);
-      _contactsListSC.add(contactsList);
-    });
+    final Contact createdContact = await _storageController.createContact(contactBuilder);
+    if (createdContact == null) {
+      return;
+    }
+    contactsList.add(createdContact);
+    sortContactsList(contactsList);
+    _contactsListSC.add(contactsList);
   }
 
   void deleteContact(final int contactId) {

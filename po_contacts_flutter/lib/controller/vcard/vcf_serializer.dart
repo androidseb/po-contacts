@@ -1,4 +1,3 @@
-import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';

@@ -35,12 +35,11 @@ class ContactsStorageController {
     });
   }
 
-  void createContact(final ContactBuilder contactBuilder, final Function(Contact createdContact) callback) {
+  Future<Contact> createContact(final ContactBuilder contactBuilder) async {
     final ContactStorageEntry cse = ContactStorageEntry(ContactBuilder.toJsonString(contactBuilder));
-    _contactsStorage.createContact(cse).then((final ContactStorageEntryWithId csewId) {
-      final Contact createdContact = contactBuilder.build(csewId.id);
-      callback(createdContact);
-    });
+    final ContactStorageEntryWithId csewId = await _contactsStorage.createContact(cse);
+    final Contact createdContact = contactBuilder.build(csewId.id);
+    return createdContact;
   }
 
   void deleteContact(int contactId, Function(bool deleteSuccessful) callback) {

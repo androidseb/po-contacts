@@ -45,18 +45,21 @@ class ImportController {
   Future<void> _importFileWithId(final String fileId) async {
     final Function(int progress) progressCallback =
         MainController.get().displayLoadingDialog(I18n.getString(I18n.string.importing));
-    final String inboxFilePath = await MainController.get().nativeApisController.getCopiedInboxFilePath(fileId);
-    final List<ContactBuilder> readContacts = await VCFSerializer.readFromVCF(
-      VCFFileReader(
-        File(inboxFilePath),
-        progressCallback: progressCallback,
-      ),
-    );
-    for (final ContactBuilder cb in readContacts) {
-      MainController.get().model.addContact(cb);
+    try {
+      final String inboxFilePath = await MainController.get().nativeApisController.getCopiedInboxFilePath(fileId);
+      final List<ContactBuilder> readContacts = await VCFSerializer.readFromVCF(
+        VCFFileReader(
+          File(inboxFilePath),
+          progressCallback: progressCallback,
+        ),
+      );
+      for (final ContactBuilder cb in readContacts) {
+        await MainController.get().model.addContact(cb);
+      }
+      _discardFileWithId(fileId);
+    } finally {
+      _currentlyImporting = false;
+      progressCallback(101);
     }
-    _discardFileWithId(fileId);
-    _currentlyImporting = false;
-    progressCallback(101);
   }
 }
