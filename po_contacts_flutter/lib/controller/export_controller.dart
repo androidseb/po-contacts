@@ -34,6 +34,7 @@ class ExportController {
       await MainController.get().nativeApisController.shareFileExternally(sharePromptTitle, destFilePath);
     } finally {
       _isExporting = false;
+      progressCallback(101);
     }
   }
 
