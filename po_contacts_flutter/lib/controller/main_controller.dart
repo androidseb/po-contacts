@@ -295,9 +295,10 @@ class MainController {
         builder: (context) {
           return AlertDialog(
             title: Text(I18n.getString(I18n.string.quick_actions)),
-            content: ListView(
-              padding: EdgeInsets.zero,
-              children: listOptions,
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: listOptions,
+              ),
             ),
             actions: <Widget>[
               FlatButton(
