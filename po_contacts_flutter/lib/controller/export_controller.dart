@@ -5,6 +5,7 @@ import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_file_writer.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 class ExportController {
   bool _isExporting = false;
@@ -18,8 +19,12 @@ class ExportController {
         MainController.get().displayLoadingDialog(I18n.getString(I18n.string.exporting));
     final String outputFilesDirPath = await MainController.get().nativeApisController.getOutputFilesDirectoryPath();
     final DateTime t = new DateTime.now();
-    //TODO timestamp add 0s when needed
-    final String dateTimeStr = '${t.year}_${t.month}_${t.day}_${t.hour}_${t.minute}_${t.second}';
+    final String monthS = Utils.positiveNumberToXDigitsString(t.month, 2);
+    final String dayS = Utils.positiveNumberToXDigitsString(t.day, 2);
+    final String hourS = Utils.positiveNumberToXDigitsString(t.hour, 2);
+    final String minuteS = Utils.positiveNumberToXDigitsString(t.minute, 2);
+    final String secondS = Utils.positiveNumberToXDigitsString(t.second, 2);
+    final String dateTimeStr = '${t.year}$monthS${dayS}_$hourS$minuteS$secondS';
     final String destFilePath = '$outputFilesDirPath/contacts_$dateTimeStr.vcf';
     final File destFile = new File(destFilePath);
     try {

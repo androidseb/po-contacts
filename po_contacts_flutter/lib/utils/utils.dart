@@ -1,6 +1,10 @@
 import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
 class Utils {
+  static String positiveNumberToXDigitsString(final int number, final int digitsCount) {
+    return number.toString().padLeft(digitsCount, '0');
+  }
+
   static String normalizeString(final String sourceString) {
     if (sourceString == null) {
       return '';
