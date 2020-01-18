@@ -384,6 +384,7 @@ class MainController {
       },
     );
     final Function(int progress) progressCallback = (final int progress) {
+      yieldMainQueue();
       if (progress == 101) {
         if (Navigator.canPop(_context)) {
           Navigator.pop(_context);

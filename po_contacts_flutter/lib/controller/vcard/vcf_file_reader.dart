@@ -23,7 +23,6 @@ class VCFFileReader extends VCFReader {
     readLine = _lines[_currentLine];
     _currentLine++;
     progressCallback((_currentLine * 100 / _lines.length).floor());
-    await MainController.get().yieldMainQueue();
     return readLine;
   }
 }

@@ -62,6 +62,7 @@ class I18nString {
   final String importing = 'importing';
   final String export_completed = 'export_completed';
   final String exported_contacts_to_file_x = 'exported_contacts_to_file_x';
+  final String exporting = 'exporting';
 }
 
 class I18n {
@@ -130,6 +131,7 @@ class I18n {
     string.importing: 'Importing...',
     string.export_completed: 'Export completed',
     string.exported_contacts_to_file_x: 'Successfully exported contacts to the file:\n%s',
+    string.exporting: 'Exporting...',
   };
 
   static _getObjString(final Object _obj) {

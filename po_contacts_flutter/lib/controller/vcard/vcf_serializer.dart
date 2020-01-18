@@ -17,12 +17,18 @@ class VCFSerializer {
     return res;
   }
 
-  static void writeToVCF(final List<Contact> contacts, final VCFWriter vcfWriter) {
+  static void writeToVCF(
+    final List<Contact> contacts,
+    final VCFWriter vcfWriter,
+    final Function(int progress) progressCallback,
+  ) {
     if (contacts == null) {
       return;
     }
-    for (final Contact c in contacts) {
+    for (int i = 0; i < contacts.length; i++) {
+      final Contact c = contacts[i];
       vcfWriter.writeContact(c);
+      progressCallback(((i + 1) / contacts.length).floor());
     }
   }
 }
