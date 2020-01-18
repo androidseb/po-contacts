@@ -22,7 +22,7 @@ class VCFFileReader extends VCFReader {
     String readLine;
     readLine = _lines[_currentLine];
     _currentLine++;
-    progressCallback((_currentLine * 100 / _lines.length).floor());
+    await progressCallback((_currentLine * 100 / _lines.length).floor());
     return readLine;
   }
 }

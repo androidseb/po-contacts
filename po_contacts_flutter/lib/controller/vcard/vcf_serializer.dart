@@ -1,3 +1,4 @@
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
@@ -17,18 +18,18 @@ class VCFSerializer {
     return res;
   }
 
-  static void writeToVCF(
+  static Future<void> writeToVCF(
     final List<Contact> contacts,
     final VCFWriter vcfWriter,
     final Function(int progress) progressCallback,
-  ) {
+  ) async {
     if (contacts == null) {
       return;
     }
     for (int i = 0; i < contacts.length; i++) {
       final Contact c = contacts[i];
       vcfWriter.writeContact(c);
-      progressCallback(((i + 1) / contacts.length).floor());
+      await progressCallback(((i + 1) / contacts.length).floor());
     }
   }
 }

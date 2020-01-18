@@ -356,7 +356,7 @@ class MainController {
   // Displays a loading dialog and returns a function to control updating the progress
   // Calling the function with a value of 101 will terminate the loading dialog
   // Calling the function with any other value will update the progress text with <value>%
-  Function(int progress) displayLoadingDialog(final String title) {
+  Future<void> Function(int progress) displayLoadingDialog(final String title) {
     final TextEditingController textController = TextEditingController();
     showDialog(
       context: _context,
@@ -383,8 +383,8 @@ class MainController {
         );
       },
     );
-    final Function(int progress) progressCallback = (final int progress) {
-      yieldMainQueue();
+    final Future<void> Function(int progress) progressCallback = (final int progress) async {
+      await yieldMainQueue();
       if (progress == 101) {
         if (Navigator.canPop(_context)) {
           Navigator.pop(_context);
