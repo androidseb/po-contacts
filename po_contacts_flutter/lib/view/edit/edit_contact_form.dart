@@ -20,6 +20,8 @@ class EditContactForm extends StatefulWidget {
 class _EditContactFormState extends State<EditContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ContactBuilder _contactBuilder = ContactBuilder();
+  String _currentFirstName = '';
+  String _currentLastName = '';
   EditContactFormController editContactFormController;
 
   @override
@@ -44,8 +46,16 @@ class _EditContactFormState extends State<EditContactForm> {
     super.initState();
   }
 
+  void autoFillFullName(final TextEditingController fullNameTextController) {
+    fullNameTextController?.text = _currentFirstName + ' ' + _currentLastName;
+  }
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController fullNameTextController;
+    if (widget.initialContact == null) {
+      fullNameTextController = TextEditingController();
+    }
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -55,27 +65,14 @@ class _EditContactFormState extends State<EditContactForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
-                initialValue: widget?.initialContact?.fullName,
-                decoration: InputDecoration(
-                  labelText: I18n.getString(I18n.string.full_name),
-                ),
-                validator: (textValue) {
-                  if (textValue.isEmpty) {
-                    return I18n.getString(I18n.string.field_cannot_be_empty);
-                  }
-                  return null;
-                },
-                onChanged: (textValue) {
-                  _contactBuilder.setFullName(textValue);
-                },
-              ),
-              TextFormField(
                 initialValue: widget?.initialContact?.firstName,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.first_name),
                 ),
                 onChanged: (textValue) {
-                  _contactBuilder.setFirstName(textValue);
+                  _currentFirstName = textValue.trim();
+                  _contactBuilder.setFirstName(_currentFirstName);
+                  autoFillFullName(fullNameTextController);
                 },
               ),
               TextFormField(
@@ -84,7 +81,25 @@ class _EditContactFormState extends State<EditContactForm> {
                   labelText: I18n.getString(I18n.string.last_name),
                 ),
                 onChanged: (textValue) {
-                  _contactBuilder.setLastName(textValue);
+                  _currentLastName = textValue.trim();
+                  _contactBuilder.setLastName(_currentLastName);
+                  autoFillFullName(fullNameTextController);
+                },
+              ),
+              TextFormField(
+                initialValue: widget?.initialContact?.fullName,
+                decoration: InputDecoration(
+                  labelText: I18n.getString(I18n.string.full_name),
+                ),
+                controller: fullNameTextController,
+                validator: (textValue) {
+                  if (textValue.trim().isEmpty) {
+                    return I18n.getString(I18n.string.field_cannot_be_empty);
+                  }
+                  return null;
+                },
+                onChanged: (textValue) {
+                  _contactBuilder.setFullName(textValue.trim());
                 },
               ),
               TextFormField(
