@@ -23,6 +23,8 @@ class HighlightedText extends StatelessWidget {
       finalPostText = nFullText.substring(htIndex + nHText.length);
     }
     return RichText(
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       text: TextSpan(
         style: DefaultTextStyle.of(context).style,
         children: <TextSpan>[
