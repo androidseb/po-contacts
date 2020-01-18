@@ -43,6 +43,7 @@ abstract class EditCategorizedStringItemsForm extends EditCategorizedItemsForm<S
       Expanded(
         child: TextFormField(
           initialValue: item.fieldValue,
+          textCapitalization: TextCapitalization.none,
           decoration: InputDecoration(
             labelText: I18n.getString(getEntryHintStringKey()),
           ),

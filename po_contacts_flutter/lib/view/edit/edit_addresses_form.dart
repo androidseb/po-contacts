@@ -66,6 +66,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
             ),
             TextFormField(
               initialValue: itemAddrInfo.streetAddress,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: I18n.getString(I18n.string.street_address),
               ),
@@ -84,6 +85,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
             ),
             TextFormField(
               initialValue: itemAddrInfo.locality,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: I18n.getString(I18n.string.locality),
               ),
@@ -102,6 +104,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
             ),
             TextFormField(
               initialValue: itemAddrInfo.region,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: I18n.getString(I18n.string.region),
               ),
@@ -120,6 +123,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
             ),
             TextFormField(
               initialValue: itemAddrInfo.postalCode,
+              textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 labelText: I18n.getString(I18n.string.postal_code),
               ),
@@ -138,6 +142,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
             ),
             TextFormField(
               initialValue: itemAddrInfo.country,
+              textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
                 labelText: I18n.getString(I18n.string.country),
               ),

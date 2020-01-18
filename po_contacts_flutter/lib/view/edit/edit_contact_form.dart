@@ -66,6 +66,7 @@ class _EditContactFormState extends State<EditContactForm> {
             children: <Widget>[
               TextFormField(
                 initialValue: widget?.initialContact?.firstName,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.first_name),
                 ),
@@ -77,6 +78,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.lastName,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.last_name),
                 ),
@@ -88,6 +90,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.fullName,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.full_name),
                 ),
@@ -104,6 +107,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.nickName,
+                textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.nickname),
                 ),
@@ -131,6 +135,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.organizationName,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.organization_name),
                 ),
@@ -140,6 +145,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.organizationDivision,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.organization_division),
                 ),
@@ -149,6 +155,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.organizationTitle,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.organization_title),
                 ),
@@ -158,6 +165,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.website,
+                textCapitalization: TextCapitalization.none,
                 decoration: InputDecoration(
                   labelText: I18n.getString(I18n.string.website),
                 ),
@@ -167,6 +175,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               TextFormField(
                 initialValue: widget?.initialContact?.notes,
+                textCapitalization: TextCapitalization.sentences,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: InputDecoration(
