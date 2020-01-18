@@ -1,5 +1,25 @@
 import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
+class NormalizedString {
+  final String sourceStr;
+  String _normalizedStr;
+
+  NormalizedString(this.sourceStr);
+
+  String _getNormalizedStr() {
+    if (_normalizedStr == null) {
+      _normalizedStr = Utils.normalizeString(sourceStr);
+    }
+    return _normalizedStr;
+  }
+
+  String get normalized => _getNormalizedStr();
+
+  bool contains(final String str) {
+    return normalized.contains(str);
+  }
+}
+
 class Utils {
   static String positiveNumberToXDigitsString(final int number, final int digitsCount) {
     return number.toString().padLeft(digitsCount, '0');

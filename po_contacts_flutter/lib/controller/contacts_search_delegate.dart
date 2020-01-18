@@ -75,31 +75,31 @@ class ContactsSearchDelegate extends SearchDelegate<Contact> {
   }
 
   static String matchesNormalizedSearchText(final Contact contact, final String searchText) {
-    if (Utils.normalizeString(contact.fullName).contains(searchText)) return contact.fullName;
-    if (Utils.normalizeString(contact.firstName).contains(searchText)) return contact.firstName;
-    if (Utils.normalizeString(contact.lastName).contains(searchText)) return contact.lastName;
-    if (Utils.normalizeString(contact.nickName).contains(searchText)) return contact.nickName;
+    if (contact.nFullName.contains(searchText)) return contact.fullName;
+    if (contact.nFirstName.contains(searchText)) return contact.firstName;
+    if (contact.nLastName.contains(searchText)) return contact.lastName;
+    if (contact.nNickName.contains(searchText)) return contact.nickName;
     for (final StringLabeledField phoneInfo in contact.phoneInfos) {
       final String phone = phoneInfo.fieldValue;
-      if (Utils.normalizeString(phone).contains(searchText)) return phone;
+      if (phone.contains(searchText)) return phone;
     }
     for (final StringLabeledField emailInfo in contact.emailInfos) {
       final String email = emailInfo.fieldValue;
-      if (Utils.normalizeString(email).contains(searchText)) return email;
+      if (email.contains(searchText)) return email;
     }
     for (final AddressLabeledField addressLF in contact.addressInfos) {
       final AddressInfo address = addressLF.fieldValue;
-      if (Utils.normalizeString(address.streetAddress).contains(searchText)) return address.streetAddress;
-      if (Utils.normalizeString(address.locality).contains(searchText)) return address.locality;
-      if (Utils.normalizeString(address.region).contains(searchText)) return address.region;
-      if (Utils.normalizeString(address.postalCode).contains(searchText)) return address.postalCode;
-      if (Utils.normalizeString(address.country).contains(searchText)) return address.country;
+      if (address.nStreetAddress.contains(searchText)) return address.streetAddress;
+      if (address.nLocality.contains(searchText)) return address.locality;
+      if (address.nRegion.contains(searchText)) return address.region;
+      if (address.nPostalCode.contains(searchText)) return address.postalCode;
+      if (address.nCountry.contains(searchText)) return address.country;
     }
-    if (Utils.normalizeString(contact.organizationName).contains(searchText)) return contact.organizationName;
-    if (Utils.normalizeString(contact.organizationDivision).contains(searchText)) return contact.organizationDivision;
-    if (Utils.normalizeString(contact.organizationTitle).contains(searchText)) return contact.organizationTitle;
-    if (Utils.normalizeString(contact.website).contains(searchText)) return contact.website;
-    if (Utils.normalizeString(contact.notes).contains(searchText)) return contact.notes;
+    if (contact.nOrganizationName.contains(searchText)) return contact.organizationName;
+    if (contact.nOrganizationDivision.contains(searchText)) return contact.organizationDivision;
+    if (contact.nOrganizationTitle.contains(searchText)) return contact.organizationTitle;
+    if (contact.nWebsite.contains(searchText)) return contact.website;
+    if (contact.nNotes.contains(searchText)) return contact.notes;
     return null;
   }
 }

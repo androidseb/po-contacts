@@ -4,6 +4,7 @@ import 'package:po_contacts_flutter/model/data/address_info.dart';
 import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 class Contact {
   final int id;
@@ -37,6 +38,87 @@ class Contact {
     this.notes,
     this.unknownVCFFieldLines,
   );
+
+  NormalizedString _nFirstName;
+  NormalizedString get nFirstName => _getNFirstName();
+  NormalizedString _getNFirstName() {
+    if (_nFirstName == null) {
+      _nFirstName = NormalizedString(firstName);
+    }
+    return _nFirstName;
+  }
+
+  NormalizedString _nLastName;
+  NormalizedString get nLastName => _getNLastName();
+  NormalizedString _getNLastName() {
+    if (_nLastName == null) {
+      _nLastName = NormalizedString(lastName);
+    }
+    return _nLastName;
+  }
+
+  NormalizedString _nNickName;
+  NormalizedString get nNickName => _getNNickName();
+  NormalizedString _getNNickName() {
+    if (_nNickName == null) {
+      _nNickName = NormalizedString(nickName);
+    }
+    return _nNickName;
+  }
+
+  NormalizedString _nFullName;
+  NormalizedString get nFullName => _getNFullName();
+  NormalizedString _getNFullName() {
+    if (_nFullName == null) {
+      _nFullName = NormalizedString(fullName);
+    }
+    return _nFullName;
+  }
+
+  NormalizedString _nOrganizationName;
+  NormalizedString get nOrganizationName => _getNOrganizationName();
+  NormalizedString _getNOrganizationName() {
+    if (_nOrganizationName == null) {
+      _nOrganizationName = NormalizedString(organizationName);
+    }
+    return _nOrganizationName;
+  }
+
+  NormalizedString _nOrganizationDivision;
+  NormalizedString get nOrganizationDivision => _getNOrganizationDivision();
+  NormalizedString _getNOrganizationDivision() {
+    if (_nOrganizationDivision == null) {
+      _nOrganizationDivision = NormalizedString(organizationDivision);
+    }
+    return _nOrganizationDivision;
+  }
+
+  NormalizedString _nOrganizationTitle;
+  NormalizedString get nOrganizationTitle => _getNOrganizationTitle();
+  NormalizedString _getNOrganizationTitle() {
+    if (_nOrganizationTitle == null) {
+      _nOrganizationTitle = NormalizedString(organizationTitle);
+    }
+    return _nOrganizationTitle;
+  }
+
+  NormalizedString _nWebsite;
+  NormalizedString get nWebsite => _getNWebsite();
+  NormalizedString _getNWebsite() {
+    if (_nWebsite == null) {
+      _nWebsite = NormalizedString(website);
+    }
+    return _nWebsite;
+  }
+
+  NormalizedString _nNotes;
+  NormalizedString get nNotes => _getNNotes();
+  NormalizedString _getNNotes() {
+    if (_nNotes == null) {
+      _nNotes = NormalizedString(notes);
+    }
+    return _nNotes;
+  }
 }
 
 class ContactBuilder {
