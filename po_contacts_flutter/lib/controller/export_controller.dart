@@ -14,6 +14,12 @@ class ExportController {
     final String destFilePath = '$outputFilesDirPath/contacts_$dateTimeStr.vcf';
     final File destFile = new File(destFilePath);
     await _exportAllAsVCFToFile(destFile);
+    if (Platform.isAndroid) {
+      MainController.get().showMessageDialog(
+        I18n.getString(I18n.string.export_completed),
+        I18n.getString(I18n.string.exported_contacts_to_file_x, destFilePath),
+      );
+    }
     final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
     await MainController.get().nativeApisController.shareFileExternally(sharePromptTitle, destFilePath);
   }

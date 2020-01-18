@@ -158,15 +158,22 @@ class MainController {
   }
 
   void showAboutDialog() {
+    showMessageDialog(
+      I18n.getString(I18n.string.about, MainController.get().model.appVersion),
+      I18n.getString(I18n.string.about_message),
+    );
+  }
+
+  void showMessageDialog(final String title, final String message) {
     showDialog(
       context: _context,
       builder: (final BuildContext context) {
         return AlertDialog(
-          title: Text(I18n.getString(I18n.string.about, MainController.get().model.appVersion)),
+          title: Text(title),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(I18n.getString(I18n.string.about_message)),
+                Text(message),
               ],
             ),
           ),

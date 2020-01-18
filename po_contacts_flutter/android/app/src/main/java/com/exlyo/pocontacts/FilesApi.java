@@ -123,7 +123,7 @@ class FilesApi {
         if (externalFilesDir == null) {
             return null;
         }
-        final String sharedFolderPath = externalFilesDir.getAbsolutePath() + File.separator + "FileProviderFiles";
+        final String sharedFolderPath = externalFilesDir.getAbsolutePath();
         final File sharedFolder = new File(sharedFolderPath);
         if (!sharedFolder.isDirectory() && !sharedFolder.mkdirs()) {
             return null;

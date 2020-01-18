@@ -2,5 +2,5 @@
 <paths>
     <external-path
         name="provided_files"
-        path="Android/data/com.exlyo.pocontacts/files/FileProviderFiles" />
+        path="Android/data/com.exlyo.pocontacts/files" />
 </paths>

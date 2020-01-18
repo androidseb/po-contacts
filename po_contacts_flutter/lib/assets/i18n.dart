@@ -60,6 +60,8 @@ class I18nString {
   final String organization_division = 'organization_division';
   final String loading = 'loading';
   final String importing = 'importing';
+  final String export_completed = 'export_completed';
+  final String exported_contacts_to_file_x = 'exported_contacts_to_file_x';
 }
 
 class I18n {
@@ -126,6 +128,8 @@ class I18n {
     string.organization_division: 'Organization Division',
     string.loading: 'Loading...',
     string.importing: 'Importing...',
+    string.export_completed: 'Export completed',
+    string.exported_contacts_to_file_x: 'Successfully exported contacts to the file:\n%s',
   };
 
   static _getObjString(final Object _obj) {
