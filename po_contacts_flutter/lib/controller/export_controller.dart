@@ -29,17 +29,17 @@ class ExportController {
     final File destFile = new File(destFilePath);
     try {
       await _exportAllAsVCFToFile(destFile, progressCallback);
-      if (Platform.isAndroid) {
-        MainController.get().showMessageDialog(
-          I18n.getString(I18n.string.export_completed),
-          I18n.getString(I18n.string.exported_contacts_to_file_x, destFilePath),
-        );
-      }
-      final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
-      await MainController.get().nativeApisController.shareFileExternally(sharePromptTitle, destFilePath);
     } finally {
       _isExporting = false;
       progressCallback(101);
+    }
+    final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
+    await MainController.get().nativeApisController.shareFileExternally(sharePromptTitle, destFilePath);
+    if (Platform.isAndroid) {
+      MainController.get().showMessageDialog(
+        I18n.getString(I18n.string.export_completed),
+        I18n.getString(I18n.string.exported_contacts_to_file_x, destFilePath),
+      );
     }
   }
 
