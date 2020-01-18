@@ -34,15 +34,6 @@ const Map<LabeledFieldLabelType, String> _lfLabelTypeToString = {
   LabeledFieldLabelType.pager: LABEL_FIELD_TYPE_PAGER,
 };
 
-String _labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) {
-  final String lfLabelTypeString = _lfLabelTypeToString[_lfLabelType];
-  if (lfLabelTypeString == null) {
-    return LABEL_FIELD_TYPE_WORK;
-  } else {
-    return lfLabelTypeString;
-  }
-}
-
 abstract class LabeledField<T> {
   static const String FIELD_LABEL_TYPE = 'label_type';
   static const String FIELD_LABEL_VALUE = 'label_value';
@@ -95,9 +86,18 @@ abstract class LabeledField<T> {
     return res;
   }
 
+  static String labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) {
+    final String lfLabelTypeString = _lfLabelTypeToString[_lfLabelType];
+    if (lfLabelTypeString == null) {
+      return LABEL_FIELD_TYPE_WORK;
+    } else {
+      return lfLabelTypeString;
+    }
+  }
+
   static Map<String, dynamic> _fieldToMap(final LabeledField labeledField) {
     return {
-      FIELD_LABEL_TYPE: _labeledFieldLabelTypeToString(labeledField.labelType),
+      FIELD_LABEL_TYPE: labeledFieldLabelTypeToString(labeledField.labelType),
       FIELD_LABEL_VALUE: labeledField.labelText,
       FIELD_TEXT_VALUE: labeledField.fieldValueToJSONConvertable(),
     };

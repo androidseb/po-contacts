@@ -1,5 +1,10 @@
+import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
+import 'package:po_contacts_flutter/model/data/address_info.dart';
+import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 
 abstract class VCFWriter {
   void writeStringImpl(final String line);
@@ -21,13 +26,132 @@ abstract class VCFWriter {
     return res;
   }
 
-  void _writeVCFStringFieldValue(final String fieldName, final String fieldValue) {
-    writeLine(fieldName + ':' + _escapeStringToVCF(fieldValue));
+  void _writeVCFFieldLabelParam(final StringBuffer output, final VCFFieldLabelParamValue labelParamValue) {
+    if (labelParamValue == null) {
+      return;
+    }
+    output.write(VCFConstants.VCF_SEPARATOR_SEMICOLON);
+    if (labelParamValue.labelType == LabeledFieldLabelType.custom) {
+      output.write('X-');
+      output.write(_escapeStringToVCF(labelParamValue.labelText));
+    } else {
+      output.write(
+        LabeledField.labeledFieldLabelTypeToString(labelParamValue.labelType).toUpperCase(),
+      );
+    }
+  }
+
+  void _writeVCFStringFieldValue(
+    final String fieldName,
+    final String fieldValue, {
+    final VCFFieldLabelParamValue labelParamValue,
+    final bool writeEmpty = false,
+  }) {
+    if (!writeEmpty && fieldValue.trim().isEmpty) {
+      return;
+    }
+    final StringBuffer res = StringBuffer();
+    res.write(fieldName);
+    _writeVCFFieldLabelParam(res, labelParamValue);
+    res.write(':');
+    res.write(_escapeStringToVCF(fieldValue));
+    writeLine(res.toString());
+  }
+
+  void _writeVCFStringFieldValues(
+    final String fieldName,
+    final List<String> fieldValues, {
+    final VCFFieldLabelParamValue labelParamValue,
+    final bool writeEmpty = false,
+  }) {
+    if (!writeEmpty) {
+      bool foundNonEmpty = false;
+      for (final String s in fieldValues) {
+        if (s.trim().isNotEmpty) {
+          foundNonEmpty = true;
+          break;
+        }
+      }
+      if (!foundNonEmpty) {
+        return;
+      }
+    }
+    final StringBuffer res = StringBuffer();
+    res.write(fieldName);
+    _writeVCFFieldLabelParam(res, labelParamValue);
+    res.write(':');
+    bool hasWrittenValue = false;
+    for (final String s in fieldValues) {
+      if (hasWrittenValue) {
+        res.write(VCFConstants.VCF_SEPARATOR_SEMICOLON);
+      } else {
+        hasWrittenValue = true;
+      }
+      res.write(_escapeStringToVCF(s));
+    }
+    writeLine(res.toString());
   }
 
   void writeContactFields(final Contact contact) {
-    _writeVCFStringFieldValue(VCFConstants.FIELD_FULL_NAME, contact.fullName);
-    //TODO write the other fields too
+    _writeVCFStringFieldValue(
+      VCFConstants.FIELD_FULL_NAME,
+      contact.fullName,
+      writeEmpty: true,
+    );
+    _writeVCFStringFieldValues(
+      VCFConstants.FIELD_NAME,
+      [contact.firstName, contact.lastName, '', '', ''],
+      writeEmpty: true,
+    );
+    _writeVCFStringFieldValue(
+      VCFConstants.FIELD_NICKNAME,
+      contact.nickName,
+    );
+    for (final AddressLabeledField alf in contact.addressInfos) {
+      final AddressInfo addressInfo = alf.fieldValue;
+      _writeVCFStringFieldValues(
+        VCFConstants.FIELD_ADRESS,
+        [
+          addressInfo.streetAddress,
+          addressInfo.locality,
+          addressInfo.region,
+          addressInfo.postalCode,
+          addressInfo.country,
+        ],
+        labelParamValue: VCFFieldLabelParamValue(alf.labelType, alf.labelText),
+      );
+    }
+    for (final StringLabeledField slf in contact.phoneInfos) {
+      _writeVCFStringFieldValue(
+        VCFConstants.FIELD_PHONE,
+        slf.fieldValue,
+        labelParamValue: VCFFieldLabelParamValue(slf.labelType, slf.labelText),
+      );
+    }
+    for (final StringLabeledField slf in contact.emailInfos) {
+      _writeVCFStringFieldValue(
+        VCFConstants.FIELD_EMAIL,
+        slf.fieldValue,
+        labelParamValue: VCFFieldLabelParamValue(slf.labelType, slf.labelText),
+      );
+    }
+    _writeVCFStringFieldValues(VCFConstants.FIELD_ORG, [
+      contact.organizationName,
+      contact.organizationDivision,
+      '',
+    ]);
+    _writeVCFStringFieldValue(
+      VCFConstants.FIELD_TITLE,
+      contact.organizationTitle,
+    );
+    _writeVCFStringFieldValue(
+      VCFConstants.FIELD_URL,
+      contact.website,
+    );
+    _writeVCFStringFieldValue(
+      VCFConstants.FIELD_NOTE,
+      contact.notes,
+    );
   }
 
   void writeContact(final Contact contact) {
