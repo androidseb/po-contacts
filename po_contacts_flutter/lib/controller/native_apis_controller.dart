@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class NativeApisController {
   static const platform = const MethodChannel('com.exlyo.pocontacts/files');
@@ -18,6 +20,10 @@ class NativeApisController {
   }
 
   Future<String> getOutputFilesDirectoryPath() async {
+    if (Platform.isIOS) {
+      final Directory tempDir = await getTemporaryDirectory();
+      return tempDir.path;
+    }
     return await platform.invokeMethod('getOutputFilesDirectoryPath');
   }
 
