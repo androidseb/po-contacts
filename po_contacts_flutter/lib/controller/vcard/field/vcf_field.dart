@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
@@ -31,7 +32,7 @@ abstract class VCFField {
     for (final String qs in quotedStrings) {
       res.write(_unEscapeQuotedPrintableEntry(qs));
     }
-    return res.toString();
+    return utf8.decode(res.toString().codeUnits);
   }
 
   static String unEscapeVCFString(
