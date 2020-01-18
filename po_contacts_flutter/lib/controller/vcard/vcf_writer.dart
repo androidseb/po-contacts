@@ -154,6 +154,9 @@ abstract class VCFWriter {
       VCFConstants.FIELD_NOTE,
       contact.notes,
     );
+    for (final String extraFieldLine in contact.unknownVCFFieldLines) {
+      writeLine(extraFieldLine);
+    }
   }
 
   void writeContact(final Contact contact) {
