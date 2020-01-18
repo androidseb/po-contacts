@@ -47,7 +47,9 @@ class _EditContactFormState extends State<EditContactForm> {
   }
 
   void autoFillFullName(final TextEditingController fullNameTextController) {
-    fullNameTextController?.text = _currentFirstName + ' ' + _currentLastName;
+    final String updatedFullName = (_currentFirstName + ' ' + _currentLastName).trim();
+    fullNameTextController?.text = updatedFullName;
+    _contactBuilder.setFullName(updatedFullName);
   }
 
   @override
