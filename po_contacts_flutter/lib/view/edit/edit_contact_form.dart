@@ -29,8 +29,10 @@ class _EditContactFormState extends State<EditContactForm> {
     final Contact initialContact = widget.initialContact;
     if (initialContact != null) {
       _contactBuilder.setFullName(initialContact.fullName);
-      _contactBuilder.setFirstName(initialContact.firstName);
-      _contactBuilder.setLastName(initialContact.lastName);
+      _currentFirstName = initialContact.firstName;
+      _contactBuilder.setFirstName(_currentFirstName);
+      _currentLastName = initialContact.lastName;
+      _contactBuilder.setLastName(_currentLastName);
       _contactBuilder.setNickName(initialContact.nickName);
       _contactBuilder.setPhoneInfos(initialContact.phoneInfos);
       _contactBuilder.setEmailInfos(initialContact.emailInfos);
@@ -47,8 +49,11 @@ class _EditContactFormState extends State<EditContactForm> {
   }
 
   void autoFillFullName(final TextEditingController fullNameTextController) {
+    if (fullNameTextController == null) {
+      return;
+    }
     final String updatedFullName = (_currentFirstName + ' ' + _currentLastName).trim();
-    fullNameTextController?.text = updatedFullName;
+    fullNameTextController.text = updatedFullName;
     _contactBuilder.setFullName(updatedFullName);
   }
 
