@@ -34,12 +34,12 @@ class NativeApisController {
   Future<String> _getInboxFileIdForIOS() async {
     String foundInboxFileId;
     final Directory applicationDocumentsDir = await getApplicationDocumentsDirectory();
-    foundInboxFileId = await _getInboxFileIdInDirForIOS(applicationDocumentsDir, 'Inbox');
+    foundInboxFileId = await _getInboxFileIdInDirForIOS(applicationDocumentsDir.parent, 'Inbox');
     if (foundInboxFileId != null) {
       return foundInboxFileId;
     }
-    final Directory applicationTmpDir = await getTemporaryDirectory();
-    foundInboxFileId = await _getInboxFileIdInDirForIOS(applicationTmpDir, 'com.exlyo.pocontacts-Inbox');
+    final String tmpDirPath = applicationDocumentsDir.parent.path + '/tmp';
+    foundInboxFileId = await _getInboxFileIdInDirForIOS(Directory(tmpDirPath), 'com.exlyo.pocontacts-Inbox');
     return foundInboxFileId;
   }
 
