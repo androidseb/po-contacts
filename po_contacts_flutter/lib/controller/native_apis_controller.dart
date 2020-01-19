@@ -34,7 +34,7 @@ class NativeApisController {
   Future<String> _getInboxFileIdForIOS() async {
     String foundInboxFileId;
     final Directory applicationDocumentsDir = await getApplicationDocumentsDirectory();
-    foundInboxFileId = await _getInboxFileIdInDirForIOS(applicationDocumentsDir.parent, 'Inbox');
+    foundInboxFileId = await _getInboxFileIdInDirForIOS(applicationDocumentsDir, 'Inbox');
     if (foundInboxFileId != null) {
       return foundInboxFileId;
     }
