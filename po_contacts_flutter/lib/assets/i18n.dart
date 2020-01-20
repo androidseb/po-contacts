@@ -63,6 +63,11 @@ class I18nString {
   final String export_completed = 'export_completed';
   final String exported_contacts_to_file_x = 'exported_contacts_to_file_x';
   final String exporting = 'exporting';
+  final String change_image = 'change_image';
+  final String select_image = 'select_image';
+  final String from_gallery = 'from_gallery';
+  final String from_camera = 'from_camera';
+  final String delete_image = 'delete_image';
 }
 
 class I18n {
@@ -132,6 +137,11 @@ class I18n {
     string.export_completed: 'Export completed',
     string.exported_contacts_to_file_x: 'Successfully exported contacts to the file:\n%s',
     string.exporting: 'Exporting...',
+    string.change_image: 'Change image',
+    string.select_image: 'Select image',
+    string.from_gallery: 'From gallery',
+    string.from_camera: 'From camera',
+    string.delete_image: 'Delete image',
   };
 
   static _getObjString(final Object _obj) {

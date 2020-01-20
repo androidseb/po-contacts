@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/view/edit/edit_addresses_form.dart';
 import 'package:po_contacts_flutter/view/edit/edit_emails_form.dart';
 import 'package:po_contacts_flutter/view/edit/edit_phones_form.dart';
+import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 
 class EditContactForm extends StatefulWidget {
   final Contact initialContact;
@@ -20,6 +24,7 @@ class EditContactForm extends StatefulWidget {
 class _EditContactFormState extends State<EditContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ContactBuilder _contactBuilder = ContactBuilder();
+  String _currentImage;
   String _currentFirstName = '';
   String _currentLastName = '';
   EditContactFormController editContactFormController;
@@ -28,6 +33,7 @@ class _EditContactFormState extends State<EditContactForm> {
   void initState() {
     final Contact initialContact = widget.initialContact;
     if (initialContact != null) {
+      _currentImage = initialContact.image;
       _contactBuilder.setFullName(initialContact.fullName);
       _currentFirstName = initialContact.firstName;
       _contactBuilder.setFirstName(_currentFirstName);
@@ -57,6 +63,24 @@ class _EditContactFormState extends State<EditContactForm> {
     _contactBuilder.setFullName(updatedFullName);
   }
 
+  void _onChangeImageButtonClicked() async {
+    final File selectedImageFile = await MainController.get().pickImage();
+    if (selectedImageFile == null) {
+      return;
+    }
+    setState(() {
+      _currentImage = selectedImageFile.path;
+      _contactBuilder.setImage(_currentImage);
+    });
+  }
+
+  void _onDeleteImageButtonClicked() async {
+    setState(() {
+      _currentImage = null;
+      _contactBuilder.setImage(_currentImage);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController fullNameTextController;
@@ -71,6 +95,34 @@ class _EditContactFormState extends State<EditContactForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Align(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ContactPicture(_currentImage),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text(I18n.getString(I18n.string.change_image)),
+                            onPressed: () {
+                              _onChangeImageButtonClicked();
+                            },
+                          ),
+                          FlatButton(
+                            child: Text(I18n.getString(I18n.string.delete_image)),
+                            onPressed: () {
+                              _onDeleteImageButtonClicked();
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
               TextFormField(
                 initialValue: widget?.initialContact?.firstName,
                 textCapitalization: TextCapitalization.words,

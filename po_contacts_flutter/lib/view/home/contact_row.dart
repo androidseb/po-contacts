@@ -4,6 +4,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
 
 class ContactsRow extends StatelessWidget {
@@ -38,10 +39,10 @@ class ContactsRow extends StatelessWidget {
         ),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
-          child: Image.asset(
-            'lib/assets/images/ic_profile.png',
-            height: 32,
-            width: 32,
+          child: ContactPicture(
+            contact.image,
+            imageWidth: 32,
+            imageHeight: 32,
           ),
         ),
         onTap: () {

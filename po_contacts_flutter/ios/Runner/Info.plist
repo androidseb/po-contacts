@@ -43,6 +43,10 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Needed to add pictures taken from the camera to a contact details</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needed to add pictures from the photo library to a contact details</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

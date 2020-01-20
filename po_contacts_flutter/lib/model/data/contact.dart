@@ -8,6 +8,7 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 
 class Contact {
   final int id;
+  final String image;
   final String firstName;
   final String lastName;
   final String nickName;
@@ -24,6 +25,7 @@ class Contact {
 
   Contact(
     this.id,
+    this.image,
     this.firstName,
     this.lastName,
     this.nickName,
@@ -122,6 +124,7 @@ class Contact {
 }
 
 class ContactBuilder {
+  static const String JSON_FIELD_IMAGE = 'image';
   static const String JSON_FIELD_FIRST_NAME = 'first_name';
   static const String JSON_FIELD_LAST_NAME = 'last_name';
   static const String JSON_FIELD_NICK_NAME = 'nick_name';
@@ -138,6 +141,7 @@ class ContactBuilder {
 
   static String toJsonString(final ContactBuilder contactBuilder) {
     return jsonEncode({
+      JSON_FIELD_IMAGE: contactBuilder._image,
       JSON_FIELD_FIRST_NAME: contactBuilder._firstName,
       JSON_FIELD_LAST_NAME: contactBuilder._lastName,
       JSON_FIELD_NICK_NAME: contactBuilder._nickName,
@@ -157,6 +161,7 @@ class ContactBuilder {
   static Contact buildFromJson(final int id, final String json) {
     final Map<String, dynamic> decodedJson = jsonDecode(json);
     final ContactBuilder contactBuilder = ContactBuilder();
+    contactBuilder.setImage(decodedJson[JSON_FIELD_IMAGE]);
     contactBuilder.setFirstName(decodedJson[JSON_FIELD_FIRST_NAME]);
     contactBuilder.setLastName(decodedJson[JSON_FIELD_LAST_NAME]);
     contactBuilder.setNickName(decodedJson[JSON_FIELD_NICK_NAME]);
@@ -190,6 +195,7 @@ class ContactBuilder {
     return contactBuilder.build(id);
   }
 
+  String _image;
   String _fullName;
   String _firstName;
   String _lastName;
@@ -257,6 +263,7 @@ class ContactBuilder {
     }
     return Contact(
       id,
+      _image,
       getNonNullString(_firstName),
       getNonNullString(_lastName),
       getNonNullString(_nickName),
@@ -271,6 +278,11 @@ class ContactBuilder {
       getNonNullString(_notes),
       _unknownVCFFieldLines,
     );
+  }
+
+  ContactBuilder setImage(final String image) {
+    _image = image;
+    return this;
   }
 
   ContactBuilder setFirstName(final String firstName) {

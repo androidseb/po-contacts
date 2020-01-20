@@ -8,6 +8,7 @@ import 'package:po_contacts_flutter/view/details/addresses_view.dart';
 import 'package:po_contacts_flutter/view/details/emails_view.dart';
 import 'package:po_contacts_flutter/view/details/phones_view.dart';
 import 'package:po_contacts_flutter/view/details/titled_details_text_block.dart';
+import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 
 class ContactDetails extends StatefulWidget {
   final int contactId;
@@ -53,14 +54,7 @@ class _ContactDetailsState extends State<ContactDetails> {
           Align(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'lib/assets/images/ic_profile.png',
-                  height: 96,
-                  width: 96,
-                ),
-              ),
+              child: ContactPicture(_contact.image),
             ),
           ),
           Center(

@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
@@ -396,5 +400,54 @@ class MainController {
     };
     textController.text = '0%';
     return progressCallback;
+  }
+
+  Future<File> pickImage() async {
+    if (_context == null) {
+      return null;
+    }
+    final Completer<File> futureSelectedFile = Completer<File>();
+    showDialog(
+        context: _context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(I18n.getString(I18n.string.select_image)),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.image),
+                    title: Text(I18n.getString(I18n.string.from_gallery)),
+                    onTap: () async {
+                      Navigator.of(_context).pop();
+                      final File selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+                      futureSelectedFile.complete(selectedFile);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.camera),
+                    title: Text(I18n.getString(I18n.string.from_camera)),
+                    onTap: () async {
+                      Navigator.of(_context).pop();
+                      final File selectedFile = await ImagePicker.pickImage(source: ImageSource.camera);
+                      futureSelectedFile.complete(selectedFile);
+                    },
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(I18n.getString(I18n.string.cancel)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  futureSelectedFile.complete(null);
+                },
+              ),
+            ],
+          );
+        });
+    return futureSelectedFile.future;
   }
 }
