@@ -87,6 +87,28 @@ class _EditContactFormState extends State<EditContactForm> {
     if (widget.initialContact == null) {
       fullNameTextController = TextEditingController();
     }
+    final List<Widget> imageFlatButtons = [];
+    if (_currentImage == null) {
+      imageFlatButtons.add(FlatButton(
+        child: Text(I18n.getString(I18n.string.add_image)),
+        onPressed: () {
+          _onChangeImageButtonClicked();
+        },
+      ));
+    } else {
+      imageFlatButtons.add(FlatButton(
+        child: Text(I18n.getString(I18n.string.change_image)),
+        onPressed: () {
+          _onChangeImageButtonClicked();
+        },
+      ));
+      imageFlatButtons.add(FlatButton(
+        child: Text(I18n.getString(I18n.string.delete_image)),
+        onPressed: () {
+          _onDeleteImageButtonClicked();
+        },
+      ));
+    }
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -104,20 +126,7 @@ class _EditContactFormState extends State<EditContactForm> {
                       ContactPicture(_currentImage),
                       Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          FlatButton(
-                            child: Text(I18n.getString(I18n.string.change_image)),
-                            onPressed: () {
-                              _onChangeImageButtonClicked();
-                            },
-                          ),
-                          FlatButton(
-                            child: Text(I18n.getString(I18n.string.delete_image)),
-                            onPressed: () {
-                              _onDeleteImageButtonClicked();
-                            },
-                          ),
-                        ],
+                        children: imageFlatButtons,
                       )
                     ],
                   ),
