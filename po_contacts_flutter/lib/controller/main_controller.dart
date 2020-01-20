@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
@@ -13,6 +14,7 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -403,6 +405,33 @@ class MainController {
   }
 
   Future<File> pickImage() async {
+    final File selectedImage = await _pickImageWithOS();
+    if (selectedImage == null) {
+      return null;
+    }
+    if (Platform.isAndroid) {
+      //If the platform is android, we check if the file was created in the app's public folder
+      final Directory externalAppDirectory = await getExternalStorageDirectory();
+      final String selectedImageParentPath = selectedImage.parent.absolute.path;
+      final String externalAppDirectoryPath = externalAppDirectory.absolute.path;
+      if (selectedImageParentPath.startsWith(externalAppDirectoryPath)) {
+        //If the file was created in the app's public folder, we copy it to the internal files
+        //and delete it from the external directory
+        final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
+        final String targetFilePath = '${internalAppDirectory.path}/${DateTime.now().millisecondsSinceEpoch}' +
+            Utils.getFileExtension(selectedImage.path);
+        await selectedImage.copy(targetFilePath);
+        selectedImage.delete();
+        return File(targetFilePath);
+      } else {
+        return selectedImage;
+      }
+    } else {
+      return selectedImage;
+    }
+  }
+
+  Future<File> _pickImageWithOS() async {
     if (_context == null) {
       return null;
     }

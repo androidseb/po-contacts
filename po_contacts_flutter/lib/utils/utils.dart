@@ -62,4 +62,21 @@ class Utils {
       return false;
     }
   }
+
+  static String getFileName(final String filePath) {
+    if (filePath == null) {
+      return '';
+    }
+    final List<String> filePathSplit = filePath.split('/');
+    return filePathSplit[filePathSplit.length - 1];
+  }
+
+  static String getFileExtension(final String filePath) {
+    final String fileName = getFileName(filePath);
+    if (fileName == null) {
+      return '';
+    }
+    final List<String> pathNameSplit = fileName.split('.');
+    return pathNameSplit[pathNameSplit.length - 1];
+  }
 }
