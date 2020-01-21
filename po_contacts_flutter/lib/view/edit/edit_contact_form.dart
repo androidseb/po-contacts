@@ -64,7 +64,7 @@ class _EditContactFormState extends State<EditContactForm> {
   }
 
   void _onChangeImageButtonClicked() async {
-    final File selectedImageFile = await MainController.get().pickImage();
+    final File selectedImageFile = await MainController.get().pickImageFile();
     if (selectedImageFile == null) {
       return;
     }

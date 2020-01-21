@@ -404,34 +404,35 @@ class MainController {
     return progressCallback;
   }
 
-  Future<File> pickImage() async {
-    final File selectedImage = await _pickImageWithOS();
-    if (selectedImage == null) {
+  Future<File> pickImageFile() async {
+    final File selectedImageFile = await _pickImageFileWithOS();
+    if (selectedImageFile == null) {
       return null;
     }
     if (Platform.isAndroid) {
-      //If the platform is android, we check if the file was created in the app's public folder
+      //If the platform is Android, the file will not be in
+      //the app's internal storage so we want to copy it there
+      final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
+      final String targetFilePath = '${internalAppDirectory.path}/${DateTime.now().millisecondsSinceEpoch}' +
+          Utils.getFileExtension(selectedImageFile.path);
+      await selectedImageFile.copy(targetFilePath);
+
+      //Also, if the file was created in the app's public folder
+      //we want to delete it from there
       final Directory externalAppDirectory = await getExternalStorageDirectory();
-      final String selectedImageParentPath = selectedImage.parent.absolute.path;
+      final String selectedImageParentPath = selectedImageFile.parent.absolute.path;
       final String externalAppDirectoryPath = externalAppDirectory.absolute.path;
       if (selectedImageParentPath.startsWith(externalAppDirectoryPath)) {
-        //If the file was created in the app's public folder, we copy it to the internal files
-        //and delete it from the external directory
-        final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
-        final String targetFilePath = '${internalAppDirectory.path}/${DateTime.now().millisecondsSinceEpoch}' +
-            Utils.getFileExtension(selectedImage.path);
-        await selectedImage.copy(targetFilePath);
-        selectedImage.delete();
-        return File(targetFilePath);
-      } else {
-        return selectedImage;
+        selectedImageFile.delete();
       }
+
+      return File(targetFilePath);
     } else {
-      return selectedImage;
+      return selectedImageFile;
     }
   }
 
-  Future<File> _pickImageWithOS() async {
+  Future<File> _pickImageFileWithOS() async {
     if (_context == null) {
       return null;
     }
