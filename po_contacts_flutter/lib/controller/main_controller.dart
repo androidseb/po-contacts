@@ -20,6 +20,8 @@ import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainController {
+  static const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+
   static MainController _controller;
 
   static MainController get() {
@@ -404,18 +406,38 @@ class MainController {
     return progressCallback;
   }
 
+  Future<File> createNewImageFile(final String fileExtension) async {
+    if (!ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
+      return null;
+    }
+    final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
+    while (true) {
+      final String targetFilePath =
+          '${internalAppDirectory.path}/${DateTime.now().millisecondsSinceEpoch}' + fileExtension;
+      final File targetFile = File(targetFilePath);
+      if (!await targetFile.exists()) {
+        await targetFile.create();
+        return targetFile;
+      }
+    }
+  }
+
   Future<File> pickImageFile() async {
     final File selectedImageFile = await _pickImageFileWithOS();
     if (selectedImageFile == null) {
       return null;
     }
+
+    final String fileExtension = Utils.getFileExtension(selectedImageFile.path);
+    if (!ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
+      return null;
+    }
+
     if (Platform.isAndroid) {
       //If the platform is Android, the file will not be in
       //the app's internal storage so we want to copy it there
-      final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
-      final String targetFilePath = '${internalAppDirectory.path}/${DateTime.now().millisecondsSinceEpoch}' +
-          Utils.getFileExtension(selectedImageFile.path);
-      await selectedImageFile.copy(targetFilePath);
+      final File targetFile = await createNewImageFile(fileExtension);
+      await selectedImageFile.copy(targetFile.absolute.path);
 
       //Also, if the file was created in the app's public folder
       //we want to delete it from there
@@ -426,7 +448,7 @@ class MainController {
         selectedImageFile.delete();
       }
 
-      return File(targetFilePath);
+      return File(targetFile.absolute.path);
     } else {
       return selectedImageFile;
     }

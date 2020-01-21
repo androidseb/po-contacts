@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_multi_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
@@ -33,7 +37,9 @@ abstract class VCFReader {
       }
       if (readLine == null) {
         break;
-      } else if (!readLine.startsWith(' ')) {
+      } else if (readLine.startsWith(' ')) {
+        readLine = readLine.substring(1);
+      } else {
         _pendingReadLine = readLine;
         break;
       }
@@ -121,15 +127,30 @@ abstract class VCFReader {
     );
   }
 
-  void processContactFieldLine(
+  processContactFieldLine(
     final ContactBuilder contactBuilder,
     final List<StringLabeledField> phones,
     final List<StringLabeledField> emails,
     final List<AddressLabeledField> addresses,
     final String fieldLine,
-  ) {
+  ) async {
     if (fieldLine == null) {
       return;
+    }
+
+    final SingleValueField photoField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHOTO);
+    if (photoField != null) {
+      String fileExtension = '.jpg';
+      if (photoField.fieldParams['PNG'] == '') {
+        fileExtension = '.png';
+      }
+      final File imageFile = await MainController.get().createNewImageFile(fileExtension);
+      final bool fileWriteSuccess = await Utils.base64StringToFile(photoField.fieldValue, imageFile);
+      if (fileWriteSuccess) {
+        contactBuilder.setImage(imageFile.absolute.path);
+      } else {
+        await imageFile.delete();
+      }
     }
 
     final SingleValueField fnField = getSingleValueField(fieldLine, VCFConstants.FIELD_FULL_NAME);
@@ -261,7 +282,7 @@ abstract class VCFReader {
     final List<StringLabeledField> emails = [];
     final List<AddressLabeledField> addresses = [];
     for (final String fieldLine in contactFieldLines) {
-      processContactFieldLine(res, phones, emails, addresses, fieldLine);
+      await processContactFieldLine(res, phones, emails, addresses, fieldLine);
     }
     res.setPhoneInfos(phones);
     res.setEmailInfos(emails);
