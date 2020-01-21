@@ -43,12 +43,12 @@ class ExportController {
     }
   }
 
-  _exportAllAsVCFToFile(final File outputFile, final Function(int progress) progressCallback) async {
-    if (outputFile.existsSync()) {
-      outputFile.deleteSync();
+  Future<void> _exportAllAsVCFToFile(final File outputFile, final Function(int progress) progressCallback) async {
+    if (await outputFile.exists()) {
+      await outputFile.delete();
     }
-    outputFile.createSync();
+    await outputFile.create();
     final List<Contact> contacts = MainController.get().model.contactsList;
-    VCFSerializer.writeToVCF(contacts, new VCFFileWriter(outputFile), progressCallback);
+    await VCFSerializer.writeToVCF(contacts, new VCFFileWriter(outputFile), progressCallback);
   }
 }

@@ -81,7 +81,7 @@ class Utils {
       return '';
     }
     final List<String> pathNameSplit = fileName.split('.');
-    return pathNameSplit[pathNameSplit.length - 1];
+    return '.' + pathNameSplit[pathNameSplit.length - 1];
   }
 
   static Future<bool> base64StringToFile(final String base64String, final File destFile) async {
@@ -92,5 +92,18 @@ class Utils {
       return false;
     }
     return true;
+  }
+
+  static Future<String> fileContentToBase64String(String filePath) async {
+    try {
+      final File sourceFile = File(filePath);
+      if (!await sourceFile.exists()) {
+        return null;
+      }
+      final Uint8List fileBytes = await sourceFile.readAsBytes();
+      return base64.encode(fileBytes);
+    } catch (e) {
+      return null;
+    }
   }
 }

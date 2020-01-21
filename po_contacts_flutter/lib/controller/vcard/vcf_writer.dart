@@ -5,6 +5,7 @@ import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class VCFWriter {
   void writeStringImpl(final String line);
@@ -41,10 +42,22 @@ abstract class VCFWriter {
     }
   }
 
+  void _writeVCFPhotoParams(StringBuffer output, String photoFileExtension) {
+    if (photoFileExtension == null) {
+      return;
+    }
+    output.write(VCFConstants.VCF_SEPARATOR_SEMICOLON);
+    output.write('ENCODING=BASE64');
+    output.write(VCFConstants.VCF_SEPARATOR_SEMICOLON);
+    final String pictureTypeString = photoFileExtension == '.png' ? 'PNG' : 'JPEG';
+    output.write(pictureTypeString);
+  }
+
   void _writeVCFStringFieldValue(
     final String fieldName,
     final String fieldValue, {
     final VCFFieldLabelParamValue labelParamValue,
+    final String photoFileExtension,
     final bool writeEmpty = false,
   }) {
     if (!writeEmpty && fieldValue.trim().isEmpty) {
@@ -53,6 +66,7 @@ abstract class VCFWriter {
     final StringBuffer res = StringBuffer();
     res.write(fieldName);
     _writeVCFFieldLabelParam(res, labelParamValue);
+    _writeVCFPhotoParams(res, photoFileExtension);
     res.write(':');
     res.write(_escapeStringToVCF(fieldValue));
     writeLine(res.toString());
@@ -92,7 +106,18 @@ abstract class VCFWriter {
     writeLine(res.toString());
   }
 
-  void writeContactFields(final Contact contact) {
+  Future<void> writeContactFields(final Contact contact) async {
+    if (contact.image != null) {
+      final String fileExtension = Utils.getFileExtension(contact.image);
+      final String photoAsBase64String = await Utils.fileContentToBase64String(contact.image);
+      if (photoAsBase64String != null) {
+        _writeVCFStringFieldValue(
+          VCFConstants.FIELD_PHOTO,
+          photoAsBase64String,
+          photoFileExtension: fileExtension,
+        );
+      }
+    }
     _writeVCFStringFieldValue(
       VCFConstants.FIELD_FULL_NAME,
       contact.fullName,
@@ -159,14 +184,14 @@ abstract class VCFWriter {
     }
   }
 
-  void writeContact(final Contact contact) {
+  Future<void> writeContact(final Contact contact) async {
     if (contact == null) {
       return;
     }
 
     writeLine(VCFConstants.FIELD_BEGIN_VCARD);
     writeLine(VCFConstants.FIELD_VERSION);
-    writeContactFields(contact);
+    await writeContactFields(contact);
     writeLine(VCFConstants.FIELD_END_VCARD);
     writeLine('');
   }
