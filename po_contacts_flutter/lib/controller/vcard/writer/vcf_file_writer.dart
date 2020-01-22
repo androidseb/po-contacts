@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:po_contacts_flutter/controller/vcard/vcf_writer.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 
 class VCFFileWriter extends VCFWriter {
   final File _file;

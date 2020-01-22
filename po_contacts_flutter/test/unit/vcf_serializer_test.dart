@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
-import 'package:po_contacts_flutter/controller/vcard/vcf_writer.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
 class MockVCFWriter extends VCFWriter {

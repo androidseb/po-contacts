@@ -1,5 +1,5 @@
-import 'package:po_contacts_flutter/controller/vcard/vcf_reader.dart';
-import 'package:po_contacts_flutter/controller/vcard/vcf_writer.dart';
+import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
 //Serializer for vcard based on specs here:

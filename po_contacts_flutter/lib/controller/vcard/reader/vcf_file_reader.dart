@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.dart';
-import 'package:po_contacts_flutter/controller/vcard/vcf_reader.dart';
+import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 
 class VCFFileReader extends VCFReader {
   final File _file;
