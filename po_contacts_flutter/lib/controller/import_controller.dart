@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
@@ -50,6 +51,7 @@ class ImportController {
       final List<ContactBuilder> readContacts = await VCFSerializer.readFromVCF(
         VCFFileReader(
           File(inboxFilePath),
+          DiskFileInflater(),
           progressCallback: progressCallback,
         ),
       );

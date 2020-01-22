@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_reader.dart';
 
 class VCFFileReader extends VCFReader {
@@ -8,7 +9,7 @@ class VCFFileReader extends VCFReader {
   int _currentLine = 0;
   List<String> _lines;
 
-  VCFFileReader(this._file, {this.progressCallback});
+  VCFFileReader(this._file, final FileInflater fileInflater, {this.progressCallback}) : super(fileInflater);
 
   @override
   Future<String> readLineImpl() async {

@@ -1,9 +1,7 @@
-import 'dart:io';
-
-import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_multi_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
+import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
 import 'package:po_contacts_flutter/model/data/address_info.dart';
 import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
@@ -13,6 +11,10 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class VCFReader {
+  final FileInflater fileInflater;
+
+  VCFReader(this.fileInflater);
+
   Future<String> readLineImpl();
 
   String _pendingReadLine;
@@ -143,10 +145,10 @@ abstract class VCFReader {
       if (photoField.fieldParams['PNG'] == '') {
         fileExtension = '.png';
       }
-      final File imageFile = await MainController.get().createNewImageFile(fileExtension);
-      final bool fileWriteSuccess = await Utils.base64StringToFile(photoField.fieldValue, imageFile);
+      final FileEntry imageFile = await fileInflater.createNewImageFile(fileExtension);
+      final bool fileWriteSuccess = await imageFile.writeBase64String(photoField.fieldValue);
       if (fileWriteSuccess) {
-        contactBuilder.setImage(imageFile.absolute.path);
+        contactBuilder.setImage(imageFile.getAbsolutePath());
       } else {
         await imageFile.delete();
       }
