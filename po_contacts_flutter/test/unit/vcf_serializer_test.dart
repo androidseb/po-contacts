@@ -3,6 +3,8 @@ import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
+import 'test_data.dart';
+
 class MockVCFWriter extends VCFWriter {
   final List<String> writtenLines = [];
   @override
@@ -10,37 +12,6 @@ class MockVCFWriter extends VCFWriter {
     writtenLines.add(line);
   }
 }
-
-final Contact testContact1 = Contact(
-  0, //id
-  '', //image
-  'First name', //firstName
-  'Last name', //lastName
-  'Nickname', //nickName
-  'Full Name', //fullName
-  [], //phoneInfos
-  [], //emailInfos
-  [], //addressInfos
-  'Organization Name', //organizationName
-  'Organization Division', //organizationDivision
-  'Organization Title', //organizationTitle
-  'www.website.com', //website
-  'Notes\nAnd\nmore\nlines', //notes
-  [], //unknownVCFFieldLines
-);
-
-const String CONTACT1_EXPECTED_OUTPUT = '''BEGIN:VCARD\r
-VERSION:2.1\r
-FN:Full Name\r
-N:First name;Last name;;;\r
-NICKNAME:Nickname\r
-ORG:Organization Name;Organization Division;\r
-TITLE:Organization Title\r
-URL:www.website.com\r
-NOTE:Notes\\nAnd\\nmore\\nlines\r
-END:VCARD\r
-\r
-''';
 
 void main() {
   test('VCF export - empty', () {
@@ -51,12 +22,35 @@ void main() {
     expect(vcfWriter.writtenLines.length, 0);
   });
 
-  test('VCF export - 1 contact', () async {
-    final List<Contact> contacts = [];
-    contacts.add(testContact1);
+  test('VCF export - simplest contact', () async {
+    final List<Contact> contacts = [testContactSimplest];
     final Function(int progress) progressCallback = (final int progress) {};
     final MockVCFWriter vcfWriter = MockVCFWriter();
     await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
-    expect(vcfWriter.writtenLines.join(), CONTACT1_EXPECTED_OUTPUT);
+    expect(vcfWriter.writtenLines.join(), CONTACT_SIMPLEST_EXPECTED_OUTPUT);
+  });
+
+  test('VCF export - simple contact', () async {
+    final List<Contact> contacts = [testContactSimple];
+    final Function(int progress) progressCallback = (final int progress) {};
+    final MockVCFWriter vcfWriter = MockVCFWriter();
+    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    expect(vcfWriter.writtenLines.join(), CONTACT_SIMPLE_EXPECTED_OUTPUT);
+  });
+
+  test('VCF export - complex contact', () async {
+    final List<Contact> contacts = [testContactComplex];
+    final Function(int progress) progressCallback = (final int progress) {};
+    final MockVCFWriter vcfWriter = MockVCFWriter();
+    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    expect(vcfWriter.writtenLines.join(), CONTACT_COMPLEX_EXPECTED_OUTPUT);
+  });
+
+  test('VCF export - multiple contact', () async {
+    final List<Contact> contacts = [testContactSimplest, testContactSimple, testContactComplex];
+    final Function(int progress) progressCallback = (final int progress) {};
+    final MockVCFWriter vcfWriter = MockVCFWriter();
+    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    expect(vcfWriter.writtenLines.join(), CONTACTS_MULTIPLE_EXPECTED_OUTPUT);
   });
 }
