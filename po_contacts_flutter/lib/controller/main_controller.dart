@@ -412,8 +412,7 @@ class MainController {
     }
     final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
     while (true) {
-      final String targetFilePath =
-          '${internalAppDirectory.path}/${DateTime.now().millisecondsSinceEpoch}' + fileExtension;
+      final String targetFilePath = '${internalAppDirectory.path}/${Utils.currentTimeMillis()}' + fileExtension;
       final File targetFile = File(targetFilePath);
       if (!await targetFile.exists()) {
         await targetFile.create();

@@ -113,4 +113,26 @@ class AddressInfo {
     addedText = _addString(res, country, addedText);
     return res.toString();
   }
+
+  @override
+  int get hashCode {
+    return 3 * streetAddress.hashCode + //
+        7 * locality.hashCode + //
+        11 * region.hashCode + //
+        13 * postalCode.hashCode + //
+        17 * country.hashCode + //
+        0;
+  }
+
+  bool operator ==(o) {
+    if (o is AddressInfo) {
+      return streetAddress == o.streetAddress && //
+              locality == o.locality && //
+              region == o.region && //
+              postalCode == o.postalCode && //
+              country == o.country //
+          ;
+    }
+    return false;
+  }
 }

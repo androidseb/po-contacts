@@ -139,6 +139,11 @@ abstract class VCFReader {
       return;
     }
 
+    final SingleValueField versionField = getSingleValueField(fieldLine, VCFConstants.FIELD_VERSION);
+    if (versionField != null) {
+      return;
+    }
+
     final SingleValueField photoField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHOTO);
     if (photoField != null) {
       String fileExtension = '.jpg';
@@ -152,6 +157,7 @@ abstract class VCFReader {
       } else {
         await imageFile.delete();
       }
+      return;
     }
 
     final SingleValueField fnField = getSingleValueField(fieldLine, VCFConstants.FIELD_FULL_NAME);

@@ -106,4 +106,8 @@ class Utils {
       return null;
     }
   }
+
+  static int currentTimeMillis() {
+    return DateTime.now().millisecondsSinceEpoch;
+  }
 }

@@ -12,10 +12,11 @@ class VCFConstants {
   static const String VCF_SEPARATOR_COLON = ':';
   static const String VCF_SEPARATOR_SEMICOLON = ';';
   static const String VCF_SEPARATOR_EQUAL = '=';
+  static const VCF_VERSION_LINE = 'VERSION:2.1';
 
   static const FIELD_BEGIN_VCARD = 'BEGIN:VCARD';
   static const FIELD_END_VCARD = 'END:VCARD';
-  static const FIELD_VERSION = 'VERSION:2.1';
+  static const FIELD_VERSION = 'VERSION';
   static const FIELD_PHOTO = 'PHOTO';
   static const FIELD_FULL_NAME = 'FN';
   static const FIELD_NAME = 'N';

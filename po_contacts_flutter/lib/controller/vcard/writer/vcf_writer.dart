@@ -130,7 +130,7 @@ abstract class VCFWriter {
     );
     _writeVCFStringFieldValues(
       VCFConstants.FIELD_NAME,
-      [contact.firstName, contact.lastName, '', '', ''],
+      [contact.lastName, contact.firstName, '', '', ''],
       writeEmpty: true,
     );
     _writeVCFStringFieldValue(
@@ -195,7 +195,7 @@ abstract class VCFWriter {
     }
 
     writeLine(VCFConstants.FIELD_BEGIN_VCARD);
-    writeLine(VCFConstants.FIELD_VERSION);
+    writeLine(VCFConstants.VCF_VERSION_LINE);
     await writeContactFields(contact);
     writeLine(VCFConstants.FIELD_END_VCARD);
     writeLine('');

@@ -45,7 +45,7 @@ abstract class VCFField {
         return _unEscapeQuotedPrintableString(str);
       }
     }
-    return str.replaceAll('\\', '');
+    return str.replaceAll('\\n', '\n').replaceAll('\\', '');
   }
 
   //Retrieve the index of the next character in the string that is a non-escaped separator
