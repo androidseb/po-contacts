@@ -220,4 +220,22 @@ void main() {
     expectContactsEqual(contacts[1].build(0), testContactSimple);
     expectContactsEqual(contacts[2].build(0), testContactComplex);
   });
+
+  test('VCF import of export - consistent data', () async {
+    //Export contacts as a string
+    final List<Contact> initialContacts = [testContactSimplest, testContactSimple, testContactComplex];
+    final Function(int progress) progressCallback = (final int progress) {};
+    final MockVCFWriter vcfWriter = MockVCFWriter();
+    await VCFSerializer.writeToVCF(initialContacts, vcfWriter, progressCallback);
+    final String exportResultAsString = vcfWriter.writtenLines.join();
+
+    //Import contacts back from the exported string
+    final List<ContactBuilder> importedContacts = await VCFSerializer.readFromVCF(MockVCFReader(exportResultAsString));
+
+    //Test that the imported contacts are identical to the initial contacts
+    expect(initialContacts.length, importedContacts.length);
+    for (int i = 0; i < initialContacts.length; i++) {
+      expectContactsEqual(initialContacts[i], importedContacts[i].build(0));
+    }
+  });
 }
