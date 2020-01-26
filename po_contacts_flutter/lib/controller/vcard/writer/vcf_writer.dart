@@ -1,5 +1,6 @@
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/abs_file_reader.dart';
 import 'package:po_contacts_flutter/model/data/address_info.dart';
 import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
@@ -8,6 +9,10 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class VCFWriter {
+  final FileReader fileReader;
+
+  VCFWriter(this.fileReader);
+
   void writeStringImpl(final String line);
 
   void writeLine(final String line) {
@@ -109,7 +114,7 @@ abstract class VCFWriter {
   Future<void> writeContactFields(final Contact contact) async {
     if (contact.image != null) {
       final String fileExtension = Utils.getFileExtension(contact.image);
-      final String photoAsBase64String = await Utils.fileContentToBase64String(contact.image);
+      final String photoAsBase64String = await fileReader.fileToBase64String(contact.image);
       if (photoAsBase64String != null) {
         _writeVCFStringFieldValue(
           VCFConstants.FIELD_PHOTO,

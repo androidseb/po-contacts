@@ -1,11 +1,21 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/abs_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
 import 'test_data.dart';
 
+class MockFileReader extends FileReader {
+  @override
+  Future<String> fileToBase64String(String filePath) async {
+    return MOCK_FILES_BASE64_CONTENT[filePath];
+  }
+}
+
 class MockVCFWriter extends VCFWriter {
+  MockVCFWriter() : super(MockFileReader());
+
   final List<String> writtenLines = [];
   @override
   void writeStringImpl(String line) {
