@@ -157,16 +157,4 @@ abstract class LabeledField<T> {
   );
 
   dynamic fieldValueToJSONConvertable();
-
-  @override
-  int get hashCode {
-    return 13 * labelType.hashCode + 17 * labelText.hashCode + 29 * fieldValue.hashCode;
-  }
-
-  bool operator ==(o) {
-    if (o is LabeledField) {
-      return labelType == o.labelType && labelText == o.labelText && fieldValue == o.fieldValue;
-    }
-    return false;
-  }
 }

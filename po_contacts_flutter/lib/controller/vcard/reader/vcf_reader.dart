@@ -274,6 +274,10 @@ abstract class VCFReader {
       return;
     }
 
+    if (fieldLine.trim().isEmpty) {
+      return;
+    }
+
     //If none of the above were recognized as a field, we save this as an unknown field line
     //This will ensure no imported contact fields are lost when we export
     contactBuilder.addUnknownVCFFieldLine(fieldLine);

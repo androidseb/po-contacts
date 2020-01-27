@@ -8,6 +8,13 @@ class VCFConstants {
     ';': '\\;',
     '\n': '\\n',
   };
+  static const Map<String, String> VCF_UNESCAPED_CHARS_MAP = {
+    '\\\\': '\\',
+    '\\,': ',',
+    '\\:': ':',
+    '\\;': ';',
+    '\\n': '\n',
+  };
   static const String VCF_SEPARATOR_COMMA = ',';
   static const String VCF_SEPARATOR_COLON = ':';
   static const String VCF_SEPARATOR_SEMICOLON = ';';

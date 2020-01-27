@@ -45,7 +45,11 @@ abstract class VCFField {
         return _unEscapeQuotedPrintableString(str);
       }
     }
-    return str.replaceAll('\\n', '\n').replaceAll('\\', '');
+    String res = str;
+    VCFConstants.VCF_UNESCAPED_CHARS_MAP.forEach((key, value) {
+      res = res.replaceAll(key, value);
+    });
+    return res;
   }
 
   //Retrieve the index of the next character in the string that is a non-escaped separator
@@ -138,7 +142,7 @@ abstract class VCFField {
     final String fieldLine,
     final Map<String, String> fieldParams,
   ) {
-    final int afterFieldNameIndex = fieldName.length + 1;
+    final int afterFieldNameIndex = fieldName.length;
     final int fieldValueStartIndex = getNextSeparatorIndex(
       fieldLine,
       afterFieldNameIndex,

@@ -108,7 +108,9 @@ expectStringLabeledFieldsEqual(final List<StringLabeledField> slfl1, final List<
   }
   expect(slfl1.length, slfl2.length);
   for (int i = 0; i < slfl1.length; i++) {
-    expect(slfl1[i] == slfl2[i], true);
+    expect(slfl1[i].labelType, slfl2[i].labelType);
+    expect(slfl1[i].labelText, slfl2[i].labelText);
+    expect(slfl1[i].fieldValue, slfl2[i].fieldValue);
   }
 }
 
@@ -123,7 +125,13 @@ expectAddressLabeledFieldsEqual(final List<AddressLabeledField> alfl1, final Lis
   }
   expect(alfl1.length, alfl2.length);
   for (int i = 0; i < alfl1.length; i++) {
-    expect(alfl1[i] == alfl2[i], true);
+    expect(alfl1[i].labelType, alfl2[i].labelType);
+    expect(alfl1[i].labelText, alfl2[i].labelText);
+    expect(alfl1[i].fieldValue.streetAddress, alfl2[i].fieldValue.streetAddress);
+    expect(alfl1[i].fieldValue.locality, alfl2[i].fieldValue.locality);
+    expect(alfl1[i].fieldValue.region, alfl2[i].fieldValue.region);
+    expect(alfl1[i].fieldValue.postalCode, alfl2[i].fieldValue.postalCode);
+    expect(alfl1[i].fieldValue.country, alfl2[i].fieldValue.country);
   }
 }
 
@@ -178,8 +186,16 @@ void main() {
     expect(vcfWriter.writtenLines.join(), CONTACT_COMPLEX_EXPECTED_OUTPUT);
   });
 
+  test('VCF export - complex contact 2', () async {
+    final List<Contact> contacts = [testContactComplex2];
+    final Function(int progress) progressCallback = (final int progress) {};
+    final MockVCFWriter vcfWriter = MockVCFWriter();
+    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    expect(vcfWriter.writtenLines.join(), CONTACT_COMPLEX_2_EXPECTED_OUTPUT);
+  });
+
   test('VCF export - multiple contact', () async {
-    final List<Contact> contacts = [testContactSimplest, testContactSimple, testContactComplex];
+    final List<Contact> contacts = [testContactSimplest, testContactSimple, testContactComplex, testContactComplex2];
     final Function(int progress) progressCallback = (final int progress) {};
     final MockVCFWriter vcfWriter = MockVCFWriter();
     await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
@@ -212,18 +228,59 @@ void main() {
     expectContactsEqual(contacts[0].build(0), testContactComplex);
   });
 
+  test('VCF import - complex contact alt1', () async {
+    final List<ContactBuilder> contacts =
+        await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_1));
+    expect(contacts.length, 1);
+    expectContactsEqual(contacts[0].build(0), testContactComplex);
+  });
+
+  test('VCF import - complex contact alt2', () async {
+    final List<ContactBuilder> contacts =
+        await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_2));
+    expect(contacts.length, 1);
+    expectContactsEqual(contacts[0].build(0), testContactComplex);
+  });
+
+  test('VCF import - complex contact alt3', () async {
+    final List<ContactBuilder> contacts =
+        await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_3));
+    expect(contacts.length, 1);
+    expectContactsEqual(contacts[0].build(0), testContactComplex);
+  });
+
+  test('VCF import - complex contact 2', () async {
+    final List<ContactBuilder> contacts =
+        await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_2_EXPECTED_OUTPUT));
+    expect(contacts.length, 1);
+    expectContactsEqual(contacts[0].build(0), testContactComplex2);
+  });
+
+  test('VCF import - complex contact 2 alt1', () async {
+    final List<ContactBuilder> contacts =
+        await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_2_ALTERNATE_INPUT_1));
+    expect(contacts.length, 1);
+    expectContactsEqual(contacts[0].build(0), testContactComplex2);
+  });
+
   test('VCF import - multiple contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACTS_MULTIPLE_EXPECTED_OUTPUT));
-    expect(contacts.length, 3);
+    expect(contacts.length, 4);
     expectContactsEqual(contacts[0].build(0), testContactSimplest);
     expectContactsEqual(contacts[1].build(0), testContactSimple);
     expectContactsEqual(contacts[2].build(0), testContactComplex);
+    expectContactsEqual(contacts[3].build(0), testContactComplex2);
   });
 
   test('VCF import of export - consistent data', () async {
     //Export contacts as a string
-    final List<Contact> initialContacts = [testContactSimplest, testContactSimple, testContactComplex];
+    final List<Contact> initialContacts = [
+      testContactSimplest,
+      testContactSimple,
+      testContactComplex,
+      testContactComplex2
+    ];
     final Function(int progress) progressCallback = (final int progress) {};
     final MockVCFWriter vcfWriter = MockVCFWriter();
     await VCFSerializer.writeToVCF(initialContacts, vcfWriter, progressCallback);
