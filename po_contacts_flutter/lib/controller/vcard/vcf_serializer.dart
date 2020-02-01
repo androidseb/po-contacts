@@ -28,7 +28,7 @@ class VCFSerializer {
     for (int i = 0; i < contacts.length; i++) {
       final Contact c = contacts[i];
       await vcfWriter.writeContact(c);
-      await progressCallback(((i + 1) / contacts.length).floor());
+      await progressCallback((100 * (i + 1) / contacts.length).floor());
     }
   }
 }
