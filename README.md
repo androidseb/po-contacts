@@ -20,7 +20,13 @@ I built this app on my free time and mostly as a learning experience. I intend t
 * MacOS: probably available soon
 * Linux: probably available soon
 
+## How to install
+
+* Android: [Google Play Store](https://play.google.com/store/apps/details?id=com.exlyo.pocontacts)
+* iOS: [App Store](https://apps.apple.com/us/app/map-marker-places-organizer/id1495556759)
+
 ## Credits
 
 * The [flutter project](https://flutter.dev/) for all the development tools.
 * The [textmate](https://github.com/textmate/textmate/blob/master/Applications/TextMate/resources/Info.plist) source code helped me figure out how to specify vcard files in an iOS app Info.plist.
+
