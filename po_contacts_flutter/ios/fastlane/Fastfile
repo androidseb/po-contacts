@@ -1,11 +1,24 @@
 default_platform :ios
 
-lane :beta do
+lane :build_ipa do
   gym(
     scheme: "Runner",
     export_method: "app-store"
   )
-  # upload to Testflight
+end
+
+lane :beta do
+  build_ipa()
   pilot(skip_waiting_for_build_processing: true)
 end
 
+lane :prod do
+  build_ipa()
+  deliver(
+    ipa: "Runner.ipa",
+    force: true,
+    submit_for_review: false,
+    metadata_path: "../../resources/AppleStore/metadata",
+    screenshots_path: "../../resources/AppleStore/screenshots"
+  )
+end

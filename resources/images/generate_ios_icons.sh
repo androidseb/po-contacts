@@ -3,7 +3,7 @@ set -e
 
 cd $(git rev-parse --show-toplevel)
 
-cd images
+cd resources/images
 
 sh generate_ios_icon.sh 1024 Icon-App-1024x1024@1x.png
 sh generate_ios_icon.sh 20 Icon-App-20x20@1x.png
