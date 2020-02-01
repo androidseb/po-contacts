@@ -7,7 +7,7 @@ The vision and end goal of this project is to have a portable and privacy orient
 
 Disclaimer
 
-I built this app on my free time and mostly as a learning experience. I intend to use it myself and I'm happy to share it publicly for free if it can help others. That being said, if you choose to use it, you use it at your own risks, there is no warranty (see the licence for more details).
+I built this app on my free time and mostly as a learning experience. I intend to use it myself and I'm happy to share it publicly for free if it can help others. I also made the code available publicly, because I believe being open source is an important part of a privacy-focused app. That being said, if you choose to use it, you use it at your own risks, there is no warranty (see the licence for more details).
 
 Features:
 - Create and edit contact details
@@ -16,3 +16,4 @@ Features:
 - Start SMS from contact
 - Export contacts to .vcf files
 - Import contacts from .vcf files
+
