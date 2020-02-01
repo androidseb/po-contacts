@@ -5,6 +5,10 @@ The vision and end goal of this project is to have a portable and privacy orient
 - Portable means you can use it on "any" platform (see supported platforms) on the website
 - Privacy oriented means it's built with a "privacy first" mindset. See the privacy policy for details.
 
+Disclaimer
+
+I built this app on my free time and mostly as a learning experience. I intend to use it myself and I'm happy to share it publicly for free if it can help others. That being said, if you choose to use it, you use it at your own risks, there is no warranty (see the licence for more details).
+
 Features:
 - Create and edit contact details
 - Start email from contact
