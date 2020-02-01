@@ -11,5 +11,5 @@ pod install
 cd ..
 flutter build ios
 cd ios
-fastlane beta
+fastlane $1
 
