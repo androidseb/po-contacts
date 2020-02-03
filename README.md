@@ -6,7 +6,7 @@ The vision and end goal of this project is to have a **portable** and **privacy 
 
 * Portable means you can use it on "any" platform (see [supported platforms](#supported-platforms)).
 
-* Privacy oriented means it's built with a "privacy first" mindset. See the [privacy policy](./privacy_policy) for details.
+* Privacy oriented means it's built with a "privacy first" mindset. See the [privacy policy](./privacy_policy.md) for details.
 
 ## Disclaimer
 
