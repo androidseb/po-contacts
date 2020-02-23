@@ -40,6 +40,7 @@ class MainController {
   final ExportController _exportController = ExportController();
 
   void _initializeMainController() {
+    _model.initializeMainModel(_psController.contactsStorage);
     SystemChannels.lifecycle.setMessageHandler((final String msg) async {
       if (msg == AppLifecycleState.resumed.toString()) {
         _importController.startImportIfNeeded();

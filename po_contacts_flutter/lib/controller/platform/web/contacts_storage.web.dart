@@ -2,10 +2,10 @@
 import 'dart:html';
 import 'dart:convert';
 
-import 'package:po_contacts_flutter/model/storage/contacts_storage.dart';
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 
-class ContactsStorageImpl implements ContactsStorage {
+class ContactsStorageWeb implements ContactsStorage {
   static const String STORAGE_KEY_INDEX = 'contactsIndex';
   static const String STORAGE_KEY_CONTACT_PREFIX = 'contacts-';
 
@@ -37,7 +37,7 @@ class ContactsStorageImpl implements ContactsStorage {
   Set<int> _contactIds;
   Window _htmlWindow;
 
-  ContactsStorageImpl() {
+  ContactsStorageWeb() {
     _htmlWindow = window;
   }
 
@@ -100,5 +100,3 @@ class ContactsStorageImpl implements ContactsStorage {
     return true;
   }
 }
-
-ContactsStorage getInstanceImpl() => ContactsStorageImpl();

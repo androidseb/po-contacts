@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:path/path.dart';
-import 'package:po_contacts_flutter/model/storage/contacts_storage.dart';
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ContactsStorageImpl implements ContactsStorage {
+class ContactsStorageMobile implements ContactsStorage {
   static const String DB_FILE_NAME = 'contacts_database.db';
   static const String FIELD_ID = 'id';
   static const String FIELD_JSON = 'json';
@@ -70,5 +70,3 @@ class ContactsStorageImpl implements ContactsStorage {
     return deletedCount == 1;
   }
 }
-
-ContactsStorage getInstanceImpl() => ContactsStorageImpl();

@@ -1,5 +1,5 @@
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/model/storage/contacts_storage.dart';
 
 class ContactStorageEntry {
   final String json;
@@ -14,17 +14,16 @@ class ContactStorageEntryWithId extends ContactStorageEntry {
 }
 
 class ContactsStorageController {
-  final ContactsStorage _contactsStorage = ContactsStorage();
-  bool storageInitStarted = false;
+  ContactsStorage _contactsStorage;
   bool storageInitialized = false;
 
   bool get isInitialized => storageInitialized;
 
-  void initializeStorage(final Function(List<Contact> loadedContacts) callback) {
-    if (storageInitStarted) {
+  void initializeStorage(final ContactsStorage contactsStorage, final Function(List<Contact> loadedContacts) callback) {
+    if (_contactsStorage != null) {
       return;
     }
-    storageInitStarted = true;
+    _contactsStorage = contactsStorage;
     _contactsStorage.readAllContacts().then((final List<ContactStorageEntryWithId> rawContacts) {
       final List<Contact> res = [];
       for (final ContactStorageEntryWithId c in rawContacts) {
