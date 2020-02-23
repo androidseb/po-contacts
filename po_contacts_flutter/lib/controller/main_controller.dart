@@ -56,7 +56,7 @@ class MainController {
   //Releases the current execution thread to allow other queued items to execute
   //Used during file import/export operations
   Future<void> yieldMainQueue() async {
-    return await _psController.getOutputFilesDirectoryPath();
+    return await _psController.fileTransitManager.getOutputFilesDirectoryPath();
   }
 
   void updateBuildContext(final BuildContext context) {
