@@ -17,7 +17,7 @@ class ExportController {
     _isExporting = true;
     final Function(int progress) progressCallback =
         MainController.get().displayLoadingDialog(I18n.getString(I18n.string.exporting));
-    final String outputFilesDirPath = await MainController.get().nativeApisController.getOutputFilesDirectoryPath();
+    final String outputFilesDirPath = await MainController.get().psController.getOutputFilesDirectoryPath();
     final DateTime t = new DateTime.now();
     final String monthS = Utils.positiveNumberToXDigitsString(t.month, 2);
     final String dayS = Utils.positiveNumberToXDigitsString(t.day, 2);
@@ -34,7 +34,7 @@ class ExportController {
       progressCallback(101);
     }
     final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
-    await MainController.get().nativeApisController.shareFileExternally(sharePromptTitle, destFilePath);
+    await MainController.get().psController.shareFileExternally(sharePromptTitle, destFilePath);
     if (Platform.isAndroid) {
       MainController.get().showMessageDialog(
         I18n.getString(I18n.string.export_completed),

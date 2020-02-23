@@ -17,7 +17,7 @@ class ImportController {
   }
 
   Future<String> _getImportableFileId() async {
-    return await MainController.get().nativeApisController.getInboxFileId();
+    return await MainController.get().psController.getInboxFileId();
   }
 
   void _startImportProcedure(final String fileId) {
@@ -40,14 +40,14 @@ class ImportController {
   }
 
   void _discardFileWithId(final String fileId) {
-    MainController.get().nativeApisController.discardInboxFileId(fileId);
+    MainController.get().psController.discardInboxFileId(fileId);
   }
 
   Future<void> _importFileWithId(final String fileId) async {
     final Function(int progress) progressCallback =
         MainController.get().displayLoadingDialog(I18n.getString(I18n.string.importing));
     try {
-      final String inboxFilePath = await MainController.get().nativeApisController.getCopiedInboxFilePath(fileId);
+      final String inboxFilePath = await MainController.get().psController.getCopiedInboxFilePath(fileId);
       final List<ContactBuilder> readContacts = await VCFSerializer.readFromVCF(
         VCFFileReader(
           File(inboxFilePath),

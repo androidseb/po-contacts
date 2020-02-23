@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 
-class NativeApisController {
+class PlatformSpecificControllerImpl implements PlatformSpecificController {
   static const platform = const MethodChannel('com.exlyo.pocontacts/files');
 
   Future<String> _getInboxFileIdInDirForIOS(final Directory dir, final String inboxDirName) async {
@@ -43,6 +44,7 @@ class NativeApisController {
     return foundInboxFileId;
   }
 
+  @override
   Future<String> getInboxFileId() async {
     if (Platform.isIOS) {
       return _getInboxFileIdForIOS();
@@ -50,6 +52,7 @@ class NativeApisController {
     return await platform.invokeMethod('getInboxFileId');
   }
 
+  @override
   Future<void> discardInboxFileId(final String inboxFileId) async {
     if (Platform.isIOS) {
       await File(inboxFileId).delete();
@@ -58,6 +61,7 @@ class NativeApisController {
     return await platform.invokeMethod('discardInboxFileId', {'inboxFileId': inboxFileId});
   }
 
+  @override
   Future<String> getCopiedInboxFilePath(final String inboxFileId) async {
     if (Platform.isIOS) {
       return inboxFileId;
@@ -65,6 +69,7 @@ class NativeApisController {
     return await platform.invokeMethod('getCopiedInboxFilePath', {'inboxFileId': inboxFileId});
   }
 
+  @override
   Future<String> getOutputFilesDirectoryPath() async {
     if (Platform.isIOS) {
       final Directory tempDir = await getTemporaryDirectory();
@@ -73,7 +78,10 @@ class NativeApisController {
     return await platform.invokeMethod('getOutputFilesDirectoryPath');
   }
 
+  @override
   Future<void> shareFileExternally(final String sharePromptTitle, final String filePath) async {
     await platform.invokeMethod('shareFileExternally', {'sharePromptTitle': sharePromptTitle, 'filePath': filePath});
   }
 }
+
+PlatformSpecificController getInstanceImpl() => PlatformSpecificControllerImpl();

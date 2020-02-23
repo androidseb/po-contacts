@@ -9,7 +9,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
 import 'package:po_contacts_flutter/controller/import_controller.dart';
-import 'package:po_contacts_flutter/controller/native_apis_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
@@ -35,7 +35,7 @@ class MainController {
   BuildContext _context;
   final MainModel _model = MainModel();
   final ContactsSearchDelegate _contactsSearchDelegate = ContactsSearchDelegate();
-  final NativeApisController _nativeApisController = NativeApisController();
+  final PlatformSpecificController _psController = PlatformSpecificController();
   final ImportController _importController = ImportController();
   final ExportController _exportController = ExportController();
 
@@ -51,12 +51,12 @@ class MainController {
 
   MainModel get model => _model;
 
-  NativeApisController get nativeApisController => _nativeApisController;
+  PlatformSpecificController get psController => _psController;
 
   //Releases the current execution thread to allow other queued items to execute
   //Used during file import/export operations
   Future<void> yieldMainQueue() async {
-    return await _nativeApisController.getOutputFilesDirectoryPath();
+    return await _psController.getOutputFilesDirectoryPath();
   }
 
   void updateBuildContext(final BuildContext context) {
