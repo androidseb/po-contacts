@@ -67,9 +67,12 @@ platform :ios do
   
   lane :beta do
     build_ipa()
-    pilot(skip_waiting_for_build_processing: true)
+    pilot(
+      ipa: "../ios_app.ipa",
+      skip_waiting_for_build_processing: true
+    )
   end
-  
+
   lane :prod do
     build_ipa()
     deliver(
