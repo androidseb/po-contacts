@@ -68,7 +68,7 @@ platform :ios do
   lane :beta do
     build_ipa()
     pilot(
-      ipa: "../ios_app.ipa",
+      ipa: "../bin/ios_app.ipa",
       skip_waiting_for_build_processing: true
     )
   end
@@ -76,7 +76,7 @@ platform :ios do
   lane :prod do
     build_ipa()
     deliver(
-      ipa: "../../bin/ios_app.ipa",
+      ipa: "../bin/ios_app.ipa",
       force: true,
       submit_for_review: false,
       metadata_path: "../../resources/AppleStore/metadata",
