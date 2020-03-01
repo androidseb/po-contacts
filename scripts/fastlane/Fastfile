@@ -36,7 +36,7 @@ platform :android do
     sh('sh ../android_build_apk.sh')
     upload_to_play_store(
       track: 'internal',
-      apk: '../po_contacts_flutter/build/app/outputs/apk/release/app-release.apk',
+      apk: '../../bin/android_app.apk',
     )
   end
 
@@ -63,7 +63,7 @@ end
 platform :ios do
   lane :build_ipa do
     gym(
-      workspace: "../po_contacts_flutter/ios/Runner.xcworkspace",
+      workspace: "../../bin/tmp/ios/Runner.xcworkspace",
       scheme: "Runner",
       export_method: "app-store"
     )
@@ -77,7 +77,7 @@ platform :ios do
   lane :prod do
     build_ipa()
     deliver(
-      ipa: "../po_contacts_flutter/ios/Runner.ipa",
+      ipa: "../../bin/ios/Runner.ipa",
       force: true,
       submit_for_review: false,
       metadata_path: "../../resources/AppleStore/metadata",

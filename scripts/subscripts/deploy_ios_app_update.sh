@@ -11,4 +11,5 @@ pod install
 cd ..
 flutter build ios
 cd $(git rev-parse --show-toplevel)
+cd scripts
 fastlane platform:ios $1
