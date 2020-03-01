@@ -11,6 +11,9 @@ cp -r po_contacts_flutter bin/tmp
 cd bin/tmp
 
 echo "Editing source file locally for the web..."
+# Deleting all .mobile.dart files
+find . -type f -name '*.mobile.dart' -delete
+# Replacing the conditional import in lib/controller/platform/platform_specific_controller.dart to only consider the web
 sed -i 's/import.*.mobile\.dart.*//g' lib/controller/platform/platform_specific_controller.dart
 sed -i 's/\ \ \ \ if\ (dart\.library\.io)/import/g' lib/controller/platform/platform_specific_controller.dart
 echo "Executing flutter build web..."
