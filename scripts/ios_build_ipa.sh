@@ -18,4 +18,8 @@ sed -i '' 's/\ \ \ \ if\ (dart\.library\.io).*/;/g' lib/controller/platform/plat
 
 flutter pub get
 flutter build ios
-mv build/ios/iphoneos/Runner.app ../ios_app.ipa
+
+cd ios
+fastlane gym scheme:"Runner" export_method:"app-store"
+
+mv Runner.ipa ../../ios_app.ipa
