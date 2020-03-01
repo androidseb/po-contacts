@@ -33,7 +33,7 @@ platform :android do
   end
 
   lane :internal do
-    sh('sh ../build_apk.sh')
+    sh('sh ../android_build_apk.sh')
     upload_to_play_store(
       track: 'internal',
       apk: '../po_contacts_flutter/build/app/outputs/apk/release/app-release.apk',
