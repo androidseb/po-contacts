@@ -9,7 +9,7 @@ flutter pub get
 cd ios
 pod install
 cd ..
-flutter build ios
 cd $(git rev-parse --show-toplevel)
 cd scripts
+sh ios_buid_ipa.sh
 fastlane platform:ios $1

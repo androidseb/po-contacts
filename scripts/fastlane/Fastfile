@@ -62,11 +62,7 @@ end
 
 platform :ios do
   lane :build_ipa do
-    gym(
-      workspace: "../../bin/tmp/ios/Runner.xcworkspace",
-      scheme: "Runner",
-      export_method: "app-store"
-    )
+    sh('sh ../ios_build_ipa.sh')
   end
   
   lane :beta do
@@ -77,7 +73,7 @@ platform :ios do
   lane :prod do
     build_ipa()
     deliver(
-      ipa: "../../bin/ios/Runner.ipa",
+      ipa: "../../bin/ios_app.ipa",
       force: true,
       submit_for_review: false,
       metadata_path: "../../resources/AppleStore/metadata",
