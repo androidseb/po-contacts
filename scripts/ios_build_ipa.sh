@@ -14,7 +14,7 @@ echo "Editing source file locally for ios..."
 # Deleting all .web.dart files
 find . -type f -name '*.web.dart' -delete
 # Replacing the conditional import in lib/controller/platform/platform_specific_controller.dart to remove web imports
-sed -i 's/\ \ \ \ if\ (dart\.library\.io).*/;/g' lib/controller/platform/platform_specific_controller.dart
+sed -i '' 's/\ \ \ \ if\ (dart\.library\.io).*/;/g' lib/controller/platform/platform_specific_controller.dart
 
 flutter pub get
 flutter build ios
