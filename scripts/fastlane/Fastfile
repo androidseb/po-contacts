@@ -1,13 +1,13 @@
 default_platform(:android)
 
 platform :android do
-  lane :get_latest_version_code do |options|
+  lane :android_get_latest_version_code do |options|
     # Get the latest version code from Google Play among alpha/beta/production tracks
     # Scans the alpha track, then the beta track, and finally the production track.
     # Returns as soon as a version code is found for any track.
     #
     # Usage:
-    # fastlane get_latest_version_code
+    # fastlane android_get_latest_version_code
     latest_track_version_code = google_play_track_version_codes(
       track: 'internal',
     )
@@ -46,7 +46,7 @@ platform :android do
   end
 
   lane :internal_promote do
-    internal_version_code = get_latest_version_code()
+    internal_version_code = android_get_latest_version_code()
     upload_to_play_store(
         track: 'internal',
         version_code: internal_version_code,
@@ -56,6 +56,32 @@ platform :android do
         skip_upload_metadata: true,
         skip_upload_images: true,
         skip_upload_screenshots: true,
+    )
+  end
+end
+
+platform :ios do
+  lane :build_ipa do
+    gym(
+      workspace: "../po_contacts_flutter/ios/Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store"
+    )
+  end
+  
+  lane :beta do
+    build_ipa()
+    pilot(skip_waiting_for_build_processing: true)
+  end
+  
+  lane :prod do
+    build_ipa()
+    deliver(
+      ipa: "../po_contacts_flutter/ios/Runner.ipa",
+      force: true,
+      submit_for_review: false,
+      metadata_path: "../../resources/AppleStore/metadata",
+      screenshots_path: "../../resources/AppleStore/screenshots"
     )
   end
 end
