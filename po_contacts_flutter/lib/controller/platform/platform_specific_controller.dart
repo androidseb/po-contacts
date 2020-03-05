@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
-    if (dart.library.io) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart';
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.stub.dart'
+   if (dart.library.io) 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
+   if (dart.library.html) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart'
+;
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 
 abstract class ContactsStorage {
