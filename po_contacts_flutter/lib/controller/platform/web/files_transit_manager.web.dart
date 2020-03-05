@@ -1,7 +1,7 @@
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 import 'dart:async';
 
-class FileTransitManagerWeb implements FilesTransitManager {
+class FilesTransitManagerWeb implements FilesTransitManager {
   @override
   Future<String> getInboxFileId() async {
     return null;

@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.stub.dart'
-   if (dart.library.io) 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
-   if (dart.library.html) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart'
-;
+    if (dart.library.io) 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
+    if (dart.library.html) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 
 abstract class ContactsStorage {
@@ -27,6 +26,8 @@ abstract class FilesTransitManager {
   Future<void> shareFileExternally(final String sharePromptTitle, final String filePath);
 }
 
+abstract class FilesManager {}
+
 abstract class PSHelper {
   factory PSHelper() => getInstanceImpl();
 
@@ -35,6 +36,9 @@ abstract class PSHelper {
 
   @protected
   FilesTransitManager createFilesTransitManager();
+
+  @protected
+  FilesManager createFilesManager();
 }
 
 class PlatformSpecificController {
@@ -42,6 +46,7 @@ class PlatformSpecificController {
 
   ContactsStorage _contactsStorage;
   FilesTransitManager _filesTransitManager;
+  FilesManager _filesManager;
 
   ContactsStorage get contactsStorage {
     if (_contactsStorage == null) {
@@ -55,5 +60,12 @@ class PlatformSpecificController {
       _filesTransitManager = _psHelper.createFilesTransitManager();
     }
     return _filesTransitManager;
+  }
+
+  FilesManager get filesManager {
+    if (_filesManager == null) {
+      _filesManager = _psHelper.createFilesManager();
+    }
+    return _filesManager;
   }
 }

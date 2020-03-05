@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 
-class FileTransitManagerMobile implements FilesTransitManager {
+class FilesTransitManagerMobile implements FilesTransitManager {
   static const platform = const MethodChannel('com.exlyo.pocontacts/files');
 
   Future<String> _getInboxFileIdInDirForIOS(final Directory dir, final String inboxDirName) async {
