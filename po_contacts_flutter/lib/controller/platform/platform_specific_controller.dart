@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.stub.dart'
     if (dart.library.io) 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
     if (dart.library.html) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart';
@@ -57,10 +59,23 @@ abstract class FilesTransitManager {
 
   Future<String> getOutputFilesDirectoryPath();
 
-  Future<void> shareFileExternally(final String sharePromptTitle, final String filePath);
+  Future<void> shareFileExternally(final String sharePromptTitle, final FileEntity file);
 }
 
-abstract class FilesManager {}
+enum ImageFileSource { GALLERY, CAMERA, FILE_PICKER }
+
+abstract class FilesManager {
+  Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName);
+
+  Future<FileEntity> createFileEntityAbsPath(final String fileAbsPath);
+
+  Future<String> getApplicationDocumentsDirectoryPath();
+
+  Widget fileToImageWidget(final FileEntity currentFile,
+      {final BoxFit fit, final double imageWidth, final double imageHeight});
+
+  Future<FileEntity> pickImageFile(final ImageFileSource imageFileSource);
+}
 
 abstract class PSHelper {
   factory PSHelper() => getInstanceImpl();

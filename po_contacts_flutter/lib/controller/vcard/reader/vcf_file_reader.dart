@@ -1,10 +1,9 @@
-import 'dart:io';
-
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 
 class VCFFileReader extends VCFReader {
-  final File _file;
+  final FileEntity _file;
   final Function(int progress) progressCallback;
   int _currentLine = 0;
   List<String> _lines;

@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
 class NormalizedString {
@@ -82,29 +78,6 @@ class Utils {
     }
     final List<String> pathNameSplit = fileName.split('.');
     return '.' + pathNameSplit[pathNameSplit.length - 1];
-  }
-
-  static Future<bool> base64StringToFile(final String base64String, final File destFile) async {
-    try {
-      final Uint8List bytes = base64.decode(base64String);
-      await destFile.writeAsBytes(bytes);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  static Future<String> fileContentToBase64String(String filePath) async {
-    try {
-      final File sourceFile = File(filePath);
-      if (!await sourceFile.exists()) {
-        return null;
-      }
-      final Uint8List fileBytes = await sourceFile.readAsBytes();
-      return base64.encode(fileBytes);
-    } catch (e) {
-      return null;
-    }
   }
 
   static int currentTimeMillis() {

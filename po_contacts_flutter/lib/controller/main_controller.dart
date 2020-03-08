@@ -1,14 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
 import 'package:po_contacts_flutter/controller/import_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
@@ -407,58 +405,43 @@ class MainController {
     return progressCallback;
   }
 
-  Future<File> createNewImageFile(final String fileExtension) async {
-    if (!ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
+  Future<FileEntity> createNewImageFile(final String fileExtension) async {
+    if (!MainController.ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
       return null;
     }
-    final Directory internalAppDirectory = await getApplicationDocumentsDirectory();
+    final String internalAppDirectoryPath = await psController.filesManager.getApplicationDocumentsDirectoryPath();
     while (true) {
-      final String targetFilePath = '${internalAppDirectory.path}/${Utils.currentTimeMillis()}' + fileExtension;
-      final File targetFile = File(targetFilePath);
-      if (!await targetFile.exists()) {
-        await targetFile.create();
-        return targetFile;
+      final String targetFileName = '${Utils.currentTimeMillis()}$fileExtension';
+      final FileEntity fileEntity = await MainController.get()
+          .psController
+          .filesManager
+          .createFileEntityParentAndName(internalAppDirectoryPath, targetFileName);
+      if (!await fileEntity.exists()) {
+        await fileEntity.create();
+        return fileEntity;
       }
     }
   }
 
-  Future<File> pickImageFile() async {
-    final File selectedImageFile = await _pickImageFileWithOS();
+  Future<FileEntity> pickImageFile() async {
+    final FileEntity selectedImageFile = await _pickImageFileWithOS();
     if (selectedImageFile == null) {
       return null;
     }
 
-    final String fileExtension = Utils.getFileExtension(selectedImageFile.path);
-    if (!ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
+    final String fileExtension = Utils.getFileExtension(selectedImageFile.getAbsolutePath());
+    if (!MainController.ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
       return null;
     }
 
-    if (Platform.isAndroid) {
-      //If the platform is Android, the file will not be in
-      //the app's internal storage so we want to copy it there
-      final File targetFile = await createNewImageFile(fileExtension);
-      await selectedImageFile.copy(targetFile.absolute.path);
-
-      //Also, if the file was created in the app's public folder
-      //we want to delete it from there
-      final Directory externalAppDirectory = await getExternalStorageDirectory();
-      final String selectedImageParentPath = selectedImageFile.parent.absolute.path;
-      final String externalAppDirectoryPath = externalAppDirectory.absolute.path;
-      if (selectedImageParentPath.startsWith(externalAppDirectoryPath)) {
-        selectedImageFile.delete();
-      }
-
-      return File(targetFile.absolute.path);
-    } else {
-      return selectedImageFile;
-    }
+    return selectedImageFile;
   }
 
-  Future<File> _pickImageFileWithOS() async {
+  Future<FileEntity> _pickImageFileWithOS() async {
     if (_context == null) {
       return null;
     }
-    final Completer<File> futureSelectedFile = Completer<File>();
+    final Completer<FileEntity> futureSelectedFile = Completer<FileEntity>();
     showDialog(
         context: _context,
         barrierDismissible: false,
@@ -473,8 +456,7 @@ class MainController {
                     title: Text(I18n.getString(I18n.string.from_gallery)),
                     onTap: () async {
                       Navigator.of(_context).pop();
-                      final File selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-                      futureSelectedFile.complete(selectedFile);
+                      psController.filesManager.pickImageFile(ImageFileSource.GALLERY);
                     },
                   ),
                   ListTile(
@@ -482,8 +464,7 @@ class MainController {
                     title: Text(I18n.getString(I18n.string.from_camera)),
                     onTap: () async {
                       Navigator.of(_context).pop();
-                      final File selectedFile = await ImagePicker.pickImage(source: ImageSource.camera);
-                      futureSelectedFile.complete(selectedFile);
+                      psController.filesManager.pickImageFile(ImageFileSource.CAMERA);
                     },
                   )
                 ],

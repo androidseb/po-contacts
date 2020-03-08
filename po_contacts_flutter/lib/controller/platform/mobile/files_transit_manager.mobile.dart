@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 
 class FilesTransitManagerMobile implements FilesTransitManager {
@@ -79,7 +80,10 @@ class FilesTransitManagerMobile implements FilesTransitManager {
   }
 
   @override
-  Future<void> shareFileExternally(final String sharePromptTitle, final String filePath) async {
-    await platform.invokeMethod('shareFileExternally', {'sharePromptTitle': sharePromptTitle, 'filePath': filePath});
+  Future<void> shareFileExternally(final String sharePromptTitle, final FileEntity file) async {
+    await platform.invokeMethod('shareFileExternally', {
+      'sharePromptTitle': sharePromptTitle,
+      'filePath': file.getAbsolutePath(),
+    });
   }
 }

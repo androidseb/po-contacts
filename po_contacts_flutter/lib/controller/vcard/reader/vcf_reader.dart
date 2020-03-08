@@ -1,3 +1,4 @@
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_multi_value_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_single_value_field.dart';
@@ -30,7 +31,7 @@ abstract class VCFReader {
     if (readLine == null) {
       return null;
     }
-    final StringBuffer res = new StringBuffer();
+    final StringBuffer res = StringBuffer();
     while (true) {
       if (readLine != null) {
         res.write(readLine);
@@ -150,7 +151,7 @@ abstract class VCFReader {
       if (photoField.fieldParams['PNG'] == '') {
         fileExtension = '.png';
       }
-      final FileEntry imageFile = await fileInflater.createNewImageFile(fileExtension);
+      final FileEntity imageFile = await fileInflater.createNewImageFile(fileExtension);
       final bool fileWriteSuccess = await imageFile.writeBase64String(photoField.fieldValue);
       if (fileWriteSuccess) {
         contactBuilder.setImage(imageFile.getAbsolutePath());

@@ -1,6 +1,6 @@
 import 'package:po_contacts_flutter/controller/vcard/field/vcf_field.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
-import 'package:po_contacts_flutter/controller/vcard/writer/abs_file_reader.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/file_reader.dart';
 import 'package:po_contacts_flutter/model/data/address_info.dart';
 import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';

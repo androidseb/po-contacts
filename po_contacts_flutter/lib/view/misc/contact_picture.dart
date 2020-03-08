@@ -1,18 +1,20 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
 
 class ContactPicture extends StatefulWidget {
+  final FilesManager filesManager = MainController.get().psController.filesManager;
+  final String imageFilePath;
   final double imageWidth;
   final double imageHeight;
-  final String imageFilePath;
   ContactPicture(this.imageFilePath, {this.imageWidth = 96, this.imageHeight = 96});
 
   _ContactPictureState createState() => _ContactPictureState();
 }
 
 class _ContactPictureState extends State<ContactPicture> {
-  File _currentFile;
+  FileEntity _currentFile;
 
   @override
   void initState() {
@@ -29,10 +31,11 @@ class _ContactPictureState extends State<ContactPicture> {
   }
 
   void loadImageFile() async {
-    if (widget.imageFilePath == null) {
+    if (widget.filesManager == null || widget.imageFilePath == null) {
       return;
     }
-    final File imageFile = File(widget.imageFilePath);
+
+    final FileEntity imageFile = await widget.filesManager.createFileEntityAbsPath(widget.imageFilePath);
     final bool fileExists = await imageFile.exists();
     if (!fileExists) {
       return;
@@ -45,7 +48,7 @@ class _ContactPictureState extends State<ContactPicture> {
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
-    if (_currentFile == null) {
+    if (_currentFile == null || widget.filesManager == null) {
       imageWidget = Image.asset(
         'lib/assets/images/ic_profile.png',
         fit: BoxFit.cover,
@@ -53,11 +56,11 @@ class _ContactPictureState extends State<ContactPicture> {
         width: widget.imageHeight,
       );
     } else {
-      imageWidget = Image.file(
+      imageWidget = widget.filesManager.fileToImageWidget(
         _currentFile,
         fit: BoxFit.cover,
-        height: widget.imageWidth,
-        width: widget.imageHeight,
+        imageWidth: widget.imageWidth,
+        imageHeight: widget.imageHeight,
       );
     }
     return ClipOval(

@@ -1,8 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
-import 'package:po_contacts_flutter/controller/vcard/writer/abs_file_reader.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
@@ -12,6 +13,8 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 import 'test_data.dart';
 
 class MockFileReader extends FileReader {
+  MockFileReader() : super(null);
+
   @override
   Future<String> fileToBase64String(String filePath) async {
     return MOCK_FILES_BASE64_CONTENT[filePath];
@@ -45,7 +48,7 @@ class MockFileSystem {
   }
 }
 
-class MockFileEntry extends FileEntry {
+class MockFileEntry extends FileEntity {
   final String absolutePath;
   String base64StringContent = '';
 
@@ -62,8 +65,38 @@ class MockFileEntry extends FileEntry {
     return absolutePath;
   }
 
-  Future<void> delete() async {
+  @override
+  Future<bool> delete() async {
     MockFileSystem.content[absolutePath] = null;
+    return true;
+  }
+
+  @override
+  Future<FileEntity> create() {
+    return null;
+  }
+
+  @override
+  Future<bool> exists() async {
+    return true;
+  }
+
+  @override
+  void writeAsStringAppendSync(String str) {}
+
+  @override
+  Future<List<String>> readAsLines() async {
+    return [];
+  }
+
+  @override
+  Future<String> readAsBase64String() async {
+    return null;
+  }
+
+  @override
+  Future<FileEntity> copy(FileEntity targetFile) {
+    return null;
   }
 }
 
