@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
-import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
 
 class FilesManagerWeb extends FilesManager {
   @override

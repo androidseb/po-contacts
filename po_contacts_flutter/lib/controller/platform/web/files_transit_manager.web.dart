@@ -1,6 +1,5 @@
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
-import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
-import 'dart:async';
+import 'package:po_contacts_flutter/controller/platform/common/files_transit_manager.dart';
 
 class FilesTransitManagerWeb implements FilesTransitManager {
   @override

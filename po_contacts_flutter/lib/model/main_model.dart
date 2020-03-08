@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_manager.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 import 'package:po_contacts_flutter/model/version_info.dart';
@@ -34,7 +34,7 @@ class MainModel {
   final StreamController<List<Contact>> _contactsListSC = StreamController();
   final StreamController<Contact> _contactChangeSC = StreamController();
 
-  void initializeMainModel(final ContactsStorage contactsStorage) {
+  void initializeMainModel(final ContactsStorageManager contactsStorage) {
     _storageController.initializeStorage(contactsStorage, (final List<Contact> loadedContacts) {
       _contactsList.addAll(loadedContacts);
       sortContactsList(_contactsList);

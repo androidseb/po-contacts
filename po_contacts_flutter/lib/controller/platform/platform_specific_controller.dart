@@ -1,81 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.stub.dart'
     if (dart.library.io) 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
     if (dart.library.html) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart';
-import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
-
-enum PlatformType { ANDROID, IOS, WEB }
-
-abstract class BasicInfoManager {
-  PlatformType getPlatformType();
-
-  bool _isWeb;
-  bool _isAndroid;
-  bool _isIOS;
-  bool _isMobile;
-
-  BasicInfoManager() {
-    _isWeb = getPlatformType() == PlatformType.WEB;
-    _isAndroid = getPlatformType() == PlatformType.ANDROID;
-    _isIOS = getPlatformType() == PlatformType.IOS;
-    _isMobile = _isAndroid || _isIOS;
-  }
-
-  bool get isWeb {
-    return _isWeb;
-  }
-
-  bool get isAndroid {
-    return _isAndroid;
-  }
-
-  bool get isIOS {
-    return _isIOS;
-  }
-
-  bool get isMobile {
-    return _isMobile;
-  }
-}
-
-abstract class ContactsStorage {
-  Future<List<ContactStorageEntryWithId>> readAllContacts();
-
-  Future<ContactStorageEntryWithId> createContact(final ContactStorageEntry storageEntry);
-
-  Future<ContactStorageEntryWithId> updateContact(final int contactId, final ContactStorageEntry storageEntry);
-
-  Future<bool> deleteContact(final int contactId);
-}
-
-abstract class FilesTransitManager {
-  Future<String> getInboxFileId();
-
-  Future<void> discardInboxFileId(final String inboxFileId);
-
-  Future<String> getCopiedInboxFilePath(final String inboxFileId);
-
-  Future<String> getOutputFilesDirectoryPath();
-
-  Future<void> shareFileExternally(final String sharePromptTitle, final FileEntity file);
-}
-
-enum ImageFileSource { GALLERY, CAMERA, FILE_PICKER }
-
-abstract class FilesManager {
-  Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName);
-
-  Future<FileEntity> createFileEntityAbsPath(final String fileAbsPath);
-
-  Future<String> getApplicationDocumentsDirectoryPath();
-
-  Widget fileToImageWidget(final FileEntity currentFile,
-      {final BoxFit fit, final double imageWidth, final double imageHeight});
-
-  Future<FileEntity> pickImageFile(final ImageFileSource imageFileSource);
-}
+import 'package:po_contacts_flutter/controller/platform/common/basic_info_manager.dart';
+import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_manager.dart';
+import 'package:po_contacts_flutter/controller/platform/common/files_transit_manager.dart';
 
 abstract class PSHelper {
   factory PSHelper() => getInstanceImpl();
@@ -84,7 +15,7 @@ abstract class PSHelper {
   BasicInfoManager createBasicInfoManager();
 
   @protected
-  ContactsStorage createContactStorage();
+  ContactsStorageManager createContactStorageManager();
 
   @protected
   FilesTransitManager createFilesTransitManager();
@@ -97,7 +28,7 @@ class PlatformSpecificController {
   final PSHelper _psHelper = PSHelper();
 
   BasicInfoManager _basicInfoManager;
-  ContactsStorage _contactsStorage;
+  ContactsStorageManager _contactsStorage;
   FilesTransitManager _filesTransitManager;
   FilesManager _filesManager;
 
@@ -108,9 +39,9 @@ class PlatformSpecificController {
     return _basicInfoManager;
   }
 
-  ContactsStorage get contactsStorage {
+  ContactsStorageManager get contactsStorage {
     if (_contactsStorage == null) {
-      _contactsStorage = _psHelper.createContactStorage();
+      _contactsStorage = _psHelper.createContactStorageManager();
     }
     return _contactsStorage;
   }

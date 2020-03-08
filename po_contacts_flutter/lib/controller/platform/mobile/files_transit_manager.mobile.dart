@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
-import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/files_transit_manager.dart';
 
 class FilesTransitManagerMobile implements FilesTransitManager {
   static const platform = const MethodChannel('com.exlyo.pocontacts/files');

@@ -1,4 +1,4 @@
-import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/basic_info_manager.dart';
 
 class BasicInfoManagerWeb extends BasicInfoManager {
   @override

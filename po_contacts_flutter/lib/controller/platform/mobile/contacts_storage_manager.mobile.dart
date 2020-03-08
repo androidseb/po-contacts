@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:path/path.dart';
-import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
+import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_manager.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ContactsStorageMobile implements ContactsStorage {
+class ContactsStorageManagerMobile implements ContactsStorageManager {
   static const String DB_FILE_NAME = 'contacts_database.db';
   static const String FIELD_ID = 'id';
   static const String FIELD_JSON = 'json';
