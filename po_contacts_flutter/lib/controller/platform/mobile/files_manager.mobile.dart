@@ -59,6 +59,9 @@ class FilesManagerMobile extends FilesManager {
       return null;
     }
     final File selectedImageRawFile = await ImagePicker.pickImage(source: imgSource);
+    if (selectedImageRawFile == null) {
+      return null;
+    }
     final FileEntity selectedImageFile = FileEntityMobile(selectedImageRawFile);
     if (Platform.isAndroid) {
       final String fileExtension = Utils.getFileExtension(selectedImageFile.getAbsolutePath());

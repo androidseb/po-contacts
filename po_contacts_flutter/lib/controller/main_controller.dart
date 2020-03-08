@@ -457,7 +457,8 @@ class MainController {
                     title: Text(I18n.getString(I18n.string.from_gallery)),
                     onTap: () async {
                       Navigator.of(_context).pop();
-                      psController.filesManager.pickImageFile(ImageFileSource.GALLERY);
+                      futureSelectedFile
+                          .complete(await psController.filesManager.pickImageFile(ImageFileSource.GALLERY));
                     },
                   ),
                   ListTile(
@@ -465,7 +466,8 @@ class MainController {
                     title: Text(I18n.getString(I18n.string.from_camera)),
                     onTap: () async {
                       Navigator.of(_context).pop();
-                      psController.filesManager.pickImageFile(ImageFileSource.CAMERA);
+                      futureSelectedFile
+                          .complete(await psController.filesManager.pickImageFile(ImageFileSource.CAMERA));
                     },
                   )
                 ],
