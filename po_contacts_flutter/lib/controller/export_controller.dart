@@ -36,7 +36,7 @@ class ExportController {
     }
     final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
     await MainController.get().psController.fileTransitManager.shareFileExternally(sharePromptTitle, destFilePath);
-    if (Platform.isAndroid) {
+    if (MainController.get().psController.basicInfoManager.isAndroid) {
       MainController.get().showMessageDialog(
         I18n.getString(I18n.string.export_completed),
         I18n.getString(I18n.string.exported_contacts_to_file_x, destFilePath),

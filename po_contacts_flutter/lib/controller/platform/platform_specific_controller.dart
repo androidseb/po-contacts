@@ -4,6 +4,40 @@ import 'package:po_contacts_flutter/controller/platform/platform_specific_contro
     if (dart.library.html) 'package:po_contacts_flutter/controller/platform/web/platform_specific_controller.web.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 
+enum PlatformType { ANDROID, IOS, WEB }
+
+abstract class BasicInfoManager {
+  PlatformType getPlatformType();
+
+  bool _isWeb;
+  bool _isAndroid;
+  bool _isIOS;
+  bool _isMobile;
+
+  BasicInfoManager() {
+    _isWeb = getPlatformType() == PlatformType.WEB;
+    _isAndroid = getPlatformType() == PlatformType.ANDROID;
+    _isIOS = getPlatformType() == PlatformType.IOS;
+    _isMobile = _isAndroid || _isIOS;
+  }
+
+  bool get isWeb {
+    return _isWeb;
+  }
+
+  bool get isAndroid {
+    return _isAndroid;
+  }
+
+  bool get isIOS {
+    return _isIOS;
+  }
+
+  bool get isMobile {
+    return _isMobile;
+  }
+}
+
 abstract class ContactsStorage {
   Future<List<ContactStorageEntryWithId>> readAllContacts();
 
@@ -32,6 +66,9 @@ abstract class PSHelper {
   factory PSHelper() => getInstanceImpl();
 
   @protected
+  BasicInfoManager createBasicInfoManager();
+
+  @protected
   ContactsStorage createContactStorage();
 
   @protected
@@ -44,9 +81,17 @@ abstract class PSHelper {
 class PlatformSpecificController {
   final PSHelper _psHelper = PSHelper();
 
+  BasicInfoManager _basicInfoManager;
   ContactsStorage _contactsStorage;
   FilesTransitManager _filesTransitManager;
   FilesManager _filesManager;
+
+  BasicInfoManager get basicInfoManager {
+    if (_basicInfoManager == null) {
+      _basicInfoManager = _psHelper.createBasicInfoManager();
+    }
+    return _basicInfoManager;
+  }
 
   ContactsStorage get contactsStorage {
     if (_contactsStorage == null) {
