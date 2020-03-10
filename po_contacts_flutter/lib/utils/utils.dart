@@ -94,4 +94,12 @@ class Utils {
     final Uint8List strBytes = utf8.encode(str);
     return base64.encode(strBytes);
   }
+
+  static String base64ToString(final String base64String) {
+    if (base64String == null) {
+      return null;
+    }
+    final Uint8List strBytes = base64.decode(base64String);
+    return utf8.decode(strBytes);
+  }
 }

@@ -56,9 +56,11 @@ class FileEntityWeb extends FileEntity {
 
   @override
   void writeAsStringAppendSync(String str) {
-    final String currentContent = _base64Content == null ? '' : _base64Content;
-    _base64Content = currentContent + Utils.strToBase64(str);
-    writeAsBase64String(_base64Content);
+    final String latestBase64Content = base64Content;
+    final String currentContentBase64 = latestBase64Content == null ? '' : latestBase64Content;
+    final String currentContent = Utils.base64ToString(currentContentBase64);
+    final String updatedContent = currentContent + str;
+    writeAsBase64String(Utils.strToBase64(updatedContent));
   }
 
   @override

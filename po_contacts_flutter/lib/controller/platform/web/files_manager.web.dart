@@ -10,6 +10,7 @@ import 'package:po_contacts_flutter/controller/platform/web/file_entity.web.dart
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class WebAbstractFS {
+  static const APPLICATION_DOCUMENTS_DIRECTORY_PATH = 'appDirectory';
   static const _FILE_KEY_PREFIX = 'abstractfs';
 
   final Window _htmlWindow = window;
@@ -35,12 +36,12 @@ class FilesManagerWeb extends FilesManager {
 
   @override
   Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName) {
-    return createFileEntityAbsPath(parentFolderPath + '/' + fileName);
+    return createFileEntityAbsPath('$parentFolderPath/$fileName');
   }
 
   @override
   Future<String> getApplicationDocumentsDirectoryPath() async {
-    return 'appDirectory';
+    return WebAbstractFS.APPLICATION_DOCUMENTS_DIRECTORY_PATH;
   }
 
   @override
