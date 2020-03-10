@@ -442,6 +442,9 @@ class MainController {
     if (_context == null) {
       return null;
     }
+    if (psController.basicInfoManager.isWeb) {
+      return psController.filesManager.pickImageFile(ImageFileSource.FILE_PICKER);
+    }
     final Completer<FileEntity> futureSelectedFile = Completer<FileEntity>();
     showDialog(
         context: _context,

@@ -13,7 +13,7 @@ abstract class FileEntity {
 
   Future<List<String>> readAsLines();
 
-  Future<bool> writeBase64String(String base64String);
+  Future<bool> writeAsBase64String(String base64String);
 
   Future<String> readAsBase64String();
 }

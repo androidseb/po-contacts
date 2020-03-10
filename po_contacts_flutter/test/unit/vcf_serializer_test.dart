@@ -56,7 +56,7 @@ class MockFileEntry extends FileEntity {
     MockFileSystem.content[absolutePath] = this;
   }
 
-  Future<bool> writeBase64String(String base64String) async {
+  Future<bool> writeAsBase64String(String base64String) async {
     base64StringContent += base64String;
     return true;
   }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
 class NormalizedString {
@@ -82,5 +85,13 @@ class Utils {
 
   static int currentTimeMillis() {
     return DateTime.now().millisecondsSinceEpoch;
+  }
+
+  static String strToBase64(final String str) {
+    if (str == null) {
+      return null;
+    }
+    final Uint8List strBytes = utf8.encode(str);
+    return base64.encode(strBytes);
   }
 }

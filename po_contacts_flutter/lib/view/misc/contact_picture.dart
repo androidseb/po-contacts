@@ -48,19 +48,20 @@ class _ContactPictureState extends State<ContactPicture> {
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
-    if (_currentFile == null || widget.filesManager == null) {
-      imageWidget = Image.asset(
-        'lib/assets/images/ic_profile.png',
-        fit: BoxFit.cover,
-        height: widget.imageWidth,
-        width: widget.imageHeight,
-      );
-    } else {
+    if (_currentFile != null && widget.filesManager != null) {
       imageWidget = widget.filesManager.fileToImageWidget(
         _currentFile,
         fit: BoxFit.cover,
         imageWidth: widget.imageWidth,
         imageHeight: widget.imageHeight,
+      );
+    }
+    if (imageWidget == null) {
+      imageWidget = Image.asset(
+        'lib/assets/images/ic_profile.png',
+        fit: BoxFit.cover,
+        height: widget.imageWidth,
+        width: widget.imageHeight,
       );
     }
     return ClipOval(

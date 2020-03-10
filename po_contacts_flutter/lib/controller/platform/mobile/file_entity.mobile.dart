@@ -41,7 +41,7 @@ class FileEntityMobile extends FileEntity {
   }
 
   @override
-  Future<bool> writeBase64String(String base64String) async {
+  Future<bool> writeAsBase64String(String base64String) async {
     return await FileEntityMobile.base64StringToFile(base64String, _file);
   }
 

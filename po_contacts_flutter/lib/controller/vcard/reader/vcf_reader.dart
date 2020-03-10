@@ -152,7 +152,7 @@ abstract class VCFReader {
         fileExtension = '.png';
       }
       final FileEntity imageFile = await fileInflater.createNewImageFile(fileExtension);
-      final bool fileWriteSuccess = await imageFile.writeBase64String(photoField.fieldValue);
+      final bool fileWriteSuccess = await imageFile.writeAsBase64String(photoField.fieldValue);
       if (fileWriteSuccess) {
         contactBuilder.setImage(imageFile.getAbsolutePath());
       } else {
