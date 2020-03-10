@@ -1,8 +1,6 @@
 //ignore_for_file: avoid_web_libraries_in_flutter
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html';
-import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';

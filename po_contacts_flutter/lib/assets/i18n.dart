@@ -69,6 +69,7 @@ class I18nString {
   final String from_camera = 'from_camera';
   final String delete_image = 'delete_image';
   final String add_image = 'add_image';
+  final String import_vcf_file = 'import_vcf_file';
 }
 
 class I18n {
@@ -144,6 +145,7 @@ class I18n {
     string.from_camera: 'From camera',
     string.delete_image: 'Delete image',
     string.add_image: 'Add image',
+    string.import_vcf_file: 'Import VCF file',
   };
 
   static _getObjString(final Object _obj) {

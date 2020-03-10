@@ -22,6 +22,7 @@ class FilesTransitManagerWeb implements FilesTransitManager {
 
   @override
   Future<void> shareFileExternally(final String sharePromptTitle, final FileEntity file) async {
+    //TODO open file picker and start import flow
     return;
   }
 }
