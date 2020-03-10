@@ -489,4 +489,12 @@ class MainController {
         });
     return futureSelectedFile.future;
   }
+
+  void startImportVCFFileForWeb() async {
+    if (!psController.basicInfoManager.isWeb) {
+      return;
+    }
+    await psController.fileTransitManager.getCopiedInboxFilePath(null);
+    _importController.startImportIfNeeded();
+  }
 }

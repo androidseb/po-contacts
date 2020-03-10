@@ -2,24 +2,49 @@
 import 'dart:html';
 import 'dart:convert';
 
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/platform/common/files_transit_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/web/file_entity.web.dart';
 import 'package:po_contacts_flutter/controller/platform/web/files_manager.web.dart';
+import 'package:po_contacts_flutter/controller/platform/web/utils.web.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class FilesTransitManagerWeb implements FilesTransitManager {
+  static const INBOX_FILE_ID = 'INBOX';
+
+  String _selectionAsBase64;
+
   @override
   Future<String> getInboxFileId() async {
-    return null;
+    if (_selectionAsBase64 == null) {
+      return null;
+    } else {
+      return INBOX_FILE_ID;
+    }
   }
 
   @override
-  Future<void> discardInboxFileId(final String inboxFileId) async {}
+  Future<void> discardInboxFileId(final String inboxFileId) async {
+    _selectionAsBase64 = null;
+    final FileEntity inboxFile =
+        await MainController.get().psController.filesManager.createFileEntityAbsPath(INBOX_FILE_ID);
+    inboxFile.delete();
+  }
 
   @override
   Future<String> getCopiedInboxFilePath(final String inboxFileId) async {
-    return null;
+    if (inboxFileId == null) {
+      final SelectedFileWeb selectedFile = await UtilsWeb.selectFile('text/vcard');
+      if (selectedFile == null) {
+        return null;
+      }
+      final FileEntity inboxFile =
+          await MainController.get().psController.filesManager.createFileEntityAbsPath(INBOX_FILE_ID);
+      inboxFile.writeAsBase64String(selectedFile.fileBase64ContentString);
+      _selectionAsBase64 = selectedFile.fileBase64ContentString;
+    }
+    return INBOX_FILE_ID;
   }
 
   @override

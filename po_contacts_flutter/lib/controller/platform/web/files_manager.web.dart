@@ -7,6 +7,7 @@ import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/web/file_entity.web.dart';
+import 'package:po_contacts_flutter/controller/platform/web/utils.web.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class WebAbstractFS {
@@ -69,38 +70,16 @@ class FilesManagerWeb extends FilesManager {
     if (imageFileSource != ImageFileSource.FILE_PICKER) {
       return null;
     }
-    final Completer<String> fileNameCompleter = new Completer<String>();
-    final Completer<String> fileContentCompleter = new Completer<String>();
-    final InputElement input = document.createElement('input');
-    input
-      ..type = 'file'
-      ..accept = 'image/*';
-    input.onChange.listen((e) async {
-      final File file = input.files[0];
-      final FileReader reader = FileReader();
-      reader.readAsDataUrl(file);
-      reader.onError.listen((error) => fileContentCompleter.completeError(error));
-      await reader.onLoad.first;
-      fileNameCompleter.complete(file.name);
-      final String dataUrl = reader.result as String;
-      fileContentCompleter.complete(dataUrl);
-    });
-    input.click();
-    final String selectedFileName = await fileNameCompleter.future;
-    final String selectedFileBase64DataUrl = await fileContentCompleter.future;
-    final String base64StringPrefix = 'base64,';
-    int startIndex = 0;
-    final int base64PrefixIndex = selectedFileBase64DataUrl.indexOf(base64StringPrefix);
-    if (base64PrefixIndex > 0) {
-      startIndex = base64PrefixIndex + base64StringPrefix.length;
+    final SelectedFileWeb selectedFile = await UtilsWeb.selectFile('image/*');
+    if (selectedFile == null) {
+      return null;
     }
-    final String selectedFileBase64String = selectedFileBase64DataUrl.substring(startIndex);
-    final String fileExtension = Utils.getFileExtension(selectedFileName);
+    final String fileExtension = Utils.getFileExtension(selectedFile.fileName);
     final FileEntity targetFile = await MainController.get().createNewImageFile(fileExtension);
     if (targetFile == null) {
       return null;
     }
-    _webFS.writeFile(targetFile.getAbsolutePath(), selectedFileBase64String);
-    return FileEntityWeb(_webFS, targetFile.getAbsolutePath(), selectedFileBase64String);
+    _webFS.writeFile(targetFile.getAbsolutePath(), selectedFile.fileBase64ContentString);
+    return FileEntityWeb(_webFS, targetFile.getAbsolutePath(), selectedFile.fileBase64ContentString);
   }
 }

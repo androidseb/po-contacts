@@ -66,29 +66,30 @@ class FileEntityWeb extends FileEntity {
   @override
   Future<bool> writeAsBase64String(final String base64String) async {
     _base64Content = base64String;
-    _binaryContent = base64.decode(_base64Content);
-    _webFS.writeFile(_absolutePath, _base64Content);
+    _binaryContent = null;
+    _webFS.writeFile(_absolutePath, base64String);
     return true;
   }
 
   @override
   Future<List<String>> readAsLines() async {
-    if (_binaryContent == null) {
+    final Uint8List fileData = binaryData;
+    if (fileData == null) {
       return List<String>();
     }
-    final String fileContentAsString = utf8.decode(_binaryContent);
+    final String fileContentAsString = utf8.decode(fileData);
     return fileContentAsString.split('\n');
   }
 
   @override
   Future<String> readAsBase64String() async {
-    return _base64Content;
+    return base64Content;
   }
 
   @override
   Future<FileEntity> copy(final FileEntity targetFile) async {
     final String newFileAbsPath = targetFile.getAbsolutePath();
-    _webFS.writeFile(newFileAbsPath, _base64Content);
-    return FileEntityWeb(_webFS, newFileAbsPath, _base64Content);
+    _webFS.writeFile(newFileAbsPath, base64Content);
+    return FileEntityWeb(_webFS, newFileAbsPath, base64Content);
   }
 }

@@ -11,7 +11,7 @@ class HomePageDrawer extends StatelessWidget {
         leading: Icon(Icons.file_download),
         title: Text(I18n.getString(I18n.string.import_vcf_file)),
         onTap: () {
-          //TODO open file picker and start import flow
+          MainController.get().startImportVCFFileForWeb();
         },
       ));
     }
