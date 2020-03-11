@@ -6,7 +6,7 @@ cd $(git rev-parse --show-toplevel)
 echo "Building linux app zip"
 
 echo "Building the web app"
-#sh scripts/web_build.sh
+sh scripts/web_build.sh
 
 mkdir -p bin/tmp_linux
 cd bin/tmp_linux
