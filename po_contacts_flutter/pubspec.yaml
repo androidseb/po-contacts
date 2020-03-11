@@ -34,6 +34,11 @@ dependencies:
 
   image_picker: ^0.6.3+1
 
+  # An official solution is in progress but it could take a while:
+  # https://github.com/flutter/flutter/issues/31753
+  # In the meantime, using this library for the web
+  draggable_scrollbar: ^0.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,6 +1,8 @@
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/view/home/contact_row.dart';
 import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
@@ -14,13 +16,15 @@ class ContactsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_contactsList.length == 0) {
-      return buildIfEmpty(context);
+      return _buildIfEmpty(context);
+    } else if (MainController.get().psController.basicInfoManager.isWeb) {
+      return _buildIfNonEmptyWeb(context);
     } else {
-      return buildIfNonEmpty(context);
+      return _buildIfNonEmpty(context);
     }
   }
 
-  Widget buildIfEmpty(BuildContext context) {
+  Widget _buildIfEmpty(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
         child: Padding(
@@ -37,17 +41,33 @@ class ContactsList extends StatelessWidget {
     );
   }
 
-  Widget buildIfNonEmpty(BuildContext context) {
+  Widget _buildLVIfNonEmpty(final BuildContext context, final ScrollController scrollController) {
+    return ListView.separated(
+      controller: scrollController,
+      itemCount: _contactsList.length,
+      itemBuilder: (BuildContext context, int index) {
+        final Contact contact = _contactsList[index];
+        final HighlightedText highlightedText = highlightedTexts == null ? null : highlightedTexts[contact.id];
+        return ContactsRow(contact, highlightedText: highlightedText);
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    );
+  }
+
+  Widget _buildIfNonEmpty(final BuildContext context) {
     return Scrollbar(
-      child: ListView.separated(
-        itemCount: _contactsList.length,
-        itemBuilder: (BuildContext context, int index) {
-          final Contact contact = _contactsList[index];
-          final HighlightedText highlightedText = highlightedTexts == null ? null : highlightedTexts[contact.id];
-          return ContactsRow(contact, highlightedText: highlightedText);
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
+      child: _buildLVIfNonEmpty(context, null),
+    );
+  }
+
+  Widget _buildIfNonEmptyWeb(final BuildContext context) {
+    final ScrollController sharedScrollScrollController = ScrollController();
+    return DraggableScrollbar.rrect(
+      controller: sharedScrollScrollController,
+      alwaysVisibleScrollThumb: true,
+      heightScrollThumb: 80,
+      backgroundColor: Colors.green[300],
+      child: _buildLVIfNonEmpty(context, sharedScrollScrollController),
     );
   }
 }
