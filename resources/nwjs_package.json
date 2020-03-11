@@ -1,0 +1,7 @@
+{
+    "main": "index.html",
+    "name": "PO Contacts",
+    "window": {
+        "icon": "ic_launcher-web.png"
+    }
+}
