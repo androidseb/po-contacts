@@ -81,4 +81,9 @@ class FileEntityMobile extends FileEntity {
   Future<FileEntity> copy(FileEntity targetFile) async {
     return FileEntityMobile(await _file.copy(targetFile.getAbsolutePath()));
   }
+
+  @override
+  Future<void> flushOutputBuffer() async {
+    //Not doing anything here. Any output written to this file are synchronous.
+  }
 }

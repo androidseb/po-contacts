@@ -15,6 +15,8 @@ abstract class VCFWriter {
 
   void writeStringImpl(final String line);
 
+  Future<void> flushOutputBuffer();
+
   void writeLine(final String line) {
     //We choose to not respect the "Line Delimiting and Folding" strictly:
     //https://tools.ietf.org/html/rfc6350#section-3.2

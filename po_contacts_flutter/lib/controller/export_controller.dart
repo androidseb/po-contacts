@@ -3,6 +3,7 @@ import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_file_writer.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
@@ -51,13 +52,15 @@ class ExportController {
     }
     await outputFile.create();
     final List<Contact> contacts = MainController.get().model.contactsList;
+    final VCFWriter vcfWriter = VCFFileWriter(
+      MainController.get().psController.filesManager,
+      outputFile,
+    );
     await VCFSerializer.writeToVCF(
       contacts,
-      VCFFileWriter(
-        MainController.get().psController.filesManager,
-        outputFile,
-      ),
+      vcfWriter,
       progressCallback,
     );
+    await vcfWriter.flushOutputBuffer();
   }
 }

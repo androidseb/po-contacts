@@ -11,4 +11,9 @@ class VCFFileWriter extends VCFWriter {
   void writeStringImpl(String line) {
     _file.writeAsStringAppendSync(line);
   }
+
+  @override
+  Future<void> flushOutputBuffer() {
+    return _file.flushOutputBuffer();
+  }
 }

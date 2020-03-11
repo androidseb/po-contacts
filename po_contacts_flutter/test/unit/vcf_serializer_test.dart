@@ -29,6 +29,9 @@ class MockVCFWriter extends VCFWriter {
   void writeStringImpl(String line) {
     writtenLines.add(line);
   }
+
+  @override
+  Future<void> flushOutputBuffer() async {}
 }
 
 class MockFileSystem {
@@ -98,6 +101,9 @@ class MockFileEntry extends FileEntity {
   Future<FileEntity> copy(FileEntity targetFile) {
     return null;
   }
+
+  @override
+  Future<void> flushOutputBuffer() async {}
 }
 
 class MockFileInflater extends FileInflater<MockFileEntry> {

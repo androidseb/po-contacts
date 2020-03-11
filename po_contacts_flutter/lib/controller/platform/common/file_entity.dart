@@ -16,4 +16,6 @@ abstract class FileEntity {
   Future<bool> writeAsBase64String(String base64String);
 
   Future<String> readAsBase64String();
+
+  Future<void> flushOutputBuffer();
 }
