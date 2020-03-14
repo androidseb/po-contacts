@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:po_contacts_flutter/app_version.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/contacts_search_delegate.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
@@ -166,7 +167,7 @@ class MainController {
 
   void showAboutDialog() {
     showMessageDialog(
-      I18n.getString(I18n.string.about, MainController.get().model.appVersion),
+      I18n.getString(I18n.string.about, PO_APP_VERSION),
       I18n.getString(I18n.string.about_message),
     );
   }

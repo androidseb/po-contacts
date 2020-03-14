@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_manager.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
-import 'package:po_contacts_flutter/model/version_info.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class MainModel {
@@ -28,7 +27,6 @@ class MainModel {
   }
 
   bool _storageInitialized = false;
-  final VersionInfo _versionInfo = VersionInfo();
   final ContactsStorageController _storageController = ContactsStorageController();
   final List<Contact> _contactsList = [];
   final StreamController<List<Contact>> _contactsListSC = StreamController();
@@ -60,8 +58,6 @@ class MainModel {
   }
 
   bool get storageInitialized => _storageInitialized;
-
-  String get appVersion => _versionInfo.appVersion;
 
   List<Contact> get contactsList => _contactsList;
 
