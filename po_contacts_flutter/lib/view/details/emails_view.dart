@@ -27,7 +27,7 @@ class EmailsView extends EntriesGroupView {
         Icons.email,
         I18n.getString(I18n.string.email_x, emailAddress),
         () {
-          MainController.get().startEmail(emailAddress);
+          MainController.get().psController.actionsManager.startEmail(emailAddress);
         },
       )
     ];

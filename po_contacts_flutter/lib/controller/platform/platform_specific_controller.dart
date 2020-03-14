@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:po_contacts_flutter/controller/platform/common/actions_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.stub.dart'
     if (dart.library.io) 'package:po_contacts_flutter/controller/platform/mobile/platform_specific_controller.mobile.dart'
@@ -22,6 +23,9 @@ abstract class PSHelper {
 
   @protected
   FilesManager createFilesManager();
+
+  @protected
+  ActionsManager createActionsManager();
 }
 
 class PlatformSpecificController {
@@ -31,6 +35,7 @@ class PlatformSpecificController {
   ContactsStorageManager _contactsStorage;
   FilesTransitManager _filesTransitManager;
   FilesManager _filesManager;
+  ActionsManager _actionsManager;
 
   BasicInfoManager get basicInfoManager {
     if (_basicInfoManager == null) {
@@ -58,5 +63,12 @@ class PlatformSpecificController {
       _filesManager = _psHelper.createFilesManager();
     }
     return _filesManager;
+  }
+
+  ActionsManager get actionsManager {
+    if (_actionsManager == null) {
+      _actionsManager = _psHelper.createActionsManager();
+    }
+    return _actionsManager;
   }
 }

@@ -1,6 +1,8 @@
+import 'package:po_contacts_flutter/controller/platform/common/actions_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/common/basic_info_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
+import 'package:po_contacts_flutter/controller/platform/mobile/actions_manager.mobile.dart';
 import 'package:po_contacts_flutter/controller/platform/mobile/basic_info_manager.mobile.dart';
 import 'package:po_contacts_flutter/controller/platform/mobile/contacts_storage_manager.mobile.dart';
 import 'package:po_contacts_flutter/controller/platform/mobile/files_manager.mobile.dart';
@@ -27,6 +29,11 @@ class PSHelperMobile implements PSHelper {
   @override
   FilesManager createFilesManager() {
     return FilesManagerMobile();
+  }
+
+  @override
+  ActionsManager createActionsManager() {
+    return ActionsManagerMobile();
   }
 }
 

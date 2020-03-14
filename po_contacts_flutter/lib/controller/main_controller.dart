@@ -16,7 +16,6 @@ import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MainController {
   static const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
@@ -235,18 +234,6 @@ class MainController {
         });
   }
 
-  void startPhoneCall(final String phoneNumber) {
-    launch('tel:$phoneNumber');
-  }
-
-  void startSMS(final String phoneNumber) {
-    launch('sms:$phoneNumber');
-  }
-
-  void startEmail(final String emailAddress) {
-    launch('mailto:$emailAddress');
-  }
-
   void showContactQuickActionsMenu(final Contact contact) {
     if (_context == null) {
       return;
@@ -259,7 +246,7 @@ class MainController {
         title: Text(I18n.getString(I18n.string.call_x, phoneStr)),
         onTap: () {
           Navigator.of(_context).pop();
-          startPhoneCall(pi.fieldValue);
+          psController.actionsManager.startPhoneCall(pi.fieldValue);
         },
       ));
       listOptions.add(ListTile(
@@ -267,7 +254,7 @@ class MainController {
         title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
         onTap: () {
           Navigator.of(_context).pop();
-          startSMS(pi.fieldValue);
+          psController.actionsManager.startSMS(pi.fieldValue);
         },
       ));
     }
@@ -278,7 +265,7 @@ class MainController {
         title: Text(I18n.getString(I18n.string.email_x, emailStr)),
         onTap: () {
           Navigator.of(_context).pop();
-          startEmail(ei.fieldValue);
+          psController.actionsManager.startEmail(ei.fieldValue);
         },
       ));
     }

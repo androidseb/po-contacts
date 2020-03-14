@@ -27,14 +27,14 @@ class PhonesView extends EntriesGroupView {
         Icons.phone,
         I18n.getString(I18n.string.call_x, phoneNumber),
         () {
-          MainController.get().startPhoneCall(phoneNumber);
+          MainController.get().psController.actionsManager.startPhoneCall(phoneNumber);
         },
       ),
       EntriesGroupAction(
         Icons.message,
         I18n.getString(I18n.string.text_x, phoneNumber),
         () {
-          MainController.get().startSMS(phoneNumber);
+          MainController.get().psController.actionsManager.startSMS(phoneNumber);
         },
       ),
     ];
