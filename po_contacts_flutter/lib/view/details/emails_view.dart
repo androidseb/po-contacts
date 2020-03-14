@@ -24,6 +24,13 @@ class EmailsView extends EntriesGroupView {
     final String emailAddress = entry.fieldValue;
     return [
       EntriesGroupAction(
+        Icons.content_copy,
+        I18n.getString(I18n.string.copy_to_clipboard_x, emailAddress),
+        () {
+          MainController.get().psController.actionsManager.copyTextToClipBoard(emailAddress);
+        },
+      ),
+      EntriesGroupAction(
         Icons.email,
         I18n.getString(I18n.string.email_x, emailAddress),
         () {

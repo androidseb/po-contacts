@@ -243,6 +243,14 @@ class MainController {
     for (final StringLabeledField pi in contact.phoneInfos) {
       final String phoneStr = I18n.getString(LabeledField.getTypeNameStringKey(pi.labelType)) + ' (${pi.fieldValue})';
       listOptions.add(ListTile(
+        leading: Icon(Icons.content_copy),
+        title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, phoneStr)),
+        onTap: () {
+          Navigator.of(_context).pop();
+          psController.actionsManager.copyTextToClipBoard(pi.fieldValue);
+        },
+      ));
+      listOptions.add(ListTile(
         leading: Icon(Icons.phone),
         title: Text(I18n.getString(I18n.string.call_x, phoneStr)),
         onTap: () {
@@ -250,17 +258,27 @@ class MainController {
           psController.actionsManager.startPhoneCall(pi.fieldValue);
         },
       ));
-      listOptions.add(ListTile(
-        leading: Icon(Icons.message),
-        title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
-        onTap: () {
-          Navigator.of(_context).pop();
-          psController.actionsManager.startSMS(pi.fieldValue);
-        },
-      ));
+      if (MainController.get().psController.basicInfoManager.isNotWeb) {
+        listOptions.add(ListTile(
+          leading: Icon(Icons.message),
+          title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
+          onTap: () {
+            Navigator.of(_context).pop();
+            psController.actionsManager.startSMS(pi.fieldValue);
+          },
+        ));
+      }
     }
     for (final StringLabeledField ei in contact.emailInfos) {
       final String emailStr = I18n.getString(LabeledField.getTypeNameStringKey(ei.labelType)) + ' (${ei.fieldValue})';
+      listOptions.add(ListTile(
+        leading: Icon(Icons.content_copy),
+        title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, emailStr)),
+        onTap: () {
+          Navigator.of(_context).pop();
+          psController.actionsManager.copyTextToClipBoard(ei.fieldValue);
+        },
+      ));
       listOptions.add(ListTile(
         leading: Icon(Icons.mail),
         title: Text(I18n.getString(I18n.string.email_x, emailStr)),
@@ -479,7 +497,7 @@ class MainController {
   }
 
   void startImportVCFFileForWeb() async {
-    if (!psController.basicInfoManager.isWeb) {
+    if (psController.basicInfoManager.isNotWeb) {
       return;
     }
     await psController.fileTransitManager.getCopiedInboxFilePath(null);

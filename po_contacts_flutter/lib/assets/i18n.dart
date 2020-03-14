@@ -70,6 +70,7 @@ class I18nString {
   final String delete_image = 'delete_image';
   final String add_image = 'add_image';
   final String import_vcf_file = 'import_vcf_file';
+  final String copy_to_clipboard_x = 'copy_to_clipboard_x';
 }
 
 class I18n {
@@ -146,6 +147,7 @@ class I18n {
     string.delete_image: 'Delete image',
     string.add_image: 'Add image',
     string.import_vcf_file: 'Import VCF file',
+    string.copy_to_clipboard_x: 'Copy to clipboard: %s',
   };
 
   static _getObjString(final Object _obj) {

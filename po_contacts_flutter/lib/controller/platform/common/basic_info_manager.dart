@@ -19,6 +19,10 @@ abstract class BasicInfoManager {
     return _isWeb;
   }
 
+  bool get isNotWeb {
+    return !isWeb;
+  }
+
   bool get isAndroid {
     return _isAndroid;
   }

@@ -41,4 +41,21 @@ class UtilsWeb {
     final String selectedFileBase64String = selectedFileBase64DataUrl.substring(startIndex);
     return SelectedFileWeb(selectedFileName, selectedFileBase64String);
   }
+
+  static void copyTextToClipBoard(final String text) {
+    //Code copied from:
+    //https://gist.github.com/bergwerf/1b427ad2b1f9770b260dd4dac295b6f0
+    final TextAreaElement tea = new TextAreaElement();
+    document.body.append(tea);
+    tea.style.border = '0';
+    tea.style.margin = '0';
+    tea.style.padding = '0';
+    tea.style.opacity = '0';
+    tea.style.position = 'absolute';
+    tea.readOnly = true;
+    tea.value = text;
+    tea.select();
+    document.execCommand('copy');
+    tea.remove();
+  }
 }

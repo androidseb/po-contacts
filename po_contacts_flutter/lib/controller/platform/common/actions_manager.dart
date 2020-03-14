@@ -8,6 +8,8 @@ abstract class ActionsManager {
     return phoneNumber.replaceAll(' ', '');
   }
 
+  void copyTextToClipBoard(final String text);
+
   void startEmail(final String targetEmailAddress);
 
   void startPhoneCall(final String targetPhoneNumber) {

@@ -21,22 +21,31 @@ class PhonesView extends EntriesGroupView {
 
   @override
   List<EntriesGroupAction> getEntryAvailableActions(final StringLabeledField entry) {
+    final List<EntriesGroupAction> res = [];
     final String phoneNumber = entry.fieldValue;
-    return [
-      EntriesGroupAction(
-        Icons.phone,
-        I18n.getString(I18n.string.call_x, phoneNumber),
-        () {
-          MainController.get().psController.actionsManager.startPhoneCall(phoneNumber);
-        },
-      ),
-      EntriesGroupAction(
+    res.add(EntriesGroupAction(
+      Icons.content_copy,
+      I18n.getString(I18n.string.copy_to_clipboard_x, phoneNumber),
+      () {
+        MainController.get().psController.actionsManager.copyTextToClipBoard(phoneNumber);
+      },
+    ));
+    res.add(EntriesGroupAction(
+      Icons.phone,
+      I18n.getString(I18n.string.call_x, phoneNumber),
+      () {
+        MainController.get().psController.actionsManager.startPhoneCall(phoneNumber);
+      },
+    ));
+    if (MainController.get().psController.basicInfoManager.isNotWeb) {
+      res.add(EntriesGroupAction(
         Icons.message,
         I18n.getString(I18n.string.text_x, phoneNumber),
         () {
           MainController.get().psController.actionsManager.startSMS(phoneNumber);
         },
-      ),
-    ];
+      ));
+    }
+    return res;
   }
 }
