@@ -4,17 +4,17 @@ import 'package:po_contacts_flutter/controller/platform/common/actions_manager.d
 
 class ActionsManagerMobile extends ActionsManager {
   @override
-  void startEmail(final String targetPhoneNumbers) {
-    launch('mailto:$targetPhoneNumbers');
+  void startEmail(final String targetEmailAddress) {
+    launch('mailto:$targetEmailAddress');
   }
 
   @override
-  void startPhoneCall(final String targetPhoneNumber) {
+  void startPhoneCallImpl(final String targetPhoneNumber) {
     launch('tel:$targetPhoneNumber');
   }
 
   @override
-  void startSMS(final String targetPhoneNumber) {
+  void startSMSImpl(final String targetPhoneNumber) {
     launch('sms:$targetPhoneNumber');
   }
 }
