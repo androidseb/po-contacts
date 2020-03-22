@@ -1,27 +1,55 @@
+import 'dart:async';
+
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/model/data/app_settings.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/view/home/contact_row.dart';
 import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
 import 'package:po_contacts_flutter/view/misc/list_items_divider.dart';
 
-class ContactsList extends StatelessWidget {
+class ContactsList extends StatefulWidget {
   final List<Contact> _contactsList;
   final Map<int, HighlightedText> highlightedTexts;
   final String _emptyStateStringKey;
   ContactsList(this._contactsList, this._emptyStateStringKey, {this.highlightedTexts, Key key}) : super(key: key);
 
   @override
+  _ContactsListState createState() => _ContactsListState();
+}
+
+class _ContactsListState extends State<ContactsList> {
+  StreamSubscription<AppSettings> _displayDraggableScrollbarStreamSubscription;
+  bool _displayDraggableScrollbar = MainController.get().model.settings.appSettings.displayDraggableScrollbar;
+
+  @override
+  void initState() {
+    _displayDraggableScrollbarStreamSubscription =
+        MainController.get().model.settings.appSettingsChangeStream.listen((final AppSettings appSettings) {
+      setState(() {
+        _displayDraggableScrollbar = appSettings.displayDraggableScrollbar;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _displayDraggableScrollbarStreamSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (_contactsList.length == 0) {
+    if (widget._contactsList.length == 0) {
       return _buildIfEmpty(context);
-    } else if (MainController.get().psController.basicInfoManager.isWeb) {
-      return _buildIfNonEmptyWeb(context);
+    } else if (_displayDraggableScrollbar) {
+      return _buildIfNonEmptyWithSB(context);
     } else {
-      return _buildIfNonEmpty(context);
+      return _buildIfNonEmptyWithoutSB(context);
     }
   }
 
@@ -31,7 +59,7 @@ class ContactsList extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            I18n.getString(_emptyStateStringKey),
+            I18n.getString(widget._emptyStateStringKey),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14.0,
@@ -47,10 +75,11 @@ class ContactsList extends StatelessWidget {
     //Therefore, using ListView.builder here and manually adding the separator to the bottom of each row
     return ListView.builder(
       controller: scrollController,
-      itemCount: _contactsList.length,
+      itemCount: widget._contactsList.length,
       itemBuilder: (BuildContext context, int index) {
-        final Contact contact = _contactsList[index];
-        final HighlightedText highlightedText = highlightedTexts == null ? null : highlightedTexts[contact.id];
+        final Contact contact = widget._contactsList[index];
+        final HighlightedText highlightedText =
+            widget.highlightedTexts == null ? null : widget.highlightedTexts[contact.id];
         return Column(
           children: [
             ContactsRow(contact, highlightedText: highlightedText),
@@ -61,13 +90,13 @@ class ContactsList extends StatelessWidget {
     );
   }
 
-  Widget _buildIfNonEmpty(final BuildContext context) {
+  Widget _buildIfNonEmptyWithoutSB(final BuildContext context) {
     return Scrollbar(
       child: _buildLVIfNonEmpty(context, null),
     );
   }
 
-  Widget _buildIfNonEmptyWeb(final BuildContext context) {
+  Widget _buildIfNonEmptyWithSB(final BuildContext context) {
     final ScrollController sharedScrollScrollController = ScrollController();
     return DraggableScrollbar.rrect(
       controller: sharedScrollScrollController,

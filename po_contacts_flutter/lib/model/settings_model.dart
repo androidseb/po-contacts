@@ -8,12 +8,21 @@ class SettingsModel {
   static const String _SETTING_ID_EMAIL_ACTION = 'email_action';
   static const String _SETTING_ID_CALL_ACTION = 'call_action';
 
+  final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   AppSettings _appSettings = AppSettings();
   AppSettings get appSettings => _appSettings;
-  final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
+  final StreamController<AppSettings> _appSettingsChangeSC = StreamController();
 
   SettingsModel() {
     _updateSettingsFromStorage();
+  }
+
+  Stream<AppSettings> _appSettingsChangeStream;
+  Stream<AppSettings> get appSettingsChangeStream {
+    if (_appSettingsChangeStream == null) {
+      _appSettingsChangeStream = _appSettingsChangeSC.stream.asBroadcastStream();
+    }
+    return _appSettingsChangeStream;
   }
 
   Future<bool> _readDisplayDraggableScrollbarValue() async {
@@ -46,6 +55,7 @@ class SettingsModel {
       emailActionId: await _readEmailActionId(),
       callActionId: await _readCallActionId(),
     );
+    _appSettingsChangeSC.add(_appSettings);
   }
 
   void setUseDraggableScrollbar(final bool useDraggableScrollbar) async {
