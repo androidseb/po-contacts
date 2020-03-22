@@ -1,6 +1,9 @@
 import 'package:po_contacts_flutter/assets/i18n.dart';
 
-//TODO add some unit tests to lock down the indexes
+//Order of declaration matters and should NOT be changed, since the serialization relies on it
+//Changing the order would cause:
+//- inconsistent serialization with previously exported VCF files
+//- unit test to break: test_labeled_field_label_type_enum.dart
 enum LabeledFieldLabelType {
   custom,
   work,
