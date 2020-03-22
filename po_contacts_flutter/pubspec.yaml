@@ -35,11 +35,9 @@ dependencies:
   # WEB ONLY
   js: ^0.6.0
 
-  # WEB ONLY
-  # An official solution is in progress but it could take a while:
-  # https://github.com/flutter/flutter/issues/31753
-  # In the meantime, using this library for the web
   draggable_scrollbar: ^0.0.4
+
+  shared_preferences: ^0.5.6+3
 
 dev_dependencies:
   flutter_test:

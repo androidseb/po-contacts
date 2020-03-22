@@ -71,6 +71,11 @@ class I18nString {
   final String add_image = 'add_image';
   final String import_vcf_file = 'import_vcf_file';
   final String copy_to_clipboard_x = 'copy_to_clipboard_x';
+  final String settings = 'settings';
+  final String call_action = 'call_action';
+  final String email_action = 'email_action';
+  final String display_draggable_scrollbar = 'display_draggable_scrollbar';
+  final String open_application_x = 'open_application_x';
 }
 
 class I18n {
@@ -148,6 +153,11 @@ class I18n {
     string.add_image: 'Add image',
     string.import_vcf_file: 'Import VCF file',
     string.copy_to_clipboard_x: 'Copy to clipboard: %s',
+    string.settings: 'Settings',
+    string.call_action: 'Application to handle call action',
+    string.email_action: 'Application to handle email action',
+    string.display_draggable_scrollbar: 'Display draggable scrollbar',
+    string.open_application_x: 'Open application: %s'
   };
 
   static _getObjString(final Object _obj) {

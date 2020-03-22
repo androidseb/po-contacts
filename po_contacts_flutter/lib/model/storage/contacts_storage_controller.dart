@@ -15,6 +15,7 @@ class ContactStorageEntryWithId extends ContactStorageEntry {
 
 class ContactsStorageController {
   ContactsStorageManager _contactsStorage;
+  //TODO remove this boolean and use the dart async methods with a Completer object
   bool storageInitialized = false;
 
   bool get isInitialized => storageInitialized;

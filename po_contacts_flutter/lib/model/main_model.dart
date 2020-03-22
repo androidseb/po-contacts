@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_manager.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/model/settings_model.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
@@ -27,13 +28,14 @@ class MainModel {
   }
 
   bool _storageInitialized = false;
-  final ContactsStorageController _storageController = ContactsStorageController();
+  final SettingsModel _settingsModel = SettingsModel();
+  final ContactsStorageController _contactsStorageController = ContactsStorageController();
   final List<Contact> _contactsList = [];
   final StreamController<List<Contact>> _contactsListSC = StreamController();
   final StreamController<Contact> _contactChangeSC = StreamController();
 
   void initializeMainModel(final ContactsStorageManager contactsStorage) {
-    _storageController.initializeStorage(contactsStorage, (final List<Contact> loadedContacts) {
+    _contactsStorageController.initializeStorage(contactsStorage, (final List<Contact> loadedContacts) {
       _contactsList.addAll(loadedContacts);
       sortContactsList(_contactsList);
       _storageInitialized = true;
@@ -57,6 +59,8 @@ class MainModel {
     return _contactChangeStream;
   }
 
+  SettingsModel get settings => _settingsModel;
+
   bool get storageInitialized => _storageInitialized;
 
   List<Contact> get contactsList => _contactsList;
@@ -78,10 +82,10 @@ class MainModel {
   }
 
   Future<void> addContact(final ContactBuilder contactBuilder) async {
-    if (!_storageController.isInitialized) {
+    if (!_contactsStorageController.isInitialized) {
       return;
     }
-    final Contact createdContact = await _storageController.createContact(contactBuilder);
+    final Contact createdContact = await _contactsStorageController.createContact(contactBuilder);
     if (createdContact == null) {
       return;
     }
@@ -91,10 +95,10 @@ class MainModel {
   }
 
   void deleteContact(final int contactId) {
-    if (!_storageController.isInitialized) {
+    if (!_contactsStorageController.isInitialized) {
       return;
     }
-    _storageController.deleteContact(contactId, (final bool deleteSuccessful) {
+    _contactsStorageController.deleteContact(contactId, (final bool deleteSuccessful) {
       if (!deleteSuccessful) {
         return;
       }
@@ -109,10 +113,10 @@ class MainModel {
   }
 
   void overwriteContact(final int contactId, final ContactBuilder contactBuilder) {
-    if (!_storageController.isInitialized) {
+    if (!_contactsStorageController.isInitialized) {
       return;
     }
-    _storageController.updateContact(contactId, contactBuilder, (final Contact updatedContact) {
+    _contactsStorageController.updateContact(contactId, contactBuilder, (final Contact updatedContact) {
       if (updatedContact == null) {
         return;
       }

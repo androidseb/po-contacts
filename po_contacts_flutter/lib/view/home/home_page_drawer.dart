@@ -24,6 +24,13 @@ class HomePageDrawer extends StatelessWidget {
       },
     ));
     drawerOptionsList.add(ListTile(
+      leading: Icon(Icons.settings),
+      title: Text(I18n.getString(I18n.string.settings)),
+      onTap: () {
+        MainController.get().openSettingsPage();
+      },
+    ));
+    drawerOptionsList.add(ListTile(
       leading: Icon(Icons.info_outline),
       title: Text(I18n.getString(I18n.string.about, PO_APP_VERSION)),
       onTap: () {

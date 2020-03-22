@@ -17,6 +17,8 @@ import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
+import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
+import 'package:po_contacts_flutter/view/settings/settings_page.dart';
 
 class MainController {
   static const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
@@ -502,5 +504,54 @@ class MainController {
     }
     await psController.fileTransitManager.getCopiedInboxFilePath(null);
     _importController.startImportIfNeeded();
+  }
+
+  void openSettingsPage() {
+    if (_context == null) {
+      return;
+    }
+    Navigator.push(_context, MaterialPageRoute(
+      builder: (final BuildContext context) {
+        return SettingsPage();
+      },
+    ));
+  }
+
+  Future<MultiSelectionChoice> promptMultiSelection(
+      final String title, final List<MultiSelectionChoice> availableEntries) async {
+    final Completer<MultiSelectionChoice> futureSelectedChoice = Completer<MultiSelectionChoice>();
+    final List<Widget> choicesWidgets = [];
+    for (final MultiSelectionChoice c in availableEntries) {
+      choicesWidgets.add(ListTile(
+        title: Text(c.entryLabel),
+        onTap: () async {
+          Navigator.of(_context).pop();
+          futureSelectedChoice.complete(c);
+        },
+      ));
+    }
+    showDialog(
+        context: _context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: choicesWidgets,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(I18n.getString(I18n.string.cancel)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  futureSelectedChoice.complete(null);
+                },
+              ),
+            ],
+          );
+        });
+    return futureSelectedChoice.future;
   }
 }

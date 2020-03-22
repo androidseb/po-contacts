@@ -1,5 +1,6 @@
 import 'package:po_contacts_flutter/assets/i18n.dart';
 
+//TODO add some unit tests to lock down the indexes
 enum LabeledFieldLabelType {
   custom,
   work,
