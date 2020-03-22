@@ -34,13 +34,13 @@ class MainModel {
   final StreamController<List<Contact>> _contactsListSC = StreamController();
   final StreamController<Contact> _contactChangeSC = StreamController();
 
-  void initializeMainModel(final ContactsStorageManager contactsStorage) {
-    _contactsStorageController.initializeStorage(contactsStorage, (final List<Contact> loadedContacts) {
-      _contactsList.addAll(loadedContacts);
-      sortContactsList(_contactsList);
-      _storageInitialized = true;
-      _contactsListSC.add(_contactsList);
-    });
+  void initializeMainModel(final ContactsStorageManager contactsStorage) async {
+    _contactsStorageController.initializeStorage(contactsStorage);
+    final List<Contact> loadedContacts = await _contactsStorageController.readAllContacts();
+    _contactsList.addAll(loadedContacts);
+    sortContactsList(_contactsList);
+    _storageInitialized = true;
+    _contactsListSC.add(_contactsList);
   }
 
   Stream<List<Contact>> _contactsListStream;
@@ -82,9 +82,6 @@ class MainModel {
   }
 
   Future<void> addContact(final ContactBuilder contactBuilder) async {
-    if (!_contactsStorageController.isInitialized) {
-      return;
-    }
     final Contact createdContact = await _contactsStorageController.createContact(contactBuilder);
     if (createdContact == null) {
       return;
@@ -94,43 +91,35 @@ class MainModel {
     _contactsListSC.add(contactsList);
   }
 
-  void deleteContact(final int contactId) {
-    if (!_contactsStorageController.isInitialized) {
+  void deleteContact(final int contactId) async {
+    final bool deleteSuccessful = await _contactsStorageController.deleteContact(contactId);
+    if (!deleteSuccessful) {
       return;
     }
-    _contactsStorageController.deleteContact(contactId, (final bool deleteSuccessful) {
-      if (!deleteSuccessful) {
-        return;
+    for (int i = 0; i < contactsList.length; i++) {
+      final Contact contact = contactsList[i];
+      if (contact.id == contactId) {
+        contactsList.removeAt(i);
       }
-      for (int i = 0; i < contactsList.length; i++) {
-        final Contact contact = contactsList[i];
-        if (contact.id == contactId) {
-          contactsList.removeAt(i);
-        }
-      }
-      _contactsListSC.add(contactsList);
-    });
+    }
+    _contactsListSC.add(contactsList);
   }
 
-  void overwriteContact(final int contactId, final ContactBuilder contactBuilder) {
-    if (!_contactsStorageController.isInitialized) {
+  void overwriteContact(final int contactId, final ContactBuilder contactBuilder) async {
+    final Contact updatedContact = await _contactsStorageController.updateContact(contactId, contactBuilder);
+    if (updatedContact == null) {
       return;
     }
-    _contactsStorageController.updateContact(contactId, contactBuilder, (final Contact updatedContact) {
-      if (updatedContact == null) {
-        return;
+    for (int i = 0; i < contactsList.length; i++) {
+      final Contact contact = contactsList[i];
+      if (contact.id == contactId) {
+        contactsList.removeAt(i);
+        contactsList.insert(i, updatedContact);
+        sortContactsList(contactsList);
+        break;
       }
-      for (int i = 0; i < contactsList.length; i++) {
-        final Contact contact = contactsList[i];
-        if (contact.id == contactId) {
-          contactsList.removeAt(i);
-          contactsList.insert(i, updatedContact);
-          sortContactsList(contactsList);
-          break;
-        }
-      }
-      _contactsListSC.add(contactsList);
-      _contactChangeSC.add(updatedContact);
-    });
+    }
+    _contactsListSC.add(contactsList);
+    _contactChangeSC.add(updatedContact);
   }
 }
