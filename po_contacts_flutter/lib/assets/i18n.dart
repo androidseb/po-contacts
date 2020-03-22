@@ -76,6 +76,7 @@ class I18nString {
   final String email_action = 'email_action';
   final String display_draggable_scrollbar = 'display_draggable_scrollbar';
   final String open_application_x = 'open_application_x';
+  final String open_with_system = 'open_with_system';
 }
 
 class I18n {
@@ -157,7 +158,8 @@ class I18n {
     string.call_action: 'Application to handle call action',
     string.email_action: 'Application to handle email action',
     string.display_draggable_scrollbar: 'Display draggable scrollbar',
-    string.open_application_x: 'Open application: %s'
+    string.open_application_x: 'Open application: %s',
+    string.open_with_system: 'Open with system',
   };
 
   static _getObjString(final Object _obj) {

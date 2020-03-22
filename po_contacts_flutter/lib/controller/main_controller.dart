@@ -260,7 +260,7 @@ class MainController {
           psController.actionsManager.startPhoneCall(pi.fieldValue);
         },
       ));
-      if (MainController.get().psController.basicInfoManager.isNotWeb) {
+      if (MainController.get().psController.basicInfoManager.isNotDesktop) {
         listOptions.add(ListTile(
           leading: Icon(Icons.message),
           title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
@@ -450,7 +450,7 @@ class MainController {
     if (_context == null) {
       return null;
     }
-    if (psController.basicInfoManager.isWeb) {
+    if (psController.basicInfoManager.isDesktop) {
       return psController.filesManager.pickImageFile(ImageFileSource.FILE_PICKER);
     }
     final Completer<FileEntity> futureSelectedFile = Completer<FileEntity>();
@@ -499,7 +499,7 @@ class MainController {
   }
 
   void startImportVCFFileForWeb() async {
-    if (psController.basicInfoManager.isNotWeb) {
+    if (psController.basicInfoManager.isNotDesktop) {
       return;
     }
     await psController.fileTransitManager.getCopiedInboxFilePath(null);

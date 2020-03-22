@@ -37,7 +37,7 @@ class PhonesView extends EntriesGroupView {
         MainController.get().psController.actionsManager.startPhoneCall(phoneNumber);
       },
     ));
-    if (MainController.get().psController.basicInfoManager.isNotWeb) {
+    if (MainController.get().psController.basicInfoManager.isNotDesktop) {
       res.add(EntriesGroupAction(
         Icons.message,
         I18n.getString(I18n.string.text_x, phoneNumber),
