@@ -22,4 +22,3 @@ git add po_contacts_flutter/lib/app_version.dart
 
 git commit -m "$NEW_VERSION_LINE"
 git push
-

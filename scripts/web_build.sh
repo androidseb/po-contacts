@@ -3,6 +3,8 @@ set -e
 
 cd $(git rev-parse --show-toplevel)
 
+echo "web_build started"
+
 echo "Copying 'po_contacts_flutter' to 'bin/tmp'..."
 rm -rf bin/tmp
 rm -rf bin/web
@@ -23,3 +25,4 @@ mv bin/tmp/build/web bin/web
 rm -rf bin/tmp
 
 echo "Web app successfully built under 'bin/web'"
+echo "web_build completed"
