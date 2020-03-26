@@ -36,7 +36,7 @@ platform :android do
     sh('sh ../android_build_apk.sh')
     upload_to_play_store(
       track: 'internal',
-      apk: '../../bin/android_app.apk',
+      apk: '../bin/android_app.apk',
     )
   end
 
