@@ -14,8 +14,8 @@ DEB_DEBIAN_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/DEBIAN"
 DEB_CONTROL_OUTPUT_FILE_NAME=$DEB_DEBIAN_OUTPUT_FOLDER_NAME"/control"
 DEB_SHARE_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/share/pocontacts"
 DEB_BIN_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/bin"
-DEB_BIN_NW_OUTPUT_FILE_NAME=$DEB_BIN_OUTPUT_FOLDER_NAME"/pocontacts"
-DEB_BIN_NW_OUTPUT_FILE_CONTENT="/usr/share/pocontacts/nw"
+DEB_BIN_OUTPUT_FILE_NAME=$DEB_BIN_OUTPUT_FOLDER_NAME"/pocontacts"
+DEB_BIN_OUTPUT_FILE_CONTENT="/usr/share/pocontacts/nw"
 DEB_OUTPUT_FILE="pocontactsdeb.deb"
 
 echo "Building deb package folder"
@@ -34,8 +34,8 @@ echo "Homepage: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_
 echo "Description: Privacy Oriented Contacts Manager">>$DEB_CONTROL_OUTPUT_FILE_NAME
 echo " For a complete description, see the website: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_NAME
 cp -r $OUTPUT_FOLDER_NAME/* $DEB_SHARE_OUTPUT_FOLDER_NAME/
-echo $DEB_BIN_NW_OUTPUT_FILE_CONTENT>$DEB_BIN_NW_OUTPUT_FILE_NAME
-chmod 0755 $DEB_BIN_NW_OUTPUT_FILE_NAME
+echo $DEB_BIN_OUTPUT_FILE_CONTENT>$DEB_BIN_OUTPUT_FILE_NAME
+chmod 0755 $DEB_BIN_OUTPUT_FILE_NAME
 
 sudo bash ../../scripts/subscripts/linux_build_app_deb_as_root.sh $(whoami)
 
