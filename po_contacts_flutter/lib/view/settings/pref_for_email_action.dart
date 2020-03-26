@@ -7,6 +7,11 @@ class PrefForEmailAction extends MultiSelectionEntry {
   PrefForEmailAction() : super(AppSettings.getEmailActionChoices());
 
   @override
+  bool shouldDisplay() {
+    return MainController.get().psController.basicInfoManager.isDesktop;
+  }
+
+  @override
   String getLabelText() {
     return I18n.getString(I18n.string.email_action);
   }

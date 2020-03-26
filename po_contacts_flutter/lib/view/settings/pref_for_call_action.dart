@@ -7,6 +7,11 @@ class PrefForCallAction extends MultiSelectionEntry {
   PrefForCallAction() : super(AppSettings.getCallActionChoices());
 
   @override
+  bool shouldDisplay() {
+    return MainController.get().psController.basicInfoManager.isDesktop;
+  }
+
+  @override
   String getLabelText() {
     return I18n.getString(I18n.string.call_action);
   }
