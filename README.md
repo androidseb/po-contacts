@@ -49,3 +49,4 @@ sudo apt-get install libatomic1
 
 * The [flutter project](https://flutter.dev/) for all the development tools.
 * The [textmate](https://github.com/textmate/textmate/blob/master/Applications/TextMate/resources/Info.plist) source code helped me figure out how to specify vcard files in an iOS app Info.plist.
+* [NWJS](https://nwjs.io/) for the easy web app packaging tools
