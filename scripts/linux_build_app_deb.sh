@@ -16,6 +16,8 @@ DEB_SHARE_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/share/pocontacts"
 DEB_BIN_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/bin"
 DEB_BIN_OUTPUT_FILE_NAME=$DEB_BIN_OUTPUT_FOLDER_NAME"/pocontacts"
 DEB_BIN_OUTPUT_FILE_CONTENT="/usr/share/pocontacts/nw"
+DEB_DESKTOP_FILE_FOLDER_PATH=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/share/applications"
+DEB_DESKTOP_FILE_PATH=$DEB_DESKTOP_FILE_FOLDER_PATH"/pocontacts.desktop"
 DEB_OUTPUT_FILE="pocontactsdeb.deb"
 
 echo "Building deb package folder"
@@ -25,6 +27,7 @@ rm -rf $DEB_ROOT_OUTPUT_FOLDER_NAME
 mkdir -p $DEB_SHARE_OUTPUT_FOLDER_NAME
 mkdir -p $DEB_BIN_OUTPUT_FOLDER_NAME
 mkdir -p $DEB_DEBIAN_OUTPUT_FOLDER_NAME
+mkdir -p $DEB_DESKTOP_FILE_FOLDER_PATH
 echo "Package: POContacts">$DEB_CONTROL_OUTPUT_FILE_NAME
 echo "Version: "$APP_VERSION>>$DEB_CONTROL_OUTPUT_FILE_NAME
 echo "Architecture: all">>$DEB_CONTROL_OUTPUT_FILE_NAME
@@ -36,6 +39,16 @@ echo " For a complete description, see the website: https://github.com/androidse
 cp -r $OUTPUT_FOLDER_NAME/* $DEB_SHARE_OUTPUT_FOLDER_NAME/
 echo $DEB_BIN_OUTPUT_FILE_CONTENT>$DEB_BIN_OUTPUT_FILE_NAME
 chmod 0755 $DEB_BIN_OUTPUT_FILE_NAME
+
+echo "#!/usr/bin/env xdg-open">$DEB_DESKTOP_FILE_PATH
+echo "">>$DEB_DESKTOP_FILE_PATH
+echo "[Desktop Entry]">>$DEB_DESKTOP_FILE_PATH
+echo "Version=1.0">>$DEB_DESKTOP_FILE_PATH
+echo "Type=Application">>$DEB_DESKTOP_FILE_PATH
+echo "Terminal=false">>$DEB_DESKTOP_FILE_PATH
+echo "Exec=/usr/bin/pocontacts">>$DEB_DESKTOP_FILE_PATH
+echo "Name=PO Contacts">>$DEB_DESKTOP_FILE_PATH
+echo "Icon=/usr/share/pocontacts/ic_launcher-web.png">>$DEB_DESKTOP_FILE_PATH
 
 sudo bash ../../scripts/subscripts/linux_build_app_deb_as_root.sh $(whoami)
 
