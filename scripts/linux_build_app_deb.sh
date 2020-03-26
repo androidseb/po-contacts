@@ -8,37 +8,37 @@ echo "linux_build_app_deb started"
 APP_VERSION=$(cat po_contacts_flutter/lib/app_version.dart|cut -d\' -f2|cut -d\+ -f1)
 sh scripts/subscripts/linux_build_app_folder.sh
 cd bin/tmp_linux
-OUTPUT_FOLDER_NAME="po-contacts"
-DEB_ROOT_OUTPUT_FOLDER_NAME="pocontactsdeb"
-DEB_DEBIAN_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/DEBIAN"
-DEB_CONTROL_OUTPUT_FILE_NAME=$DEB_DEBIAN_OUTPUT_FOLDER_NAME"/control"
-DEB_SHARE_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/share/pocontacts"
-DEB_BIN_OUTPUT_FOLDER_NAME=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/bin"
-DEB_BIN_OUTPUT_FILE_NAME=$DEB_BIN_OUTPUT_FOLDER_NAME"/pocontacts"
+OUTPUT_FOLDER_PATH="po-contacts"
+DEB_ROOT_OUTPUT_FOLDER_PATH="pocontactsdeb"
+DEB_DEBIAN_OUTPUT_FOLDER_PATH=$DEB_ROOT_OUTPUT_FOLDER_PATH"/DEBIAN"
+DEB_CONTROL_OUTPUT_FILE_PATH=$DEB_DEBIAN_OUTPUT_FOLDER_PATH"/control"
+DEB_SHARE_OUTPUT_FOLDER_PATH=$DEB_ROOT_OUTPUT_FOLDER_PATH"/usr/share/pocontacts"
+DEB_BIN_OUTPUT_FOLDER_PATH=$DEB_ROOT_OUTPUT_FOLDER_PATH"/usr/bin"
+DEB_BIN_OUTPUT_FILE_PATH=$DEB_BIN_OUTPUT_FOLDER_PATH"/pocontacts"
 DEB_BIN_OUTPUT_FILE_CONTENT="/usr/share/pocontacts/nw"
-DEB_DESKTOP_FILE_FOLDER_PATH=$DEB_ROOT_OUTPUT_FOLDER_NAME"/usr/share/applications"
+DEB_DESKTOP_FILE_FOLDER_PATH=$DEB_ROOT_OUTPUT_FOLDER_PATH"/usr/share/applications"
 DEB_DESKTOP_FILE_PATH=$DEB_DESKTOP_FILE_FOLDER_PATH"/pocontacts.desktop"
 DEB_OUTPUT_FILE="pocontactsdeb.deb"
 
 echo "Building deb package folder"
 #build the result into a final distributable file
 #process learned from there: https://senties-martinelli.com/articles/debian-packages
-rm -rf $DEB_ROOT_OUTPUT_FOLDER_NAME
-mkdir -p $DEB_SHARE_OUTPUT_FOLDER_NAME
-mkdir -p $DEB_BIN_OUTPUT_FOLDER_NAME
-mkdir -p $DEB_DEBIAN_OUTPUT_FOLDER_NAME
+rm -rf $DEB_ROOT_OUTPUT_FOLDER_PATH
+mkdir -p $DEB_SHARE_OUTPUT_FOLDER_PATH
+mkdir -p $DEB_BIN_OUTPUT_FOLDER_PATH
+mkdir -p $DEB_DEBIAN_OUTPUT_FOLDER_PATH
 mkdir -p $DEB_DESKTOP_FILE_FOLDER_PATH
-echo "Package: POContacts">$DEB_CONTROL_OUTPUT_FILE_NAME
-echo "Version: "$APP_VERSION>>$DEB_CONTROL_OUTPUT_FILE_NAME
-echo "Architecture: all">>$DEB_CONTROL_OUTPUT_FILE_NAME
-echo "Maintainer: theandroidseb+pocontactssupport@gmail.com">>$DEB_CONTROL_OUTPUT_FILE_NAME
-echo "Installed-Size: 100000">>$DEB_CONTROL_OUTPUT_FILE_NAME
-echo "Homepage: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_NAME
-echo "Description: Privacy Oriented Contacts Manager">>$DEB_CONTROL_OUTPUT_FILE_NAME
-echo " For a complete description, see the website: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_NAME
-cp -r $OUTPUT_FOLDER_NAME/* $DEB_SHARE_OUTPUT_FOLDER_NAME/
-echo $DEB_BIN_OUTPUT_FILE_CONTENT>$DEB_BIN_OUTPUT_FILE_NAME
-chmod 0755 $DEB_BIN_OUTPUT_FILE_NAME
+echo "Package: POContacts">$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Version: "$APP_VERSION>>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Architecture: all">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Maintainer: theandroidseb+pocontactssupport@gmail.com">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Installed-Size: 100000">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Homepage: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Description: Privacy Oriented Contacts Manager">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo " For a complete description, see the website: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_PATH
+cp -r $OUTPUT_FOLDER_PATH/* $DEB_SHARE_OUTPUT_FOLDER_PATH/
+echo $DEB_BIN_OUTPUT_FILE_CONTENT>$DEB_BIN_OUTPUT_FILE_PATH
+chmod 0755 $DEB_BIN_OUTPUT_FILE_PATH
 
 echo "#!/usr/bin/env xdg-open">$DEB_DESKTOP_FILE_PATH
 echo "">>$DEB_DESKTOP_FILE_PATH
