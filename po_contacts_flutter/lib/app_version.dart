@@ -1,1 +1,1 @@
-const PO_APP_VERSION = '1.1.0+26';
+const PO_APP_VERSION = '1.1.0+27';
