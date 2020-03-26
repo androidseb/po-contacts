@@ -17,7 +17,7 @@ NWJS_FOLDER_NAME="nwjs-v0.44.5-win-x64"
 NWJS_FILE_NAME=$NWJS_FOLDER_NAME".zip"
 wget https://dl.nwjs.io/v0.44.5/$NWJS_FILE_NAME --continue
 rm -rf $NWJS_FOLDER_NAME
-unzip $NWJS_FILE_NAME
+unzip -q $NWJS_FILE_NAME
 
 echo "Copying app data into the nwjs folder"
 #copying app data into the nwjs folder

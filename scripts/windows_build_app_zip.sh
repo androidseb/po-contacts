@@ -11,7 +11,7 @@ OUTPUT_FOLDER_NAME="po-contacts"
 
 echo "Zipping the result"
 #zip the result into a final distributable file
-zip -r windows_app.zip $OUTPUT_FOLDER_NAME
+zip -q -r windows_app.zip $OUTPUT_FOLDER_NAME
 
 echo "Moving the result file into bin/windows_app.zip"
 rm -f ../windows_app.zip
