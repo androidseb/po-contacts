@@ -72,7 +72,7 @@ class AppSettings {
   }
 
   static int getDefaultEmailActionId() {
-    return EMAIL_ACTION_THUNDERBIRD;
+    return EMAIL_ACTION_SYSTEM_DEFAULT;
   }
 
   static List<MultiSelectionChoice> getEmailActionChoices() {
@@ -90,12 +90,8 @@ class AppSettings {
   static int getDefaultCallActionId() {
     if (MainController.get().psController.basicInfoManager.isLinux) {
       return CALL_ACTION_LINPHONE;
-    } else if (MainController.get().psController.basicInfoManager.isMacOS) {
-      return CALL_ACTION_LINPHONE;
-    } else if (MainController.get().psController.basicInfoManager.isWindows) {
-      return CALL_ACTION_LINPHONE;
     } else {
-      return CALL_ACTION_LINPHONE;
+      return CALL_ACTION_SYSTEM_DEFAULT;
     }
   }
 
