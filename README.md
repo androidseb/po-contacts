@@ -16,14 +16,34 @@ I built this app on my free time and mostly as a learning experience. I intend t
 
 * Android: all features
 * iOS: all features
-* Windows: probably available soon
-* MacOS: probably available soon
-* Linux: probably available soon
+* Linux: all features
+* MacOS: coming soon
+* Windows: coming soon
 
 ## How to install
 
-* Android: [Google Play Store](https://play.google.com/store/apps/details?id=com.exlyo.pocontacts)
+* Android: choose the option that suits you best:
+  * [Google Play Store](https://play.google.com/store/apps/details?id=com.exlyo.pocontacts)
+  * [APK file](#todo)
 * iOS: [App Store](https://apps.apple.com/us/app/po-contacts/id1495556759)
+* Linux: choose the option that suits you best:
+  * [zip archive](#todo)
+  * [deb archive](#todo)
+
+For more download options like older versions download, see the [releases download page](#todo).
+
+## Troubleshooting
+
+### Linux Debian - Missing libatomic library
+
+If you get this error when trying to start PO Contacts:
+```
+error while loading shared libraries: libatomic.so.1: cannot open shared object file: No such file or directory
+```
+You can most likely fix it by installing libatomic with this command:
+```
+sudo apt-get install libatomic1
+```
 
 ## Credits
 
