@@ -14,11 +14,11 @@ I built this app on my free time and mostly as a learning experience. I intend t
 
 ## Supported Platforms
 
-* Android: all features
-* iOS: all features
-* Linux: all features
-* MacOS: coming soon
-* Windows: coming soon
+* Android
+* iOS
+* Linux
+* MacOS
+* Windows
 
 ## How to install and launch
 
