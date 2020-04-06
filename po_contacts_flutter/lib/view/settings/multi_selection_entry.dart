@@ -9,6 +9,11 @@ abstract class MultiSelectionEntry extends SettingEntry<int> {
 
   MultiSelectionEntry(this._availableEntries);
 
+  @override
+  bool shouldDisplay() {
+    return this._availableEntries.length > 1;
+  }
+
   String getEntryDisplayText(final int entryId) {
     for (final MultiSelectionChoice c in _availableEntries) {
       if (c.entryId == entryId) {
