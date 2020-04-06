@@ -12,7 +12,7 @@ try {
 //Platform name function to detect what OS is running
 {
     try {
-        const platformName = require('os').platform().name;
+        const platformName = require('os').platform();
         function _jspocGetPlatformName() {
             return platformName;
         }
