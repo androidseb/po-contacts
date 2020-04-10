@@ -7,15 +7,13 @@ class HomePageDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> drawerOptionsList = [];
-    if (MainController.get().psController.basicInfoManager.isDesktop) {
-      drawerOptionsList.add(ListTile(
-        leading: Icon(Icons.file_download),
-        title: Text(I18n.getString(I18n.string.import_vcf_file)),
-        onTap: () {
-          MainController.get().startImportVCFFileForWeb();
-        },
-      ));
-    }
+    drawerOptionsList.add(ListTile(
+      leading: Icon(Icons.file_download),
+      title: Text(I18n.getString(I18n.string.import_vcf_file)),
+      onTap: () {
+        MainController.get().startImportVCF();
+      },
+    ));
     drawerOptionsList.add(ListTile(
       leading: Icon(Icons.file_upload),
       title: Text(I18n.getString(I18n.string.export_all_as_vcf)),

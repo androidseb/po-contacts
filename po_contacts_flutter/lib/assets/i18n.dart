@@ -83,6 +83,7 @@ class I18nString {
   final String enter_password = 'enter_password';
   final String import_error_title = 'import_error_title';
   final String import_error_message = 'import_error_message';
+  final String import_file_mobile_helper_text = 'import_file_mobile_helper_text';
 }
 
 class I18n {
@@ -172,6 +173,7 @@ class I18n {
     string.enter_password: 'Enter password',
     string.import_error_title: 'Import error',
     string.import_error_message: 'Some error happened during the import, most likely because the file could not be read.',
+    string.import_file_mobile_helper_text: 'In order to import a file, you will have to click on a VCF file from outside this app, for example from the "My Files" app. When clicking the file, select PO Contacts to open it and the import process will start then.',
   };
 
   static _getObjString(final Object _obj) {

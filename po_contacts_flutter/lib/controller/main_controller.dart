@@ -552,8 +552,12 @@ class MainController {
     return futureSelectedFile.future;
   }
 
-  void startImportVCFFileForWeb() async {
+  void startImportVCF() async {
     if (psController.basicInfoManager.isNotDesktop) {
+      showMessageDialog(
+        I18n.getString(I18n.string.import_file_title),
+        I18n.getString(I18n.string.import_file_mobile_helper_text),
+      );
       return;
     }
     await psController.fileTransitManager.getCopiedInboxFilePath(null);
