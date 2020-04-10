@@ -77,6 +77,10 @@ class I18nString {
   final String display_draggable_scrollbar = 'display_draggable_scrollbar';
   final String open_application_x = 'open_application_x';
   final String open_with_system = 'open_with_system';
+  final String export_encrypt_question = 'export_encrypt_question';
+  final String export_encrypt_option_unprotected = 'export_encrypt_option_unprotected';
+  final String export_encrypt_option_encrypted = 'export_encrypt_option_encrypted';
+  final String enter_password = 'enter_password';
 }
 
 class I18n {
@@ -160,6 +164,10 @@ class I18n {
     string.display_draggable_scrollbar: 'Display draggable scrollbar',
     string.open_application_x: 'Open application: %s',
     string.open_with_system: 'Open with system',
+    string.export_encrypt_question: 'How do you want to export your data?\nYou can leave it unprotected or you can encrypt it with a password.\n\nIMPORTANT NOTE: if you decide to encrypt your exported data with a password, it should be impossible to read the data back without the password, which means losing the password is equivalent to losing the data. For that reason, it is highly recommended to use a password manager to store your password if you decide to use encryption.',
+    string.export_encrypt_option_unprotected: 'Unprotected',
+    string.export_encrypt_option_encrypted: 'Encrypt',
+    string.enter_password: 'Enter password',
   };
 
   static _getObjString(final Object _obj) {

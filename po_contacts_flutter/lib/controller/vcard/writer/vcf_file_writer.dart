@@ -5,7 +5,8 @@ import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 
 class VCFFileWriter extends VCFWriter {
   final FileEntity _file;
-  VCFFileWriter(final FilesManager filesManager, this._file) : super(FileReader(filesManager));
+  final String _encryptionKey;
+  VCFFileWriter(final FilesManager filesManager, this._file, this._encryptionKey) : super(FileReader(filesManager));
 
   @override
   void writeStringImpl(String line) {

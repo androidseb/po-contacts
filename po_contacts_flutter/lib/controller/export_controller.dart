@@ -10,7 +10,7 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 class ExportController {
   bool _isExporting = false;
 
-  void exportAllAsVCF() async {
+  void exportAllAsVCF(final String encryptionKey) async {
     if (_isExporting) {
       return;
     }
@@ -31,7 +31,7 @@ class ExportController {
         .filesManager
         .createFileEntityParentAndName(outputFilesDirPath, 'contacts_$dateTimeStr.vcf');
     try {
-      await _exportAllAsVCFToFile(destFile, progressCallback);
+      await _exportAllAsVCFToFile(destFile, encryptionKey, progressCallback);
     } finally {
       _isExporting = false;
       progressCallback(101);
@@ -46,7 +46,11 @@ class ExportController {
     }
   }
 
-  Future<void> _exportAllAsVCFToFile(final FileEntity outputFile, final Function(int progress) progressCallback) async {
+  Future<void> _exportAllAsVCFToFile(
+    final FileEntity outputFile,
+    final String encryptionKey,
+    final Function(int progress) progressCallback,
+  ) async {
     if (await outputFile.exists()) {
       await outputFile.delete();
     }
@@ -55,6 +59,7 @@ class ExportController {
     final VCFWriter vcfWriter = VCFFileWriter(
       MainController.get().psController.filesManager,
       outputFile,
+      encryptionKey,
     );
     await VCFSerializer.writeToVCF(
       contacts,

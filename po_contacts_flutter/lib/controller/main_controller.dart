@@ -164,7 +164,47 @@ class MainController {
   }
 
   void startExportAllAsVCF() {
-    _exportController.exportAllAsVCF();
+    if (_context == null) {
+      return;
+    }
+    showDialog(
+      context: _context,
+      builder: (final BuildContext context) {
+        return AlertDialog(
+          title: Text(I18n.getString(I18n.string.export_all_as_vcf)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(I18n.getString(I18n.string.export_encrypt_question)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(I18n.getString(I18n.string.export_encrypt_option_unprotected)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _exportController.exportAllAsVCF(null);
+              },
+            ),
+            FlatButton(
+              child: Text(I18n.getString(I18n.string.export_encrypt_option_encrypted)),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final String encryptionKey = await showTextInputDialog(
+                  I18n.getString(I18n.string.enter_password),
+                  isPassword: true,
+                );
+                if (encryptionKey == null || encryptionKey.isEmpty) {
+                  return;
+                }
+                _exportController.exportAllAsVCF(encryptionKey);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showAboutDialog() {
@@ -201,8 +241,9 @@ class MainController {
   }
 
   Future<String> showTextInputDialog(
-    final String hintStringKey,
-  ) async {
+    final String hintStringKey, {
+    bool isPassword: false,
+  }) async {
     if (_context == null) {
       return null;
     }
@@ -215,6 +256,7 @@ class MainController {
           return AlertDialog(
             title: Text(hintText),
             content: TextField(
+              obscureText: isPassword,
               controller: textFieldController,
               decoration: InputDecoration(hintText: hintText),
             ),
