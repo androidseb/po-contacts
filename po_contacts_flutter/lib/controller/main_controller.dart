@@ -245,7 +245,7 @@ class MainController {
     }
     final List<Widget> listOptions = [];
     for (final StringLabeledField pi in contact.phoneInfos) {
-      final String phoneStr = I18n.getString(LabeledField.getTypeNameStringKey(pi.labelType)) + ' (${pi.fieldValue})';
+      final String phoneStr = LabeledField.getLabelTypeDisplayText(pi) + ' (${pi.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.content_copy),
         title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, phoneStr)),
@@ -274,7 +274,7 @@ class MainController {
       }
     }
     for (final StringLabeledField ei in contact.emailInfos) {
-      final String emailStr = I18n.getString(LabeledField.getTypeNameStringKey(ei.labelType)) + ' (${ei.fieldValue})';
+      final String emailStr = LabeledField.getLabelTypeDisplayText(ei) + ' (${ei.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.content_copy),
         title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, emailStr)),
