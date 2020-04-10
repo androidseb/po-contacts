@@ -81,6 +81,8 @@ class I18nString {
   final String export_encrypt_option_unprotected = 'export_encrypt_option_unprotected';
   final String export_encrypt_option_encrypted = 'export_encrypt_option_encrypted';
   final String enter_password = 'enter_password';
+  final String import_error_title = 'import_error_title';
+  final String import_error_message = 'import_error_message';
 }
 
 class I18n {
@@ -168,6 +170,8 @@ class I18n {
     string.export_encrypt_option_unprotected: 'Unprotected',
     string.export_encrypt_option_encrypted: 'Encrypt',
     string.enter_password: 'Enter password',
+    string.import_error_title: 'Import error',
+    string.import_error_message: 'Some error happened during the import, most likely because the file could not be read.',
   };
 
   static _getObjString(final Object _obj) {

@@ -414,8 +414,12 @@ class MainController {
     );
   }
 
+  static const int CODE_LOADING_OPERATION_FINISHED = -1;
+  static const int CODE_LOADING_OPERATION_IMPORT_ERROR = -2;
   // Displays a loading dialog and returns a function to control updating the progress
-  // Calling the function with a value of 101 will terminate the loading dialog
+  // Calling the function with a value of CODE_LOADING_OPERATION_FINISHED will terminate the loading dialog
+  // Calling the function with a value of CODE_LOADING_OPERATION_IMPORT_ERROR will terminate the loading dialog and
+  // display the message error for import errors
   // Calling the function with any other value will update the progress text with <value>%
   Future<void> Function(int progress) displayLoadingDialog(final String title) {
     final TextEditingController textController = TextEditingController();
@@ -446,9 +450,15 @@ class MainController {
     );
     final Future<void> Function(int progress) progressCallback = (final int progress) async {
       await yieldMainQueue();
-      if (progress == 101) {
+      if (progress < 0) {
         if (Navigator.canPop(_context)) {
           Navigator.pop(_context);
+        }
+        if (progress == CODE_LOADING_OPERATION_IMPORT_ERROR) {
+          MainController.get().showMessageDialog(
+            I18n.getString(I18n.string.import_error_title),
+            I18n.getString(I18n.string.import_error_message),
+          );
         }
       } else {
         textController.text = '$progress%';

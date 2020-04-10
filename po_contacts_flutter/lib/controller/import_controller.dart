@@ -28,9 +28,10 @@ class ImportController {
     }
     _currentlyImporting = true;
 
-    MainController.get().promptUserForFileImport((userApprovedImport) {
+    MainController.get().promptUserForFileImport((userApprovedImport) async {
       if (userApprovedImport) {
         _importFileWithId(fileId);
+        MainController.get().yieldMainQueue();
       } else {
         _discardFileWithId(fileId);
         _currentlyImporting = false;
@@ -43,6 +44,7 @@ class ImportController {
   }
 
   Future<void> _importFileWithId(final String fileId) async {
+    bool importSuccessful = false;
     final Function(int progress) progressCallback =
         MainController.get().displayLoadingDialog(I18n.getString(I18n.string.importing));
     try {
@@ -60,10 +62,16 @@ class ImportController {
       for (final ContactBuilder cb in readContacts) {
         await MainController.get().model.addContact(cb);
       }
-      _discardFileWithId(fileId);
+      importSuccessful = true;
     } finally {
+      _discardFileWithId(fileId);
       _currentlyImporting = false;
-      progressCallback(101);
+      if (importSuccessful) {
+        progressCallback(MainController.CODE_LOADING_OPERATION_FINISHED);
+      } else {
+        progressCallback(MainController.CODE_LOADING_OPERATION_IMPORT_ERROR);
+      }
     }
+    return importSuccessful;
   }
 }

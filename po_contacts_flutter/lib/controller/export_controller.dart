@@ -34,7 +34,7 @@ class ExportController {
       await _exportAllAsVCFToFile(destFile, encryptionKey, progressCallback);
     } finally {
       _isExporting = false;
-      progressCallback(101);
+      progressCallback(MainController.CODE_LOADING_OPERATION_FINISHED);
     }
     final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
     await MainController.get().psController.fileTransitManager.shareFileExternally(sharePromptTitle, destFile);
