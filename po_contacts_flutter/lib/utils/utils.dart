@@ -102,4 +102,9 @@ class Utils {
     final Uint8List strBytes = base64.decode(base64String);
     return utf8.decode(strBytes);
   }
+
+  static Uint8List combineUint8Lists(final Uint8List list1, final Uint8List list2) {
+    final List<Uint8List> listOfList = [list1, list2];
+    return Uint8List.fromList(listOfList.expand((x) => x).toList());
+  }
 }

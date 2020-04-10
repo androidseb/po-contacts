@@ -12,6 +12,7 @@ dependencies:
   # Common (pure dart)
   draggable_scrollbar: ^0.0.4
   shared_preferences: ^0.5.6+3
+  pointycastle: 1.0.2
 
   # Mobile only
   cupertino_icons: ^0.1.2
