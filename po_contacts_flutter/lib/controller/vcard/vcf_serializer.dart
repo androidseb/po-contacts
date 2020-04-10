@@ -5,6 +5,7 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 //Serializer for vcard based on specs here:
 //https://tools.ietf.org/html/rfc6350
 class VCFSerializer {
+  static const String ENCRYPTED_FILE_PREFIX = 'ENCRYPTED VCARD CONTENT V001:';
   static Future<List<ContactBuilder>> readFromVCF(final VCFReader vcfReader) async {
     final List<ContactBuilder> res = [];
     ContactBuilder lastReadContact;
