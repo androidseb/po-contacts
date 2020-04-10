@@ -92,20 +92,16 @@ abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends State
           value: parentState.getDropDownValue(item),
           icon: Icon(Icons.arrow_downward),
           iconSize: 24,
-          onChanged: (EditableItemCategory newValue) {
+          onChanged: (EditableItemCategory newValue) async {
             if (newValue.labelType == LabeledFieldLabelType.custom && newValue.labelValue.isEmpty) {
-              MainController.get().showTextInputDialog(
-                I18n.string.custom_label,
-                (final String customLabelString) {
-                  if (customLabelString == null || customLabelString.isEmpty) {
-                    return;
-                  }
-                  parentState.setItemLabelValue(
-                    item,
-                    LabeledFieldLabelType.custom,
-                    customLabelString,
-                  );
-                },
+              final String customLabelString = await MainController.get().showTextInputDialog(I18n.string.custom_label);
+              if (customLabelString == null || customLabelString.isEmpty) {
+                return;
+              }
+              parentState.setItemLabelValue(
+                item,
+                LabeledFieldLabelType.custom,
+                customLabelString,
               );
               return;
             }

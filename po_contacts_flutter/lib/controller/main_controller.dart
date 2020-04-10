@@ -200,13 +200,13 @@ class MainController {
     );
   }
 
-  void showTextInputDialog(
+  Future<String> showTextInputDialog(
     final String hintStringKey,
-    final Function(String enteredText) callback,
-  ) {
+  ) async {
     if (_context == null) {
-      return;
+      return null;
     }
+    final Completer<String> futureEnteredText = Completer<String>();
     final String hintText = I18n.getString(hintStringKey);
     final TextEditingController textFieldController = TextEditingController();
     showDialog(
@@ -223,18 +223,20 @@ class MainController {
                 child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  futureEnteredText.complete(null);
                 },
               ),
               FlatButton(
                 child: Text(I18n.getString(I18n.string.ok)),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  callback(textFieldController.value.text);
+                  futureEnteredText.complete(textFieldController.value.text);
                 },
               ),
             ],
           );
         });
+    return futureEnteredText.future;
   }
 
   void showContactQuickActionsMenu(final Contact contact) {
