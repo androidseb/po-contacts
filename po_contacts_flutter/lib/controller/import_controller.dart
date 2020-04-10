@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
@@ -5,6 +8,7 @@ import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.d
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 class ImportController {
   bool _currentlyImporting = false;
@@ -43,6 +47,17 @@ class ImportController {
     MainController.get().psController.fileTransitManager.discardInboxFileId(fileId);
   }
 
+  Future<bool> isFileEncrypted(final FileEntity file) async {
+    final String fileBase64String = await file.readAsBase64String();
+    final Uint8List encryptionFlagHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
+    final Uint8List fileRawContent = base64.decode(fileBase64String);
+    if (fileRawContent.length < encryptionFlagHeaderContent.length) {
+      return false;
+    }
+    final Uint8List fileHeaderContent = fileRawContent.sublist(0, encryptionFlagHeaderContent.length);
+    return Utils.areUInt8ListsEqual(fileHeaderContent, encryptionFlagHeaderContent);
+  }
+
   Future<void> _importFileWithId(final String fileId) async {
     bool importSuccessful = false;
     final Function(int progress) progressCallback =
@@ -52,9 +67,18 @@ class ImportController {
           await MainController.get().psController.fileTransitManager.getCopiedInboxFilePath(fileId);
       final FileEntity file =
           await MainController.get().psController.filesManager.createFileEntityAbsPath(inboxFilePath);
+      String encryptionKey;
+      if (await isFileEncrypted(file)) {
+        encryptionKey = await MainController.get()
+            .showTextInputDialog(I18n.getString(I18n.string.enter_password), isPassword: true);
+        if (encryptionKey == null || encryptionKey.isEmpty) {
+          return;
+        }
+      }
       final List<ContactBuilder> readContacts = await VCFSerializer.readFromVCF(
         VCFFileReader(
           file,
+          encryptionKey,
           DiskFileInflater(),
           progressCallback: progressCallback,
         ),

@@ -58,7 +58,7 @@ class EncryptionUtils {
   static Uint8List _padData(final Uint8List _data) {
     final int numberOfCharsToPad = _AES_BLOCK_BYTES_COUNT - (_data.length % _AES_BLOCK_BYTES_COUNT);
     final Uint8List paddingText = utf8.encode('\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0');
-    return Utils.combineUint8Lists(_data, paddingText.sublist(0, numberOfCharsToPad));
+    return Utils.combineUInt8Lists(_data, paddingText.sublist(0, numberOfCharsToPad));
   }
 
   static Uint8List _unPadData(final Uint8List _data) {
@@ -116,7 +116,7 @@ class EncryptionUtils {
     final Uint8List derivedKey = _deriveKey(encryptionKey);
     final Uint8List paddedPlainTextData = _padData(plainData);
     final Uint8List encryptedBytes = _aesCbcEncrypt(derivedKey, iv, paddedPlainTextData);
-    return Utils.combineUint8Lists(iv, encryptedBytes);
+    return Utils.combineUInt8Lists(iv, encryptedBytes);
   }
 
   static String decryptText(final Uint8List cipherData, final String encryptionKey) {

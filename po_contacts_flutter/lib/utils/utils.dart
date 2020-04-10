@@ -103,7 +103,25 @@ class Utils {
     return utf8.decode(strBytes);
   }
 
-  static Uint8List combineUint8Lists(final Uint8List list1, final Uint8List list2) {
+  static bool areUInt8ListsEqual(final Uint8List list1, final Uint8List list2) {
+    if (list1 == list2) {
+      return true;
+    }
+    if (list1 == null || list2 == null) {
+      return false;
+    }
+    if (list1.length != list2.length) {
+      return false;
+    }
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static Uint8List combineUInt8Lists(final Uint8List list1, final Uint8List list2) {
     final List<Uint8List> listOfList = [list1, list2];
     return Uint8List.fromList(listOfList.expand((x) => x).toList());
   }

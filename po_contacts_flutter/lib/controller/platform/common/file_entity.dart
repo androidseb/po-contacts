@@ -1,4 +1,17 @@
 abstract class FileEntity {
+  static List<String> rawFileContentToLines(final String fileContentAsString) {
+    final List<String> intermediateResult = fileContentAsString.split('\n');
+    final List<String> result = [];
+    for (final String s in intermediateResult) {
+      if (s.endsWith('\r')) {
+        result.add(s.substring(0, s.length - 1));
+      } else {
+        result.add(s);
+      }
+    }
+    return result;
+  }
+
   String getAbsolutePath();
 
   Future<bool> exists();
