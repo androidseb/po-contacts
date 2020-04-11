@@ -1,3 +1,1 @@
-Added icons in the left menu
-Added a settings entry in the left menu
-Added a setting to display a draggable scrollbar
+Added password-based encryption support for import and export of files
