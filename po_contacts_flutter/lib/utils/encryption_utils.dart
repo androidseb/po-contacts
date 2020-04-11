@@ -21,6 +21,7 @@ class EncryptionUtils {
 
   /// The number of bytes in an AES block (IV or encrypted block size)
   static const _AES_BLOCK_BYTES_COUNT = 16;
+  /// The number of SHA-256 iterations when deriving the key
   static const _DIGEST_ITERATIONS_COUNT = 100000;
 
   /// Generates a random initialization vector ready to use for encryption

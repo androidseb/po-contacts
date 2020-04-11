@@ -83,8 +83,24 @@ You can most likely fix it by installing libatomic with this command:
 sudo apt-get install libatomic1
 ```
 
+## About password-based encryption
+
+The password-based encryption uses the [Pointy Castle Library](https://pub.dev/packages/pointycastle) to:
+* derive the user-inputted password with SHA-256
+* encrypt the data with AES-CBC
+
+You can look at the code to see exactly how it's implemented, but at a high level, here is how the password-based encryption works:
+* derive the user-inputted password with multiple iterations of SHA-256, producing the `encryption key`
+* generate a random one time use initialization vector, also known as `IV`
+* encrypt the data with AES-CBC using the `IV` and the `encryption key`
+* write the resulting encrypted file in 3 distinct blocks
+  * A plain text header specific to PO Contacts indicating that the content is encrypted (a few Bytes)
+  * The 16 Bytes long unencrypted `IV`
+  * The encrypted data itself
+
 ## Credits
 
 * The [flutter project](https://flutter.dev/) for all the development tools.
 * The [textmate](https://github.com/textmate/textmate/blob/master/Applications/TextMate/resources/Info.plist) source code helped me figure out how to specify vcard files in an iOS app Info.plist.
-* [NWJS](https://nwjs.io/) for the easy web app packaging tools
+* [NWJS](https://nwjs.io/) for the easy web app packaging tools.
+* stevenroose, the author of the [Pointy Castle Library](https://pub.dev/packages/pointycastle).
