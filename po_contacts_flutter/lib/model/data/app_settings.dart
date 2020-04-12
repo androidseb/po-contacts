@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
@@ -84,8 +86,7 @@ class AppSettings {
   }
 
   static Future<bool> getDefaultUseDarkDisplayOption() async {
-    //TODO
-    return false;
+    return WidgetsBinding.instance.window.platformBrightness == Brightness.dark;
   }
 
   static List<MultiSelectionChoice> getEmailActionChoices() {
