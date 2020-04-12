@@ -41,8 +41,10 @@ import Flutter
     let fileURL = NSURL(fileURLWithPath: filePath)
     var fileURLs = [Any]()
     fileURLs.append(fileURL)
-    let activityViewController = UIActivityViewController(activityItems: fileURLs, applicationActivities: nil)
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
+    let activityViewController = UIActivityViewController(activityItems: fileURLs, applicationActivities: nil)
+    activityViewController.popoverPresentationController?.sourceView = controller.view;
+    activityViewController.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 0, height: 0);
     controller.present(activityViewController, animated: true, completion: nil)
     result(nil)
   }
