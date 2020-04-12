@@ -256,6 +256,7 @@ class MainController {
           return AlertDialog(
             title: Text(hintText),
             content: TextField(
+              autofocus: true,
               obscureText: isPassword,
               controller: textFieldController,
               decoration: InputDecoration(hintText: hintText),
