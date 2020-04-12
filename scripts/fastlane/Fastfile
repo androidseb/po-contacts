@@ -79,8 +79,8 @@ platform :ios do
       ipa: "../bin/ios_app.ipa",
       force: true,
       submit_for_review: false,
-      metadata_path: "../../resources/AppleStore/metadata",
-      screenshots_path: "../../resources/AppleStore/screenshots"
+      metadata_path: "../resources/AppleStore/metadata",
+      screenshots_path: "../resources/AppleStore/screenshots"
     )
   end
 end
