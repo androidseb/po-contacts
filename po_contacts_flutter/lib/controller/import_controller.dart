@@ -35,7 +35,7 @@ class ImportController {
     MainController.get().promptUserForFileImport((userApprovedImport) async {
       if (userApprovedImport) {
         _importFileWithId(fileId);
-        MainController.get().yieldMainQueue();
+        await Utils.yieldMainQueue();
       } else {
         _discardFileWithId(fileId);
         _currentlyImporting = false;

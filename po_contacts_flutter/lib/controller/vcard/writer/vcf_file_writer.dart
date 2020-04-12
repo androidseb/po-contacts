@@ -21,7 +21,7 @@ class VCFFileWriter extends VCFWriter {
   }
 
   @override
-  Future<void> flushOutputBuffer() {
+  Future<void> flushOutputBuffer() async {
     final String outputPlainText = _outputBuffer.join();
     final Uint8List outputPlainBytes = utf8.encode(outputPlainText);
     Uint8List outputFinalBytes;
@@ -29,7 +29,7 @@ class VCFFileWriter extends VCFWriter {
       outputFinalBytes = outputPlainBytes;
     } else {
       final Uint8List fileHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
-      final Uint8List outputEncryptedBytes = EncryptionUtils.encryptData(outputPlainBytes, _encryptionKey);
+      final Uint8List outputEncryptedBytes = await EncryptionUtils.encryptData(outputPlainBytes, _encryptionKey);
       outputFinalBytes = Utils.combineUInt8Lists([fileHeaderContent, outputEncryptedBytes]);
     }
     final String outputBase64String = base64.encode(outputFinalBytes);

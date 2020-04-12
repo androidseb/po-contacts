@@ -24,7 +24,7 @@ class VCFFileReader extends VCFReader {
     final String base64RawContent = await _file.readAsBase64String();
     final Uint8List rawContentBytes = base64.decode(base64RawContent);
     final Uint8List headerLessContentBytes = rawContentBytes.sublist(VCFSerializer.ENCRYPTED_FILE_PREFIX.length);
-    final Uint8List decryptedContentBytes = EncryptionUtils.decryptData(headerLessContentBytes, _encryptionKey);
+    final Uint8List decryptedContentBytes = await EncryptionUtils.decryptData(headerLessContentBytes, _encryptionKey);
     final String decryptedContent = utf8.decode(decryptedContentBytes);
     return FileEntity.rawFileContentToLines(decryptedContent);
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -24,6 +25,12 @@ class NormalizedString {
 }
 
 class Utils {
+  /// Releases the current execution thread to allow other queued items to execute
+  /// Used when performing heavy operations that don't require multi-threading
+  static Future<void> yieldMainQueue() async {
+    return Future.delayed(const Duration(milliseconds: 0));
+  }
+
   static String positiveNumberToXDigitsString(final int number, final int digitsCount) {
     return number.toString().padLeft(digitsCount, '0');
   }

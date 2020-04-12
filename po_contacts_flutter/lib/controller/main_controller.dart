@@ -55,12 +55,6 @@ class MainController {
 
   PlatformSpecificController get psController => _psController;
 
-  //Releases the current execution thread to allow other queued items to execute
-  //Used during file import/export operations
-  Future<void> yieldMainQueue() async {
-    return await _psController.fileTransitManager.getOutputFilesDirectoryPath();
-  }
-
   void updateBuildContext(final BuildContext context) {
     if (context == null) {
       return;
@@ -450,7 +444,7 @@ class MainController {
       },
     );
     final Future<void> Function(int progress) progressCallback = (final int progress) async {
-      await yieldMainQueue();
+      await Utils.yieldMainQueue();
       if (progress < 0) {
         if (Navigator.canPop(_context)) {
           Navigator.pop(_context);

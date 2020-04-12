@@ -47,7 +47,7 @@ class EncryptionUtils {
 
   /// Derives a plain encryption key to make it ready for encryption
   /// Applies the SHA256 digest quite a few times
-  static Uint8List _deriveKey(final String plainKey, final Uint8List salt) {
+  static Future<Uint8List> _deriveKey(final String plainKey, final Uint8List salt) async {
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
       //ignore: deprecated_member_use_from_same_package
@@ -61,6 +61,9 @@ class EncryptionUtils {
     Uint8List digestedData = dataToDigest;
     for (int i = 0; i < _DIGEST_ITERATIONS_COUNT; i++) {
       digestedData = d.process(dataToDigest);
+      if (i % 1000 == 0) {
+        await Utils.yieldMainQueue();
+      }
     }
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
@@ -121,16 +124,16 @@ class EncryptionUtils {
     return paddedPlainText;
   }
 
-  static Uint8List encryptData(final Uint8List plainData, final String encryptionKey) {
+  static Future<Uint8List> encryptData(final Uint8List plainData, final String encryptionKey) async {
     final Uint8List iv = _generateRandomIV();
     final Uint8List keySalt = _generateSalt();
-    final Uint8List saltedDerivedKey = _deriveKey(encryptionKey, keySalt);
+    final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt);
     final Uint8List paddedPlainTextData = _padData(plainData);
     final Uint8List encryptedBytes = _aesCbcEncrypt(saltedDerivedKey, iv, paddedPlainTextData);
     return Utils.combineUInt8Lists([iv, keySalt, encryptedBytes]);
   }
 
-  static Uint8List decryptData(final Uint8List cipherData, final String encryptionKey) {
+  static Future<Uint8List> decryptData(final Uint8List cipherData, final String encryptionKey) async {
     // If there isn't at least 2 AES blocks (IV block + at least one data block), we give up here
     if (cipherData.length < _AES_BLOCK_BYTES_COUNT * 2) {
       throw Exception('Cipher data is too short');
@@ -141,7 +144,7 @@ class EncryptionUtils {
     }
     final Uint8List iv = cipherData.sublist(0, _AES_BLOCK_BYTES_COUNT);
     final Uint8List keySalt = cipherData.sublist(_AES_BLOCK_BYTES_COUNT, _AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
-    final Uint8List saltedDerivedKey = _deriveKey(encryptionKey, keySalt);
+    final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt);
     final Uint8List cipherDataBytes = cipherData.sublist(_AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
     final Uint8List decryptedBytes = _aesCbcDecrypt(saltedDerivedKey, iv, cipherDataBytes);
     final Uint8List unPaddedData = _unPadData(decryptedBytes);
