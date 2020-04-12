@@ -75,6 +75,19 @@ class AppSettings {
     return EMAIL_ACTION_SYSTEM_DEFAULT;
   }
 
+  static int getDefaultCallActionId() {
+    if (MainController.get().psController.basicInfoManager.isLinux) {
+      return CALL_ACTION_LINPHONE;
+    } else {
+      return CALL_ACTION_SYSTEM_DEFAULT;
+    }
+  }
+
+  static Future<bool> getDefaultUseDarkDisplayOption() async {
+    //TODO
+    return false;
+  }
+
   static List<MultiSelectionChoice> getEmailActionChoices() {
     if (MainController.get().psController.basicInfoManager.isLinux) {
       return _EMAIL_ACTION_CHOICES_LINUX;
@@ -84,14 +97,6 @@ class AppSettings {
       return _EMAIL_ACTION_CHOICES_WINDOWS;
     } else {
       return [];
-    }
-  }
-
-  static int getDefaultCallActionId() {
-    if (MainController.get().psController.basicInfoManager.isLinux) {
-      return CALL_ACTION_LINPHONE;
-    } else {
-      return CALL_ACTION_SYSTEM_DEFAULT;
     }
   }
 
@@ -110,6 +115,12 @@ class AppSettings {
   final bool displayDraggableScrollbar;
   final int emailActionId;
   final int callActionId;
+  final bool useDarkDisplay;
 
-  AppSettings({this.displayDraggableScrollbar: false, this.emailActionId: 0, this.callActionId: 0});
+  AppSettings({
+    this.displayDraggableScrollbar: false,
+    this.emailActionId: 0,
+    this.callActionId: 0,
+    this.useDarkDisplay: false,
+  });
 }

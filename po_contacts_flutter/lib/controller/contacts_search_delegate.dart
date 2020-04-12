@@ -13,6 +13,9 @@ class ContactsSearchDelegate extends SearchDelegate<Contact> {
   bool searchOpen = false;
 
   @override
+  ThemeData appBarTheme(BuildContext context) => Theme.of(context);
+
+  @override
   void close(BuildContext context, Contact result) {
     if (!searchOpen) {
       // If the close function is called when the search is already closed

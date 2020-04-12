@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_call_action.dart';
+import 'package:po_contacts_flutter/view/settings/pref_for_dark_display.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_email_action.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_scrollbar.dart';
 
@@ -12,6 +13,7 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          PrefForDarkDisplay(),
           PrefForScrollbar(),
           PrefForEmailAction(),
           PrefForCallAction(),

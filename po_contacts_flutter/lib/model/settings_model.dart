@@ -7,6 +7,7 @@ class SettingsModel {
   static const String _SETTING_ID_USE_DRAGGABLE_SCROLLBAR = 'use_draggable_scrollbar';
   static const String _SETTING_ID_EMAIL_ACTION = 'email_action';
   static const String _SETTING_ID_CALL_ACTION = 'call_action';
+  static const String _SETTING_ID_USE_DARK_DISPLAY = 'dark_display';
 
   final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   AppSettings _appSettings = AppSettings();
@@ -49,11 +50,20 @@ class SettingsModel {
     return AppSettings.getDefaultCallActionId();
   }
 
+  Future<bool> _readUseDarkDisplay() async {
+    final bool useDarkDisplay = (await _sharedPreferences).getBool(_SETTING_ID_USE_DARK_DISPLAY);
+    if (useDarkDisplay != null) {
+      return useDarkDisplay;
+    }
+    return AppSettings.getDefaultUseDarkDisplayOption();
+  }
+
   Future<void> _updateSettingsFromStorage() async {
     _appSettings = AppSettings(
       displayDraggableScrollbar: await _readDisplayDraggableScrollbarValue(),
       emailActionId: await _readEmailActionId(),
       callActionId: await _readCallActionId(),
+      useDarkDisplay: await _readUseDarkDisplay(),
     );
     _appSettingsChangeSC.add(_appSettings);
   }
@@ -70,6 +80,11 @@ class SettingsModel {
 
   void setCallActionId(final int callActionId) async {
     (await _sharedPreferences).setInt(_SETTING_ID_CALL_ACTION, callActionId);
+    _updateSettingsFromStorage();
+  }
+
+  void setUseDarkDisplay(final bool useDarkDisplay) async {
+    (await _sharedPreferences).setBool(_SETTING_ID_USE_DARK_DISPLAY, useDarkDisplay);
     _updateSettingsFromStorage();
   }
 }
