@@ -30,7 +30,7 @@ class VCFFileWriter extends VCFWriter {
     } else {
       final Uint8List fileHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
       final Uint8List outputEncryptedBytes = EncryptionUtils.encryptData(outputPlainBytes, _encryptionKey);
-      outputFinalBytes = Utils.combineUInt8Lists(fileHeaderContent, outputEncryptedBytes);
+      outputFinalBytes = Utils.combineUInt8Lists([fileHeaderContent, outputEncryptedBytes]);
     }
     final String outputBase64String = base64.encode(outputFinalBytes);
     _file.writeAsBase64String(outputBase64String);

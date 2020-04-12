@@ -21,19 +21,33 @@ class EncryptionUtils {
 
   /// The number of bytes in an AES block (IV or encrypted block size)
   static const _AES_BLOCK_BYTES_COUNT = 16;
+
+  /// The number of bytes for the randomly generated password salt
+  static const _SALT_BYTES_COUNT = 64;
+
   /// The number of SHA-256 iterations when deriving the key
   static const _DIGEST_ITERATIONS_COUNT = 100000;
 
+  /// Generates a random array of bytes as Uint8List
+  static Uint8List _generateRandomBytesArray(final int bytesCount) {
+    final Random random = Random.secure();
+    final List<int> randomBytes = List<int>.generate(bytesCount, (i) => random.nextInt(256));
+    return Uint8List.fromList(randomBytes);
+  }
+
   /// Generates a random initialization vector ready to use for encryption
   static Uint8List _generateRandomIV() {
-    final Random random = Random.secure();
-    final List<int> ivBytes = List<int>.generate(_AES_BLOCK_BYTES_COUNT, (i) => random.nextInt(256));
-    return Uint8List.fromList(ivBytes);
+    return _generateRandomBytesArray(_AES_BLOCK_BYTES_COUNT);
+  }
+
+  /// Generates a random salt
+  static Uint8List _generateSalt() {
+    return _generateRandomBytesArray(_SALT_BYTES_COUNT);
   }
 
   /// Derives a plain encryption key to make it ready for encryption
   /// Applies the SHA256 digest quite a few times
-  static Uint8List _deriveKey(final String plainKey) {
+  static Uint8List _deriveKey(final String plainKey, final Uint8List salt) {
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
       //ignore: deprecated_member_use_from_same_package
@@ -42,7 +56,7 @@ class EncryptionUtils {
         return cachedDerivedKey;
       }
     }
-    final Uint8List dataToDigest = utf8.encode(plainKey);
+    final Uint8List dataToDigest = Utils.combineUInt8Lists([utf8.encode(plainKey), salt]);
     final SHA256Digest d = SHA256Digest();
     Uint8List digestedData = dataToDigest;
     for (int i = 0; i < _DIGEST_ITERATIONS_COUNT; i++) {
@@ -59,7 +73,7 @@ class EncryptionUtils {
   static Uint8List _padData(final Uint8List _data) {
     final int numberOfCharsToPad = _AES_BLOCK_BYTES_COUNT - (_data.length % _AES_BLOCK_BYTES_COUNT);
     final Uint8List paddingText = utf8.encode('\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0');
-    return Utils.combineUInt8Lists(_data, paddingText.sublist(0, numberOfCharsToPad));
+    return Utils.combineUInt8Lists([_data, paddingText.sublist(0, numberOfCharsToPad)]);
   }
 
   static Uint8List _unPadData(final Uint8List _data) {
@@ -107,21 +121,13 @@ class EncryptionUtils {
     return paddedPlainText;
   }
 
-  static Uint8List encryptText(final String plainText, final String encryptionKey) {
-    final Uint8List plainTextData = utf8.encode(plainText);
-    return encryptData(plainTextData, encryptionKey);
-  }
-
   static Uint8List encryptData(final Uint8List plainData, final String encryptionKey) {
     final Uint8List iv = _generateRandomIV();
-    final Uint8List derivedKey = _deriveKey(encryptionKey);
+    final Uint8List keySalt = _generateSalt();
+    final Uint8List saltedDerivedKey = _deriveKey(encryptionKey, keySalt);
     final Uint8List paddedPlainTextData = _padData(plainData);
-    final Uint8List encryptedBytes = _aesCbcEncrypt(derivedKey, iv, paddedPlainTextData);
-    return Utils.combineUInt8Lists(iv, encryptedBytes);
-  }
-
-  static String decryptText(final Uint8List cipherData, final String encryptionKey) {
-    return utf8.decode(decryptData(cipherData, encryptionKey));
+    final Uint8List encryptedBytes = _aesCbcEncrypt(saltedDerivedKey, iv, paddedPlainTextData);
+    return Utils.combineUInt8Lists([iv, keySalt, encryptedBytes]);
   }
 
   static Uint8List decryptData(final Uint8List cipherData, final String encryptionKey) {
@@ -133,10 +139,11 @@ class EncryptionUtils {
     if (cipherData.length % _AES_BLOCK_BYTES_COUNT != 0) {
       throw Exception('Cipher data length is not a multiple of the AES block size of ($_AES_BLOCK_BYTES_COUNT)');
     }
-    final Uint8List derivedKey = _deriveKey(encryptionKey);
     final Uint8List iv = cipherData.sublist(0, _AES_BLOCK_BYTES_COUNT);
-    final Uint8List cipherDataBytes = cipherData.sublist(_AES_BLOCK_BYTES_COUNT);
-    final Uint8List decryptedBytes = _aesCbcDecrypt(derivedKey, iv, cipherDataBytes);
+    final Uint8List keySalt = cipherData.sublist(_AES_BLOCK_BYTES_COUNT, _AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
+    final Uint8List saltedDerivedKey = _deriveKey(encryptionKey, keySalt);
+    final Uint8List cipherDataBytes = cipherData.sublist(_AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
+    final Uint8List decryptedBytes = _aesCbcDecrypt(saltedDerivedKey, iv, cipherDataBytes);
     final Uint8List unPaddedData = _unPadData(decryptedBytes);
     return unPaddedData;
   }

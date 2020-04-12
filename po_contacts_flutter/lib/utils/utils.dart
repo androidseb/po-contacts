@@ -121,8 +121,7 @@ class Utils {
     return true;
   }
 
-  static Uint8List combineUInt8Lists(final Uint8List list1, final Uint8List list2) {
-    final List<Uint8List> listOfList = [list1, list2];
+  static Uint8List combineUInt8Lists(final List<Uint8List> listOfList) {
     return Uint8List.fromList(listOfList.expand((x) => x).toList());
   }
 }

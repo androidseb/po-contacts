@@ -40,9 +40,9 @@ void main() {
 
   test('Encryption modifies the source text', () {
     for (final String plainText in TEST_DATA_SET) {
+      final Uint8List plainData = utf8.encode(plainText);
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
-        final Uint8List plainData = utf8.encode(plainText);
-        final Uint8List cipherData = EncryptionUtils.encryptText(plainText, encryptionKey);
+        final Uint8List cipherData = EncryptionUtils.encryptData(plainData, encryptionKey);
         expect(Utils.areUInt8ListsEqual(plainData, cipherData), false);
       }
     }
@@ -50,31 +50,33 @@ void main() {
 
   test('Decryption with the correct password of encrypted data restores the plain text', () {
     for (final String plainText in TEST_DATA_SET) {
+      final Uint8List plainData = utf8.encode(plainText);
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
-        final Uint8List cipherData = EncryptionUtils.encryptText(plainText, encryptionKey);
-        final String decryptedText = EncryptionUtils.decryptText(cipherData, encryptionKey);
-        expect(plainText, decryptedText);
+        final Uint8List cipherData = EncryptionUtils.encryptData(plainData, encryptionKey);
+        final Uint8List decryptedData = EncryptionUtils.decryptData(cipherData, encryptionKey);
+        expect(Utils.areUInt8ListsEqual(plainData, decryptedData), true);
       }
     }
   });
 
   test('Decryption with the wrong password of encrypted data does not restore the plain text', () {
     for (final String plainText in TEST_DATA_SET) {
+      final Uint8List plainData = utf8.encode(plainText);
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
         final String wrongEncryptionKey = encryptionKey + 'some other string';
-        final Uint8List plainTextData = utf8.encode(plainText);
-        final Uint8List cipherData = EncryptionUtils.encryptData(plainTextData, encryptionKey);
+        final Uint8List cipherData = EncryptionUtils.encryptData(plainData, encryptionKey);
         final Uint8List decryptedData = EncryptionUtils.decryptData(cipherData, wrongEncryptionKey);
-        expect(plainTextData == decryptedData, false);
+        expect(plainData == decryptedData, false);
       }
     }
   });
 
   test('Encryption is random: different output every time, but same result for decryption', () {
     for (final String plainText in TEST_DATA_SET) {
+      final Uint8List plainData = utf8.encode(plainText);
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
-        final Uint8List cipherData = EncryptionUtils.encryptText(plainText, encryptionKey);
-        final Uint8List cipherData2 = EncryptionUtils.encryptText(plainText, encryptionKey);
+        final Uint8List cipherData = EncryptionUtils.encryptData(plainData, encryptionKey);
+        final Uint8List cipherData2 = EncryptionUtils.encryptData(plainData, encryptionKey);
         expect(cipherData == cipherData2, false);
         final Uint8List decryptedData = EncryptionUtils.decryptData(cipherData, encryptionKey);
         final Uint8List decryptedData2 = EncryptionUtils.decryptData(cipherData2, encryptionKey);
