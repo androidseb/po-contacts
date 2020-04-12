@@ -90,12 +90,14 @@ The password-based encryption uses the [Pointy Castle Library](https://pub.dev/p
 * encrypt the data with AES-CBC
 
 You can look at the code to see exactly how it's implemented, but at a high level, here is how the password-based encryption works:
-* derive the user-inputted password with multiple iterations of SHA-256, producing the `encryption key`
+* generate a random one time use `salt` to add to the user-inputted password
+* derive the salted user-inputted password with multiple iterations of SHA-256, producing the `encryption key`
 * generate a random one time use initialization vector, also known as `IV`
 * encrypt the data with AES-CBC using the `IV` and the `encryption key`
-* write the resulting encrypted file in 3 distinct blocks
+* write the resulting encrypted file in 4 distinct blocks
   * A plain text header specific to PO Contacts indicating that the content is encrypted (a few Bytes)
-  * The 16 Bytes long unencrypted `IV`
+  * The 16 bytes long unencrypted `IV`
+  * The 64 bytes long unencrypted `salt`
   * The encrypted data itself
 
 ## Credits
