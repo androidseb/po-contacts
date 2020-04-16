@@ -62,7 +62,12 @@ class I18nString {
   final String importing = 'importing';
   final String export_completed = 'export_completed';
   final String exported_contacts_to_file_x = 'exported_contacts_to_file_x';
-  final String exporting = 'exporting';
+  final String task_preparing = 'task_preparing';
+  final String task_exporting = 'task_exporting';
+  final String task_encrypting= 'task_encrypting';
+  final String task_reading= 'task_reading';
+  final String task_decrypting= 'task_decrypting';
+  final String task_importing= 'task_importing';
   final String change_image = 'change_image';
   final String select_image = 'select_image';
   final String from_gallery = 'from_gallery';
@@ -153,7 +158,12 @@ class I18n {
     string.importing: 'Importing...',
     string.export_completed: 'Export completed',
     string.exported_contacts_to_file_x: 'Successfully exported contacts to the file:\n%s',
-    string.exporting: 'Exporting...',
+    string.task_preparing: 'Preparing...',
+    string.task_exporting: 'Exporting...',
+    string.task_encrypting: 'Encrypting...',
+    string.task_reading: 'Reading...',
+    string.task_decrypting: 'Decrypting...',
+    string.task_importing: 'Importing...',
     string.change_image: 'Change image',
     string.select_image: 'Select image',
     string.from_gallery: 'From gallery',

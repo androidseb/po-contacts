@@ -1,6 +1,7 @@
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 
 //Serializer for vcard based on specs here:
 //https://tools.ietf.org/html/rfc6350
@@ -21,7 +22,7 @@ class VCFSerializer {
   static Future<void> writeToVCF(
     final List<Contact> contacts,
     final VCFWriter vcfWriter,
-    final Function(int progress) progressCallback,
+    final TaskSetProgressCallback progressCallback,
   ) async {
     if (contacts == null) {
       return;
@@ -29,7 +30,7 @@ class VCFSerializer {
     for (int i = 0; i < contacts.length; i++) {
       final Contact c = contacts[i];
       await vcfWriter.writeContact(c);
-      await progressCallback((100 * (i + 1) / contacts.length).floor());
+      await progressCallback.broadcastProgress((i + 1) / contacts.length);
     }
   }
 }

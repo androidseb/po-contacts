@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 import "package:pointycastle/export.dart";
 
@@ -47,7 +48,8 @@ class EncryptionUtils {
 
   /// Derives a plain encryption key to make it ready for encryption
   /// Applies the SHA256 digest quite a few times
-  static Future<Uint8List> _deriveKey(final String plainKey, final Uint8List salt) async {
+  static Future<Uint8List> _deriveKey(
+      final String plainKey, final Uint8List salt, final TaskSetProgressCallback progressCallback) async {
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
       //ignore: deprecated_member_use_from_same_package
@@ -61,9 +63,7 @@ class EncryptionUtils {
     Uint8List digestedData = dataToDigest;
     for (int i = 0; i < _DIGEST_ITERATIONS_COUNT; i++) {
       digestedData = d.process(dataToDigest);
-      if (i % 1000 == 0) {
-        await Utils.yieldMainQueue();
-      }
+      await progressCallback.broadcastProgress(i / _DIGEST_ITERATIONS_COUNT);
     }
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
@@ -92,48 +92,55 @@ class EncryptionUtils {
     return _data.sublist(0, _data.length - numberOfPaddingCharsToRemove);
   }
 
-  static Uint8List _aesCbcEncrypt(final Uint8List key, Uint8List iv, final Uint8List paddedPlaintext) {
+  static Future<Uint8List> _aesCbcEncrypt(final Uint8List key, Uint8List iv, final Uint8List paddedPlainData,
+      final TaskSetProgressCallback progressCallback) async {
     // Create a CBC block cipher with AES, and initialize with key and IV
     final cbc = CBCBlockCipher(AESFastEngine())..init(true, ParametersWithIV(KeyParameter(key), iv)); // true=encrypt
 
     // Encrypt the plaintext block-by-block
-    final cipherText = Uint8List(paddedPlaintext.length); // allocate space
+    final cipherText = Uint8List(paddedPlainData.length); // allocate space
 
-    var offset = 0;
-    while (offset < paddedPlaintext.length) {
-      offset += cbc.processBlock(paddedPlaintext, offset, cipherText, offset);
+    int offset = 0;
+    while (offset < paddedPlainData.length) {
+      offset += cbc.processBlock(paddedPlainData, offset, cipherText, offset);
+      await progressCallback.broadcastProgress(offset / paddedPlainData.length);
     }
-    assert(offset == paddedPlaintext.length);
+    assert(offset == paddedPlainData.length);
 
     return cipherText;
   }
 
-  static Uint8List _aesCbcDecrypt(final Uint8List key, final Uint8List iv, final Uint8List cipherText) {
+  static Future<Uint8List> _aesCbcDecrypt(final Uint8List key, final Uint8List iv, final Uint8List cipherData,
+      final TaskSetProgressCallback progressCallback) async {
     // Create a CBC block cipher with AES, and initialize with key and IV
     final cbc = CBCBlockCipher(AESFastEngine())..init(false, ParametersWithIV(KeyParameter(key), iv)); // false=decrypt
 
     // Decrypt the cipherText block-by-block
-    final paddedPlainText = Uint8List(cipherText.length); // allocate space
+    final paddedPlainText = Uint8List(cipherData.length); // allocate space
 
-    var offset = 0;
-    while (offset < cipherText.length) {
-      offset += cbc.processBlock(cipherText, offset, paddedPlainText, offset);
+    int offset = 0;
+    while (offset < cipherData.length) {
+      offset += cbc.processBlock(cipherData, offset, paddedPlainText, offset);
+      await progressCallback.broadcastProgress(offset / cipherData.length);
     }
-    assert(offset == cipherText.length);
+    assert(offset == cipherData.length);
 
     return paddedPlainText;
   }
 
-  static Future<Uint8List> encryptData(final Uint8List plainData, final String encryptionKey) async {
+  static Future<Uint8List> encryptData(final Uint8List plainData, final String encryptionKey,
+      {final TaskSetProgressCallback progressCallback}) async {
     final Uint8List iv = _generateRandomIV();
     final Uint8List keySalt = _generateSalt();
-    final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt);
+    final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt, progressCallback);
+    await progressCallback.reportOneTaskCompleted();
     final Uint8List paddedPlainTextData = _padData(plainData);
-    final Uint8List encryptedBytes = _aesCbcEncrypt(saltedDerivedKey, iv, paddedPlainTextData);
+    final Uint8List encryptedBytes = await _aesCbcEncrypt(saltedDerivedKey, iv, paddedPlainTextData, progressCallback);
     return Utils.combineUInt8Lists([iv, keySalt, encryptedBytes]);
   }
 
-  static Future<Uint8List> decryptData(final Uint8List cipherData, final String encryptionKey) async {
+  static Future<Uint8List> decryptData(final Uint8List cipherData, final String encryptionKey,
+      {final TaskSetProgressCallback progressCallback}) async {
     // If there isn't at least 2 AES blocks (IV block + at least one data block), we give up here
     if (cipherData.length < _AES_BLOCK_BYTES_COUNT * 2) {
       throw Exception('Cipher data is too short');
@@ -144,9 +151,10 @@ class EncryptionUtils {
     }
     final Uint8List iv = cipherData.sublist(0, _AES_BLOCK_BYTES_COUNT);
     final Uint8List keySalt = cipherData.sublist(_AES_BLOCK_BYTES_COUNT, _AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
-    final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt);
+    final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt, progressCallback);
+    await progressCallback.reportOneTaskCompleted();
     final Uint8List cipherDataBytes = cipherData.sublist(_AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
-    final Uint8List decryptedBytes = _aesCbcDecrypt(saltedDerivedKey, iv, cipherDataBytes);
+    final Uint8List decryptedBytes = await _aesCbcDecrypt(saltedDerivedKey, iv, cipherDataBytes, progressCallback);
     final Uint8List unPaddedData = _unPadData(decryptedBytes);
     return unPaddedData;
   }

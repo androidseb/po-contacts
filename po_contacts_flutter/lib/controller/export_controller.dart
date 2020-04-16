@@ -1,10 +1,12 @@
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/controller/tasks/poc_tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_file_writer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class ExportController {
@@ -15,8 +17,13 @@ class ExportController {
       return;
     }
     _isExporting = true;
-    final Function(int progress) progressCallback =
-        MainController.get().displayLoadingDialog(I18n.getString(I18n.string.exporting));
+    final List<POCTask> tasks = [];
+    tasks.add(POCTask.TASK_CODE_EXPORTING);
+    if (encryptionKey != null) {
+      tasks.add(POCTask.TASK_CODE_ENCRYPTING);
+      tasks.add(POCTask.TASK_CODE_ENCRYPTING);
+    }
+    final TaskSetProgressCallback progressCallback = POCTaskSetProgressCallback.displayLoadingDialog(tasks);
     final String outputFilesDirPath =
         await MainController.get().psController.fileTransitManager.getOutputFilesDirectoryPath();
     final DateTime t = DateTime.now();
@@ -34,7 +41,7 @@ class ExportController {
       await _exportAllAsVCFToFile(destFile, encryptionKey, progressCallback);
     } finally {
       _isExporting = false;
-      progressCallback(MainController.CODE_LOADING_OPERATION_FINISHED);
+      progressCallback.reportAllTasksFinished(POCTaskSetProgressCallback.TASK_PROGRESS_COMPLETED_SUCCESS);
     }
     final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
     await MainController.get().psController.fileTransitManager.shareFileExternally(sharePromptTitle, destFile);
@@ -49,7 +56,7 @@ class ExportController {
   Future<void> _exportAllAsVCFToFile(
     final FileEntity outputFile,
     final String encryptionKey,
-    final Function(int progress) progressCallback,
+    final TaskSetProgressCallback progressCallback,
   ) async {
     if (await outputFile.exists()) {
       await outputFile.delete();
@@ -66,6 +73,7 @@ class ExportController {
       vcfWriter,
       progressCallback,
     );
-    await vcfWriter.flushOutputBuffer();
+    await progressCallback.reportOneTaskCompleted();
+    await vcfWriter.flushOutputBuffer(progressCallback);
   }
 }

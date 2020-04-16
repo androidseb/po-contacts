@@ -6,6 +6,7 @@ import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
+import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class VCFWriter {
@@ -15,7 +16,7 @@ abstract class VCFWriter {
 
   void writeStringImpl(final String line);
 
-  Future<void> flushOutputBuffer();
+  Future<void> flushOutputBuffer(final TaskSetProgressCallback progressCallback);
 
   void writeLine(final String line) {
     //We choose to not respect the "Line Delimiting and Folding" strictly:

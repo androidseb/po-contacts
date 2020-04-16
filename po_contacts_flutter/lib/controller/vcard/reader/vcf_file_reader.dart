@@ -6,11 +6,12 @@ import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.da
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/utils/encryption_utils.dart';
+import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 
 class VCFFileReader extends VCFReader {
   final FileEntity _file;
   final String _encryptionKey;
-  final Function(int progress) progressCallback;
+  final TaskSetProgressCallback progressCallback;
   int _currentLine = 0;
   List<String> _lines;
 
@@ -24,9 +25,15 @@ class VCFFileReader extends VCFReader {
     final String base64RawContent = await _file.readAsBase64String();
     final Uint8List rawContentBytes = base64.decode(base64RawContent);
     final Uint8List headerLessContentBytes = rawContentBytes.sublist(VCFSerializer.ENCRYPTED_FILE_PREFIX.length);
-    final Uint8List decryptedContentBytes = await EncryptionUtils.decryptData(headerLessContentBytes, _encryptionKey);
+    final Uint8List decryptedContentBytes = await EncryptionUtils.decryptData(
+      headerLessContentBytes,
+      _encryptionKey,
+      progressCallback: progressCallback,
+    );
     final String decryptedContent = utf8.decode(decryptedContentBytes);
-    return FileEntity.rawFileContentToLines(decryptedContent);
+    final List<String> res = FileEntity.rawFileContentToLines(decryptedContent);
+    await progressCallback.reportOneTaskCompleted();
+    return res;
   }
 
   @override
@@ -40,7 +47,7 @@ class VCFFileReader extends VCFReader {
     String readLine;
     readLine = _lines[_currentLine];
     _currentLine++;
-    await progressCallback((_currentLine * 100 / _lines.length).floor());
+    await progressCallback.broadcastProgress( _currentLine / _lines.length);
     return readLine;
   }
 }

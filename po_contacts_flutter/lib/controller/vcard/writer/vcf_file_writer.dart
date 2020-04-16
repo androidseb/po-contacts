@@ -7,6 +7,7 @@ import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/utils/encryption_utils.dart';
+import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class VCFFileWriter extends VCFWriter {
@@ -21,7 +22,7 @@ class VCFFileWriter extends VCFWriter {
   }
 
   @override
-  Future<void> flushOutputBuffer() async {
+  Future<void> flushOutputBuffer(final TaskSetProgressCallback progressCallback) async {
     final String outputPlainText = _outputBuffer.join();
     final Uint8List outputPlainBytes = utf8.encode(outputPlainText);
     Uint8List outputFinalBytes;
@@ -29,8 +30,13 @@ class VCFFileWriter extends VCFWriter {
       outputFinalBytes = outputPlainBytes;
     } else {
       final Uint8List fileHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
-      final Uint8List outputEncryptedBytes = await EncryptionUtils.encryptData(outputPlainBytes, _encryptionKey);
+      final Uint8List outputEncryptedBytes = await EncryptionUtils.encryptData(
+        outputPlainBytes,
+        _encryptionKey,
+        progressCallback: progressCallback,
+      );
       outputFinalBytes = Utils.combineUInt8Lists([fileHeaderContent, outputEncryptedBytes]);
+      await progressCallback.reportOneTaskCompleted();
     }
     final String outputBase64String = base64.encode(outputFinalBytes);
     _file.writeAsBase64String(outputBase64String);
