@@ -2,7 +2,7 @@ PO Contacts stands for "Privacy Oriented Contacts".
 
 The vision and end goal of this project is to have a portable and privacy oriented contacts manager.
 
-- Portable means you can use it on "any" platform (see supported platforms) on the website
+- Portable means you can use it on "any" platform (see supported platforms on the website)
 - Privacy oriented means it's built with a "privacy first" mindset. See the privacy policy for details.
 
 Disclaimer
