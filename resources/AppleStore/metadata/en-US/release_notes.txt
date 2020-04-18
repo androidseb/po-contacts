@@ -1,1 +1,2 @@
 Added password-based encryption support for import and export of files
+Added support for dark mode
