@@ -1,5 +1,3 @@
-enum PlatformType { ANDROID, IOS, WEB }
-
 abstract class ActionsManager {
   static String _sanitizedPhoneNumber(final String phoneNumber) {
     if (phoneNumber == null) {
