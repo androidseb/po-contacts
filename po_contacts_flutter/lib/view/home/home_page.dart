@@ -3,6 +3,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/view/home/contacts_list.dart';
 import 'package:po_contacts_flutter/view/home/home_page_drawer.dart';
+import 'package:po_contacts_flutter/view/home/sync_button.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -12,6 +13,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(I18n.getString(I18n.string.app_name)),
         actions: <Widget>[
+          SyncButton(),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
