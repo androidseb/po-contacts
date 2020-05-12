@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:po_contacts_flutter/utils/streamable_value.dart';
+
 enum SyncState {
   IDLE,
   SYNCING,
@@ -7,32 +9,20 @@ enum SyncState {
 }
 
 class SyncController {
-  SyncState _syncState = SyncState.IDLE;
-  final StreamController<SyncState> _syncStateSC = StreamController();
-  Stream<SyncState> _syncStateStream;
-
-  SyncState get syncState => _syncState;
-
-  Stream<SyncState> get syncStateStream {
-    if (_syncStateStream == null) {
-      _syncStateStream = _syncStateSC.stream.asBroadcastStream();
-    }
-    return _syncStateStream;
-  }
+  final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.IDLE);
+  StreamableValue<SyncState> get syncState => _syncState;
 
   void onClickSyncButton() async {
-    if (_syncState == SyncState.SYNCING) {
+    if (_syncState.currentValue == SyncState.SYNCING) {
       return;
     }
-    _syncState = SyncState.SYNCING;
-    _syncStateSC.add(_syncState);
+    _syncState.currentValue = SyncState.SYNCING;
     final bool syncSuccessful = await performSync();
     if (syncSuccessful) {
-      _syncState = SyncState.IDLE;
+      _syncState.currentValue = SyncState.IDLE;
     } else {
-      _syncState = SyncState.LAST_SYNC_FAILED;
+      _syncState.currentValue = SyncState.LAST_SYNC_FAILED;
     }
-    _syncStateSC.add(_syncState);
   }
 
   Future<bool> performSync() async {
