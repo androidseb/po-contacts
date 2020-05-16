@@ -5,10 +5,12 @@ import 'package:flutter/widgets.dart';
 class StreamableValue<T> {
   T _currentValue;
   final StreamController<T> _valueStreamController = StreamController();
+  ReadOnlyStreamableValue<T> _readOnly;
   Stream<T> _valueStream;
 
   StreamableValue(final T initialValue) {
     _currentValue = initialValue;
+    _readOnly = ReadOnlyStreamableValue(this);
   }
 
   Stream<T> get valueStream {
@@ -24,10 +26,22 @@ class StreamableValue<T> {
     _currentValue = newCurrentValue;
     _valueStreamController.add(_currentValue);
   }
+
+  ReadOnlyStreamableValue<T> get readOnly => _readOnly;
+}
+
+class ReadOnlyStreamableValue<T> {
+  StreamableValue<T> _parentValue;
+  ReadOnlyStreamableValue(final StreamableValue<T> parentValue) {
+    _parentValue = parentValue;
+  }
+
+  Stream<T> get valueStream => _parentValue.valueStream;
+  T get currentValue => _parentValue.currentValue;
 }
 
 class StreamedWidget<T> extends StatefulWidget {
-  final StreamableValue<T> streamableValue;
+  final ReadOnlyStreamableValue<T> streamableValue;
   final Widget Function(BuildContext context, T value) widgetBuilder;
   StreamedWidget(this.streamableValue, this.widgetBuilder);
   @override

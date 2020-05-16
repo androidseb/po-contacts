@@ -10,7 +10,7 @@ enum SyncState {
 
 class SyncController {
   final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.IDLE);
-  StreamableValue<SyncState> get syncState => _syncState;
+  ReadOnlyStreamableValue<SyncState> get syncState => _syncState.readOnly;
 
   void onClickSyncButton() async {
     if (_syncState.currentValue == SyncState.SYNCING) {
