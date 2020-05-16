@@ -24,6 +24,10 @@ class StreamableValue<T> {
 
   set currentValue(final T newCurrentValue) {
     _currentValue = newCurrentValue;
+    notifyDataChanged();
+  }
+
+  void notifyDataChanged() {
     _valueStreamController.add(_currentValue);
   }
 

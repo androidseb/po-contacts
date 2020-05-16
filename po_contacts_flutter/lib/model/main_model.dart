@@ -4,6 +4,7 @@ import 'package:po_contacts_flutter/controller/platform/common/contacts_storage_
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/settings_model.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
+import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class MainModel {
@@ -30,44 +31,23 @@ class MainModel {
   bool _storageInitialized = false;
   final SettingsModel _settingsModel = SettingsModel();
   final ContactsStorageController _contactsStorageController = ContactsStorageController();
-  final List<Contact> _contactsList = [];
-  final StreamController<List<Contact>> _contactsListSC = StreamController();
-  final StreamController<Contact> _contactChangeSC = StreamController();
+  final StreamableValue<List<Contact>> _contactsList = StreamableValue([]);
 
   void initializeMainModel(final ContactsStorageManager contactsStorage) async {
     _contactsStorageController.initializeStorage(contactsStorage);
     final List<Contact> loadedContacts = await _contactsStorageController.readAllContacts();
-    _contactsList.addAll(loadedContacts);
-    sortContactsList(_contactsList);
+    contactsList.addAll(loadedContacts);
+    sortContactsList(contactsList);
     _storageInitialized = true;
-    _contactsListSC.add(_contactsList);
-  }
-
-  Stream<List<Contact>> _contactsListStream;
-  Stream<List<Contact>> _getContactsListStream() {
-    if (_contactsListStream == null) {
-      _contactsListStream = _contactsListSC.stream.asBroadcastStream();
-    }
-    return _contactsListStream;
-  }
-
-  Stream<Contact> _contactChangeStream;
-  Stream<Contact> _getContactChangeStream() {
-    if (_contactChangeStream == null) {
-      _contactChangeStream = _contactChangeSC.stream.asBroadcastStream();
-    }
-    return _contactChangeStream;
+    _contactsList.notifyDataChanged();
   }
 
   SettingsModel get settings => _settingsModel;
 
   bool get storageInitialized => _storageInitialized;
 
-  List<Contact> get contactsList => _contactsList;
-
-  Stream<List<Contact>> get contactsListStream => _getContactsListStream();
-
-  Stream<Contact> get contactChangeStream => _getContactChangeStream();
+  ReadOnlyStreamableValue<List<Contact>> get contactsListSV => _contactsList.readOnly;
+  List<Contact> get contactsList => _contactsList.currentValue;
 
   Contact getContactById(final int contactId) {
     if (contactId == null) {
@@ -88,7 +68,7 @@ class MainModel {
     }
     contactsList.add(createdContact);
     sortContactsList(contactsList);
-    _contactsListSC.add(contactsList);
+    _contactsList.notifyDataChanged();
   }
 
   void deleteContact(final int contactId) async {
@@ -102,7 +82,7 @@ class MainModel {
         contactsList.removeAt(i);
       }
     }
-    _contactsListSC.add(contactsList);
+    _contactsList.notifyDataChanged();
   }
 
   void overwriteContact(final int contactId, final ContactBuilder contactBuilder) async {
@@ -119,7 +99,6 @@ class MainModel {
         break;
       }
     }
-    _contactsListSC.add(contactsList);
-    _contactChangeSC.add(updatedContact);
+    _contactsList.notifyDataChanged();
   }
 }
