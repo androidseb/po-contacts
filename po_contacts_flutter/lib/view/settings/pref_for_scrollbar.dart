@@ -10,7 +10,7 @@ class PrefForScrollbar extends BoolSettingEntry {
 
   @override
   bool readCurrentValue() {
-    return MainController.get().model.settings.appSettings.currentValue.displayDraggableScrollbar;
+    return MainController.get().model.settings.appSettings.displayDraggableScrollbar;
   }
 
   @override

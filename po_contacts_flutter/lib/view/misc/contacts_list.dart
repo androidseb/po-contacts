@@ -23,7 +23,7 @@ class ContactsList extends StatefulWidget {
 class _ContactsListState extends State<ContactsList> {
   @override
   Widget build(BuildContext context) {
-    return StreamedWidget<AppSettings>(MainController.get().model.settings.appSettings,
+    return StreamedWidget<AppSettings>(MainController.get().model.settings.appSettingsSV,
         (final BuildContext context, final AppSettings appSettings) {
       if (widget._contactsList.length == 0) {
         return _buildIfEmpty(context);

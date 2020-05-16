@@ -12,7 +12,8 @@ class SettingsModel {
 
   final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   final StreamableValue<AppSettings> _appSettings = StreamableValue(AppSettings());
-  ReadOnlyStreamableValue<AppSettings> get appSettings => _appSettings.readOnly;
+  AppSettings get appSettings => _appSettings.readOnly.currentValue;
+  ReadOnlyStreamableValue<AppSettings> get appSettingsSV => _appSettings.readOnly;
 
   SettingsModel() {
     _updateSettingsFromStorage();
