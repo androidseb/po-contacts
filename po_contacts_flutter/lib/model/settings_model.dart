@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:po_contacts_flutter/model/data/app_settings.dart';
+import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsModel {
@@ -10,20 +11,11 @@ class SettingsModel {
   static const String _SETTING_ID_USE_DARK_DISPLAY = 'dark_display';
 
   final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
-  AppSettings _appSettings = AppSettings();
-  AppSettings get appSettings => _appSettings;
-  final StreamController<AppSettings> _appSettingsChangeSC = StreamController();
+  final StreamableValue<AppSettings> _appSettings = StreamableValue(AppSettings());
+  ReadOnlyStreamableValue<AppSettings> get appSettings => _appSettings.readOnly;
 
   SettingsModel() {
     _updateSettingsFromStorage();
-  }
-
-  Stream<AppSettings> _appSettingsChangeStream;
-  Stream<AppSettings> get appSettingsChangeStream {
-    if (_appSettingsChangeStream == null) {
-      _appSettingsChangeStream = _appSettingsChangeSC.stream.asBroadcastStream();
-    }
-    return _appSettingsChangeStream;
   }
 
   Future<bool> _readDisplayDraggableScrollbarValue() async {
@@ -59,13 +51,12 @@ class SettingsModel {
   }
 
   Future<void> _updateSettingsFromStorage() async {
-    _appSettings = AppSettings(
+    _appSettings.currentValue = AppSettings(
       displayDraggableScrollbar: await _readDisplayDraggableScrollbarValue(),
       emailActionId: await _readEmailActionId(),
       callActionId: await _readCallActionId(),
       useDarkDisplay: await _readUseDarkDisplay(),
     );
-    _appSettingsChangeSC.add(_appSettings);
   }
 
   void setUseDraggableScrollbar(final bool useDraggableScrollbar) async {

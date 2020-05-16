@@ -54,9 +54,7 @@ class _StreamedWidgetState<T> extends State<StreamedWidget<T>> {
     return StreamBuilder(
       stream: widget.streamableValue.valueStream,
       builder: (BuildContext context, AsyncSnapshot<T> snapshot) {
-        final T currentValue = snapshot.data == null
-            ? widget.streamableValue.currentValue
-            : snapshot.data;
+        final T currentValue = snapshot.data == null ? widget.streamableValue.currentValue : snapshot.data;
         return widget.widgetBuilder(context, currentValue);
       },
     );

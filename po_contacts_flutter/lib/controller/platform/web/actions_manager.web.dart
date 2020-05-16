@@ -37,7 +37,7 @@ class ActionsManagerWeb extends ActionsManager {
 
   @override
   void startEmail(final String targetEmailAddress) {
-    final int emailActionId = MainController.get().model.settings.appSettings.emailActionId;
+    final int emailActionId = MainController.get().model.settings.appSettings.currentValue.emailActionId;
     if (emailActionId == AppSettings.EMAIL_ACTION_SYSTEM_DEFAULT) {
       _startEmailWithSystemDefault(targetEmailAddress);
     } else if (emailActionId == AppSettings.EMAIL_ACTION_THUNDERBIRD) {
@@ -47,7 +47,7 @@ class ActionsManagerWeb extends ActionsManager {
 
   @override
   void startPhoneCallImpl(final String targetPhoneNumber) {
-    final int callActionId = MainController.get().model.settings.appSettings.callActionId;
+    final int callActionId = MainController.get().model.settings.appSettings.currentValue.callActionId;
     if (callActionId == AppSettings.CALL_ACTION_SYSTEM_DEFAULT) {
       _startPhoneWithSystemDefault(targetPhoneNumber);
     } else if (callActionId == AppSettings.CALL_ACTION_LINPHONE) {

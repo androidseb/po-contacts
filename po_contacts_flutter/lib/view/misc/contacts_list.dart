@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,6 +5,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/app_settings.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/view/home/contact_row.dart';
 import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
 import 'package:po_contacts_flutter/view/misc/list_items_divider.dart';
@@ -22,35 +21,18 @@ class ContactsList extends StatefulWidget {
 }
 
 class _ContactsListState extends State<ContactsList> {
-  StreamSubscription<AppSettings> _displayDraggableScrollbarStreamSubscription;
-  bool _displayDraggableScrollbar = MainController.get().model.settings.appSettings.displayDraggableScrollbar;
-
-  @override
-  void initState() {
-    _displayDraggableScrollbarStreamSubscription =
-        MainController.get().model.settings.appSettingsChangeStream.listen((final AppSettings appSettings) {
-      setState(() {
-        _displayDraggableScrollbar = appSettings.displayDraggableScrollbar;
-      });
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _displayDraggableScrollbarStreamSubscription.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (widget._contactsList.length == 0) {
-      return _buildIfEmpty(context);
-    } else if (_displayDraggableScrollbar) {
-      return _buildIfNonEmptyWithSB(context);
-    } else {
-      return _buildIfNonEmptyWithoutSB(context);
-    }
+    return StreamedWidget<AppSettings>(MainController.get().model.settings.appSettings,
+        (final BuildContext context, final AppSettings appSettings) {
+      if (widget._contactsList.length == 0) {
+        return _buildIfEmpty(context);
+      } else if (appSettings != null && appSettings.displayDraggableScrollbar) {
+        return _buildIfNonEmptyWithSB(context);
+      } else {
+        return _buildIfNonEmptyWithoutSB(context);
+      }
+    });
   }
 
   Widget _buildIfEmpty(BuildContext context) {
