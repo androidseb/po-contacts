@@ -15,7 +15,7 @@ V3=$(echo $CURRENT_VERSION_STRING|cut -d\. -f3)
 SED_REPLACE_STR=$(echo "\'s/version\: "$V1"\."$V2"\."$V3"\+"$NEW_VERSION_CODE"/"$NEW_VERSION_LINE"/g\'")
 
 sed -i s/version\:.*/"$NEW_VERSION_LINE"/g po_contacts_flutter/pubspec.yaml
-echo "const PO_APP_VERSION = '"$NEW_VERSION_STRING"';">po_contacts_flutter/lib/app_version.dart
+echo "const POC_APP_VERSION = '"$NEW_VERSION_STRING"';">po_contacts_flutter/lib/app_version.dart
 
 git add po_contacts_flutter/pubspec.yaml
 git add po_contacts_flutter/lib/app_version.dart

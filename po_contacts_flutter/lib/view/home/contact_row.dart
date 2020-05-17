@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/assets/constants/poc_constants.dart';
 import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 import 'package:po_contacts_flutter/view/misc/highlighted_text.dart';
 
@@ -30,7 +30,7 @@ class ContactsRow extends StatelessWidget {
       titleChildren.add(highlightedText);
     }
     return Container(
-      height: POConstants.LIST_ITEM_DEFAULT_HEIGHT,
+      height: POCConstants.LIST_ITEM_DEFAULT_HEIGHT,
       child: ListTile(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,

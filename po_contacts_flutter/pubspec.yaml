@@ -9,19 +9,22 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Common (pure dart)
-  draggable_scrollbar: ^0.0.4
-  shared_preferences: ^0.5.6+3
+  # Common - pure dart
   pointycastle: 1.0.2
 
-  # Mobile only
+  # Common - flutter
+  google_sign_in: ^4.4.6
+  draggable_scrollbar: ^0.0.4
+  shared_preferences: ^0.5.6+3
+
+  # Flutter - Mobile only
   cupertino_icons: ^0.1.2
   url_launcher: ^5.4.1
   sqflite:
   path_provider: ^1.5.1
   image_picker: ^0.6.3+1
 
-  # Web only
+  # Flutter - Web only
   js: ^0.6.0
 
 dev_dependencies:

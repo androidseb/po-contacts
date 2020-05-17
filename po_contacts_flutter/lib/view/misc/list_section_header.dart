@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
-import 'package:po_contacts_flutter/po_constants.dart';
+import 'package:po_contacts_flutter/assets/constants/poc_constants.dart';
 
 class ListSectionHeader extends StatelessWidget {
   final String titleString;
@@ -13,7 +13,7 @@ class ListSectionHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
       child: Container(
-        height: POConstants.LIST_SECTION_DEFAULT_HEIGHT,
+        height: POCConstants.LIST_SECTION_DEFAULT_HEIGHT,
         decoration: BoxDecoration(
             color: MainController.get().model.settings.appSettings.useDarkDisplay
                 ? Colors.green[900]

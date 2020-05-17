@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ -z "$POC_IOS_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
+    echo "Missing env variable: POC_IOS_APP_GOOGLE_OAUTH_CLIENT_ID"
+    exit 1
+fi
+
 cd $(git rev-parse --show-toplevel)
 
 echo "Copying 'po_contacts_flutter' to 'bin/tmp'..."

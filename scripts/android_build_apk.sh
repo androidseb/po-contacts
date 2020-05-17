@@ -1,12 +1,18 @@
 #!/bin/bash
 set -e
 
+if [ -z "$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
+    echo "Missing env variable: POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID"
+    exit 1
+fi
+
 cd $(git rev-parse --show-toplevel)
 
 echo "Copying 'po_contacts_flutter' to 'bin/tmp'..."
 rm -rf bin/tmp
 rm -rf bin/web
 cp -r po_contacts_flutter bin/tmp
+echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID';">bin/tmp/lib/assets/constants/google_oauth_client_id.dart
 
 cd bin/tmp
 

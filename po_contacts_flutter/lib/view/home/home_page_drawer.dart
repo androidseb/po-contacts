@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:po_contacts_flutter/app_version.dart';
+import 'package:po_contacts_flutter/assets/constants/app_version.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 
@@ -30,7 +30,7 @@ class HomePageDrawer extends StatelessWidget {
     ));
     drawerOptionsList.add(ListTile(
       leading: Icon(Icons.info_outline),
-      title: Text(I18n.getString(I18n.string.about, PO_APP_VERSION)),
+      title: Text(I18n.getString(I18n.string.about, POC_APP_VERSION)),
       onTap: () {
         MainController.get().showAboutDialog();
       },
