@@ -131,4 +131,14 @@ class Utils {
   static Uint8List combineUInt8Lists(final List<Uint8List> listOfList) {
     return Uint8List.fromList(listOfList.expand((x) => x).toList());
   }
+
+  static String dateTimeToString() {
+    final DateTime t = DateTime.now();
+    final String monthS = Utils.positiveNumberToXDigitsString(t.month, 2);
+    final String dayS = Utils.positiveNumberToXDigitsString(t.day, 2);
+    final String hourS = Utils.positiveNumberToXDigitsString(t.hour, 2);
+    final String minuteS = Utils.positiveNumberToXDigitsString(t.minute, 2);
+    final String secondS = Utils.positiveNumberToXDigitsString(t.second, 2);
+    return '${t.year}$monthS${dayS}_$hourS$minuteS$secondS';
+  }
 }

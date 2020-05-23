@@ -26,13 +26,7 @@ class ExportController {
     final TaskSetProgressCallback progressCallback = POCTaskSetProgressCallback.displayLoadingDialog(tasks);
     final String outputFilesDirPath =
         await MainController.get().psController.fileTransitManager.getOutputFilesDirectoryPath();
-    final DateTime t = DateTime.now();
-    final String monthS = Utils.positiveNumberToXDigitsString(t.month, 2);
-    final String dayS = Utils.positiveNumberToXDigitsString(t.day, 2);
-    final String hourS = Utils.positiveNumberToXDigitsString(t.hour, 2);
-    final String minuteS = Utils.positiveNumberToXDigitsString(t.minute, 2);
-    final String secondS = Utils.positiveNumberToXDigitsString(t.second, 2);
-    final String dateTimeStr = '${t.year}$monthS${dayS}_$hourS$minuteS$secondS';
+    final String dateTimeStr = Utils.dateTimeToString();
     final FileEntity destFile = await MainController.get()
         .psController
         .filesManager
