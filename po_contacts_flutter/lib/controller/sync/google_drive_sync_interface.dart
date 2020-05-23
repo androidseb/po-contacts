@@ -134,10 +134,9 @@ class GoogleDriveSyncInterface extends SyncInterface {
     final http.StreamedResponse httpPostResponse = await fileStreamedRequest.send();
 
     if (httpPostResponse.statusCode == 200) {
-      return null;
-      //final serverResponse = jsonDecode(httpPostResponse.body);
-      //final String folderId = serverResponse['id'];
-      //return RemoteFile(RemoteFileType.FOLDER, folderId, fileName);
+      final serverResponse = jsonDecode(await httpPostResponse.stream.bytesToString());
+      final String fileId = serverResponse['id'];
+      return RemoteFile(RemoteFileType.FOLDER, fileId, fileName);
     } else {
       throw SyncException(
         SyncExceptionType.server,
