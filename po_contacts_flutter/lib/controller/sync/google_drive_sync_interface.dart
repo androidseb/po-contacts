@@ -113,25 +113,31 @@ class GoogleDriveSyncInterface extends SyncInterface {
     final Map<String, dynamic> requestMetaData = {
       'mimeType': 'application/json',
       'title': fileName,
-      'parents': parentFolder.fileId,
+      'parents': [
+        {'id': parentFolder.fileId}
+      ],
     };
     final String multiPartRequestBodyString = _createMultiPartRequestBodyString(requestMetaData, fileTextContent);
-    final Map<String, String> requestHeaders = {
+    final http.StreamedRequest fileStreamedRequest = http.StreamedRequest(
+      'POST',
+      Uri.parse('https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart'),
+    );
+    fileStreamedRequest.headers.addAll({
       'Authorization': _authHeaders['Authorization'],
       'Accept': 'application/json',
       'Content-Type': 'multipart/related; boundary=$MULTIPART_REQUESTS_BOUNDARY_STRING',
       'Content-Length': multiPartRequestBodyString.length.toString(),
-    };
-    final http.Response httpPostResponse = await http.post(
-      'https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart',
-      headers: requestHeaders,
-      body: multiPartRequestBodyString,
-    );
+    });
+    fileStreamedRequest.sink.add(utf8.encode(multiPartRequestBodyString));
+    fileStreamedRequest.sink.close();
+
+    final http.StreamedResponse httpPostResponse = await fileStreamedRequest.send();
 
     if (httpPostResponse.statusCode == 200) {
-      final serverResponse = jsonDecode(httpPostResponse.body);
-      final String folderId = serverResponse['id'];
-      return RemoteFile(RemoteFileType.FOLDER, folderId, fileName);
+      return null;
+      //final serverResponse = jsonDecode(httpPostResponse.body);
+      //final String folderId = serverResponse['id'];
+      //return RemoteFile(RemoteFileType.FOLDER, folderId, fileName);
     } else {
       throw SyncException(
         SyncExceptionType.server,
