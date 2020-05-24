@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/controller/sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
@@ -15,6 +16,8 @@ abstract class SyncInterface {
   SyncModel _syncModel;
 
   RemoteFile _selectedCloudIndexFile;
+
+  String _derivedEncryptionKey;
 
   SyncInterface(final SyncModel syncModel) {
     _syncModel = syncModel;
@@ -80,4 +83,15 @@ abstract class SyncInterface {
   }
 
   RemoteFile get selectedCloudIndexFile => _selectedCloudIndexFile;
+
+  String get derivedEncryptionKey => _derivedEncryptionKey;
+
+  FileEntity getLastSyncedFile() {
+    //TODO
+    return null;
+  }
+
+  Future<FileEntity> getLatestCloudFile() {
+    return null;
+  }
 }
