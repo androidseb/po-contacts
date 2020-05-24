@@ -53,13 +53,23 @@ class GoogleDriveSyncInterface extends SyncInterface {
     if (httpGetResponse.statusCode == 200) {
       final serverResponse = jsonDecode(httpGetResponse.body);
       final String rootFolderId = serverResponse['rootFolderId'];
-      return RemoteFile(RemoteFileType.FOLDER, rootFolderId, '');
+      return RemoteFile(RemoteFileType.FOLDER, rootFolderId, '', '');
     } else {
       throw SyncException(
         SyncExceptionType.server,
         message: 'GoogleDriveSyncInterface.getRootFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
+  }
+
+  RemoteFile _googleDriveFileToRemoteFile(final dynamic googleDriveFile) {
+    RemoteFileType remoteFileType;
+    if (googleDriveFile['mimeType'] == 'application/vnd.google-apps.folder') {
+      remoteFileType = RemoteFileType.FOLDER;
+    } else {
+      remoteFileType = RemoteFileType.FILE;
+    }
+    return RemoteFile(remoteFileType, googleDriveFile['id'], googleDriveFile['name'], googleDriveFile['etag']);
   }
 
   @override
@@ -82,8 +92,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
     );
     if (httpPostResponse.statusCode == 200) {
       final serverResponse = jsonDecode(httpPostResponse.body);
-      final String folderId = serverResponse['id'];
-      return RemoteFile(RemoteFileType.FOLDER, folderId, folderName);
+      return _googleDriveFileToRemoteFile(serverResponse);
     } else {
       throw SyncException(
         SyncExceptionType.server,
@@ -135,8 +144,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
 
     if (httpPostResponse.statusCode == 200) {
       final serverResponse = jsonDecode(await httpPostResponse.stream.bytesToString());
-      final String fileId = serverResponse['id'];
-      return RemoteFile(RemoteFileType.FOLDER, fileId, fileName);
+      return _googleDriveFileToRemoteFile(serverResponse);
     } else {
       throw SyncException(
         SyncExceptionType.server,
@@ -168,7 +176,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       if (foundFiles.isEmpty) {
         return null;
       } else {
-        return RemoteFile(RemoteFileType.FOLDER, foundFiles[0]['id'], foundFiles[0]['name']);
+        return _googleDriveFileToRemoteFile(foundFiles[0]);
       }
     } else {
       throw SyncException(
@@ -180,20 +188,52 @@ class GoogleDriveSyncInterface extends SyncInterface {
 
   @override
   Future<List<RemoteFile>> fetchIndexFilesList() async {
-    // TODO: implement fetchIndexFilesList
-    /*
-    let qParam = 'mimeType ="application/vnd.google-apps.folder" and name = "'
-            + AbstractCloudInterface.DEFAULT_CLOUD_FOLDER_NAME + '"  and trashed = false';
-        let urlToFetch = 'https://www.googleapis.com/drive/v3/files/?q=' + encodeURIComponent(qParam);
-        fetch(urlToFetch, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + _accessToken,
-                'Accept': "application/json",
-                'Content-Type': 'application/json',
-            },
-        })
-        */
-    return [];
+    final String qParamValue = 'name = "${SyncInterface.INDEX_FILE_NAME}"  and trashed = false';
+    final String url = 'https://www.googleapis.com/drive/v3/files?q=' + Uri.encodeComponent(qParamValue);
+    final http.Response httpGetResponse = await http.get(
+      url,
+      headers: {
+        'Authorization': _authHeaders['Authorization'],
+        'Accept': 'application/json',
+      },
+    );
+    if (httpGetResponse.statusCode == 404) {
+      return [];
+    } else if (httpGetResponse.statusCode == 200) {
+      final serverResponse = jsonDecode(httpGetResponse.body);
+      final List<dynamic> foundFiles = serverResponse['files'];
+      final List<RemoteFile> res = [];
+      for (final dynamic foundFile in foundFiles) {
+        res.add(RemoteFile(RemoteFileType.FOLDER, foundFile['id'], foundFile['name'], foundFile['etag']));
+      }
+      return res;
+    } else {
+      throw SyncException(
+        SyncExceptionType.server,
+        message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
+      );
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getIndexFileContent(final String fileId) async {
+    final String url = 'https://www.googleapis.com/drive/v3/files/$fileId?alt=media';
+    final http.Response httpGetResponse = await http.get(
+      url,
+      headers: {
+        'Authorization': _authHeaders['Authorization'],
+        'Accept': 'text/plain',
+      },
+    );
+    if (httpGetResponse.statusCode == 404) {
+      return null;
+    } else if (httpGetResponse.statusCode == 200) {
+      return jsonDecode(httpGetResponse.body);
+    } else {
+      throw SyncException(
+        SyncExceptionType.server,
+        message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
+      );
+    }
   }
 }

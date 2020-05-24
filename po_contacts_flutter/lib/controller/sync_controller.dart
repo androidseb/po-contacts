@@ -74,7 +74,11 @@ class SyncController {
       selectionChoices.add(MultiSelectionChoice(-1, I18n.getString(I18n.string.sync_to_new_file)));
       for (int i = 0; i < cloudIndexFiles.length; i++) {
         final RemoteFile cif = cloudIndexFiles[i];
-        selectionChoices.add(MultiSelectionChoice(i, 'TODO $i'));
+        final Map<String, dynamic> indexFileContent = await syncInterface.getIndexFileContent(cif.fileId);
+        if (indexFileContent == null) {
+          continue;
+        }
+        selectionChoices.add(MultiSelectionChoice(i, '${indexFileContent[SyncInterface.INDEX_FILE_KEY_NAME]}'));
       }
       final MultiSelectionChoice selectedIndexFile =
           await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);

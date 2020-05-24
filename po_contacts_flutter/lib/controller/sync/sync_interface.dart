@@ -34,6 +34,7 @@ abstract class SyncInterface {
     final String fileTextContent,
   );
   Future<List<RemoteFile>> fetchIndexFilesList();
+  Future<Map<String, dynamic>> getIndexFileContent(String fileId);
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();
