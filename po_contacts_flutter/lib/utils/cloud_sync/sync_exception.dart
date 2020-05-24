@@ -1,4 +1,3 @@
-//TODO make all enums upper case
 enum SyncExceptionType {
   AUTHENTICATION,
   NETWORK,
