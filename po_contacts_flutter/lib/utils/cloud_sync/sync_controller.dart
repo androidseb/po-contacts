@@ -1,16 +1,14 @@
 import 'dart:async';
 
-import 'package:po_contacts_flutter/assets/i18n.dart';
-import 'package:po_contacts_flutter/controller/main_controller.dart';
-import 'package:po_contacts_flutter/controller/sync/data/remote_file.dart';
-import 'package:po_contacts_flutter/controller/sync/google_drive_sync_interface.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_exception.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_interface.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_model.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_prodedure.dart';
+import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/google_drive_sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_prodedure.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
-import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 
 enum SyncState {
   IDLE,
@@ -18,12 +16,25 @@ enum SyncState {
   LAST_SYNC_FAILED,
 }
 
-class SyncController {
+abstract class SyncController<T> {
   final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.IDLE);
   SyncState get syncState => _syncState.readOnly.currentValue;
   ReadOnlyStreamableValue<SyncState> get syncStateSV => _syncState.readOnly;
   final SyncModel _syncModel = SyncModel();
   SyncProcedure _currentSyncProcedure;
+
+  SyncInterfaceConfig getSyncInterfaceConfig();
+
+  Future<List<T>> getLocalItems();
+
+  Future<List<T>> fileEntityToItemsList(final FileEntity fileEntity);
+
+  /// Select a cloud index file based on the name of that index file
+  /// Returns 3 possible types of value:
+  /// * the index of the user's choice
+  /// * -1 if the user chose to create a new index
+  /// * null if the user canceled
+  Future<int> pickIndexFile(final List<String> cloudIndexFileNames);
 
   Future<void> cancelSync() async {
     while (_syncState.currentValue == SyncState.SYNCING) {
@@ -62,7 +73,7 @@ class SyncController {
   }
 
   Future<SyncInterface> _initializeSyncInterface() async {
-    final SyncInterface syncInterface = GoogleDriveSyncInterface(_syncModel);
+    final SyncInterface syncInterface = GoogleDriveSyncInterface(getSyncInterfaceConfig(), _syncModel);
     final bool couldAuthenticateExplicitly = await syncInterface.authenticateExplicitly();
     if (!couldAuthenticateExplicitly) {
       throw SyncException(SyncExceptionType.authentication);
@@ -70,22 +81,20 @@ class SyncController {
     final List<RemoteFile> cloudIndexFiles = await syncInterface.fetchIndexFilesList();
     RemoteFile selectedCloudIndexFile;
     if (cloudIndexFiles.isNotEmpty) {
-      final List<MultiSelectionChoice> selectionChoices = [];
-      selectionChoices.add(MultiSelectionChoice(-1, I18n.getString(I18n.string.sync_to_new_file)));
-      for (int i = 0; i < cloudIndexFiles.length; i++) {
-        final RemoteFile cif = cloudIndexFiles[i];
+      final List<String> indexFileNames = [];
+      for (final RemoteFile cif in cloudIndexFiles) {
         final Map<String, dynamic> indexFileContent = await syncInterface.getIndexFileContent(cif.fileId);
-        if (indexFileContent == null) {
-          continue;
+        if (indexFileContent != null && indexFileContent[SyncInterface.INDEX_FILE_KEY_NAME] != null) {
+          indexFileNames.add(indexFileContent[SyncInterface.INDEX_FILE_KEY_NAME]);
+        } else {
+          indexFileNames.add('???');
         }
-        selectionChoices.add(MultiSelectionChoice(i, '${indexFileContent[SyncInterface.INDEX_FILE_KEY_NAME]}'));
       }
-      final MultiSelectionChoice selectedIndexFile =
-          await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
-      if (selectedIndexFile == null) {
+      final int indexFileChoiceIndex = await pickIndexFile(indexFileNames);
+      if (indexFileChoiceIndex == null) {
         return null;
-      } else if (selectedIndexFile.entryId != -1) {
-        selectedCloudIndexFile = cloudIndexFiles[selectedIndexFile.entryId];
+      } else if (indexFileChoiceIndex != -1) {
+        selectedCloudIndexFile = cloudIndexFiles[indexFileChoiceIndex];
       }
     }
     if (selectedCloudIndexFile == null) {
@@ -122,8 +131,8 @@ class SyncController {
   }
 
   Future<void> _performSyncImpl({bool directUserAction = false}) async {
-    SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: directUserAction);
-    _currentSyncProcedure = SyncProcedure(syncInterface);
+    final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: directUserAction);
+    _currentSyncProcedure = SyncProcedure(this, syncInterface);
     await _currentSyncProcedure.execute();
     _currentSyncProcedure = null;
   }

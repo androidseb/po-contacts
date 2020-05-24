@@ -10,7 +10,7 @@ import 'package:po_contacts_flutter/controller/import_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
 import 'package:po_contacts_flutter/controller/platform/platform_specific_controller.dart';
-import 'package:po_contacts_flutter/controller/sync_controller.dart';
+import 'package:po_contacts_flutter/controller/poc_sync_controller.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
@@ -36,12 +36,11 @@ class MainController {
 
   BuildContext _context;
   final MainModel _model = MainModel();
-  final ContactsSearchDelegate _contactsSearchDelegate =
-      ContactsSearchDelegate();
+  final ContactsSearchDelegate _contactsSearchDelegate = ContactsSearchDelegate();
   final PlatformSpecificController _psController = PlatformSpecificController();
   final ImportController _importController = ImportController();
   final ExportController _exportController = ExportController();
-  final SyncController _syncController = SyncController();
+  final POCSyncController _syncController = POCSyncController();
 
   void _initializeMainController() {
     _model.initializeMainModel(_psController.contactsStorage);
@@ -60,7 +59,7 @@ class MainController {
 
   PlatformSpecificController get psController => _psController;
 
-  SyncController get syncController => _syncController;
+  POCSyncController get syncController => _syncController;
 
   void updateBuildContext(final BuildContext context) {
     if (context == null) {
@@ -95,8 +94,7 @@ class MainController {
     _startEditContact(contactId);
   }
 
-  void saveContact(
-      final int contactId, final ContactBuilder targetContactBuilder) {
+  void saveContact(final int contactId, final ContactBuilder targetContactBuilder) {
     if (_context == null) {
       return;
     }
@@ -138,8 +136,7 @@ class MainController {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(I18n.getString(
-                    I18n.string.delete_contact_confirmation_message)),
+                Text(I18n.getString(I18n.string.delete_contact_confirmation_message)),
               ],
             ),
           ),
@@ -184,16 +181,14 @@ class MainController {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(I18n.getString(
-                  I18n.string.export_encrypt_option_unprotected)),
+              child: Text(I18n.getString(I18n.string.export_encrypt_option_unprotected)),
               onPressed: () {
                 Navigator.of(context).pop();
                 _exportController.exportAllAsVCF(null);
               },
             ),
             FlatButton(
-              child: Text(
-                  I18n.getString(I18n.string.export_encrypt_option_encrypted)),
+              child: Text(I18n.getString(I18n.string.export_encrypt_option_encrypted)),
               onPressed: () async {
                 Navigator.of(context).pop();
                 final String encryptionKey = await showTextInputDialog(
@@ -293,8 +288,7 @@ class MainController {
     }
     final List<Widget> listOptions = [];
     for (final StringLabeledField pi in contact.phoneInfos) {
-      final String phoneStr =
-          LabeledField.getLabelTypeDisplayText(pi) + ' (${pi.fieldValue})';
+      final String phoneStr = LabeledField.getLabelTypeDisplayText(pi) + ' (${pi.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.content_copy),
         title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, phoneStr)),
@@ -323,8 +317,7 @@ class MainController {
       }
     }
     for (final StringLabeledField ei in contact.emailInfos) {
-      final String emailStr =
-          LabeledField.getLabelTypeDisplayText(ei) + ' (${ei.fieldValue})';
+      final String emailStr = LabeledField.getLabelTypeDisplayText(ei) + ' (${ei.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.content_copy),
         title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, emailStr)),
@@ -387,8 +380,7 @@ class MainController {
     showSearch(context: _context, delegate: _contactsSearchDelegate);
   }
 
-  void promptUserForFileImport(
-      final Function(bool approved) userApprovedImportCallback) {
+  void promptUserForFileImport(final Function(bool approved) userApprovedImportCallback) {
     showDialog(
       context: _context,
       barrierDismissible: false,
@@ -424,20 +416,16 @@ class MainController {
   }
 
   Future<FileEntity> createNewImageFile(final String fileExtension) async {
-    if (!MainController.ALLOWED_IMAGE_EXTENSIONS
-        .contains(fileExtension.toLowerCase())) {
+    if (!MainController.ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
       return null;
     }
-    final String internalAppDirectoryPath =
-        await psController.filesManager.getApplicationDocumentsDirectoryPath();
+    final String internalAppDirectoryPath = await psController.filesManager.getApplicationDocumentsDirectoryPath();
     while (true) {
-      final String targetFileName =
-          '${Utils.currentTimeMillis()}$fileExtension';
+      final String targetFileName = '${Utils.currentTimeMillis()}$fileExtension';
       final FileEntity fileEntity = await MainController.get()
           .psController
           .filesManager
-          .createFileEntityParentAndName(
-              internalAppDirectoryPath, targetFileName);
+          .createFileEntityParentAndName(internalAppDirectoryPath, targetFileName);
       if (!await fileEntity.exists()) {
         await fileEntity.create();
         return fileEntity;
@@ -451,10 +439,8 @@ class MainController {
       return null;
     }
 
-    final String fileExtension =
-        Utils.getFileExtension(selectedImageFile.getAbsolutePath());
-    if (!MainController.ALLOWED_IMAGE_EXTENSIONS
-        .contains(fileExtension.toLowerCase())) {
+    final String fileExtension = Utils.getFileExtension(selectedImageFile.getAbsolutePath());
+    if (!MainController.ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
       return null;
     }
 
@@ -466,8 +452,7 @@ class MainController {
       return null;
     }
     if (psController.basicInfoManager.isDesktop) {
-      return psController.filesManager
-          .pickImageFile(ImageFileSource.FILE_PICKER);
+      return psController.filesManager.pickImageFile(ImageFileSource.FILE_PICKER);
     }
     final Completer<FileEntity> futureSelectedFile = Completer<FileEntity>();
     showDialog(
@@ -484,9 +469,8 @@ class MainController {
                     title: Text(I18n.getString(I18n.string.from_gallery)),
                     onTap: () async {
                       Navigator.of(_context).pop();
-                      futureSelectedFile.complete(await psController
-                          .filesManager
-                          .pickImageFile(ImageFileSource.GALLERY));
+                      futureSelectedFile
+                          .complete(await psController.filesManager.pickImageFile(ImageFileSource.GALLERY));
                     },
                   ),
                   ListTile(
@@ -494,9 +478,8 @@ class MainController {
                     title: Text(I18n.getString(I18n.string.from_camera)),
                     onTap: () async {
                       Navigator.of(_context).pop();
-                      futureSelectedFile.complete(await psController
-                          .filesManager
-                          .pickImageFile(ImageFileSource.CAMERA));
+                      futureSelectedFile
+                          .complete(await psController.filesManager.pickImageFile(ImageFileSource.CAMERA));
                     },
                   )
                 ],
@@ -539,10 +522,9 @@ class MainController {
     ));
   }
 
-  Future<MultiSelectionChoice> promptMultiSelection(final String title,
-      final List<MultiSelectionChoice> availableEntries) async {
-    final Completer<MultiSelectionChoice> futureSelectedChoice =
-        Completer<MultiSelectionChoice>();
+  Future<MultiSelectionChoice> promptMultiSelection(
+      final String title, final List<MultiSelectionChoice> availableEntries) async {
+    final Completer<MultiSelectionChoice> futureSelectedChoice = Completer<MultiSelectionChoice>();
     final List<Widget> choicesWidgets = [];
     for (final MultiSelectionChoice c in availableEntries) {
       choicesWidgets.add(ListTile(

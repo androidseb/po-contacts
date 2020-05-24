@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
-import 'package:po_contacts_flutter/controller/sync/data/remote_file.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_exception.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_interface.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_model.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 
 class GoogleDriveSyncInterface extends SyncInterface {
   static const String MULTIPART_REQUESTS_BOUNDARY_STRING = '5408960f22bc432e938025d3e6034c33';
@@ -21,7 +21,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
 
   Map<String, String> _authHeaders;
 
-  GoogleDriveSyncInterface(final SyncModel syncModel) : super(syncModel);
+  GoogleDriveSyncInterface(final SyncInterfaceConfig config, final SyncModel syncModel) : super(config, syncModel);
 
   @override
   Future<bool> authenticateImplicitly() async {
@@ -190,7 +190,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
   @override
   Future<List<RemoteFile>> fetchIndexFilesList() async {
     final String qParamValue = Uri.encodeComponent(
-      'name = "${SyncInterface.INDEX_FILE_NAME}"  and trashed = false',
+      'name = "${config.indexFileName}"  and trashed = false',
     );
     final String url = 'https://www.googleapis.com/drive/v3/files?q=$qParamValue';
     final http.Response httpGetResponse = await http.get(

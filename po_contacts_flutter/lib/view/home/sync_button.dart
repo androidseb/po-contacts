@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
-import 'package:po_contacts_flutter/controller/sync_controller.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 
 class SyncButton extends StatefulWidget {

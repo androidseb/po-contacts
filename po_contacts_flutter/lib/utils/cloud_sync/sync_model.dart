@@ -1,5 +1,5 @@
-import 'package:po_contacts_flutter/controller/sync/sync_exception.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SyncModel {

@@ -1,25 +1,31 @@
 import 'dart:convert';
 
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
-import 'package:po_contacts_flutter/controller/sync/data/remote_file.dart';
-import 'package:po_contacts_flutter/controller/sync/sync_model.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
-abstract class SyncInterface {
-  static const String PATH_SEPARATOR = '/';
-  static const String ROOT_SYNC_FOLDER_NAME = 'pocontacts';
-  static const String INDEX_FILE_NAME = 'po_contacts_index.json';
+class SyncInterfaceConfig {
+  final String rootSyncFolderName;
+  final String indexFileName;
+  SyncInterfaceConfig(
+    this.rootSyncFolderName,
+    this.indexFileName,
+  );
+}
 
+abstract class SyncInterface {
   static const String INDEX_FILE_KEY_NAME = 'name';
   static const String INDEX_FILE_KEY_FILE_ID = 'fileId';
 
+  final SyncInterfaceConfig config;
   SyncModel _syncModel;
 
   RemoteFile _selectedCloudIndexFile;
 
   String _derivedEncryptionKey;
 
-  SyncInterface(final SyncModel syncModel) {
+  SyncInterface(this.config, final SyncModel syncModel) {
     _syncModel = syncModel;
   }
 
@@ -45,11 +51,11 @@ abstract class SyncInterface {
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();
-    final RemoteFile existingRootSyncFolder = await getFolder(rootFolder, ROOT_SYNC_FOLDER_NAME);
+    final RemoteFile existingRootSyncFolder = await getFolder(rootFolder, config.rootSyncFolderName);
     if (existingRootSyncFolder != null) {
       return existingRootSyncFolder;
     }
-    return createFolder(rootFolder, ROOT_SYNC_FOLDER_NAME);
+    return createFolder(rootFolder, config.rootSyncFolderName);
   }
 
   Future<RemoteFile> createNewIndexFolder() async {
@@ -65,7 +71,7 @@ abstract class SyncInterface {
     final RemoteFile newIndexFolder = await createNewIndexFolder();
     return createNewTextFile(
       newIndexFolder,
-      INDEX_FILE_NAME,
+      config.indexFileName,
       jsonEncode({
         INDEX_FILE_KEY_NAME: Utils.dateTimeToString(),
         INDEX_FILE_KEY_FILE_ID: null,
