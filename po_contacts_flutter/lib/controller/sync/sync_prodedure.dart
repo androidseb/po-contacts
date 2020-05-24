@@ -1,4 +1,5 @@
 import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/controller/sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/controller/sync/sync_interface.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 
@@ -29,6 +30,8 @@ class SyncProcedure {
   Future<SyncInitialData> _initializeSync() async {
     final List<Contact> localContacts = [];
     localContacts.addAll(MainController.get().model.contactsList);
+    final RemoteFile currentIndexFile = syncInterface.selectedCloudIndexFile;
+    final String fileETag = await syncInterface.getFileETag(currentIndexFile.fileId);
     //TODO
     final List<Contact> lastSyncedContacts = [];
     //TODO
@@ -38,7 +41,7 @@ class SyncProcedure {
       localContacts,
       lastSyncedContacts,
       remoteContacts,
-      null,
+      fileETag,
     );
   }
 

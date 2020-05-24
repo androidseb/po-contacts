@@ -13,6 +13,9 @@ abstract class SyncInterface {
   static const String INDEX_FILE_KEY_FILE_ID = 'fileId';
 
   SyncModel _syncModel;
+
+  RemoteFile _selectedCloudIndexFile;
+
   SyncInterface(final SyncModel syncModel) {
     _syncModel = syncModel;
   }
@@ -35,6 +38,7 @@ abstract class SyncInterface {
   );
   Future<List<RemoteFile>> fetchIndexFilesList();
   Future<String> getTextFileContent(final String fileId);
+  Future<String> getFileETag(final String fileId);
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();
@@ -70,7 +74,10 @@ abstract class SyncInterface {
     return jsonDecode(await getTextFileContent(fileId));
   }
 
-  Future<void> setSelectedCloudIndexFile(final RemoteFile selectedCloudIndexFile) {
-    //TODO
+  Future<void> setSelectedCloudIndexFile(final RemoteFile selectedCloudIndexFile) async {
+    _selectedCloudIndexFile = selectedCloudIndexFile;
+    //TODO write to _syncModel to persist the state between app runs
   }
+
+  RemoteFile get selectedCloudIndexFile => _selectedCloudIndexFile;
 }
