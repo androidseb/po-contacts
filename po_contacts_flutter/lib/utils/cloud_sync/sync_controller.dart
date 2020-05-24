@@ -27,7 +27,10 @@ abstract class SyncController<T> {
 
   Future<List<T>> getLocalItems();
 
-  Future<List<T>> fileEntityToItemsList(final FileEntity fileEntity);
+  Future<List<T>> fileEntityToItemsList(
+    final FileEntity fileEntity,
+    final String encryptionKey,
+  );
 
   /// Select a cloud index file based on the name of that index file
   /// Returns 3 possible types of value:

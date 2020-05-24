@@ -31,9 +31,15 @@ class SyncProcedure<T> {
   Future<SyncInitialData> _initializeSync() async {
     final List<T> localItems = await syncController.getLocalItems();
     final FileEntity lastSyncedFile = syncInterface.getLastSyncedFile();
-    final List<T> lastSyncedItems = await syncController.fileEntityToItemsList(lastSyncedFile);
+    final List<T> lastSyncedItems = await syncController.fileEntityToItemsList(
+      lastSyncedFile,
+      syncInterface.encryptionKey,
+    );
     final FileEntity latestCloudFile = await syncInterface.getLatestCloudFile();
-    final List<T> remoteItems = await syncController.fileEntityToItemsList(latestCloudFile);
+    final List<T> remoteItems = await syncController.fileEntityToItemsList(
+      latestCloudFile,
+      syncInterface.encryptionKey,
+    );
     final RemoteFile currentIndexFile = syncInterface.selectedCloudIndexFile;
     final String fileETag = await syncInterface.getFileETag(currentIndexFile.fileId);
     return SyncInitialData(

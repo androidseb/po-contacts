@@ -1,6 +1,9 @@
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.dart';
+import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart';
+import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
@@ -40,17 +43,25 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
-  Future<List<Contact>> fileEntityToItemsList(final FileEntity fileEntity) async {
-    return [];
-    //TODO convert this into an abstract generic type method
-    /**
-        lastSyncedContacts = await VCFSerializer.readFromVCF(
-            VCFFileReader(
-              lastSyncedFile,
-              syncInterface.derivedEncryptionKey,
-              DiskFileInflater(),
-            ),
-          );
-    */
+  Future<List<Contact>> fileEntityToItemsList(
+    final FileEntity fileEntity,
+    final String encryptionKey,
+  ) async {
+    if (fileEntity == null) {
+      return [];
+    }
+    final List<Contact> res = [];
+    final List<ContactBuilder> lastSyncedContacts = await VCFSerializer.readFromVCF(
+      VCFFileReader(
+        fileEntity,
+        encryptionKey,
+        DiskFileInflater(),
+      ),
+    );
+    int counter = 0;
+    for (final ContactBuilder cb in lastSyncedContacts) {
+      res.add(cb.build(counter++));
+    }
+    return res;
   }
 }

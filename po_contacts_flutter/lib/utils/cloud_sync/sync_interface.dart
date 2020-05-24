@@ -23,7 +23,7 @@ abstract class SyncInterface {
 
   RemoteFile _selectedCloudIndexFile;
 
-  String _derivedEncryptionKey;
+  String _encryptionKey;
 
   SyncInterface(this.config, final SyncModel syncModel) {
     _syncModel = syncModel;
@@ -90,7 +90,7 @@ abstract class SyncInterface {
 
   RemoteFile get selectedCloudIndexFile => _selectedCloudIndexFile;
 
-  String get derivedEncryptionKey => _derivedEncryptionKey;
+  String get encryptionKey => _encryptionKey;
 
   FileEntity getLastSyncedFile() {
     //TODO
