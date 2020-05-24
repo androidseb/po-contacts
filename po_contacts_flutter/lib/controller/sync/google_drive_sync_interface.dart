@@ -158,9 +158,10 @@ class GoogleDriveSyncInterface extends SyncInterface {
     final RemoteFile parentFolder,
     final String folderName,
   ) async {
-    final String qParamValue =
-        'mimeType ="application/vnd.google-apps.folder" and name = "$folderName"  and trashed = false and "${parentFolder.fileId}" in parents';
-    final String url = 'https://www.googleapis.com/drive/v3/files?q=' + Uri.encodeComponent(qParamValue);
+    final String qParamValue = Uri.encodeComponent(
+      'mimeType ="application/vnd.google-apps.folder" and name = "$folderName"  and trashed = false and "${parentFolder.fileId}" in parents',
+    );
+    final String url = 'https://www.googleapis.com/drive/v3/files?q=$qParamValue';
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {
@@ -188,8 +189,10 @@ class GoogleDriveSyncInterface extends SyncInterface {
 
   @override
   Future<List<RemoteFile>> fetchIndexFilesList() async {
-    final String qParamValue = 'name = "${SyncInterface.INDEX_FILE_NAME}"  and trashed = false';
-    final String url = 'https://www.googleapis.com/drive/v3/files?q=' + Uri.encodeComponent(qParamValue);
+    final String qParamValue = Uri.encodeComponent(
+      'name = "${SyncInterface.INDEX_FILE_NAME}"  and trashed = false',
+    );
+    final String url = 'https://www.googleapis.com/drive/v3/files?q=$qParamValue';
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {
