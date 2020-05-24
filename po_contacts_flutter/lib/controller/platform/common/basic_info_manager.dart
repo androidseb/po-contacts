@@ -1,4 +1,10 @@
-enum PlatformType { ANDROID, IOS, LINUX, MACOS, WINDOWS }
+enum PlatformType {
+  ANDROID,
+  IOS,
+  LINUX,
+  MACOS,
+  WINDOWS,
+}
 
 abstract class BasicInfoManager {
   PlatformType getPlatformType();

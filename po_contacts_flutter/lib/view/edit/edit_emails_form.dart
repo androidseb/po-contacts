@@ -12,9 +12,9 @@ class EditEmailsForm extends EditCategorizedStringItemsForm {
   @override
   List<LabeledFieldLabelType> getAllowedLabelTypes() {
     return [
-      LabeledFieldLabelType.work,
-      LabeledFieldLabelType.home,
-      LabeledFieldLabelType.custom,
+      LabeledFieldLabelType.WORK,
+      LabeledFieldLabelType.HOME,
+      LabeledFieldLabelType.CUSTOM,
     ];
   }
 

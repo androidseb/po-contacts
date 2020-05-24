@@ -70,7 +70,7 @@ abstract class SyncController<T> {
     } on SyncException catch (syncException) {
       _syncModel.updateLastSyncError(syncException);
     } catch (otherException) {
-      _syncModel.updateLastSyncError(SyncException(SyncExceptionType.other, message: otherException.toString()));
+      _syncModel.updateLastSyncError(SyncException(SyncExceptionType.OTHER, message: otherException.toString()));
     }
     return false;
   }
@@ -79,7 +79,7 @@ abstract class SyncController<T> {
     final SyncInterface syncInterface = GoogleDriveSyncInterface(getSyncInterfaceConfig(), _syncModel);
     final bool couldAuthenticateExplicitly = await syncInterface.authenticateExplicitly();
     if (!couldAuthenticateExplicitly) {
-      throw SyncException(SyncExceptionType.authentication);
+      throw SyncException(SyncExceptionType.AUTHENTICATION);
     }
     final List<RemoteFile> cloudIndexFiles = await syncInterface.fetchIndexFilesList();
     RemoteFile selectedCloudIndexFile;
@@ -115,7 +115,7 @@ abstract class SyncController<T> {
     if (syncInterface == null) {
       syncInterface = await _initializeSyncInterface();
       if (syncInterface == null) {
-        throw SyncException(SyncExceptionType.canceled);
+        throw SyncException(SyncExceptionType.CANCELED);
       }
     } else {
       final bool couldAuthenticateImplicitly = await syncInterface.authenticateImplicitly();
@@ -123,10 +123,10 @@ abstract class SyncController<T> {
         if (directUserAction) {
           final bool couldAuthenticateExplicitly = await syncInterface.authenticateExplicitly();
           if (!couldAuthenticateExplicitly) {
-            throw SyncException(SyncExceptionType.authentication);
+            throw SyncException(SyncExceptionType.AUTHENTICATION);
           }
         } else {
-          throw SyncException(SyncExceptionType.authentication);
+          throw SyncException(SyncExceptionType.AUTHENTICATION);
         }
       }
     }

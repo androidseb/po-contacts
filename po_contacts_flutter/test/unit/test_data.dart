@@ -56,26 +56,26 @@ final Contact testContactComplex = Contact(
   'Full Name', //fullName
   //phoneInfos
   [
-    StringLabeledField(LabeledFieldLabelType.custom, 'Custom Field Name For Phone', '1234567896'),
-    StringLabeledField(LabeledFieldLabelType.work, '', '1234567892'),
-    StringLabeledField(LabeledFieldLabelType.home, '', '1234567893'),
-    StringLabeledField(LabeledFieldLabelType.cell, '', '1234567891'),
-    StringLabeledField(LabeledFieldLabelType.fax, '', '1234567894'),
-    StringLabeledField(LabeledFieldLabelType.pager, '', '1234567895'),
+    StringLabeledField(LabeledFieldLabelType.CUSTOM, 'Custom Field Name For Phone', '1234567896'),
+    StringLabeledField(LabeledFieldLabelType.WORK, '', '1234567892'),
+    StringLabeledField(LabeledFieldLabelType.HOME, '', '1234567893'),
+    StringLabeledField(LabeledFieldLabelType.CELL, '', '1234567891'),
+    StringLabeledField(LabeledFieldLabelType.FAX, '', '1234567894'),
+    StringLabeledField(LabeledFieldLabelType.PAGER, '', '1234567895'),
   ],
   //emailInfos
   [
-    StringLabeledField(LabeledFieldLabelType.custom, 'Custom Field Name For Email', 'test6@test.com'),
-    StringLabeledField(LabeledFieldLabelType.work, '', 'test2@test.com'),
-    StringLabeledField(LabeledFieldLabelType.home, '', 'test3@test.com'),
-    StringLabeledField(LabeledFieldLabelType.cell, '', 'test1@test.com'),
-    StringLabeledField(LabeledFieldLabelType.fax, '', 'test4@test.com'),
-    StringLabeledField(LabeledFieldLabelType.pager, '', 'test5@test.com'),
+    StringLabeledField(LabeledFieldLabelType.CUSTOM, 'Custom Field Name For Email', 'test6@test.com'),
+    StringLabeledField(LabeledFieldLabelType.WORK, '', 'test2@test.com'),
+    StringLabeledField(LabeledFieldLabelType.HOME, '', 'test3@test.com'),
+    StringLabeledField(LabeledFieldLabelType.CELL, '', 'test1@test.com'),
+    StringLabeledField(LabeledFieldLabelType.FAX, '', 'test4@test.com'),
+    StringLabeledField(LabeledFieldLabelType.PAGER, '', 'test5@test.com'),
   ],
   //addressInfos
   [
     AddressLabeledField(
-      LabeledFieldLabelType.custom,
+      LabeledFieldLabelType.CUSTOM,
       'Custom Address Field Name',
       AddressInfo(
         'Custom Street Address String',
@@ -86,7 +86,7 @@ final Contact testContactComplex = Contact(
       ),
     ),
     AddressLabeledField(
-      LabeledFieldLabelType.work,
+      LabeledFieldLabelType.WORK,
       '',
       AddressInfo(
         'Work Street Address String',
@@ -97,7 +97,7 @@ final Contact testContactComplex = Contact(
       ),
     ),
     AddressLabeledField(
-      LabeledFieldLabelType.home,
+      LabeledFieldLabelType.HOME,
       '',
       AddressInfo(
         'Home Street Address String',
@@ -131,28 +131,28 @@ final Contact testContactComplex2 = Contact(
   'Full Name $specialCharsBase', //fullName
   //phoneInfos
   [
-    StringLabeledField(LabeledFieldLabelType.custom, 'Custom Field Name For Phone $specialCharsBase',
+    StringLabeledField(LabeledFieldLabelType.CUSTOM, 'Custom Field Name For Phone $specialCharsBase',
         '1234567896 $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.work, '', '1234567892 $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.home, '', '1234567893 $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.cell, '', '1234567891 $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.fax, '', '1234567894 $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.pager, '', '1234567895 $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.WORK, '', '1234567892 $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.HOME, '', '1234567893 $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.CELL, '', '1234567891 $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.FAX, '', '1234567894 $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.PAGER, '', '1234567895 $specialCharsBase'),
   ],
   //emailInfos
   [
-    StringLabeledField(LabeledFieldLabelType.custom, 'Custom Field Name For Email $specialCharsBase',
+    StringLabeledField(LabeledFieldLabelType.CUSTOM, 'Custom Field Name For Email $specialCharsBase',
         'test6@test.com $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.work, '', 'test2@test.com $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.home, '', 'test3@test.com $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.cell, '', 'test1@test.com $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.fax, '', 'test4@test.com $specialCharsBase'),
-    StringLabeledField(LabeledFieldLabelType.pager, '', 'test5@test.com $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.WORK, '', 'test2@test.com $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.HOME, '', 'test3@test.com $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.CELL, '', 'test1@test.com $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.FAX, '', 'test4@test.com $specialCharsBase'),
+    StringLabeledField(LabeledFieldLabelType.PAGER, '', 'test5@test.com $specialCharsBase'),
   ],
   //addressInfos
   [
     AddressLabeledField(
-      LabeledFieldLabelType.custom,
+      LabeledFieldLabelType.CUSTOM,
       'Custom Address Field Name $specialCharsBase',
       AddressInfo(
         'Custom Street Address String $specialCharsBase',
@@ -163,7 +163,7 @@ final Contact testContactComplex2 = Contact(
       ),
     ),
     AddressLabeledField(
-      LabeledFieldLabelType.work,
+      LabeledFieldLabelType.WORK,
       '',
       AddressInfo(
         'Work Street Address String $specialCharsBase',
@@ -174,7 +174,7 @@ final Contact testContactComplex2 = Contact(
       ),
     ),
     AddressLabeledField(
-      LabeledFieldLabelType.home,
+      LabeledFieldLabelType.HOME,
       '',
       AddressInfo(
         'Home Street Address String $specialCharsBase',

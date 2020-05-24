@@ -93,14 +93,14 @@ abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends State
           icon: Icon(Icons.arrow_downward),
           iconSize: 24,
           onChanged: (EditableItemCategory newValue) async {
-            if (newValue.labelType == LabeledFieldLabelType.custom && newValue.labelValue.isEmpty) {
+            if (newValue.labelType == LabeledFieldLabelType.CUSTOM && newValue.labelValue.isEmpty) {
               final String customLabelString = await MainController.get().showTextInputDialog(I18n.string.custom_label);
               if (customLabelString == null || customLabelString.isEmpty) {
                 return;
               }
               parentState.setItemLabelValue(
                 item,
-                LabeledFieldLabelType.custom,
+                LabeledFieldLabelType.CUSTOM,
                 customLabelString,
               );
               return;
@@ -148,7 +148,7 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
     final List<LabeledFieldLabelType> labelTypes = widget.getAllowedLabelTypes();
     final List<DropdownMenuItem<EditableItemCategory>> res = [];
     for (final LabeledFieldLabelType lt in labelTypes) {
-      if (lt == LabeledFieldLabelType.custom) {
+      if (lt == LabeledFieldLabelType.CUSTOM) {
         continue;
       }
       final String labelText = I18n.getString(LabeledField.getTypeNameStringKey(lt));
@@ -159,19 +159,19 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
     }
     for (final String customName in customLabelTypeNames) {
       res.add(DropdownMenuItem<EditableItemCategory>(
-        value: EditableItemCategory(LabeledFieldLabelType.custom, customName),
+        value: EditableItemCategory(LabeledFieldLabelType.CUSTOM, customName),
         child: dropDownTextWidget(customName),
       ));
     }
     res.add(DropdownMenuItem<EditableItemCategory>(
-      value: EditableItemCategory(LabeledFieldLabelType.custom, ''),
-      child: dropDownTextWidget(I18n.getString(LabeledField.getTypeNameStringKey(LabeledFieldLabelType.custom))),
+      value: EditableItemCategory(LabeledFieldLabelType.CUSTOM, ''),
+      child: dropDownTextWidget(I18n.getString(LabeledField.getTypeNameStringKey(LabeledFieldLabelType.CUSTOM))),
     ));
     return res;
   }
 
   EditableItemCategory getDropDownValue(final CategorizedEditableItem item) {
-    if (item.labelType == LabeledFieldLabelType.custom) {
+    if (item.labelType == LabeledFieldLabelType.CUSTOM) {
       return EditableItemCategory(item.labelType, item.labelText);
     } else {
       final String labelText = I18n.getString(LabeledField.getTypeNameStringKey(item.labelType));
@@ -187,14 +187,14 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
       bool addedField = false;
       for (final CategorizedEditableItem cei in editableItems) {
         if (cei.labelType == t) {
-          if (cei.labelType == LabeledFieldLabelType.custom && cei.labelText.isNotEmpty) {
+          if (cei.labelType == LabeledFieldLabelType.CUSTOM && cei.labelText.isNotEmpty) {
             customLabelTypeNames.add(cei.labelText);
           }
           currentItems.add(cei);
           addedField = true;
         }
       }
-      if (t != LabeledFieldLabelType.custom && !addedField) {
+      if (t != LabeledFieldLabelType.CUSTOM && !addedField) {
         currentItems.add(CategorizedEditableItem<T>(t, '', widget.getEmptyItemValue()));
       }
     }
@@ -241,7 +241,7 @@ class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<Edi
     final String labelValue,
   ) {
     setState(() {
-      item.labelType = LabeledFieldLabelType.custom;
+      item.labelType = LabeledFieldLabelType.CUSTOM;
       item.labelText = labelValue;
       customLabelTypeNames.add(labelValue);
       widget.notifyDataChanged(currentItems);

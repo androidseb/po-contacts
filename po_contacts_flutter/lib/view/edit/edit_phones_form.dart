@@ -12,12 +12,12 @@ class EditPhonesForm extends EditCategorizedStringItemsForm {
   @override
   List<LabeledFieldLabelType> getAllowedLabelTypes() {
     return [
-      LabeledFieldLabelType.work,
-      LabeledFieldLabelType.home,
-      LabeledFieldLabelType.cell,
-      LabeledFieldLabelType.fax,
-      LabeledFieldLabelType.pager,
-      LabeledFieldLabelType.custom
+      LabeledFieldLabelType.WORK,
+      LabeledFieldLabelType.HOME,
+      LabeledFieldLabelType.CELL,
+      LabeledFieldLabelType.FAX,
+      LabeledFieldLabelType.PAGER,
+      LabeledFieldLabelType.CUSTOM
     ];
   }
 

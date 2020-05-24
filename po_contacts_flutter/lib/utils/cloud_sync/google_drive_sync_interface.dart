@@ -56,7 +56,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       return RemoteFile(RemoteFileType.FOLDER, rootFolderId, '', '');
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.getRootFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
@@ -95,7 +95,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       return _googleDriveFileToRemoteFile(serverResponse);
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.createFolder failed status code ${httpPostResponse.statusCode}',
       );
     }
@@ -147,7 +147,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       return _googleDriveFileToRemoteFile(serverResponse);
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.createNewTextFile failed status code ${httpPostResponse.statusCode}',
       );
     }
@@ -181,7 +181,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       }
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
@@ -212,7 +212,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       return res;
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
@@ -234,7 +234,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       return httpGetResponse.body;
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
@@ -256,7 +256,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
       return jsonDecode(httpGetResponse.body)['etag'];
     } else {
       throw SyncException(
-        SyncExceptionType.server,
+        SyncExceptionType.SERVER,
         message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
       );
     }

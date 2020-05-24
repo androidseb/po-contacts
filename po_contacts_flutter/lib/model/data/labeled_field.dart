@@ -5,12 +5,12 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 //- inconsistent serialization with previously exported VCF files
 //- unit test to break: test_labeled_field_label_type_enum.dart
 enum LabeledFieldLabelType {
-  custom,
-  work,
-  home,
-  cell,
-  fax,
-  pager,
+  CUSTOM,
+  WORK,
+  HOME,
+  CELL,
+  FAX,
+  PAGER,
 }
 
 const String LABEL_FIELD_TYPE_CUSTOM = 'custom';
@@ -21,21 +21,21 @@ const String LABEL_FIELD_TYPE_FAX = 'fax';
 const String LABEL_FIELD_TYPE_PAGER = 'pager';
 
 const Map<String, LabeledFieldLabelType> _stringToLfLabelType = {
-  LABEL_FIELD_TYPE_CUSTOM: LabeledFieldLabelType.custom,
-  LABEL_FIELD_TYPE_WORK: LabeledFieldLabelType.work,
-  LABEL_FIELD_TYPE_HOME: LabeledFieldLabelType.home,
-  LABEL_FIELD_TYPE_CELL: LabeledFieldLabelType.cell,
-  LABEL_FIELD_TYPE_FAX: LabeledFieldLabelType.fax,
-  LABEL_FIELD_TYPE_PAGER: LabeledFieldLabelType.pager,
+  LABEL_FIELD_TYPE_CUSTOM: LabeledFieldLabelType.CUSTOM,
+  LABEL_FIELD_TYPE_WORK: LabeledFieldLabelType.WORK,
+  LABEL_FIELD_TYPE_HOME: LabeledFieldLabelType.HOME,
+  LABEL_FIELD_TYPE_CELL: LabeledFieldLabelType.CELL,
+  LABEL_FIELD_TYPE_FAX: LabeledFieldLabelType.FAX,
+  LABEL_FIELD_TYPE_PAGER: LabeledFieldLabelType.PAGER,
 };
 
 const Map<LabeledFieldLabelType, String> _lfLabelTypeToString = {
-  LabeledFieldLabelType.custom: LABEL_FIELD_TYPE_CUSTOM,
-  LabeledFieldLabelType.work: LABEL_FIELD_TYPE_WORK,
-  LabeledFieldLabelType.home: LABEL_FIELD_TYPE_HOME,
-  LabeledFieldLabelType.cell: LABEL_FIELD_TYPE_CELL,
-  LabeledFieldLabelType.fax: LABEL_FIELD_TYPE_FAX,
-  LabeledFieldLabelType.pager: LABEL_FIELD_TYPE_PAGER,
+  LabeledFieldLabelType.CUSTOM: LABEL_FIELD_TYPE_CUSTOM,
+  LabeledFieldLabelType.WORK: LABEL_FIELD_TYPE_WORK,
+  LabeledFieldLabelType.HOME: LABEL_FIELD_TYPE_HOME,
+  LabeledFieldLabelType.CELL: LABEL_FIELD_TYPE_CELL,
+  LabeledFieldLabelType.FAX: LABEL_FIELD_TYPE_FAX,
+  LabeledFieldLabelType.PAGER: LABEL_FIELD_TYPE_PAGER,
 };
 
 abstract class LabeledField<T> {
@@ -55,24 +55,24 @@ abstract class LabeledField<T> {
 
   static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
     switch (labelType) {
-      case LabeledFieldLabelType.work:
+      case LabeledFieldLabelType.WORK:
         return I18n.string.label_type_work;
-      case LabeledFieldLabelType.home:
+      case LabeledFieldLabelType.HOME:
         return I18n.string.label_type_home;
-      case LabeledFieldLabelType.cell:
+      case LabeledFieldLabelType.CELL:
         return I18n.string.label_type_cell;
-      case LabeledFieldLabelType.fax:
+      case LabeledFieldLabelType.FAX:
         return I18n.string.label_type_fax;
-      case LabeledFieldLabelType.pager:
+      case LabeledFieldLabelType.PAGER:
         return I18n.string.label_type_pager;
-      case LabeledFieldLabelType.custom:
+      case LabeledFieldLabelType.CUSTOM:
         return I18n.string.label_type_custom;
     }
     return '???';
   }
 
   static String getLabelTypeDisplayText(final LabeledField entry) {
-    if (entry.labelType == LabeledFieldLabelType.custom) {
+    if (entry.labelType == LabeledFieldLabelType.CUSTOM) {
       return entry.labelText;
     } else {
       return I18n.getString(LabeledField.getTypeNameStringKey(entry.labelType));
@@ -139,7 +139,7 @@ abstract class LabeledField<T> {
   ) {
     final LabeledFieldLabelType labelType = LabeledField.stringToLabeledFieldLabelType(
       _map[FIELD_LABEL_TYPE],
-      LabeledFieldLabelType.work,
+      LabeledFieldLabelType.WORK,
     );
     final String labelText = _map[FIELD_LABEL_VALUE];
     final dynamic fieldValue = _map[FIELD_TEXT_VALUE];

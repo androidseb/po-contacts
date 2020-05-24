@@ -95,22 +95,22 @@ abstract class VCFReader {
   }
 
   static VCFFieldLabelParamValue getLabeledFieldLabelTypeForFieldParams(final Map<String, String> fieldParams) {
-    LabeledFieldLabelType resultLabelType = LabeledFieldLabelType.work;
+    LabeledFieldLabelType resultLabelType = LabeledFieldLabelType.WORK;
     String resultLabelText = '';
     for (final String key in fieldParams.keys) {
       final String value = fieldParams[key];
       if (Utils.stringEqualsIgnoreCase(key, VCFConstants.FIELD_PARAM_TYPE)) {
         resultLabelType = LabeledField.stringToLabeledFieldLabelType(
           value,
-          LabeledFieldLabelType.custom,
+          LabeledFieldLabelType.CUSTOM,
         );
-        if (resultLabelType == LabeledFieldLabelType.custom) {
+        if (resultLabelType == LabeledFieldLabelType.CUSTOM) {
           resultLabelText = value;
         }
         break;
       }
       if (value.isEmpty && key.startsWith('X-')) {
-        resultLabelType = LabeledFieldLabelType.custom;
+        resultLabelType = LabeledFieldLabelType.CUSTOM;
         resultLabelText = VCFField.unEscapeVCFString(key.substring(2));
         break;
       }

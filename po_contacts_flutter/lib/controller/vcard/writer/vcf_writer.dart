@@ -40,7 +40,7 @@ abstract class VCFWriter {
       return;
     }
     output.write(VCFConstants.VCF_SEPARATOR_SEMICOLON);
-    if (labelParamValue.labelType == LabeledFieldLabelType.custom) {
+    if (labelParamValue.labelType == LabeledFieldLabelType.CUSTOM) {
       output.write('X-');
       output.write(_escapeStringToVCF(labelParamValue.labelText));
     } else {

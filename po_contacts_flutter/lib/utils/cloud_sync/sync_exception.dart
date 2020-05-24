@@ -1,11 +1,11 @@
 //TODO make all enums upper case
 enum SyncExceptionType {
-  authentication,
-  network,
-  server,
-  concurrency,
-  canceled,
-  other,
+  AUTHENTICATION,
+  NETWORK,
+  SERVER,
+  CONCURRENCY,
+  CANCELED,
+  OTHER,
 }
 
 class SyncException implements Exception {

@@ -1,7 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 
-enum ImageFileSource { GALLERY, CAMERA, FILE_PICKER }
+enum ImageFileSource {
+  GALLERY,
+  CAMERA,
+  FILE_PICKER,
+}
 
 abstract class FilesManager {
   Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName);
