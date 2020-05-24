@@ -219,7 +219,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
   }
 
   @override
-  Future<Map<String, dynamic>> getIndexFileContent(final String fileId) async {
+  Future<String> getTextFileContent(final String fileId) async {
     final String url = 'https://www.googleapis.com/drive/v3/files/$fileId?alt=media';
     final http.Response httpGetResponse = await http.get(
       url,
@@ -231,7 +231,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
     if (httpGetResponse.statusCode == 404) {
       return null;
     } else if (httpGetResponse.statusCode == 200) {
-      return jsonDecode(httpGetResponse.body);
+      return httpGetResponse.body;
     } else {
       throw SyncException(
         SyncExceptionType.server,

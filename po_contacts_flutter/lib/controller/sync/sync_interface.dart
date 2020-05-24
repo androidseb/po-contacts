@@ -34,7 +34,7 @@ abstract class SyncInterface {
     final String fileTextContent,
   );
   Future<List<RemoteFile>> fetchIndexFilesList();
-  Future<Map<String, dynamic>> getIndexFileContent(String fileId);
+  Future<String> getTextFileContent(final String fileId);
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();
@@ -64,6 +64,10 @@ abstract class SyncInterface {
         INDEX_FILE_KEY_FILE_ID: null,
       }),
     );
+  }
+
+  Future<Map<String, dynamic>> getIndexFileContent(final String fileId) async {
+    return jsonDecode(await getTextFileContent(fileId));
   }
 
   Future<void> setSelectedCloudIndexFile(final RemoteFile selectedCloudIndexFile) {
