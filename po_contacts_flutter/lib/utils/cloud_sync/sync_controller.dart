@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/google_drive_sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_prodedure.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
@@ -76,7 +76,7 @@ abstract class SyncController<T> {
   }
 
   Future<SyncInterface> _initializeSyncInterface() async {
-    final SyncInterface syncInterface = GoogleDriveSyncInterface(getSyncInterfaceConfig(), _syncModel);
+    final SyncInterface syncInterface = SyncInterfaceForGoogleDrive(getSyncInterfaceConfig(), _syncModel);
     final bool couldAuthenticateExplicitly = await syncInterface.authenticateExplicitly();
     if (!couldAuthenticateExplicitly) {
       throw SyncException(SyncExceptionType.AUTHENTICATION);
@@ -106,12 +106,12 @@ abstract class SyncController<T> {
     if (selectedCloudIndexFile == null) {
       return null;
     }
-    await syncInterface.setSelectedCloudIndexFile(selectedCloudIndexFile);
+    await syncInterface.setCloudIndexFileId(selectedCloudIndexFile.fileId);
     return syncInterface;
   }
 
   Future<SyncInterface> _getAuthenticatedSyncInterface({bool directUserAction = false}) async {
-    SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface();
+    SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface(getSyncInterfaceConfig());
     if (syncInterface == null) {
       syncInterface = await _initializeSyncInterface();
       if (syncInterface == null) {

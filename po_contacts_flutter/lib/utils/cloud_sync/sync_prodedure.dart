@@ -1,8 +1,7 @@
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
 
 class SyncInitialData<T> {
   final List<T> localItems;
@@ -65,9 +64,7 @@ class SyncProcedure<T> {
       _syncInterface.encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
-    final RemoteFile currentIndexFile = _syncInterface.selectedCloudIndexFile;
-    _cancelationHandler.checkForCancelation();
-    final String fileETag = await _syncInterface.getFileETag(currentIndexFile.fileId);
+    final String fileETag = await _syncInterface.getFileETag(_syncInterface.cloudIndexFileId);
     return SyncInitialData(
       localItems,
       lastSyncedItems,
@@ -78,10 +75,12 @@ class SyncProcedure<T> {
 
   Future<List<T>> _computeSyncResult(final SyncInitialData syncInitialData) async {
     //TODO
+    return [];
   }
 
   Future<void> _finalizeSync(final List<T> syncResult, final String targetETag) async {
     //TODO
+    return [];
   }
 
   Future<void> execute() async {

@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 
-class GoogleDriveSyncInterface extends SyncInterface {
+class SyncInterfaceForGoogleDrive extends SyncInterface {
   static const String MULTIPART_REQUESTS_BOUNDARY_STRING = '5408960f22bc432e938025d3e6034c33';
 
   final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -21,7 +21,11 @@ class GoogleDriveSyncInterface extends SyncInterface {
 
   Map<String, String> _authHeaders;
 
-  GoogleDriveSyncInterface(final SyncInterfaceConfig config, final SyncModel syncModel) : super(config, syncModel);
+  SyncInterfaceForGoogleDrive(final SyncInterfaceConfig config, final SyncModel syncModel) : super(config, syncModel);
+
+  SyncInterfaceType getSyncInterfaceType() {
+    return SyncInterfaceType.GOOGLE_DRIVE;
+  }
 
   @override
   Future<bool> authenticateImplicitly() async {
@@ -242,7 +246,7 @@ class GoogleDriveSyncInterface extends SyncInterface {
 
   @override
   Future<String> getFileETag(final String fileId) async {
-    final String url = 'https://www.googleapis.com/drive/v3/files/$fileId';
+    final String url = 'https://www.googleapis.com/drive/v2/files/$fileId';
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {

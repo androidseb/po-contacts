@@ -5,8 +5,8 @@ import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.d
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_interface.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 
 class POCSyncController extends SyncController<Contact> {

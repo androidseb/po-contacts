@@ -2,8 +2,13 @@ import 'dart:convert';
 
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
+
+enum SyncInterfaceType {
+  GOOGLE_DRIVE,
+}
 
 class SyncInterfaceConfig {
   final String rootSyncFolderName;
@@ -15,13 +20,46 @@ class SyncInterfaceConfig {
 }
 
 abstract class SyncInterface {
+  static const String _JSON_KEY_SYNC_INTERFACE_TYPE = 'type';
+  static const String _JSON_KEY_SYNC_INTERFACE_INDEX_FILE_ID = 'index_file_id';
+
   static const String INDEX_FILE_KEY_NAME = 'name';
   static const String INDEX_FILE_KEY_FILE_ID = 'fileId';
+
+  static String syncInterfaceToString(final SyncInterface syncInterface) {
+    final String indexFileId = syncInterface._cloudIndexFileId;
+    if (indexFileId == null) {
+      return null;
+    }
+    return jsonEncode({
+      _JSON_KEY_SYNC_INTERFACE_TYPE: syncInterface.getSyncInterfaceType().index,
+      _JSON_KEY_SYNC_INTERFACE_INDEX_FILE_ID: indexFileId,
+    });
+  }
+
+  static SyncInterface stringToSyncInterface(
+    final SyncInterfaceConfig config,
+    final SyncModel syncModel,
+    final String syncInterfaceAsString,
+  ) {
+    if (syncInterfaceAsString == null || syncInterfaceAsString == '') {
+      return null;
+    }
+    final Map<String, dynamic> syncInterfaceData = jsonDecode(syncInterfaceAsString);
+    SyncInterface res;
+    if (syncInterfaceData[_JSON_KEY_SYNC_INTERFACE_TYPE] == SyncInterfaceType.GOOGLE_DRIVE.index) {
+      res = SyncInterfaceForGoogleDrive(config, syncModel);
+    }
+    if (res != null) {
+      res._cloudIndexFileId = syncInterfaceData[_JSON_KEY_SYNC_INTERFACE_INDEX_FILE_ID];
+    }
+    return res;
+  }
 
   final SyncInterfaceConfig config;
   SyncModel _syncModel;
 
-  RemoteFile _selectedCloudIndexFile;
+  String _cloudIndexFileId;
 
   String _encryptionKey;
 
@@ -29,6 +67,7 @@ abstract class SyncInterface {
     _syncModel = syncModel;
   }
 
+  SyncInterfaceType getSyncInterfaceType();
   Future<bool> authenticateImplicitly();
   Future<bool> authenticateExplicitly();
   Future<RemoteFile> getRootFolder();
@@ -83,12 +122,16 @@ abstract class SyncInterface {
     return jsonDecode(await getTextFileContent(fileId));
   }
 
-  Future<void> setSelectedCloudIndexFile(final RemoteFile selectedCloudIndexFile) async {
-    _selectedCloudIndexFile = selectedCloudIndexFile;
-    //TODO write to _syncModel to persist the state between app runs
+  Future<void> setCloudIndexFileId(final String cloudIndexFileId) async {
+    _cloudIndexFileId = cloudIndexFileId;
+    await saveToModel();
   }
 
-  RemoteFile get selectedCloudIndexFile => _selectedCloudIndexFile;
+  Future<void> saveToModel() async {
+    await _syncModel.writeSyncInterfaceValue(syncInterfaceToString(this));
+  }
+
+  String get cloudIndexFileId => _cloudIndexFileId;
 
   String get encryptionKey => _encryptionKey;
 
