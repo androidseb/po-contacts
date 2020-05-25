@@ -20,7 +20,7 @@ class ContactsStorageController {
   //Use the _getContactsStorage instead
   @deprecated
   ContactsStorageManager _contactsStorage;
-  final Completer<ContactsStorageManager> _contactsStorageCompleter = new Completer();
+  final Completer<ContactsStorageManager> _contactsStorageCompleter = Completer();
 
   Future<ContactsStorageManager> _getContactsStorage() async {
     //ignore: deprecated_member_use_from_same_package

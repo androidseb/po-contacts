@@ -13,8 +13,8 @@ class SelectedFileWeb {
 
 class UtilsWeb {
   static Future<SelectedFileWeb> selectFile(final String mimeType) async {
-    final Completer<String> fileNameCompleter = new Completer<String>();
-    final Completer<String> fileContentCompleter = new Completer<String>();
+    final Completer<String> fileNameCompleter = Completer<String>();
+    final Completer<String> fileContentCompleter = Completer<String>();
     final InputElement input = document.createElement('input');
     input
       ..type = 'file'
@@ -45,7 +45,7 @@ class UtilsWeb {
   static void copyTextToClipBoard(final String text) {
     //Code copied from:
     //https://gist.github.com/bergwerf/1b427ad2b1f9770b260dd4dac295b6f0
-    final TextAreaElement tea = new TextAreaElement();
+    final TextAreaElement tea = TextAreaElement();
     document.body.append(tea);
     tea.style.border = '0';
     tea.style.margin = '0';
