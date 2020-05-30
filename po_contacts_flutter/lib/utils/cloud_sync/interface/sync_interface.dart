@@ -85,9 +85,12 @@ abstract class SyncInterface {
     final String fileTextContent,
   );
   Future<List<RemoteFile>> fetchIndexFilesList();
-  Future<String> getTextFileContent(final String fileId);
   Future<String> getFileETag(final String fileId);
   Future<Uint8List> downloadCloudFile(final String fileId);
+
+  Future<String> getTextFileContent(final String fileId) async {
+    return utf8.decode(await downloadCloudFile(fileId));
+  }
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();

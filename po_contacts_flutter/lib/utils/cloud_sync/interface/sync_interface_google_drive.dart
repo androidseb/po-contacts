@@ -224,28 +224,6 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
-  Future<String> getTextFileContent(final String fileId) async {
-    final String url = 'https://www.googleapis.com/drive/v3/files/$fileId?alt=media';
-    final http.Response httpGetResponse = await http.get(
-      url,
-      headers: {
-        'Authorization': _authHeaders['Authorization'],
-        'Accept': 'text/plain',
-      },
-    );
-    if (httpGetResponse.statusCode == 404) {
-      return null;
-    } else if (httpGetResponse.statusCode == 200) {
-      return httpGetResponse.body;
-    } else {
-      throw SyncException(
-        SyncExceptionType.SERVER,
-        message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
-      );
-    }
-  }
-
-  @override
   Future<String> getFileETag(final String fileId) async {
     final String url = 'https://www.googleapis.com/drive/v2/files/$fileId';
     final http.Response httpGetResponse = await http.get(
@@ -269,7 +247,23 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   @override
   Future<Uint8List> downloadCloudFile(final String fileId) async {
-    // TODO: implement downloadCloudFile
-    return null;
+    final String url = 'https://www.googleapis.com/drive/v3/files/$fileId?alt=media';
+    final http.Response httpGetResponse = await http.get(
+      url,
+      headers: {
+        'Authorization': _authHeaders['Authorization'],
+        'Accept': 'text/plain',
+      },
+    );
+    if (httpGetResponse.statusCode == 404) {
+      return null;
+    } else if (httpGetResponse.statusCode == 200) {
+      return httpGetResponse.bodyBytes;
+    } else {
+      throw SyncException(
+        SyncExceptionType.SERVER,
+        message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
+      );
+    }
   }
 }
