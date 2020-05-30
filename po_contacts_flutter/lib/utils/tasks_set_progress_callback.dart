@@ -16,6 +16,9 @@ abstract class TaskSetProgressCallback {
   }
 
   void updateLoop() async {
+    if (taskIds.isEmpty) {
+      return;
+    }
     do {
       final int progress = (_currentProgress * 100).floor();
       final int tasksCount = taskIds.length;
