@@ -12,6 +12,8 @@ import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 
 class POCSyncController extends SyncController<Contact> {
+  static const SYNC_FOLDER_NAME = 'cloud_sync';
+
   @override
   Future<int> pickIndexFile(final List<String> cloudIndexFileNames) async {
     final List<MultiSelectionChoice> selectionChoices = [];
@@ -67,30 +69,15 @@ class POCSyncController extends SyncController<Contact> {
     return res;
   }
 
-  @override
-  Future<void> deleteFileWithName(final String fileName) async {
-    // TODO: implement deleteFileWithName
+  Future<String> _getSyncFolderPath() async {
+    final String homeDirPath =
+        await MainController.get().psController.filesManager.getApplicationDocumentsDirectoryPath();
+    return '$homeDirPath/$SYNC_FOLDER_NAME';
   }
 
   @override
   Future<FileEntity> fileEntityByName(final String fileName) async {
-    // TODO: implement fileEntityByName
-    return null;
-  }
-
-  @override
-  Future<bool> fileWithNameExists(final String fileName) async {
-    // TODO: implement fileWithNameExists
-    return false;
-  }
-
-  @override
-  Future<void> moveFileByName(final String fileNameSource, final String fileNameDest) async {
-    // TODO: implement moveFileByName
-  }
-
-  @override
-  Future<void> overwriteFile(final FileEntity fileEntity, final Uint8List fileContent) async {
-    // TODO: implement overwriteFile
+    final String syncFolderPath = await _getSyncFolderPath();
+    return MainController.get().psController.filesManager.createFileEntityParentAndName(syncFolderPath, fileName);
   }
 }

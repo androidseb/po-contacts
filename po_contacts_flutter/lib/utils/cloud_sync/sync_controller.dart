@@ -55,18 +55,30 @@ abstract class SyncController<T> {
   /// * null if the user canceled
   Future<int> pickIndexFile(final List<String> cloudIndexFileNames);
 
-  Future<void> deleteFileWithName(final String fileName);
+  Future<FileEntity> fileEntityByName(final String fileName);
 
-  Future<bool> fileWithNameExists(final String fileName);
+  Future<void> deleteFileWithName(final String fileName) async {
+    await (await fileEntityByName(fileName))?.delete();
+  }
+
+  Future<bool> fileWithNameExists(final String fileName) async {
+    final FileEntity fe = await fileEntityByName(fileName);
+    return fe != null && await fe.exists();
+  }
 
   Future<void> moveFileByName(
     final String fileNameSource,
     final String fileNameDest,
-  );
+  ) async {
+    final FileEntity feSource = await fileEntityByName(fileNameSource);
+    final FileEntity feDest = await fileEntityByName(fileNameDest);
+    await feSource.move(feDest);
+  }
 
-  Future<FileEntity> fileEntityByName(final String fileName);
-
-  Future<void> overwriteFile(final FileEntity fileEntity, final Uint8List fileContent);
+  Future<void> overwriteFile(final String fileName, final Uint8List fileContent) async {
+    final FileEntity fe = await fileEntityByName(fileName);
+    await fe.writeAsUint8List(fileContent);
+  }
 
   Future<void> cancelSync() async {
     while (_syncState.currentValue == SyncState.SYNCING) {
@@ -211,9 +223,8 @@ abstract class SyncController<T> {
     }
     //TODO cleanup older downloaded files
     final String tmpDownloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + _TMP_CLOUD_FILE_SUFFIX;
-    final FileEntity tmpFile = await fileEntityByName(tmpDownloadedFileName);
     final Uint8List latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId as String);
-    await overwriteFile(tmpFile, latestCloudFileContent);
+    await overwriteFile(tmpDownloadedFileName, latestCloudFileContent);
     await moveFileByName(tmpDownloadedFileName, downloadedFileName);
     return fileEntityByName(downloadedFileName);
   }

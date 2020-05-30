@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/tasks/poc_tasks_set_progress_callback.dart';
@@ -59,6 +62,11 @@ class MockFileEntry extends FileEntity {
 
   MockFileEntry(this.absolutePath) {
     MockFileSystem.content[absolutePath] = this;
+  }
+
+  @override
+  Future<bool> writeAsUint8List(final Uint8List outputData) {
+    return writeAsBase64String(base64.encode(outputData));
   }
 
   Future<bool> writeAsBase64String(String base64String) async {

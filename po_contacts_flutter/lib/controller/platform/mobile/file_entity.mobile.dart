@@ -41,14 +41,13 @@ class FileEntityMobile extends FileEntity {
   }
 
   @override
-  Future<bool> writeAsBase64String(String base64String) async {
-    return await FileEntityMobile.base64StringToFile(base64String, _file);
+  Future<bool> writeAsUint8List(final Uint8List outputData) {
+    return FileEntityMobile.uint8ListToFile(outputData, _file);
   }
 
-  static Future<bool> base64StringToFile(final String base64String, final File destFile) async {
+  static Future<bool> uint8ListToFile(final Uint8List outputData, final File destFile) async {
     try {
-      final Uint8List bytes = base64.decode(base64String);
-      await destFile.writeAsBytes(bytes);
+      await destFile.writeAsBytes(outputData);
     } catch (e) {
       return false;
     }

@@ -61,6 +61,11 @@ class FileEntityWeb extends FileEntity {
   }
 
   @override
+  Future<bool> writeAsUint8List(final Uint8List outputData) {
+    return writeAsBase64String(base64.encode(outputData));
+  }
+
+  @override
   Future<bool> writeAsBase64String(final String base64String) async {
     _base64Content = base64String;
     _binaryContent = null;
