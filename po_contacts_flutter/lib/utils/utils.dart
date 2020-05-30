@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart' as crypto;
 
 import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
@@ -140,5 +142,12 @@ class Utils {
     final String minuteS = Utils.positiveNumberToXDigitsString(t.minute, 2);
     final String secondS = Utils.positiveNumberToXDigitsString(t.second, 2);
     return '${t.year}$monthS${dayS}_$hourS$minuteS$secondS';
+  }
+
+  /// Code found on SO: https://stackoverflow.com/a/47870954/3407126
+  static String stringToMD5(final String str) {
+    final Uint8List strData = new Utf8Encoder().convert(str);
+    final crypto.Digest md5Digest = crypto.md5.convert(strData);
+    return hex.encode(md5Digest.bytes);
   }
 }

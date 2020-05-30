@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
@@ -17,6 +18,21 @@ enum SyncState {
 }
 
 abstract class SyncController<T> {
+  /// Name for the candidate file to upload containing the next sync's result
+  static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';
+
+  /// Name for the candidate file after it has been successfully uploaded and marked as the new cloud version in the cloud index
+  static const String _UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED = 'uploaded_sync_file_post_upload';
+
+  /// Name for the last successfully finalized sync file after the sync procedure is finalized
+  static const String _UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED = 'uploaded_sync_file_post_sync';
+
+  /// Name for a downloaded cloud file's prefix (suffixed with the file id's MD5 checksum)
+  static const String _DOWNLOADED_CLOUD_FILE_PREFIX = 'downloaded_';
+
+  /// Suffix of a temporary cloud file (being downloaded and potentially not complete)
+  static const String _TMP_CLOUD_FILE_SUFFIX = '.tmp';
+
   final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.IDLE);
   SyncState get syncState => _syncState.readOnly.currentValue;
   ReadOnlyStreamableValue<SyncState> get syncStateSV => _syncState.readOnly;
@@ -38,6 +54,19 @@ abstract class SyncController<T> {
   /// * -1 if the user chose to create a new index
   /// * null if the user canceled
   Future<int> pickIndexFile(final List<String> cloudIndexFileNames);
+
+  Future<void> deleteFileWithName(final String fileName);
+
+  Future<bool> fileWithNameExists(final String fileName);
+
+  Future<void> moveFileByName(
+    final String fileNameSource,
+    final String fileNameDest,
+  );
+
+  Future<FileEntity> fileEntityByName(final String fileName);
+
+  Future<void> overwriteFile(final FileEntity fileEntity, final Uint8List fileContent);
 
   Future<void> cancelSync() async {
     while (_syncState.currentValue == SyncState.SYNCING) {
@@ -138,5 +167,54 @@ abstract class SyncController<T> {
     _currentSyncProcedure = SyncProcedure(this, syncInterface);
     await _currentSyncProcedure.execute();
     _currentSyncProcedure = null;
+  }
+
+  Future<FileEntity> prepareCandidateUploadFileForSync() async {
+    await deleteFileWithName(_UPLOADED_SYNC_FILE_PRE_UPLOAD);
+    if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED)) {
+      await deleteFileWithName(_UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED);
+      await moveFileByName(
+        _UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED,
+        _UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED,
+      );
+    }
+    return fileEntityByName(_UPLOADED_SYNC_FILE_PRE_UPLOAD);
+  }
+
+  Future<FileEntity> getLastSyncedFile() async {
+    if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED)) {
+      return fileEntityByName(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED);
+    }
+    if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED)) {
+      return fileEntityByName(_UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED);
+    }
+    return null;
+  }
+
+  Future<FileEntity> getLatestCloudFile() async {
+    final SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface(getSyncInterfaceConfig());
+    if (syncInterface == null) {
+      return null;
+    }
+    final String cloudIndexFileId = syncInterface.cloudIndexFileId;
+    if (cloudIndexFileId == null) {
+      return null;
+    }
+    final Map<String, dynamic> cloudIndexFileContent = await syncInterface.getIndexFileContent(cloudIndexFileId);
+    final dynamic latestCloudFileId = cloudIndexFileContent[SyncInterface.INDEX_FILE_KEY_FILE_ID];
+    if (!latestCloudFileId is String) {
+      return null;
+    }
+    final String downloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + Utils.stringToMD5(latestCloudFileId as String);
+    if (await fileWithNameExists(downloadedFileName)) {
+      return fileEntityByName(downloadedFileName);
+    }
+    //TODO cleanup older downloaded files
+    final String tmpDownloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + _TMP_CLOUD_FILE_SUFFIX;
+    final FileEntity tmpFile = await fileEntityByName(tmpDownloadedFileName);
+    final Uint8List latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId as String);
+    await overwriteFile(tmpFile, latestCloudFileContent);
+    await moveFileByName(tmpDownloadedFileName, downloadedFileName);
+    return fileEntityByName(downloadedFileName);
   }
 }

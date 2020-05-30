@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
@@ -87,6 +87,7 @@ abstract class SyncInterface {
   Future<List<RemoteFile>> fetchIndexFilesList();
   Future<String> getTextFileContent(final String fileId);
   Future<String> getFileETag(final String fileId);
+  Future<Uint8List> downloadCloudFile(final String fileId);
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();
@@ -134,13 +135,4 @@ abstract class SyncInterface {
   String get cloudIndexFileId => _cloudIndexFileId;
 
   String get encryptionKey => _encryptionKey;
-
-  FileEntity getLastSyncedFile() {
-    //TODO
-    return null;
-  }
-
-  Future<FileEntity> getLatestCloudFile() {
-    return null;
-  }
 }

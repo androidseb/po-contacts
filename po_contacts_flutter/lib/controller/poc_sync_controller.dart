@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
@@ -63,5 +65,32 @@ class POCSyncController extends SyncController<Contact> {
       res.add(cb.build(counter++));
     }
     return res;
+  }
+
+  @override
+  Future<void> deleteFileWithName(final String fileName) async {
+    // TODO: implement deleteFileWithName
+  }
+
+  @override
+  Future<FileEntity> fileEntityByName(final String fileName) async {
+    // TODO: implement fileEntityByName
+    return null;
+  }
+
+  @override
+  Future<bool> fileWithNameExists(final String fileName) async {
+    // TODO: implement fileWithNameExists
+    return false;
+  }
+
+  @override
+  Future<void> moveFileByName(final String fileNameSource, final String fileNameDest) async {
+    // TODO: implement moveFileByName
+  }
+
+  @override
+  Future<void> overwriteFile(final FileEntity fileEntity, final Uint8List fileContent) async {
+    // TODO: implement overwriteFile
   }
 }

@@ -4,12 +4,14 @@ import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 
 class SyncInitialData<T> {
+  final FileEntity candidateSyncFile;
   final List<T> localItems;
   final List<T> lastSyncedItems;
   final List<T> remoteItems;
   final String remoteFileETag;
 
   SyncInitialData(
+    this.candidateSyncFile,
     this.localItems,
     this.lastSyncedItems,
     this.remoteItems,
@@ -48,16 +50,18 @@ class SyncProcedure<T> {
   }
 
   Future<SyncInitialData> _initializeSync() async {
+    final FileEntity candidateSyncFile = await _syncController.prepareCandidateUploadFileForSync();
+    _cancelationHandler.checkForCancelation();
     final List<T> localItems = await _syncController.getLocalItems();
     _cancelationHandler.checkForCancelation();
-    final FileEntity lastSyncedFile = _syncInterface.getLastSyncedFile();
+    final FileEntity lastSyncedFile = await _syncController.getLastSyncedFile();
     _cancelationHandler.checkForCancelation();
     final List<T> lastSyncedItems = await _syncController.fileEntityToItemsList(
       lastSyncedFile,
       _syncInterface.encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
-    final FileEntity latestCloudFile = await _syncInterface.getLatestCloudFile();
+    final FileEntity latestCloudFile = await _syncController.getLatestCloudFile();
     _cancelationHandler.checkForCancelation();
     final List<T> remoteItems = await _syncController.fileEntityToItemsList(
       latestCloudFile,
@@ -66,6 +70,7 @@ class SyncProcedure<T> {
     _cancelationHandler.checkForCancelation();
     final String fileETag = await _syncInterface.getFileETag(_syncInterface.cloudIndexFileId);
     return SyncInitialData(
+      candidateSyncFile,
       localItems,
       lastSyncedItems,
       remoteItems,

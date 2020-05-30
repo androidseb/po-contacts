@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -264,5 +265,11 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
+  }
+
+  @override
+  Future<Uint8List> downloadCloudFile(final String fileId) async {
+    // TODO: implement downloadCloudFile
+    return null;
   }
 }

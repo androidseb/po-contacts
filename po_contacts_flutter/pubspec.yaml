@@ -12,6 +12,7 @@ dependencies:
   # Common - pure dart
   pointycastle: 1.0.2
   http: ^0.12.1
+  crypto: ^2.1.5
 
   # Common - flutter
   google_sign_in: ^4.4.6
