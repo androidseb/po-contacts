@@ -108,33 +108,42 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   String _createMultiPartRequestBodyString(
     final Map<String, dynamic> requestMetaData,
-    final String fileContentString,
+    final Uint8List fileContent,
   ) {
     return '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING\r\n' +
         'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
         jsonEncode(requestMetaData) +
-        '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING\r\nContent-Type: text/plain\r\n\r\n' +
-        fileContentString +
+        '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING\r\nContent-Type: application/octet-stream\r\nContent-Transfer-Encoding: base64\r\n\r\n' +
+        base64.encode(fileContent) +
         '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING--';
   }
 
-  @override
-  Future<RemoteFile> createNewTextFile(
-    final RemoteFile parentFolder,
-    final String fileName,
-    final String fileTextContent,
-  ) async {
+  Future<RemoteFile> _uploadFile(
+    Uint8List fileContent, {
+    String fileId,
+    String targetETag,
+    String parentFolderId,
+    String fileName,
+  }) async {
     final Map<String, dynamic> requestMetaData = {
       'mimeType': 'application/json',
-      'title': fileName,
-      'parents': [
-        {'id': parentFolder.fileId}
-      ],
     };
-    final String multiPartRequestBodyString = _createMultiPartRequestBodyString(requestMetaData, fileTextContent);
+    if (fileId == null) {
+      requestMetaData['title'] = fileName;
+      requestMetaData['parents'] = [
+        {'id': parentFolderId}
+      ];
+    }
+    final String multiPartRequestBodyString = _createMultiPartRequestBodyString(requestMetaData, fileContent);
+    String requestUrl;
+    if (fileId == null) {
+      requestUrl = 'https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart';
+    } else {
+      requestUrl = 'https://www.googleapis.com/upload/drive/v2/files/$fileId?uploadType=multipart';
+    }
     final http.StreamedRequest fileStreamedRequest = http.StreamedRequest(
-      'POST',
-      Uri.parse('https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart'),
+      fileId == null ? 'POST' : 'PUT',
+      Uri.parse(requestUrl),
     );
     fileStreamedRequest.headers.addAll({
       'Authorization': _authHeaders['Authorization'],
@@ -142,6 +151,11 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       'Content-Type': 'multipart/related; boundary=$MULTIPART_REQUESTS_BOUNDARY_STRING',
       'Content-Length': multiPartRequestBodyString.length.toString(),
     });
+    if (targetETag != null) {
+      fileStreamedRequest.headers.addAll({
+        'If-Match': targetETag,
+      });
+    }
     fileStreamedRequest.sink.add(utf8.encode(multiPartRequestBodyString));
     fileStreamedRequest.sink.close();
 
@@ -153,9 +167,35 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
-        message: 'GoogleDriveSyncInterface.createNewTextFile failed status code ${httpPostResponse.statusCode}',
+        message: 'GoogleDriveSyncInterface._uploadFile failed status code ${httpPostResponse.statusCode}',
       );
     }
+  }
+
+  @override
+  Future<RemoteFile> createNewFile(
+    final String parentFolderId,
+    final String fileName,
+    final Uint8List fileContent,
+  ) async {
+    return _uploadFile(
+      fileContent,
+      parentFolderId: parentFolderId,
+      fileName: fileName,
+    );
+  }
+
+  @override
+  Future<RemoteFile> overwriteFile(
+    final String fileId,
+    final Uint8List fileContent, {
+    String targetETag,
+  }) {
+    return _uploadFile(
+      fileContent,
+      fileId: fileId,
+      targetETag: targetETag,
+    );
   }
 
   @override
@@ -193,6 +233,21 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
+  Future<String> getParentFolderId(
+    final String fileId,
+  ) async {
+    final dynamic fileMetaData = await _getFileMetadata(fileId);
+    if (!(fileMetaData is Map)) {
+      return null;
+    }
+    final dynamic parents = fileMetaData['parents'];
+    if (!(parents is List)) {
+      return null;
+    }
+    return parents[0]['id'];
+  }
+
+  @override
   Future<List<RemoteFile>> fetchIndexFilesList() async {
     final String qParamValue = Uri.encodeComponent(
       'name = "${config.indexFileName}"  and trashed = false',
@@ -223,8 +278,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     }
   }
 
-  @override
-  Future<String> getFileETag(final String fileId) async {
+  Future<dynamic> _getFileMetadata(final String fileId) async {
     final String url = 'https://www.googleapis.com/drive/v2/files/$fileId';
     final http.Response httpGetResponse = await http.get(
       url,
@@ -236,13 +290,22 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     if (httpGetResponse.statusCode == 404) {
       return null;
     } else if (httpGetResponse.statusCode == 200) {
-      return jsonDecode(httpGetResponse.body)['etag'];
+      return jsonDecode(httpGetResponse.body);
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
-        message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
+        message: 'GoogleDriveSyncInterface._getFileMetadata failed status code ${httpGetResponse.statusCode}',
       );
     }
+  }
+
+  @override
+  Future<String> getFileETag(final String fileId) async {
+    final dynamic fileMetaData = await _getFileMetadata(fileId);
+    if (!(fileMetaData is Map)) {
+      return null;
+    }
+    return fileMetaData['etag'];
   }
 
   @override

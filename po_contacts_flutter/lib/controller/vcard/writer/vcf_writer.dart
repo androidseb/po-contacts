@@ -16,7 +16,7 @@ abstract class VCFWriter {
 
   void writeStringImpl(final String line);
 
-  Future<void> flushOutputBuffer(final TaskSetProgressCallback progressCallback);
+  Future<void> flushOutputBuffer({TaskSetProgressCallback progressCallback});
 
   void writeLine(final String line) {
     //We choose to not respect the "Line Delimiting and Folding" strictly:

@@ -1,4 +1,5 @@
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/export_controller.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.dart';
@@ -74,13 +75,10 @@ class POCSyncController extends SyncController<Contact> {
     final FileEntity fileEntity,
     final String encryptionKey,
   ) async {
-    await VCFSerializer.writeToVCF(
+    await ExportController.exportAsVCFToFile(
       itemsList,
-      VCFFileWriter(
-        MainController.get().psController.filesManager,
-        fileEntity,
-        encryptionKey,
-      ),
+      fileEntity,
+      encryptionKey,
     );
   }
 

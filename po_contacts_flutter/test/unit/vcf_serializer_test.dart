@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
-import 'package:po_contacts_flutter/controller/tasks/poc_tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
@@ -36,7 +35,7 @@ class MockVCFWriter extends VCFWriter {
   }
 
   @override
-  Future<void> flushOutputBuffer(final TaskSetProgressCallback callback) async {}
+  Future<void> flushOutputBuffer({TaskSetProgressCallback progressCallback}) async {}
 }
 
 class MockFileSystem {

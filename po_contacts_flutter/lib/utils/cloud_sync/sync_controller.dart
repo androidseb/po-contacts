@@ -64,7 +64,10 @@ abstract class SyncController<T> {
   Future<FileEntity> fileEntityByName(final String fileName);
 
   Future<void> deleteFileWithName(final String fileName) async {
-    await (await fileEntityByName(fileName))?.delete();
+    final FileEntity fe = await fileEntityByName(fileName);
+    if (await fe.exists()) {
+      await fe.delete();
+    }
   }
 
   Future<bool> fileWithNameExists(final String fileName) async {
@@ -210,18 +213,14 @@ abstract class SyncController<T> {
     return null;
   }
 
-  Future<FileEntity> getLatestCloudFile() async {
-    final SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface(getSyncInterfaceConfig());
-    if (syncInterface == null) {
-      return null;
-    }
+  Future<FileEntity> getLatestCloudFile(final SyncInterface syncInterface) async {
     final String cloudIndexFileId = syncInterface.cloudIndexFileId;
     if (cloudIndexFileId == null) {
       return null;
     }
     final Map<String, dynamic> cloudIndexFileContent = await syncInterface.getIndexFileContent(cloudIndexFileId);
     final dynamic latestCloudFileId = cloudIndexFileContent[SyncInterface.INDEX_FILE_KEY_FILE_ID];
-    if (!latestCloudFileId is String) {
+    if (!(latestCloudFileId is String)) {
       return null;
     }
     final String downloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + Utils.stringToMD5(latestCloudFileId as String);

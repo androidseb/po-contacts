@@ -52,11 +52,20 @@ class ExportController {
     final String encryptionKey,
     final TaskSetProgressCallback progressCallback,
   ) async {
+    final List<Contact> contacts = MainController.get().model.contactsList;
+    exportAsVCFToFile(contacts, outputFile, encryptionKey, progressCallback: progressCallback);
+  }
+
+  static Future<void> exportAsVCFToFile(
+    final List<Contact> contacts,
+    final FileEntity outputFile,
+    final String encryptionKey, {
+    TaskSetProgressCallback progressCallback,
+  }) async {
     if (await outputFile.exists()) {
       await outputFile.delete();
     }
     await outputFile.create();
-    final List<Contact> contacts = MainController.get().model.contactsList;
     final VCFWriter vcfWriter = VCFFileWriter(
       MainController.get().psController.filesManager,
       outputFile,
@@ -67,7 +76,7 @@ class ExportController {
       vcfWriter,
       progressCallback: progressCallback,
     );
-    await progressCallback.reportOneTaskCompleted();
-    await vcfWriter.flushOutputBuffer(progressCallback);
+    await progressCallback?.reportOneTaskCompleted();
+    await vcfWriter.flushOutputBuffer(progressCallback: progressCallback);
   }
 }

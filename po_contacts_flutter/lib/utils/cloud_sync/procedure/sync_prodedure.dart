@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_initial_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_result_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_data_merger.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 
 class SyncCancelationHandler {
   final SyncProcedure syncProcedure;
@@ -48,7 +53,7 @@ class SyncProcedure<T> {
       _syncInterface.encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
-    final FileEntity latestCloudFile = await _syncController.getLatestCloudFile();
+    final FileEntity latestCloudFile = await _syncController.getLatestCloudFile(_syncInterface);
     _cancelationHandler.checkForCancelation();
     final List<T> remoteItems = await _syncController.fileEntityToItemsList(
       latestCloudFile,
@@ -80,7 +85,19 @@ class SyncProcedure<T> {
       _syncInterface.encryptionKey,
     );
     if (syncResult.hasRemoteChanges) {
-      //TODO upload the file
+      final String cloudIndexFileId = _syncInterface.cloudIndexFileId;
+      final String cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
+      final Uint8List fileToUploadContent = base64.decode(await fileToUpload.readAsBase64String());
+      final RemoteFile newCloudFile = await _syncInterface.createNewFile(
+        cloudFolderId,
+        Utils.dateTimeToString(),
+        fileToUploadContent,
+      );
+      await _syncInterface.updateIndexFile(
+        cloudIndexFileId,
+        newCloudFile.fileId,
+        syncResult.initialData.remoteFileETag,
+      );
     }
     if (syncResult.hasLocalChanges) {
       //TODO change the local data with the updated sync data

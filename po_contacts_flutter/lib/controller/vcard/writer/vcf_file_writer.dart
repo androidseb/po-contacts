@@ -22,7 +22,7 @@ class VCFFileWriter extends VCFWriter {
   }
 
   @override
-  Future<void> flushOutputBuffer(final TaskSetProgressCallback progressCallback) async {
+  Future<void> flushOutputBuffer({TaskSetProgressCallback progressCallback}) async {
     final String outputPlainText = _outputBuffer.join();
     final Uint8List outputPlainBytes = utf8.encode(outputPlainText);
     Uint8List outputFinalBytes;
@@ -36,7 +36,7 @@ class VCFFileWriter extends VCFWriter {
         progressCallback: progressCallback,
       );
       outputFinalBytes = Utils.combineUInt8Lists([fileHeaderContent, outputEncryptedBytes]);
-      await progressCallback.reportOneTaskCompleted();
+      await progressCallback?.reportOneTaskCompleted();
     }
     final String outputBase64String = base64.encode(outputFinalBytes);
     _file.writeAsBase64String(outputBase64String);

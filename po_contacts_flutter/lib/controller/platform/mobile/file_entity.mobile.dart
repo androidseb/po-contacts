@@ -11,6 +11,9 @@ class FileEntityMobile extends FileEntity {
 
   @override
   Future<FileEntity> create() async {
+    if (!await _file.parent.exists()) {
+      await _file.parent.create(recursive: true);
+    }
     final File createdFile = await _file.create();
     return FileEntityMobile(createdFile);
   }

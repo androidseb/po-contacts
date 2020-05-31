@@ -75,15 +75,23 @@ abstract class SyncInterface {
     final RemoteFile parentFolder,
     final String folderName,
   );
+  Future<String> getParentFolderId(
+    final String fileId,
+  );
   Future<RemoteFile> createFolder(
     final RemoteFile parentFolder,
     final String folderName,
   );
-  Future<RemoteFile> createNewTextFile(
-    final RemoteFile parentFolder,
+  Future<RemoteFile> createNewFile(
+    final String parentFolderId,
     final String fileName,
-    final String fileTextContent,
+    final Uint8List fileContent,
   );
+  Future<RemoteFile> overwriteFile(
+    final String fileId,
+    final Uint8List fileContent, {
+    String targetETag,
+  });
   Future<List<RemoteFile>> fetchIndexFilesList();
   Future<String> getFileETag(final String fileId);
   Future<Uint8List> downloadCloudFile(final String fileId);
@@ -110,15 +118,38 @@ abstract class SyncInterface {
     return newIndexFolder;
   }
 
+  Future<RemoteFile> createNewTextFile(
+    final String parentFolderId,
+    final String fileName,
+    final String fileTextContent,
+  ) {
+    return createNewFile(parentFolderId, fileName, utf8.encode(fileTextContent));
+  }
+
   Future<RemoteFile> createNewIndexFile() async {
     final RemoteFile newIndexFolder = await createNewIndexFolder();
-    return createNewTextFile(
-      newIndexFolder,
+    return createNewFile(
+      newIndexFolder.fileId,
       config.indexFileName,
-      jsonEncode({
+      utf8.encode(jsonEncode({
         INDEX_FILE_KEY_NAME: Utils.dateTimeToString(),
         INDEX_FILE_KEY_FILE_ID: null,
-      }),
+      })),
+    );
+  }
+
+  Future<RemoteFile> updateIndexFile(
+    final String indexFileId,
+    final String refDataFileId,
+    final String targetETag,
+  ) async {
+    return overwriteFile(
+      indexFileId,
+      utf8.encode(jsonEncode({
+        INDEX_FILE_KEY_NAME: Utils.dateTimeToString(),
+        INDEX_FILE_KEY_FILE_ID: refDataFileId,
+      })),
+      targetETag: targetETag,
     );
   }
 
