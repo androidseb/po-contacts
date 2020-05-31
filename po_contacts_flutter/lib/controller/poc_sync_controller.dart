@@ -69,12 +69,12 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
-  Future<List<Contact>> writeItemsListToFileEntity(
+  Future<void> writeItemsListToFileEntity(
     final List<Contact> itemsList,
     final FileEntity fileEntity,
     final String encryptionKey,
-  ) {
-    VCFSerializer.writeToVCF(
+  ) async {
+    await VCFSerializer.writeToVCF(
       itemsList,
       VCFFileWriter(
         MainController.get().psController.filesManager,

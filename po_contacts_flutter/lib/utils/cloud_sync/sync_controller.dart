@@ -48,7 +48,7 @@ abstract class SyncController<T> {
     final String encryptionKey,
   );
 
-  Future<List<T>> writeItemsListToFileEntity(
+  Future<void> writeItemsListToFileEntity(
     final List<T> itemsList,
     final FileEntity fileEntity,
     final String encryptionKey,
