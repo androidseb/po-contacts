@@ -9,7 +9,7 @@ abstract class SettingEntry<T> extends StatefulWidget {
 
   String getLabelText();
   T readCurrentValue();
-  writeCurrentValue(final T v);
+  void writeCurrentValue(final T v);
 
   @override
   SettingEntryState<T> createState();

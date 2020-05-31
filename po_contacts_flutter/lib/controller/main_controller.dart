@@ -73,7 +73,7 @@ class MainController {
     if (_context == null) {
       return;
     }
-    Navigator.push(_context, MaterialPageRoute(
+    Navigator.push<Object>(_context, MaterialPageRoute(
       builder: (final BuildContext context) {
         return EditContactPage(contactId);
       },
@@ -118,7 +118,7 @@ class MainController {
       return;
     }
     _contactsSearchDelegate.close(_context, null);
-    Navigator.push(_context, MaterialPageRoute(
+    Navigator.push<Object>(_context, MaterialPageRoute(
       builder: (final BuildContext context) {
         return ViewContactPage(contactId);
       },
@@ -129,7 +129,7 @@ class MainController {
     if (_context == null) {
       return;
     }
-    showDialog(
+    showDialog<Object>(
       context: _context,
       builder: (final BuildContext context) {
         return AlertDialog(
@@ -168,7 +168,7 @@ class MainController {
     if (_context == null) {
       return;
     }
-    showDialog(
+    showDialog<Object>(
       context: _context,
       builder: (final BuildContext context) {
         return AlertDialog(
@@ -216,7 +216,7 @@ class MainController {
   }
 
   void showMessageDialog(final String title, final String message) {
-    showDialog(
+    showDialog<Object>(
       context: _context,
       builder: (final BuildContext context) {
         return AlertDialog(
@@ -251,7 +251,7 @@ class MainController {
     final Completer<String> futureEnteredText = Completer<String>();
     final String hintText = I18n.getString(hintStringKey);
     final TextEditingController textFieldController = TextEditingController();
-    showDialog(
+    showDialog<Object>(
         context: _context,
         builder: (context) {
           return AlertDialog(
@@ -352,7 +352,7 @@ class MainController {
         MainController.get().startDeleteContact(contact.id);
       },
     ));
-    showDialog(
+    showDialog<Object>(
         context: _context,
         builder: (context) {
           return AlertDialog(
@@ -382,7 +382,7 @@ class MainController {
   }
 
   void promptUserForFileImport(final Function(bool approved) userApprovedImportCallback) {
-    showDialog(
+    showDialog<Object>(
       context: _context,
       barrierDismissible: false,
       builder: (final BuildContext context) {
@@ -456,7 +456,7 @@ class MainController {
       return psController.filesManager.pickImageFile(ImageFileSource.FILE_PICKER);
     }
     final Completer<FileEntity> futureSelectedFile = Completer<FileEntity>();
-    showDialog(
+    showDialog<Object>(
         context: _context,
         barrierDismissible: false,
         builder: (context) {
@@ -516,7 +516,7 @@ class MainController {
     if (_context == null) {
       return;
     }
-    Navigator.push(_context, MaterialPageRoute(
+    Navigator.push<Object>(_context, MaterialPageRoute(
       builder: (final BuildContext context) {
         return SettingsPage();
       },
@@ -536,7 +536,7 @@ class MainController {
         },
       ));
     }
-    showDialog(
+    showDialog<Object>(
         context: _context,
         barrierDismissible: false,
         builder: (context) {

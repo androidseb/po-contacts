@@ -129,7 +129,7 @@ abstract class VCFReader {
     );
   }
 
-  processContactFieldLine(
+  void processContactFieldLine(
     final ContactBuilder contactBuilder,
     final List<StringLabeledField> phones,
     final List<StringLabeledField> emails,

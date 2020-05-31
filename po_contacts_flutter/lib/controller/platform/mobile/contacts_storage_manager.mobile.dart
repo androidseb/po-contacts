@@ -40,7 +40,7 @@ class ContactsStorageManagerMobile implements ContactsStorageManager {
     final Database db = await _database;
     final int insertedId = await db.insert(
       '$TABLE_CONTACTS',
-      {
+      <String, String>{
         FIELD_JSON: storageEntry.json,
       },
     );
@@ -51,11 +51,11 @@ class ContactsStorageManagerMobile implements ContactsStorageManager {
     final Database db = await _database;
     await db.update(
       '$TABLE_CONTACTS',
-      {
+      <String, String>{
         FIELD_JSON: storageEntry.json,
       },
       where: '$FIELD_ID = ?',
-      whereArgs: [contactId],
+      whereArgs: <int>[contactId],
     );
     return ContactStorageEntryWithId(contactId, storageEntry.json);
   }
@@ -65,7 +65,7 @@ class ContactsStorageManagerMobile implements ContactsStorageManager {
     final int deletedCount = await db.delete(
       '$TABLE_CONTACTS',
       where: '$FIELD_ID = ?',
-      whereArgs: [contactId],
+      whereArgs: <int>[contactId],
     );
     return deletedCount == 1;
   }

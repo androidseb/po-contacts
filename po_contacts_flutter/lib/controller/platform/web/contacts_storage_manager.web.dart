@@ -12,7 +12,7 @@ class ContactsStorageManagerWeb implements ContactsStorageManager {
   static List<dynamic> _readContactIdsFromStorage(final Window htmlWindow) {
     final String storageIndexString = htmlWindow.localStorage[STORAGE_KEY_INDEX];
     if (storageIndexString == null) {
-      return [];
+      return <dynamic>[];
     }
     return jsonDecode(storageIndexString);
   }

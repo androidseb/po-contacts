@@ -192,21 +192,21 @@ class I18n {
     string.sync_to_new_file: 'Sync to new file',
   };
 
-  static _getObjString(final Object _obj) {
+  static String _getObjString(final Object _obj) {
     if (_obj == null) {
       return '';
     }
     return _obj.toString();
   }
 
-  static _getStringWithReplacement(
+  static String _getStringWithReplacement(
       final String _sourceStr, final int _strIndex, final int _replacedLength, final Object _replacementObj) {
     return _sourceStr.substring(0, _strIndex) +
         _getObjString(_replacementObj) +
         _sourceStr.substring(_strIndex + _replacedLength, _sourceStr.length);
   }
 
-  static getString(final String _stringKey, [final Object _param1, final Object _param2, final Object _param3]) {
+  static String getString(final String _stringKey, [final Object _param1, final Object _param2, final Object _param3]) {
     String resString = I18n.currentTranslation[_stringKey];
     if (resString == null) {
       return _stringKey;

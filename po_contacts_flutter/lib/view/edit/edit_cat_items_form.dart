@@ -28,11 +28,11 @@ class EditableItemCategory {
   int get hashCode => labelType.hashCode + labelValue.hashCode;
 
   @override
-  bool operator ==(o) =>
+  bool operator ==(final Object o) =>
       o is EditableItemCategory && o.labelType.index == labelType.index && o.labelValue == labelValue;
 }
 
-abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends StatefulWidget {
+abstract class EditCategorizedItemsForm<F extends LabeledField<T>, T> extends StatefulWidget {
   final List<F> initialItems;
   final Function(List<F> updatedItems) onDataChanged;
 
@@ -132,7 +132,7 @@ abstract class EditCategorizedItemsForm<F extends LabeledField, T> extends State
   );
 }
 
-class EditCategorizedItemsFormState<F extends LabeledField, T> extends State<EditCategorizedItemsForm<F, T>> {
+class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<EditCategorizedItemsForm<F, T>> {
   final Set<String> customLabelTypeNames = Set<String>();
   final List<CategorizedEditableItem<T>> currentItems = [];
 

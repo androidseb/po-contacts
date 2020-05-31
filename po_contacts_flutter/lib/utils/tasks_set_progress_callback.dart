@@ -27,7 +27,7 @@ abstract class TaskSetProgressCallback {
       final int relativePercentage = (progress / tasksCount).floor();
       final int overallProgress = basePercentage + relativePercentage;
       _progressCallback(taskIds[taskIndex], overallProgress);
-      await Future.delayed(const Duration(milliseconds: 16));
+      await Future<Object>.delayed(const Duration(milliseconds: 16));
     } while (!_terminated);
   }
 

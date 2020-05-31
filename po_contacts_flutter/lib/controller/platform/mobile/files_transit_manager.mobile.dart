@@ -81,7 +81,7 @@ class FilesTransitManagerMobile implements FilesTransitManager {
 
   @override
   Future<void> shareFileExternally(final String sharePromptTitle, final FileEntity file) async {
-    await platform.invokeMethod('shareFileExternally', {
+    await platform.invokeMethod<Object>('shareFileExternally', {
       'sharePromptTitle': sharePromptTitle,
       'filePath': file.getAbsolutePath(),
     });

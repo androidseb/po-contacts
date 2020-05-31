@@ -12,7 +12,7 @@ class ContactStorageEntry {
 class ContactStorageEntryWithId extends ContactStorageEntry {
   final int id;
 
-  ContactStorageEntryWithId(this.id, json) : super(json);
+  ContactStorageEntryWithId(this.id, final String json) : super(json);
 }
 
 class ContactsStorageController {

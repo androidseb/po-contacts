@@ -14,7 +14,7 @@ class PrefForScrollbar extends BoolSettingEntry {
   }
 
   @override
-  writeCurrentValue(final bool v) {
+  void writeCurrentValue(final bool v) {
     MainController.get().model.settings.setUseDraggableScrollbar(v);
   }
 }

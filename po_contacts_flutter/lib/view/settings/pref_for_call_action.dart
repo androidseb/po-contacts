@@ -17,7 +17,7 @@ class PrefForCallAction extends MultiSelectionEntry {
   }
 
   @override
-  writeCurrentValue(final int v) {
+  void writeCurrentValue(final int v) {
     MainController.get().model.settings.setCallActionId(v);
   }
 }

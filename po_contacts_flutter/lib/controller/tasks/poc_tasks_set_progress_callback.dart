@@ -44,7 +44,7 @@ class POCTaskSetProgressCallback extends TaskSetProgressCallback {
     final TextEditingController titleTextController = TextEditingController();
     titleTextController.text = I18n.getString(I18n.string.task_preparing);
     final TextEditingController percentageTextController = TextEditingController();
-    showDialog(
+    showDialog<Object>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {

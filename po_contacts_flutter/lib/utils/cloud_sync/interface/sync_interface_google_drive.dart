@@ -56,7 +56,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       },
     );
     if (httpGetResponse.statusCode == 200) {
-      final serverResponse = jsonDecode(httpGetResponse.body);
+      final Map<String, dynamic> serverResponse = jsonDecode(httpGetResponse.body);
       final String rootFolderId = serverResponse['rootFolderId'];
       return RemoteFile(RemoteFileType.FOLDER, rootFolderId, '', '');
     } else {
@@ -96,7 +96,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       }),
     );
     if (httpPostResponse.statusCode == 200) {
-      final serverResponse = jsonDecode(httpPostResponse.body);
+      final Map<String, dynamic> serverResponse = jsonDecode(httpPostResponse.body);
       return _googleDriveFileToRemoteFile(serverResponse);
     } else {
       throw SyncException(
@@ -125,7 +125,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     String parentFolderId,
     String fileName,
   }) async {
-    final Map<String, dynamic> requestMetaData = {
+    final Map<String, dynamic> requestMetaData = <String, dynamic>{
       'mimeType': 'application/json',
     };
     if (fileId == null) {
@@ -162,7 +162,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.StreamedResponse httpPostResponse = await fileStreamedRequest.send();
 
     if (httpPostResponse.statusCode == 200) {
-      final serverResponse = jsonDecode(await httpPostResponse.stream.bytesToString());
+      final Map<String, dynamic> serverResponse = jsonDecode(await httpPostResponse.stream.bytesToString());
       return _googleDriveFileToRemoteFile(serverResponse);
     } else {
       throw SyncException(
@@ -215,7 +215,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       },
     );
     if (httpGetResponse.statusCode == 200) {
-      final serverResponse = jsonDecode(httpGetResponse.body);
+      final Map<String, dynamic> serverResponse = jsonDecode(httpGetResponse.body);
       final List<dynamic> foundFiles = serverResponse['files'];
       if (foundFiles.isEmpty) {
         return null;
@@ -261,7 +261,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       },
     );
     if (httpGetResponse.statusCode == 200) {
-      final serverResponse = jsonDecode(httpGetResponse.body);
+      final Map<String, dynamic> serverResponse = jsonDecode(httpGetResponse.body);
       final List<dynamic> foundFiles = serverResponse['files'];
       final List<RemoteFile> res = [];
       for (final dynamic foundFile in foundFiles) {

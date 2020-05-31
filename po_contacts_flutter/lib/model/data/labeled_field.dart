@@ -100,7 +100,7 @@ abstract class LabeledField<T> {
   }
 
   static Map<String, dynamic> _fieldToMap(final LabeledField labeledField) {
-    return {
+    return <String, dynamic>{
       FIELD_LABEL_TYPE: labeledFieldLabelTypeToString(labeledField.labelType),
       FIELD_LABEL_VALUE: labeledField.labelText,
       FIELD_TEXT_VALUE: labeledField.fieldValueToJSONConvertable(),

@@ -145,7 +145,7 @@ class MockVCFReader extends VCFReader {
   }
 }
 
-expectStringLabeledFieldsEqual(final List<StringLabeledField> slfl1, final List<StringLabeledField> slfl2) {
+void expectStringLabeledFieldsEqual(final List<StringLabeledField> slfl1, final List<StringLabeledField> slfl2) {
   if (slfl1 == null) {
     expect(slfl2, null);
     return;
@@ -162,7 +162,7 @@ expectStringLabeledFieldsEqual(final List<StringLabeledField> slfl1, final List<
   }
 }
 
-expectAddressLabeledFieldsEqual(final List<AddressLabeledField> alfl1, final List<AddressLabeledField> alfl2) {
+void expectAddressLabeledFieldsEqual(final List<AddressLabeledField> alfl1, final List<AddressLabeledField> alfl2) {
   if (alfl1 == null) {
     expect(alfl2, null);
     return;

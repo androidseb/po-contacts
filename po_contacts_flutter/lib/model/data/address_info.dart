@@ -72,7 +72,7 @@ class AddressInfo {
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       FIELD_STREET_ADDRESS: streetAddress,
       FIELD_LOCALITY: locality,
       FIELD_REGION: region,
