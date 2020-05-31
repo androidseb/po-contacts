@@ -32,7 +32,7 @@ class VCFFileReader extends VCFReader {
     );
     final String decryptedContent = utf8.decode(decryptedContentBytes);
     final List<String> res = FileEntity.rawFileContentToLines(decryptedContent);
-    await progressCallback.reportOneTaskCompleted();
+    await progressCallback?.reportOneTaskCompleted();
     return res;
   }
 
@@ -47,7 +47,7 @@ class VCFFileReader extends VCFReader {
     String readLine;
     readLine = _lines[_currentLine];
     _currentLine++;
-    await progressCallback.broadcastProgress( _currentLine / _lines.length);
+    await progressCallback?.broadcastProgress(_currentLine / _lines.length);
     return readLine;
   }
 }

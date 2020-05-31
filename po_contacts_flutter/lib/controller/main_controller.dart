@@ -51,6 +51,7 @@ class MainController {
       return msg;
     });
     _importController.startImportIfNeeded();
+    _syncController.initializeSyncController(model);
   }
 
   BuildContext get context => _context;

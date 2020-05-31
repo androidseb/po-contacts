@@ -32,6 +32,7 @@ class SyncProcedure<T> {
   final SyncController _syncController;
   final SyncInterface _syncInterface;
   SyncCancelationHandler _cancelationHandler;
+  bool _localDataChanged = false;
 
   SyncProcedure(this._syncController, this._syncInterface) {
     _cancelationHandler = SyncCancelationHandler(this);
@@ -39,6 +40,10 @@ class SyncProcedure<T> {
 
   void cancel() {
     _cancelationHandler.cancel();
+  }
+
+  void recordLocalDataChanged() {
+    _localDataChanged = true;
   }
 
   Future<SyncInitialData> _initializeSync() async {
@@ -99,8 +104,8 @@ class SyncProcedure<T> {
         syncResult.initialData.remoteFileETag,
       );
     }
-    if (syncResult.hasLocalChanges) {
-      //TODO change the local data with the updated sync data
+    if (syncResult.hasLocalChanges && !_localDataChanged) {
+      _syncController.overwriteLocalItems(syncResult.syncResultData);
     }
   }
 

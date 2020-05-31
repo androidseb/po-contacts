@@ -54,6 +54,8 @@ abstract class SyncController<T> {
     final String encryptionKey,
   );
 
+  Future<void> overwriteLocalItems(final List<T> itemsList);
+
   /// Select a cloud index file based on the name of that index file
   /// Returns 3 possible types of value:
   /// * the index of the user's choice
@@ -86,6 +88,9 @@ abstract class SyncController<T> {
 
   Future<void> overwriteFile(final String fileName, final Uint8List fileContent) async {
     final FileEntity fe = await fileEntityByName(fileName);
+    if (!await fe.exists()) {
+      await fe.create();
+    }
     await fe.writeAsUint8List(fileContent);
   }
 
@@ -233,5 +238,11 @@ abstract class SyncController<T> {
     await overwriteFile(tmpDownloadedFileName, latestCloudFileContent);
     await moveFileByName(tmpDownloadedFileName, downloadedFileName);
     return fileEntityByName(downloadedFileName);
+  }
+
+  void recordLocalDataChanged() {
+    if (_currentSyncProcedure != null) {
+      _currentSyncProcedure.recordLocalDataChanged();
+    }
   }
 }
