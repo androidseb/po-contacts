@@ -205,55 +205,61 @@ void expectContactsEqual(final Contact c1, final Contact c2) {
 void main() {
   test('VCF export - empty', () {
     final List<Contact> contacts = [];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    VCFSerializer.writeToVCF(
+      contacts,
+      vcfWriter,
+    );
     expect(vcfWriter.writtenLines.length, 0);
   });
 
   test('VCF export - simplest contact', () async {
     final List<Contact> contacts = [testContactSimplest];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    await VCFSerializer.writeToVCF(
+      contacts,
+      vcfWriter,
+    );
     expect(vcfWriter.writtenLines.join(), CONTACT_SIMPLEST_EXPECTED_OUTPUT);
   });
 
   test('VCF export - simple contact', () async {
     final List<Contact> contacts = [testContactSimple];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    await VCFSerializer.writeToVCF(
+      contacts,
+      vcfWriter,
+    );
     expect(vcfWriter.writtenLines.join(), CONTACT_SIMPLE_EXPECTED_OUTPUT);
   });
 
   test('VCF export - complex contact', () async {
     final List<Contact> contacts = [testContactComplex];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    await VCFSerializer.writeToVCF(
+      contacts,
+      vcfWriter,
+    );
     expect(vcfWriter.writtenLines.join(), CONTACT_COMPLEX_EXPECTED_OUTPUT);
   });
 
   test('VCF export - complex contact 2', () async {
     final List<Contact> contacts = [testContactComplex2];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    await VCFSerializer.writeToVCF(
+      contacts,
+      vcfWriter,
+    );
     expect(vcfWriter.writtenLines.join(), CONTACT_COMPLEX_2_EXPECTED_OUTPUT);
   });
 
   test('VCF export - multiple contact', () async {
     final List<Contact> contacts = [testContactSimplest, testContactSimple, testContactComplex, testContactComplex2];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    await VCFSerializer.writeToVCF(contacts, vcfWriter, progressCallback);
+    await VCFSerializer.writeToVCF(
+      contacts,
+      vcfWriter,
+    );
     expect(vcfWriter.writtenLines.join(), CONTACTS_MULTIPLE_EXPECTED_OUTPUT);
   });
 
@@ -336,10 +342,11 @@ void main() {
       testContactComplex,
       testContactComplex2
     ];
-    final TaskSetProgressCallback progressCallback =
-        POCTaskSetProgressCallback([], (final String stringKey, final int progress) {});
     final MockVCFWriter vcfWriter = MockVCFWriter();
-    await VCFSerializer.writeToVCF(initialContacts, vcfWriter, progressCallback);
+    await VCFSerializer.writeToVCF(
+      initialContacts,
+      vcfWriter,
+    );
     final String exportResultAsString = vcfWriter.writtenLines.join();
 
     //Import contacts back from the exported string

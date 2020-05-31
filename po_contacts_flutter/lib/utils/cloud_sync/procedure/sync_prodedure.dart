@@ -72,9 +72,19 @@ class SyncProcedure<T> {
     ).computeSyncResult();
   }
 
-  Future<void> _finalizeSync(final SyncResultData syncResult) async {
-    //TODO
-    return [];
+  Future<void> _finalizeSync(final SyncResultData<T> syncResult) async {
+    final FileEntity fileToUpload = syncResult.initialData.candidateSyncFile;
+    await _syncController.writeItemsListToFileEntity(
+      syncResult.syncResultData,
+      fileToUpload,
+      _syncInterface.encryptionKey,
+    );
+    if (syncResult.hasRemoteChanges) {
+      //TODO upload the file
+    }
+    if (syncResult.hasLocalChanges) {
+      //TODO change the local data with the updated sync data
+    }
   }
 
   Future<void> execute() async {

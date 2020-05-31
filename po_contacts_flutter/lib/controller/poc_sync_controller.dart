@@ -4,6 +4,7 @@ import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart'
 import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
+import 'package:po_contacts_flutter/controller/vcard/writer/vcf_file_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
@@ -65,6 +66,22 @@ class POCSyncController extends SyncController<Contact> {
       res.add(cb.build(counter++));
     }
     return res;
+  }
+
+  @override
+  Future<List<Contact>> writeItemsListToFileEntity(
+    final List<Contact> itemsList,
+    final FileEntity fileEntity,
+    final String encryptionKey,
+  ) {
+    VCFSerializer.writeToVCF(
+      itemsList,
+      VCFFileWriter(
+        MainController.get().psController.filesManager,
+        fileEntity,
+        encryptionKey,
+      ),
+    );
   }
 
   Future<String> _getSyncFolderPath() async {

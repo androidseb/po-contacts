@@ -21,16 +21,16 @@ class VCFSerializer {
 
   static Future<void> writeToVCF(
     final List<Contact> contacts,
-    final VCFWriter vcfWriter,
-    final TaskSetProgressCallback progressCallback,
-  ) async {
+    final VCFWriter vcfWriter, {
+    TaskSetProgressCallback progressCallback,
+  }) async {
     if (contacts == null) {
       return;
     }
     for (int i = 0; i < contacts.length; i++) {
       final Contact c = contacts[i];
       await vcfWriter.writeContact(c);
-      await progressCallback.broadcastProgress((i + 1) / contacts.length);
+      await progressCallback?.broadcastProgress((i + 1) / contacts.length);
     }
   }
 }

@@ -65,7 +65,7 @@ class ExportController {
     await VCFSerializer.writeToVCF(
       contacts,
       vcfWriter,
-      progressCallback,
+      progressCallback: progressCallback,
     );
     await progressCallback.reportOneTaskCompleted();
     await vcfWriter.flushOutputBuffer(progressCallback);

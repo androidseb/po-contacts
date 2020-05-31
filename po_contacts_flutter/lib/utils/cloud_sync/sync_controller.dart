@@ -48,6 +48,12 @@ abstract class SyncController<T> {
     final String encryptionKey,
   );
 
+  Future<List<T>> writeItemsListToFileEntity(
+    final List<T> itemsList,
+    final FileEntity fileEntity,
+    final String encryptionKey,
+  );
+
   /// Select a cloud index file based on the name of that index file
   /// Returns 3 possible types of value:
   /// * the index of the user's choice
@@ -107,6 +113,7 @@ abstract class SyncController<T> {
   Future<bool> performSync({bool directUserAction = false}) async {
     try {
       await _performSyncImpl(directUserAction: directUserAction);
+      _syncModel.updateLastSyncError(null);
       return true;
     } on SyncException catch (syncException) {
       _syncModel.updateLastSyncError(syncException);
