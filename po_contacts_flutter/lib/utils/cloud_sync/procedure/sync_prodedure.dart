@@ -1,23 +1,10 @@
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_initial_data.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_result_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_data_merger.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
-
-class SyncInitialData<T> {
-  final FileEntity candidateSyncFile;
-  final List<T> localItems;
-  final List<T> lastSyncedItems;
-  final List<T> remoteItems;
-  final String remoteFileETag;
-
-  SyncInitialData(
-    this.candidateSyncFile,
-    this.localItems,
-    this.lastSyncedItems,
-    this.remoteItems,
-    this.remoteFileETag,
-  );
-}
 
 class SyncCancelationHandler {
   final SyncProcedure syncProcedure;
@@ -78,12 +65,14 @@ class SyncProcedure<T> {
     );
   }
 
-  Future<List<T>> _computeSyncResult(final SyncInitialData syncInitialData) async {
-    //TODO
-    return [];
+  Future<SyncResultData> _computeSyncResult(final SyncInitialData syncInitialData) async {
+    return await SyncDataMerger(
+      syncInitialData,
+      _cancelationHandler,
+    ).computeSyncResult();
   }
 
-  Future<void> _finalizeSync(final List<T> syncResult, final String targetETag) async {
+  Future<void> _finalizeSync(final SyncResultData syncResult) async {
     //TODO
     return [];
   }
@@ -92,8 +81,8 @@ class SyncProcedure<T> {
     _cancelationHandler.checkForCancelation();
     final SyncInitialData syncInitialData = await _initializeSync();
     _cancelationHandler.checkForCancelation();
-    final List<T> syncResult = await _computeSyncResult(syncInitialData);
+    final SyncResultData syncResult = await _computeSyncResult(syncInitialData);
     _cancelationHandler.checkForCancelation();
-    await _finalizeSync(syncResult, syncInitialData.remoteFileETag);
+    await _finalizeSync(syncResult);
   }
 }

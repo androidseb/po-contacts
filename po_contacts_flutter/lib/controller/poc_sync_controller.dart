@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';

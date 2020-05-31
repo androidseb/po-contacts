@@ -5,9 +5,9 @@ import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart'
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_prodedure.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
