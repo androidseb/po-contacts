@@ -7,9 +7,22 @@ import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
+
+class ContactIdProvider extends SyncDataInfoProvider<Contact> {
+  @override
+  String getItemId(final Contact item) {
+    return '${item.id}';
+  }
+
+  @override
+  bool itemsEqualExceptId(final Contact item1, final Contact item2) {
+    return Contact.equalExceptId(item1, item2);
+  }
+}
 
 class POCSyncController extends SyncController<Contact> {
   static const SYNC_FOLDER_NAME = 'cloud_sync';
@@ -43,6 +56,11 @@ class POCSyncController extends SyncController<Contact> {
       'pocontacts',
       'po_contacts_index.json',
     );
+  }
+
+  @override
+  SyncDataInfoProvider<Contact> getItemInfoProvider() {
+    return ContactIdProvider();
   }
 
   @override

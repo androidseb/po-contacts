@@ -1,51 +1,233 @@
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_initial_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_result_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.dart';
 
 class SyncDataMerger<T> {
-  final SyncCancelationHandler _cancelationHandler;
   final SyncInitialData<T> _syncInitialData;
+  final SyncDataInfoProvider<T> _infoProvider;
+  final SyncCancelationHandler _cancelationHandler;
 
-  SyncDataMerger(this._syncInitialData, this._cancelationHandler);
+  SyncDataMerger(
+    this._syncInitialData,
+    this._infoProvider,
+    this._cancelationHandler,
+  );
 
   /// Compute the list of created items between two versions of a list of items (past vs present)
-  Map<String, T> _createIdToItemMap(final List<T> itemsList) {}
+  Map<String, T> _createIdToItemMap(final List<T> itemsList) {
+    final Map<String, T> res = {};
+    for (final T item in itemsList) {
+      res[_infoProvider.getItemId(item)] = item;
+    }
+    return res;
+  }
 
   /// Compute the list of created items between two versions sets of items (past vs present)
-  List<T> _computeCreatedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {}
+  Map<String, T> _computeCreatedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
+    final Map<String, T> res = {};
+    for (final String itemId in presentItems.keys) {
+      if (!pastItems.containsKey(itemId)) {
+        res[itemId] = presentItems[itemId];
+      }
+    }
+    return res;
+  }
 
   /// Compute the list of modified items between two versions sets of items (past vs present)
-  List<T> _computeModifiedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {}
+  Map<String, T> _computeModifiedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
+    final Map<String, T> res = {};
+    for (final String itemId in pastItems.keys) {
+      if (presentItems.containsKey(itemId)) {
+        final T pastItem = pastItems[itemId];
+        final T presentItem = presentItems[itemId];
+        if (!_infoProvider.itemsEqualExceptId(pastItem, presentItem)) {
+          res[itemId] = presentItem;
+        }
+      }
+    }
+    return res;
+  }
 
   /// Compute the list of modified items between two versions sets of items (past vs present)
-  List<T> _computeDeletedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {}
+  Map<String, T> _computeDeletedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
+    final Map<String, T> res = {};
+    for (final String itemId in pastItems.keys) {
+      if (!presentItems.containsKey(itemId)) {
+        res[itemId] = pastItems[itemId];
+      }
+    }
+    return res;
+  }
 
-  Future<SyncResultData> computeSyncResult() async {
+  void _resolveMergeConflicts(
+    final Map<String, T> localCreatedItems,
+    final Map<String, T> localModifiedItems,
+    final Map<String, T> localDeletedItems,
+    final Map<String, T> remoteCreatedItems,
+    final Map<String, T> remoteModifiedItems,
+    final Map<String, T> remoteDeletedItems,
+  ) {
+    // Handling conflicts for any remotely modified item
+    for (final String rmItemId in remoteModifiedItems.keys) {
+      // Handling conflict of "remotely modified item" vs "locally modified item"
+      {
+        // Checking for a locally modified item matching the remotely modified item id
+        final T lmItem = localModifiedItems[rmItemId];
+        // If the item has been modified both remotely and locally, we will keep both versions.
+        // This is done by considering the local modification as a newly created item instead of a modified one.
+        if (lmItem != null) {
+          localModifiedItems.remove(rmItemId);
+          localCreatedItems[rmItemId] = lmItem;
+        }
+      }
+      // Handling conflict of "remotely modified item" vs "locally deleted item"
+      {
+        // Checking for a locally deleted item matching the remotely modified item id
+        final T ldItem = localDeletedItems[rmItemId];
+        // If the item has been modified remotely and deleted locally, we will cancel its deletion.
+        // This is done by ignoring the local deletion.
+        if (ldItem != null) {
+          localDeletedItems.remove(rmItemId);
+        }
+      }
+    }
+
+    // Handling conflicts for any remotely deleted item
+    for (final String rdItemId in remoteDeletedItems.keys) {
+      // Handling conflict of "remotely deleted item" vs "locally modified item"
+      {
+        // Checking for a locally modified item matching the remotely deleted item id
+        final T lmItem = localModifiedItems[rdItemId];
+        // If the item has been modified deleted remotely and modified locally, we will cancel its deletion.
+        // This is done by ignoring the remote deletion.
+        if (lmItem != null) {
+          remoteDeletedItems.remove(rdItemId);
+        }
+      }
+      // Handling conflict of "remotely deleted item" vs "locally deleted item"
+      {
+        // Checking for a locally deleted item matching the remotely deleted item id
+        final T ldItem = localDeletedItems[rdItemId];
+        // If the item has been deleted both remotely locally, we will delete it.
+        // However we will avoid registering two deletions.
+        // This is done by ignoring the local deletion, since the remote deletion will be enough.
+        if (ldItem != null) {
+          localDeletedItems.remove(rdItemId);
+        }
+      }
+    }
+  }
+
+  /// Adds or overwrite map entries from mapToAdd to destMap
+  /// Returns true if at least one item was added, false otherwise
+  bool _appendMapEntries(final Map<String, T> destMap, final Map<String, T> mapToAdd) {
+    bool mapChanged = false;
+    for (final String itemId in mapToAdd.keys) {
+      destMap[itemId] = mapToAdd[itemId];
+      mapChanged = true;
+    }
+    return mapChanged;
+  }
+
+  /// Removes map entries from mapToDelete to destMap
+  /// Returns true if at least one item was removed, false otherwise
+  bool _removeMapEntries(final Map<String, T> destMap, final Map<String, T> mapToDelete) {
+    bool mapChanged = false;
+    for (final String itemId in mapToDelete.keys) {
+      if (destMap.remove(itemId) != null) {
+        mapChanged = true;
+      }
+    }
+    return mapChanged;
+  }
+
+  /// Computes the result of the sync between local and remote, based on the sync initial data.
+  ///
+  /// The result of the last sync will be the starting point of the "result" data.
+  /// From there, applying the combination of local and remote modifications will produce the end result.
+  ///
+  /// If there are remotely modified or deleted items, there could be a conflict if we have either modified or
+  /// deleted the same items locally as well. To avoid loss of data, in case of conflict on the same item:
+  /// - if both sides deleted -> simply delete
+  /// - if both sides modified -> keep both copies (will result in 2 modified copies of the same item)
+  /// - if deleted on one side and modified on the other -> keep the modified item
+  Future<SyncResultData<T>> computeSyncResult() async {
+    // Initializing an ID <=> item map for the last synced items
     final Map<String, T> lastSyncedItems = _createIdToItemMap(_syncInitialData.lastSyncedItems);
     _cancelationHandler.checkForCancelation();
+
+    // Initializing an ID <=> item map for the local items
     final Map<String, T> localItems = _createIdToItemMap(_syncInitialData.localItems);
     _cancelationHandler.checkForCancelation();
+
+    // Initializing an ID <=> item map for the remote items
     final Map<String, T> remoteItems = _createIdToItemMap(_syncInitialData.remoteItems);
     _cancelationHandler.checkForCancelation();
-    final List<T> locallyCreatedItems = _computeCreatedItems(lastSyncedItems, localItems);
+
+    // Based on the last synced items, computing what changes have occurred locally and remotely
+    final Map<String, T> localCreatedItems = _computeCreatedItems(lastSyncedItems, localItems);
     _cancelationHandler.checkForCancelation();
-    final List<T> locallyModifiedItems = _computeModifiedItems(lastSyncedItems, localItems);
+    final Map<String, T> localModifiedItems = _computeModifiedItems(lastSyncedItems, localItems);
     _cancelationHandler.checkForCancelation();
-    final List<T> locallyDeletedItems = _computeDeletedItems(lastSyncedItems, localItems);
+    final Map<String, T> localDeletedItems = _computeDeletedItems(lastSyncedItems, localItems);
     _cancelationHandler.checkForCancelation();
-    final List<T> remoteCreatedItems = _computeCreatedItems(lastSyncedItems, remoteItems);
+    final Map<String, T> remoteCreatedItems = _computeCreatedItems(lastSyncedItems, remoteItems);
     _cancelationHandler.checkForCancelation();
-    final List<T> remoteModifiedItems = _computeModifiedItems(lastSyncedItems, remoteItems);
+    final Map<String, T> remoteModifiedItems = _computeModifiedItems(lastSyncedItems, remoteItems);
     _cancelationHandler.checkForCancelation();
-    final List<T> remoteDeletedItems = _computeDeletedItems(lastSyncedItems, remoteItems);
+    final Map<String, T> remoteDeletedItems = _computeDeletedItems(lastSyncedItems, remoteItems);
     _cancelationHandler.checkForCancelation();
 
-    //TODO implement this whole logic properly, for now the sync is dumb and will simply upload the local data to the remote
+    // Initializing the syncResult variable based on the result of the last sync
+    final Map<String, T> syncResult = Map<String, T>.from(lastSyncedItems);
+
+    // Initializing a variable to track whether some changes are to be applied locally
+    bool changesToLocal = false;
+
+    // Initializing a variable to track whether some changes are to be applied remotely
+    bool changesToRemote = false;
+
+    // Adjusting target changes to resolve merge conflicts and avoid loss of data
+    _resolveMergeConflicts(
+      localCreatedItems,
+      localModifiedItems,
+      localDeletedItems,
+      remoteCreatedItems,
+      remoteModifiedItems,
+      remoteDeletedItems,
+    );
+    _cancelationHandler.checkForCancelation();
+
+    // Applying created cloud items to the result
+    changesToLocal = changesToLocal && _appendMapEntries(syncResult, remoteCreatedItems);
+    _cancelationHandler.checkForCancelation();
+
+    // Applying modified cloud items to the result
+    changesToLocal = changesToLocal && _appendMapEntries(syncResult, remoteModifiedItems);
+    _cancelationHandler.checkForCancelation();
+
+    // Applying deleted cloud items to the result
+    changesToLocal = changesToLocal && _removeMapEntries(syncResult, remoteDeletedItems);
+    _cancelationHandler.checkForCancelation();
+
+    // Applying created local items to the result
+    changesToRemote = changesToRemote && _appendMapEntries(syncResult, localCreatedItems);
+    _cancelationHandler.checkForCancelation();
+
+    // Applying modified local items to the result
+    changesToRemote = changesToRemote && _appendMapEntries(syncResult, localModifiedItems);
+    _cancelationHandler.checkForCancelation();
+
+    // Applying deleted local items to the result
+    changesToRemote = changesToRemote && _removeMapEntries(syncResult, localDeletedItems);
+    _cancelationHandler.checkForCancelation();
+
     return SyncResultData<T>(
       initialData: _syncInitialData,
-      syncResultData: _syncInitialData.localItems,
-      hasLocalChanges: false,
-      hasRemoteChanges: true,
+      syncResultData: List<T>.from(syncResult.values),
+      hasLocalChanges: changesToLocal,
+      hasRemoteChanges: changesToRemote,
     );
   }
 }

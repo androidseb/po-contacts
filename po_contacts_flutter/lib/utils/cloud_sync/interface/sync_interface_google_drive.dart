@@ -214,9 +214,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         'Accept': 'application/json',
       },
     );
-    if (httpGetResponse.statusCode == 404) {
-      return null;
-    } else if (httpGetResponse.statusCode == 200) {
+    if (httpGetResponse.statusCode == 200) {
       final serverResponse = jsonDecode(httpGetResponse.body);
       final List<dynamic> foundFiles = serverResponse['files'];
       if (foundFiles.isEmpty) {
@@ -224,6 +222,8 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       } else {
         return _googleDriveFileToRemoteFile(foundFiles[0]);
       }
+    } else if (httpGetResponse.statusCode == 404) {
+      return null;
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
@@ -260,9 +260,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         'Accept': 'application/json',
       },
     );
-    if (httpGetResponse.statusCode == 404) {
-      return [];
-    } else if (httpGetResponse.statusCode == 200) {
+    if (httpGetResponse.statusCode == 200) {
       final serverResponse = jsonDecode(httpGetResponse.body);
       final List<dynamic> foundFiles = serverResponse['files'];
       final List<RemoteFile> res = [];
@@ -270,6 +268,8 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         res.add(RemoteFile(RemoteFileType.FOLDER, foundFile['id'], foundFile['name'], foundFile['etag']));
       }
       return res;
+    } else if (httpGetResponse.statusCode == 404) {
+      return [];
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
@@ -287,10 +287,10 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         'Accept': 'text/plain',
       },
     );
-    if (httpGetResponse.statusCode == 404) {
-      return null;
-    } else if (httpGetResponse.statusCode == 200) {
+    if (httpGetResponse.statusCode == 200) {
       return jsonDecode(httpGetResponse.body);
+    } else if (httpGetResponse.statusCode == 404) {
+      return null;
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
@@ -318,10 +318,12 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         'Accept': 'text/plain',
       },
     );
-    if (httpGetResponse.statusCode == 404) {
-      return null;
-    } else if (httpGetResponse.statusCode == 200) {
+    if (httpGetResponse.statusCode == 200) {
       return httpGetResponse.bodyBytes;
+    } else if (httpGetResponse.statusCode == 404) {
+      return null;
+    } else if (httpGetResponse.statusCode == 412) {
+      throw SyncException(SyncExceptionType.CONCURRENCY);
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,

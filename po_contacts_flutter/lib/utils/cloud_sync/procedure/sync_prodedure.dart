@@ -29,7 +29,7 @@ class SyncCancelationHandler {
 }
 
 class SyncProcedure<T> {
-  final SyncController _syncController;
+  final SyncController<T> _syncController;
   final SyncInterface _syncInterface;
   SyncCancelationHandler _cancelationHandler;
   bool _localDataChanged = false;
@@ -46,7 +46,7 @@ class SyncProcedure<T> {
     _localDataChanged = true;
   }
 
-  Future<SyncInitialData> _initializeSync() async {
+  Future<SyncInitialData<T>> _initializeSync() async {
     final FileEntity candidateSyncFile = await _syncController.prepareCandidateUploadFileForSync();
     _cancelationHandler.checkForCancelation();
     final List<T> localItems = await _syncController.getLocalItems();
@@ -66,7 +66,7 @@ class SyncProcedure<T> {
     );
     _cancelationHandler.checkForCancelation();
     final String fileETag = await _syncInterface.getFileETag(_syncInterface.cloudIndexFileId);
-    return SyncInitialData(
+    return SyncInitialData<T>(
       candidateSyncFile,
       localItems,
       lastSyncedItems,
@@ -75,9 +75,10 @@ class SyncProcedure<T> {
     );
   }
 
-  Future<SyncResultData> _computeSyncResult(final SyncInitialData syncInitialData) async {
-    return await SyncDataMerger(
+  Future<SyncResultData<T>> _computeSyncResult(final SyncInitialData<T> syncInitialData) async {
+    return await SyncDataMerger<T>(
       syncInitialData,
+      _syncController.getItemInfoProvider(),
       _cancelationHandler,
     ).computeSyncResult();
   }
@@ -111,9 +112,9 @@ class SyncProcedure<T> {
 
   Future<void> execute() async {
     _cancelationHandler.checkForCancelation();
-    final SyncInitialData syncInitialData = await _initializeSync();
+    final SyncInitialData<T> syncInitialData = await _initializeSync();
     _cancelationHandler.checkForCancelation();
-    final SyncResultData syncResult = await _computeSyncResult(syncInitialData);
+    final SyncResultData<T> syncResult = await _computeSyncResult(syncInitialData);
     _cancelationHandler.checkForCancelation();
     await _finalizeSync(syncResult);
   }

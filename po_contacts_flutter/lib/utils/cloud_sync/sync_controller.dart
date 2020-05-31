@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.dart';
@@ -37,9 +38,11 @@ abstract class SyncController<T> {
   SyncState get syncState => _syncState.readOnly.currentValue;
   ReadOnlyStreamableValue<SyncState> get syncStateSV => _syncState.readOnly;
   final SyncModel _syncModel = SyncModel();
-  SyncProcedure _currentSyncProcedure;
+  SyncProcedure<T> _currentSyncProcedure;
 
   SyncInterfaceConfig getSyncInterfaceConfig();
+
+  SyncDataInfoProvider<T> getItemInfoProvider();
 
   Future<List<T>> getLocalItems();
 

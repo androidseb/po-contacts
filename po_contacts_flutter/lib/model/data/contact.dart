@@ -121,6 +121,30 @@ class Contact {
     }
     return _nNotes;
   }
+
+  static bool equalExceptId(final Contact item1, final Contact item2) {
+    if (item1 == item2) {
+      return true;
+    }
+    if (item1 == null || item2 == null) {
+      return false;
+    }
+    if (item1.firstName != item2.firstName) return false;
+    if (item1.lastName != item2.lastName) return false;
+    if (item1.nickName != item2.nickName) return false;
+    if (item1.fullName != item2.fullName) return false;
+    if (item1.organizationName != item2.organizationName) return false;
+    if (item1.organizationDivision != item2.organizationDivision) return false;
+    if (item1.organizationTitle != item2.organizationTitle) return false;
+    if (item1.website != item2.website) return false;
+    if (item1.notes != item2.notes) return false;
+    //TODO handle these fields too
+    //this.unknownVCFFieldLines,
+    //this.phoneInfos,
+    //this.emailInfos,
+    //this.addressInfos,
+    return true;
+  }
 }
 
 class ContactBuilder {
