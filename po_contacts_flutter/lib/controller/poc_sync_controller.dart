@@ -88,7 +88,7 @@ class POCSyncController extends SyncController<Contact> {
     );
     int counter = 0;
     for (final ContactBuilder cb in lastSyncedContacts) {
-      res.add(cb.build(counter++));
+      res.add(ContactBuilder.build(counter++, cb));
     }
     return res;
   }
@@ -108,7 +108,7 @@ class POCSyncController extends SyncController<Contact> {
 
   @override
   Future<void> overwriteLocalItems(final List<Contact> itemsList) async {
-    //TODO replace the local content with the updated content
+    MainController.get().model.overwriteAllContacts(itemsList);
   }
 
   Future<String> _getSyncFolderPath() async {

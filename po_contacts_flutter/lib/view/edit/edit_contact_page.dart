@@ -38,8 +38,8 @@ class _EditContactPageState extends State<EditContactPage> {
         onControllerReady: (final EditContactFormController controller) {
           editContactFormController = controller;
         },
-        onContactSaveRequested: (final ContactBuilder contactBuilder) {
-          MainController.get().saveContact(widget.contactId, contactBuilder);
+        onContactSaveRequested: (final ContactData contactData) {
+          MainController.get().saveContact(widget.contactId, contactData);
         },
       ),
     );

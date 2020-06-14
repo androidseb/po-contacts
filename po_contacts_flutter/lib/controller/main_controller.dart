@@ -95,20 +95,20 @@ class MainController {
     _startEditContact(contactId);
   }
 
-  void saveContact(final int contactId, final ContactBuilder targetContactBuilder) {
+  void saveContact(final int contactId, final ContactData targetContactData) {
     if (_context == null) {
       return;
     }
-    if (contactId == null && targetContactBuilder == null) {
+    if (contactId == null && targetContactData == null) {
       return;
     }
-    if (targetContactBuilder == null) {
+    if (targetContactData == null) {
       return;
     }
     if (contactId == null) {
-      this._model.addContact(targetContactBuilder);
+      this._model.addContact(targetContactData);
     } else {
-      this._model.overwriteContact(contactId, targetContactBuilder);
+      this._model.overwriteContact(contactId, targetContactData);
     }
     Navigator.pop(_context);
   }

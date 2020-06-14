@@ -61,8 +61,8 @@ class MainModel {
     return null;
   }
 
-  Future<void> addContact(final ContactBuilder contactBuilder) async {
-    final Contact createdContact = await _contactsStorageController.createContact(contactBuilder);
+  Future<void> addContact(final ContactData contactData) async {
+    final Contact createdContact = await _contactsStorageController.createContact(contactData);
     if (createdContact == null) {
       return;
     }
@@ -85,8 +85,8 @@ class MainModel {
     _contactsList.notifyDataChanged();
   }
 
-  void overwriteContact(final int contactId, final ContactBuilder contactBuilder) async {
-    final Contact updatedContact = await _contactsStorageController.updateContact(contactId, contactBuilder);
+  void overwriteContact(final int contactId, final ContactData contactData) async {
+    final Contact updatedContact = await _contactsStorageController.updateContact(contactId, contactData);
     if (updatedContact == null) {
       return;
     }
@@ -100,5 +100,9 @@ class MainModel {
       }
     }
     _contactsList.notifyDataChanged();
+  }
+
+  void overwriteAllContacts(final List<Contact> contacts) async {
+    //TODO
   }
 }

@@ -11,7 +11,7 @@ import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 class EditContactForm extends StatefulWidget {
   final Contact initialContact;
   final Function(EditContactFormController editContactFormController) onControllerReady;
-  final Function(ContactBuilder contactBuilder) onContactSaveRequested;
+  final Function(ContactData contactData) onContactSaveRequested;
 
   EditContactForm(this.initialContact, {Key key, this.onControllerReady, this.onContactSaveRequested})
       : super(key: key);

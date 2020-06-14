@@ -6,40 +6,120 @@ import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
-class Contact {
+abstract class ContactData {
+  static const String JSON_FIELD_IMAGE = 'image';
+  static const String JSON_FIELD_FIRST_NAME = 'first_name';
+  static const String JSON_FIELD_LAST_NAME = 'last_name';
+  static const String JSON_FIELD_NICK_NAME = 'nick_name';
+  static const String JSON_FIELD_FULL_NAME = 'full_name';
+  static const String JSON_FIELD_PHONE_INFOS = 'phone_infos';
+  static const String JSON_FIELD_EMAIL_INFOS = 'email_infos';
+  static const String JSON_FIELD_ADDRESS_INFOS = 'address_infos';
+  static const String JSON_FIELD_ORGANIZATION_NAME = 'organization_name';
+  static const String JSON_FIELD_ORGANIZATION_DIVISION = 'organization_division';
+  static const String JSON_FIELD_ORGANIZATION_TITLE = 'organization_title';
+  static const String JSON_FIELD_WEBSITE = 'website';
+  static const String JSON_FIELD_NOTES = 'notes';
+  static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
+
+  String get image;
+  String get firstName;
+  String get lastName;
+  String get nickName;
+  String get fullName;
+  List<StringLabeledField> get phoneInfos;
+  List<StringLabeledField> get emailInfos;
+  List<AddressLabeledField> get addressInfos;
+  String get organizationName;
+  String get organizationDivision;
+  String get organizationTitle;
+  String get website;
+  String get notes;
+  List<String> get unknownVCFFieldLines;
+
+  static String toJsonString(final ContactData contactBuilder) {
+    return jsonEncode({
+      JSON_FIELD_IMAGE: contactBuilder.image,
+      JSON_FIELD_FIRST_NAME: contactBuilder.firstName,
+      JSON_FIELD_LAST_NAME: contactBuilder.lastName,
+      JSON_FIELD_NICK_NAME: contactBuilder.nickName,
+      JSON_FIELD_FULL_NAME: contactBuilder.fullName,
+      JSON_FIELD_PHONE_INFOS: LabeledField.fieldsToMapList(contactBuilder.phoneInfos),
+      JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactBuilder.emailInfos),
+      JSON_FIELD_ADDRESS_INFOS: LabeledField.fieldsToMapList(contactBuilder.addressInfos),
+      JSON_FIELD_ORGANIZATION_NAME: contactBuilder.organizationName,
+      JSON_FIELD_ORGANIZATION_DIVISION: contactBuilder.organizationDivision,
+      JSON_FIELD_ORGANIZATION_TITLE: contactBuilder.organizationTitle,
+      JSON_FIELD_WEBSITE: contactBuilder.website,
+      JSON_FIELD_NOTES: contactBuilder.notes,
+      JSON_FIELD_UNKNOWN_VCF_FIELDS: contactBuilder.unknownVCFFieldLines
+    });
+  }
+}
+
+class Contact extends ContactData {
   final int id;
-  final String image;
-  final String firstName;
-  final String lastName;
-  final String nickName;
-  final String fullName;
-  final List<StringLabeledField> phoneInfos;
-  final List<StringLabeledField> emailInfos;
-  final List<AddressLabeledField> addressInfos;
-  final String organizationName;
-  final String organizationDivision;
-  final String organizationTitle;
-  final String website;
-  final String notes;
-  final List<String> unknownVCFFieldLines;
+  final String _image;
+  final String _firstName;
+  final String _lastName;
+  final String _nickName;
+  final String _fullName;
+  final List<StringLabeledField> _phoneInfos;
+  final List<StringLabeledField> _emailInfos;
+  final List<AddressLabeledField> _addressInfos;
+  final String _organizationName;
+  final String _organizationDivision;
+  final String _organizationTitle;
+  final String _website;
+  final String _notes;
+  final List<String> _unknownVCFFieldLines;
 
   Contact(
     this.id,
-    this.image,
-    this.firstName,
-    this.lastName,
-    this.nickName,
-    this.fullName,
-    this.phoneInfos,
-    this.emailInfos,
-    this.addressInfos,
-    this.organizationName,
-    this.organizationDivision,
-    this.organizationTitle,
-    this.website,
-    this.notes,
-    this.unknownVCFFieldLines,
-  );
+    this._image,
+    this._firstName,
+    this._lastName,
+    this._nickName,
+    this._fullName,
+    this._phoneInfos,
+    this._emailInfos,
+    this._addressInfos,
+    this._organizationName,
+    this._organizationDivision,
+    this._organizationTitle,
+    this._website,
+    this._notes,
+    this._unknownVCFFieldLines,
+  ) : super();
+
+  @override
+  String get image => _image;
+  @override
+  String get firstName => _firstName;
+  @override
+  String get lastName => _lastName;
+  @override
+  String get nickName => _nickName;
+  @override
+  String get fullName => _fullName;
+  @override
+  List<StringLabeledField> get phoneInfos => _phoneInfos;
+  @override
+  List<StringLabeledField> get emailInfos => _emailInfos;
+  @override
+  List<AddressLabeledField> get addressInfos => _addressInfos;
+  @override
+  String get organizationName => _organizationName;
+  @override
+  String get organizationDivision => _organizationDivision;
+  @override
+  String get organizationTitle => _organizationTitle;
+  @override
+  String get website => _website;
+  @override
+  String get notes => _notes;
+  @override
+  List<String> get unknownVCFFieldLines => _unknownVCFFieldLines;
 
   NormalizedString _nFirstName;
   NormalizedString get nFirstName => _getNFirstName();
@@ -147,76 +227,42 @@ class Contact {
   }
 }
 
-class ContactBuilder {
-  static const String JSON_FIELD_IMAGE = 'image';
-  static const String JSON_FIELD_FIRST_NAME = 'first_name';
-  static const String JSON_FIELD_LAST_NAME = 'last_name';
-  static const String JSON_FIELD_NICK_NAME = 'nick_name';
-  static const String JSON_FIELD_FULL_NAME = 'full_name';
-  static const String JSON_FIELD_PHONE_INFOS = 'phone_infos';
-  static const String JSON_FIELD_EMAIL_INFOS = 'email_infos';
-  static const String JSON_FIELD_ADDRESS_INFOS = 'address_infos';
-  static const String JSON_FIELD_ORGANIZATION_NAME = 'organization_name';
-  static const String JSON_FIELD_ORGANIZATION_DIVISION = 'organization_division';
-  static const String JSON_FIELD_ORGANIZATION_TITLE = 'organization_title';
-  static const String JSON_FIELD_WEBSITE = 'website';
-  static const String JSON_FIELD_NOTES = 'notes';
-  static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
-
-  static String toJsonString(final ContactBuilder contactBuilder) {
-    return jsonEncode({
-      JSON_FIELD_IMAGE: contactBuilder._image,
-      JSON_FIELD_FIRST_NAME: contactBuilder._firstName,
-      JSON_FIELD_LAST_NAME: contactBuilder._lastName,
-      JSON_FIELD_NICK_NAME: contactBuilder._nickName,
-      JSON_FIELD_FULL_NAME: contactBuilder._fullName,
-      JSON_FIELD_PHONE_INFOS: LabeledField.fieldsToMapList(contactBuilder._phoneInfos),
-      JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactBuilder._emailInfos),
-      JSON_FIELD_ADDRESS_INFOS: LabeledField.fieldsToMapList(contactBuilder._addressInfos),
-      JSON_FIELD_ORGANIZATION_NAME: contactBuilder._organizationName,
-      JSON_FIELD_ORGANIZATION_DIVISION: contactBuilder._organizationDivision,
-      JSON_FIELD_ORGANIZATION_TITLE: contactBuilder._organizationTitle,
-      JSON_FIELD_WEBSITE: contactBuilder._website,
-      JSON_FIELD_NOTES: contactBuilder._notes,
-      JSON_FIELD_UNKNOWN_VCF_FIELDS: contactBuilder._unknownVCFFieldLines
-    });
-  }
-
+class ContactBuilder extends ContactData {
   static Contact buildFromJson(final int id, final String json) {
     final Map<String, dynamic> decodedJson = jsonDecode(json);
     final ContactBuilder contactBuilder = ContactBuilder();
-    contactBuilder.setImage(decodedJson[JSON_FIELD_IMAGE]);
-    contactBuilder.setFirstName(decodedJson[JSON_FIELD_FIRST_NAME]);
-    contactBuilder.setLastName(decodedJson[JSON_FIELD_LAST_NAME]);
-    contactBuilder.setNickName(decodedJson[JSON_FIELD_NICK_NAME]);
-    contactBuilder.setFullName(decodedJson[JSON_FIELD_FULL_NAME]);
+    contactBuilder.setImage(decodedJson[ContactData.JSON_FIELD_IMAGE]);
+    contactBuilder.setFirstName(decodedJson[ContactData.JSON_FIELD_FIRST_NAME]);
+    contactBuilder.setLastName(decodedJson[ContactData.JSON_FIELD_LAST_NAME]);
+    contactBuilder.setNickName(decodedJson[ContactData.JSON_FIELD_NICK_NAME]);
+    contactBuilder.setFullName(decodedJson[ContactData.JSON_FIELD_FULL_NAME]);
     contactBuilder.setPhoneInfos(LabeledField.fromMapList(
       List<StringLabeledField>(),
-      decodedJson[JSON_FIELD_PHONE_INFOS],
+      decodedJson[ContactData.JSON_FIELD_PHONE_INFOS],
       StringLabeledField.createFieldFunc,
     ));
     contactBuilder.setEmailInfos(LabeledField.fromMapList(
       List<StringLabeledField>(),
-      decodedJson[JSON_FIELD_EMAIL_INFOS],
+      decodedJson[ContactData.JSON_FIELD_EMAIL_INFOS],
       StringLabeledField.createFieldFunc,
     ));
     contactBuilder.setAddressInfos(LabeledField.fromMapList(
       List<AddressLabeledField>(),
-      decodedJson[JSON_FIELD_ADDRESS_INFOS],
+      decodedJson[ContactData.JSON_FIELD_ADDRESS_INFOS],
       AddressLabeledField.createFieldFunc,
     ));
-    contactBuilder.setOrganizationName(decodedJson[JSON_FIELD_ORGANIZATION_NAME]);
-    contactBuilder.setOrganizationDivision(decodedJson[JSON_FIELD_ORGANIZATION_DIVISION]);
-    contactBuilder.setOrganizationTitle(decodedJson[JSON_FIELD_ORGANIZATION_TITLE]);
-    contactBuilder.setWebsite(decodedJson[JSON_FIELD_WEBSITE]);
-    contactBuilder.setNotes(decodedJson[JSON_FIELD_NOTES]);
-    final List<dynamic> unknownVCFFieldLines = decodedJson[JSON_FIELD_UNKNOWN_VCF_FIELDS];
+    contactBuilder.setOrganizationName(decodedJson[ContactData.JSON_FIELD_ORGANIZATION_NAME]);
+    contactBuilder.setOrganizationDivision(decodedJson[ContactData.JSON_FIELD_ORGANIZATION_DIVISION]);
+    contactBuilder.setOrganizationTitle(decodedJson[ContactData.JSON_FIELD_ORGANIZATION_TITLE]);
+    contactBuilder.setWebsite(decodedJson[ContactData.JSON_FIELD_WEBSITE]);
+    contactBuilder.setNotes(decodedJson[ContactData.JSON_FIELD_NOTES]);
+    final List<dynamic> unknownVCFFieldLines = decodedJson[ContactData.JSON_FIELD_UNKNOWN_VCF_FIELDS];
     for (final dynamic line in unknownVCFFieldLines) {
       if (line is String) {
         contactBuilder.addUnknownVCFFieldLine(line);
       }
     }
-    return contactBuilder.build(id);
+    return ContactBuilder.build(id, contactBuilder);
   }
 
   String _image;
@@ -233,6 +279,35 @@ class ContactBuilder {
   String _website;
   String _notes;
   final List<String> _unknownVCFFieldLines = [];
+
+  @override
+  String get image => _image;
+  @override
+  String get firstName => _firstName;
+  @override
+  String get lastName => _lastName;
+  @override
+  String get nickName => _nickName;
+  @override
+  String get fullName => _fullName;
+  @override
+  List<StringLabeledField> get phoneInfos => _phoneInfos;
+  @override
+  List<StringLabeledField> get emailInfos => _emailInfos;
+  @override
+  List<AddressLabeledField> get addressInfos => _addressInfos;
+  @override
+  String get organizationName => _organizationName;
+  @override
+  String get organizationDivision => _organizationDivision;
+  @override
+  String get organizationTitle => _organizationTitle;
+  @override
+  String get website => _website;
+  @override
+  String get notes => _notes;
+  @override
+  List<String> get unknownVCFFieldLines => _unknownVCFFieldLines;
 
   static List<StringLabeledField> getSanitizedStringLabeledField(final List<StringLabeledField> list) {
     if (list == null) {
@@ -281,26 +356,26 @@ class ContactBuilder {
     return str;
   }
 
-  Contact build(final int id) {
+  static Contact build(final int id, final ContactData contactData) {
     if (id == null) {
       return null;
     }
     return Contact(
       id,
-      _image,
-      getNonNullString(_firstName),
-      getNonNullString(_lastName),
-      getNonNullString(_nickName),
-      getNonNullString(_fullName),
-      getSanitizedStringLabeledField(_phoneInfos),
-      getSanitizedStringLabeledField(_emailInfos),
-      getSanitizedAddressLabeledField(_addressInfos),
-      getNonNullString(_organizationName),
-      getNonNullString(_organizationDivision),
-      getNonNullString(_organizationTitle),
-      getNonNullString(_website),
-      getNonNullString(_notes),
-      _unknownVCFFieldLines,
+      contactData.image,
+      getNonNullString(contactData.firstName),
+      getNonNullString(contactData.lastName),
+      getNonNullString(contactData.nickName),
+      getNonNullString(contactData.fullName),
+      getSanitizedStringLabeledField(contactData.phoneInfos),
+      getSanitizedStringLabeledField(contactData.emailInfos),
+      getSanitizedAddressLabeledField(contactData.addressInfos),
+      getNonNullString(contactData.organizationName),
+      getNonNullString(contactData.organizationDivision),
+      getNonNullString(contactData.organizationTitle),
+      getNonNullString(contactData.website),
+      getNonNullString(contactData.notes),
+      contactData.unknownVCFFieldLines,
     );
   }
 

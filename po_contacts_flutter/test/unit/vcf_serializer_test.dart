@@ -271,66 +271,66 @@ void main() {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_SIMPLEST_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactSimplest);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactSimplest);
   });
 
   test('VCF import - simple contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_SIMPLE_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactSimple);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactSimple);
   });
 
   test('VCF import - complex contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactComplex);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactComplex);
   });
 
   test('VCF import - complex contact alt1', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_1));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactComplex);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactComplex);
   });
 
   test('VCF import - complex contact alt2', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_2));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactComplex);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactComplex);
   });
 
   test('VCF import - complex contact alt3', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_3));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactComplex);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactComplex);
   });
 
   test('VCF import - complex contact 2', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_2_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactComplex2);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactComplex2);
   });
 
   test('VCF import - complex contact 2 alt1', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_2_ALTERNATE_INPUT_1));
     expect(contacts.length, 1);
-    expectContactsEqual(contacts[0].build(0), testContactComplex2);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactComplex2);
   });
 
   test('VCF import - multiple contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACTS_MULTIPLE_EXPECTED_OUTPUT));
     expect(contacts.length, 4);
-    expectContactsEqual(contacts[0].build(0), testContactSimplest);
-    expectContactsEqual(contacts[1].build(0), testContactSimple);
-    expectContactsEqual(contacts[2].build(0), testContactComplex);
-    expectContactsEqual(contacts[3].build(0), testContactComplex2);
+    expectContactsEqual(ContactBuilder.build(0, contacts[0]), testContactSimplest);
+    expectContactsEqual(ContactBuilder.build(0, contacts[1]), testContactSimple);
+    expectContactsEqual(ContactBuilder.build(0, contacts[2]), testContactComplex);
+    expectContactsEqual(ContactBuilder.build(0, contacts[3]), testContactComplex2);
   });
 
   test('VCF import of export - consistent data', () async {
@@ -354,7 +354,7 @@ void main() {
     //Test that the imported contacts are identical to the initial contacts
     expect(initialContacts.length, importedContacts.length);
     for (int i = 0; i < initialContacts.length; i++) {
-      expectContactsEqual(initialContacts[i], importedContacts[i].build(0));
+      expectContactsEqual(initialContacts[i], ContactBuilder.build(0, importedContacts[i]));
     }
   });
 }

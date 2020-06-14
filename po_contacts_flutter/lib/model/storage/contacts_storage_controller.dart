@@ -46,11 +46,11 @@ class ContactsStorageController {
     return res;
   }
 
-  Future<Contact> createContact(final ContactBuilder contactBuilder) async {
-    final ContactStorageEntry cse = ContactStorageEntry(ContactBuilder.toJsonString(contactBuilder));
+  Future<Contact> createContact(final ContactData contactData) async {
+    final ContactStorageEntry cse = ContactStorageEntry(ContactData.toJsonString(contactData));
     final ContactsStorageManager cs = await _getContactsStorage();
     final ContactStorageEntryWithId csewId = await cs.createContact(cse);
-    final Contact createdContact = contactBuilder.build(csewId.id);
+    final Contact createdContact = ContactBuilder.build(csewId.id, contactData);
     return createdContact;
   }
 
@@ -61,12 +61,12 @@ class ContactsStorageController {
 
   Future<Contact> updateContact(
     final int contactId,
-    final ContactBuilder contactBuilder,
+    final ContactData contactData,
   ) async {
     final ContactsStorageManager cs = await _getContactsStorage();
-    final ContactStorageEntry cse = ContactStorageEntry(ContactBuilder.toJsonString(contactBuilder));
+    final ContactStorageEntry cse = ContactStorageEntry(ContactData.toJsonString(contactData));
     final ContactStorageEntryWithId csewId = await cs.updateContact(contactId, cse);
-    final Contact updatedContact = contactBuilder.build(csewId.id);
+    final Contact updatedContact = ContactBuilder.build(csewId.id, contactData);
     return updatedContact;
   }
 }
