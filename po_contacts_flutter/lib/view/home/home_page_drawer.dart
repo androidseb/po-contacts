@@ -32,7 +32,17 @@ class HomePageDrawer extends StatelessWidget {
       leading: Icon(Icons.info_outline),
       title: Text(I18n.getString(I18n.string.about, POC_APP_VERSION)),
       onTap: () {
-        MainController.get().showAboutDialog();
+        showAboutDialog(
+          context: context,
+          applicationIcon: Image.asset(
+            'lib/assets/images/app_icon.png',
+            width: 32,
+            height: 32,
+          ),
+          applicationName: I18n.getString(I18n.string.app_name),
+          applicationVersion: POC_APP_VERSION,
+          children: <Widget>[Text(I18n.getString(I18n.string.about_message))],
+        );
       },
     ));
     return Drawer(

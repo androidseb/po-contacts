@@ -36,4 +36,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - lib/assets/images/app_icon.png
     - lib/assets/images/ic_profile.png
