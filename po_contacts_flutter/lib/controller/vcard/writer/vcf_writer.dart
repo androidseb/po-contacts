@@ -127,13 +127,15 @@ abstract class VCFWriter {
   }
 
   Future<void> writeContactFields(final Contact contact) async {
+    int externalId = contact.id;
     if (contact.externalId != null) {
-      _writeVCFStringFieldValue(
-        VCFConstants.FIELD_UID,
-        ContactData.externalIdToUid(contact.externalId),
-        isUID: true,
-      );
+      externalId = contact.externalId;
     }
+    _writeVCFStringFieldValue(
+      VCFConstants.FIELD_UID,
+      ContactData.externalIdToUid(externalId),
+      isUID: true,
+    );
     if (contact.image != null) {
       final String fileExtension = Utils.getFileExtension(contact.image);
       final String photoAsBase64String = await fileReader.fileToBase64String(contact.image);
