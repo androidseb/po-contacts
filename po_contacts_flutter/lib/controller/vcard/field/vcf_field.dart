@@ -143,13 +143,27 @@ abstract class VCFField {
     final Map<String, String> fieldParams,
   ) {
     final int afterFieldNameIndex = fieldName.length;
-    final int fieldValueStartIndex = getNextSeparatorIndex(
+    int fieldValueStartIndex = getNextSeparatorIndex(
       fieldLine,
       afterFieldNameIndex,
       [VCFConstants.VCF_SEPARATOR_COLON],
     );
     if (fieldValueStartIndex == -1) {
       return afterFieldNameIndex;
+    } else {
+      int fieldValueStartIndex2 = fieldValueStartIndex;
+      while (true) {
+        fieldValueStartIndex2 = getNextSeparatorIndex(
+          fieldLine,
+          fieldValueStartIndex2 + 1,
+          [VCFConstants.VCF_SEPARATOR_COLON],
+        );
+        if (fieldValueStartIndex2 == -1) {
+          break;
+        } else {
+          fieldValueStartIndex = fieldValueStartIndex2;
+        }
+      }
     }
     _readFieldParamsFromString(
       fieldLine.substring(afterFieldNameIndex, fieldValueStartIndex),

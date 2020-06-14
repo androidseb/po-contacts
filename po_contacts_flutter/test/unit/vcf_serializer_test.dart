@@ -185,6 +185,7 @@ void expectAddressLabeledFieldsEqual(final List<AddressLabeledField> alfl1, fina
 
 void expectContactsEqual(final Contact c1, final Contact c2) {
   expect(c1.id, c2.id);
+  expect(c1.externalId, c2.externalId);
   expect(MockFileSystem.getFileBase64StringContent(c1.image), MockFileSystem.getFileBase64StringContent(c2.image));
   expect(c1.firstName, c2.firstName);
   expect(c1.lastName, c2.lastName);

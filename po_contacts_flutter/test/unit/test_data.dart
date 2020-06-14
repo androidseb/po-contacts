@@ -7,11 +7,11 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 const String specialCharsBase = ' ; & \\ : * & \' " . \t ~ @ ç';
 const String specialCharsEscaped = ' \\; & \\\\ \\: * & \' " . \t ~ @ ç';
 const String specialCharsBadlyEscaped = ' \\; & \\ \\: * & \' " . \t ~ @ ç';
-const String specialCharsWorstlyEscaped = ' ; & \\ : * & \' " . \t ~ @ ç';
+const String specialCharsWorstlyEscaped = ' ; & \\ \\: * & \' " . \t ~ @ ç';
 
 final Contact testContactSimplest = Contact(
   0, //id
-  null, //externalId
+  0, //externalId
   null, //image
   '', //firstName
   '', //lastName
@@ -51,7 +51,7 @@ final Contact testContactSimple = Contact(
 
 final Contact testContactComplex = Contact(
   0, //id
-  null, //externalId
+  0, //externalId
   'test/file/path/1.jpg', //image
   'First name', //firstName
   'Last name', //lastName
@@ -127,7 +127,7 @@ final Contact testContactComplex = Contact(
 
 final Contact testContactComplex2 = Contact(
   0, //id
-  null, //externalId
+  0, //externalId
   null, //image
   'First name $specialCharsBase', //firstName
   'Last name $specialCharsBase', //lastName
