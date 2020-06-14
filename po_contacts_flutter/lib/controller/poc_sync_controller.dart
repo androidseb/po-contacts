@@ -15,7 +15,11 @@ import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 class ContactIdProvider extends SyncDataInfoProvider<Contact> {
   @override
   String getItemId(final Contact item) {
-    return '${item.id}';
+    if (item.externalId == null) {
+      return '${item.id}';
+    } else {
+      return '${item.externalId}';
+    }
   }
 
   @override
