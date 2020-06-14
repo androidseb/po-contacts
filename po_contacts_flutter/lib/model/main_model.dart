@@ -6,7 +6,6 @@ import 'package:po_contacts_flutter/model/settings_model.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
-import 'package:po_contacts_flutter/view/misc/contacts_list.dart';
 
 class MainModel {
   static int compareContacts(final Contact c1, final Contact c2) {
