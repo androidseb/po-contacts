@@ -200,27 +200,27 @@ class SyncDataMerger<T> {
     _cancelationHandler.checkForCancelation();
 
     // Applying created cloud items to the result
-    changesToLocal = changesToLocal && _appendMapEntries(syncResult, remoteCreatedItems);
+    changesToLocal = _appendMapEntries(syncResult, remoteCreatedItems) || changesToLocal;
     _cancelationHandler.checkForCancelation();
 
     // Applying modified cloud items to the result
-    changesToLocal = changesToLocal && _appendMapEntries(syncResult, remoteModifiedItems);
+    changesToLocal = _appendMapEntries(syncResult, remoteModifiedItems) || changesToLocal;
     _cancelationHandler.checkForCancelation();
 
     // Applying deleted cloud items to the result
-    changesToLocal = changesToLocal && _removeMapEntries(syncResult, remoteDeletedItems);
+    changesToLocal = _removeMapEntries(syncResult, remoteDeletedItems) || changesToLocal;
     _cancelationHandler.checkForCancelation();
 
     // Applying created local items to the result
-    changesToRemote = changesToRemote && _appendMapEntries(syncResult, localCreatedItems);
+    changesToRemote = _appendMapEntries(syncResult, localCreatedItems) || changesToRemote;
     _cancelationHandler.checkForCancelation();
 
     // Applying modified local items to the result
-    changesToRemote = changesToRemote && _appendMapEntries(syncResult, localModifiedItems);
+    changesToRemote = _appendMapEntries(syncResult, localModifiedItems) || changesToRemote;
     _cancelationHandler.checkForCancelation();
 
     // Applying deleted local items to the result
-    changesToRemote = changesToRemote && _removeMapEntries(syncResult, localDeletedItems);
+    changesToRemote = _removeMapEntries(syncResult, localDeletedItems) || changesToRemote;
     _cancelationHandler.checkForCancelation();
 
     return SyncResultData<T>(
