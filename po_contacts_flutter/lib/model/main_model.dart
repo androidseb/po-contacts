@@ -6,6 +6,7 @@ import 'package:po_contacts_flutter/model/settings_model.dart';
 import 'package:po_contacts_flutter/model/storage/contacts_storage_controller.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
+import 'package:po_contacts_flutter/view/misc/contacts_list.dart';
 
 class MainModel {
   static int compareContacts(final Contact c1, final Contact c2) {
@@ -103,6 +104,26 @@ class MainModel {
   }
 
   void overwriteAllContacts(final List<Contact> contacts) async {
-    //TODO
+    // Initializing a list of new contacts
+    final List<Contact> newContacts = [];
+
+    // Creating all the new contacts into the storage
+    for (final Contact c in contacts) {
+      newContacts.add(await _contactsStorageController.createContact(c));
+    }
+
+    // Deleting all old contacts from storage
+    for (final Contact c in contactsList) {
+      await _contactsStorageController.deleteContact(c.id);
+    }
+
+    // Deleting all old contacts from memory
+    contactsList.clear();
+
+    // Adding all the new contacts into memory
+    contactsList.addAll(newContacts);
+    sortContactsList(contactsList);
+
+    _contactsList.notifyDataChanged();
   }
 }
