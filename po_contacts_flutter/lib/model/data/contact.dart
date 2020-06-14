@@ -7,6 +7,7 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class ContactData {
+  static const String JSON_FIELD_EXTERNAL_ID = 'external_id';
   static const String JSON_FIELD_IMAGE = 'image';
   static const String JSON_FIELD_FIRST_NAME = 'first_name';
   static const String JSON_FIELD_LAST_NAME = 'last_name';
@@ -22,6 +23,7 @@ abstract class ContactData {
   static const String JSON_FIELD_NOTES = 'notes';
   static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
 
+  int get externalId;
   String get image;
   String get firstName;
   String get lastName;
@@ -37,28 +39,65 @@ abstract class ContactData {
   String get notes;
   List<String> get unknownVCFFieldLines;
 
-  static String toJsonString(final ContactData contactBuilder) {
+  static String toJsonString(final ContactData contactData) {
     return jsonEncode({
-      JSON_FIELD_IMAGE: contactBuilder.image,
-      JSON_FIELD_FIRST_NAME: contactBuilder.firstName,
-      JSON_FIELD_LAST_NAME: contactBuilder.lastName,
-      JSON_FIELD_NICK_NAME: contactBuilder.nickName,
-      JSON_FIELD_FULL_NAME: contactBuilder.fullName,
-      JSON_FIELD_PHONE_INFOS: LabeledField.fieldsToMapList(contactBuilder.phoneInfos),
-      JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactBuilder.emailInfos),
-      JSON_FIELD_ADDRESS_INFOS: LabeledField.fieldsToMapList(contactBuilder.addressInfos),
-      JSON_FIELD_ORGANIZATION_NAME: contactBuilder.organizationName,
-      JSON_FIELD_ORGANIZATION_DIVISION: contactBuilder.organizationDivision,
-      JSON_FIELD_ORGANIZATION_TITLE: contactBuilder.organizationTitle,
-      JSON_FIELD_WEBSITE: contactBuilder.website,
-      JSON_FIELD_NOTES: contactBuilder.notes,
-      JSON_FIELD_UNKNOWN_VCF_FIELDS: contactBuilder.unknownVCFFieldLines
+      JSON_FIELD_EXTERNAL_ID: contactData.externalId,
+      JSON_FIELD_IMAGE: contactData.image,
+      JSON_FIELD_FIRST_NAME: contactData.firstName,
+      JSON_FIELD_LAST_NAME: contactData.lastName,
+      JSON_FIELD_NICK_NAME: contactData.nickName,
+      JSON_FIELD_FULL_NAME: contactData.fullName,
+      JSON_FIELD_PHONE_INFOS: LabeledField.fieldsToMapList(contactData.phoneInfos),
+      JSON_FIELD_EMAIL_INFOS: LabeledField.fieldsToMapList(contactData.emailInfos),
+      JSON_FIELD_ADDRESS_INFOS: LabeledField.fieldsToMapList(contactData.addressInfos),
+      JSON_FIELD_ORGANIZATION_NAME: contactData.organizationName,
+      JSON_FIELD_ORGANIZATION_DIVISION: contactData.organizationDivision,
+      JSON_FIELD_ORGANIZATION_TITLE: contactData.organizationTitle,
+      JSON_FIELD_WEBSITE: contactData.website,
+      JSON_FIELD_NOTES: contactData.notes,
+      JSON_FIELD_UNKNOWN_VCF_FIELDS: contactData.unknownVCFFieldLines
     });
+  }
+
+  // Using the UID example provided here:
+  // https://tools.ietf.org/html/rfc6350#section-6.7.6
+  static const _UID_PREFIX = 'f81d4fae-7dec-11d0-a765-';
+  // The suffix length should be 12, for example: f81d4fae-7dec-11d0-a765-00a0c91e6bf6
+  static const _UID_SUFFIX_PLACEHOLDER = '000000000000';
+
+  static String externalIdToUid(final int externaId) {
+    if (externaId == null) {
+      return null;
+    }
+    String externalIdString = externaId.toString();
+    final int lengthToAdd = _UID_SUFFIX_PLACEHOLDER.length - externalIdString.length;
+    if (lengthToAdd < 0) {
+      externalIdString = externalIdString.substring(0, _UID_SUFFIX_PLACEHOLDER.length);
+    } else if (lengthToAdd > 0) {
+      externalIdString = _UID_SUFFIX_PLACEHOLDER.substring(0, lengthToAdd) + externalIdString;
+    }
+    return _UID_PREFIX + externalIdString;
+  }
+
+  static int uidToExternalId(final String uid) {
+    if (uid == null) {
+      return null;
+    }
+    if (!uid.startsWith(_UID_PREFIX)) {
+      return null;
+    }
+    final String externalIdString = uid.substring(_UID_PREFIX.length);
+    try {
+      return int.parse(externalIdString);
+    } catch (error) {
+      return null;
+    }
   }
 }
 
 class Contact extends ContactData {
   final int id;
+  final int _externalId;
   final String _image;
   final String _firstName;
   final String _lastName;
@@ -76,6 +115,7 @@ class Contact extends ContactData {
 
   Contact(
     this.id,
+    this._externalId,
     this._image,
     this._firstName,
     this._lastName,
@@ -92,6 +132,8 @@ class Contact extends ContactData {
     this._unknownVCFFieldLines,
   ) : super();
 
+  @override
+  int get externalId => _externalId;
   @override
   String get image => _image;
   @override
@@ -231,6 +273,7 @@ class ContactBuilder extends ContactData {
   static Contact buildFromJson(final int id, final String json) {
     final Map<String, dynamic> decodedJson = jsonDecode(json);
     final ContactBuilder contactBuilder = ContactBuilder();
+    contactBuilder.setExternalId(decodedJson[ContactData.JSON_FIELD_EXTERNAL_ID]);
     contactBuilder.setImage(decodedJson[ContactData.JSON_FIELD_IMAGE]);
     contactBuilder.setFirstName(decodedJson[ContactData.JSON_FIELD_FIRST_NAME]);
     contactBuilder.setLastName(decodedJson[ContactData.JSON_FIELD_LAST_NAME]);
@@ -265,6 +308,7 @@ class ContactBuilder extends ContactData {
     return ContactBuilder.build(id, contactBuilder);
   }
 
+  int _externalId;
   String _image;
   String _fullName;
   String _firstName;
@@ -280,6 +324,8 @@ class ContactBuilder extends ContactData {
   String _notes;
   final List<String> _unknownVCFFieldLines = [];
 
+  @override
+  int get externalId => _externalId;
   @override
   String get image => _image;
   @override
@@ -362,6 +408,7 @@ class ContactBuilder extends ContactData {
     }
     return Contact(
       id,
+      contactData.externalId,
       contactData.image,
       getNonNullString(contactData.firstName),
       getNonNullString(contactData.lastName),
@@ -377,6 +424,11 @@ class ContactBuilder extends ContactData {
       getNonNullString(contactData.notes),
       contactData.unknownVCFFieldLines,
     );
+  }
+
+  ContactBuilder setExternalId(final int externalId) {
+    _externalId = externalId;
+    return this;
   }
 
   ContactBuilder setImage(final String image) {

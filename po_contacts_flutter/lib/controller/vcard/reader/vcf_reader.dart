@@ -145,6 +145,12 @@ abstract class VCFReader {
       return;
     }
 
+    final SingleValueField uidField = getSingleValueField(fieldLine, VCFConstants.FIELD_UID);
+    if (uidField != null) {
+      contactBuilder.setExternalId(ContactData.uidToExternalId(uidField.fieldValue));
+      return;
+    }
+
     final SingleValueField photoField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHOTO);
     if (photoField != null) {
       String fileExtension = '.jpg';

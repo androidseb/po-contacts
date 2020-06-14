@@ -24,6 +24,7 @@ class VCFConstants {
   static const FIELD_BEGIN_VCARD = 'BEGIN:VCARD';
   static const FIELD_END_VCARD = 'END:VCARD';
   static const FIELD_VERSION = 'VERSION';
+  static const FIELD_UID = 'UID';
   static const FIELD_PHOTO = 'PHOTO';
   static const FIELD_FULL_NAME = 'FN';
   static const FIELD_NAME = 'N';

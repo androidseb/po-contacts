@@ -50,7 +50,7 @@ abstract class VCFWriter {
     }
   }
 
-  void _writeVCFPhotoParams(StringBuffer output, String photoFileExtension) {
+  void _writeVCFPhotoParams(final StringBuffer output, final String photoFileExtension) {
     if (photoFileExtension == null) {
       return;
     }
@@ -61,12 +61,23 @@ abstract class VCFWriter {
     output.write(pictureTypeString);
   }
 
+  void _writeVCFUIDParams(final StringBuffer output, final bool isUID) {
+    if (!isUID) {
+      return;
+    }
+    output.write(VCFConstants.VCF_SEPARATOR_COLON);
+    output.write('urn');
+    output.write(VCFConstants.VCF_SEPARATOR_COLON);
+    output.write('uuid');
+  }
+
   void _writeVCFStringFieldValue(
     final String fieldName,
     final String fieldValue, {
     final VCFFieldLabelParamValue labelParamValue,
     final String photoFileExtension,
     final bool writeEmpty = false,
+    final bool isUID = false,
   }) {
     if (!writeEmpty && fieldValue.trim().isEmpty) {
       return;
@@ -75,6 +86,7 @@ abstract class VCFWriter {
     res.write(fieldName);
     _writeVCFFieldLabelParam(res, labelParamValue);
     _writeVCFPhotoParams(res, photoFileExtension);
+    _writeVCFUIDParams(res, isUID);
     res.write(':');
     res.write(_escapeStringToVCF(fieldValue));
     writeLine(res.toString());
@@ -115,6 +127,13 @@ abstract class VCFWriter {
   }
 
   Future<void> writeContactFields(final Contact contact) async {
+    if (contact.externalId != null) {
+      _writeVCFStringFieldValue(
+        VCFConstants.FIELD_UID,
+        ContactData.externalIdToUid(contact.externalId),
+        isUID: true,
+      );
+    }
     if (contact.image != null) {
       final String fileExtension = Utils.getFileExtension(contact.image);
       final String photoAsBase64String = await fileReader.fileToBase64String(contact.image);

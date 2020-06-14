@@ -11,6 +11,7 @@ const String specialCharsWorstlyEscaped = ' ; & \\ : * & \' " . \t ~ @ ç';
 
 final Contact testContactSimplest = Contact(
   0, //id
+  null, //externalId
   null, //image
   '', //firstName
   '', //lastName
@@ -30,6 +31,7 @@ final Contact testContactSimplest = Contact(
 
 final Contact testContactSimple = Contact(
   0, //id
+  12345, //externalId
   null, //image
   'First name Contact 2', //firstName
   'Last name Contact 2', //lastName
@@ -49,6 +51,7 @@ final Contact testContactSimple = Contact(
 
 final Contact testContactComplex = Contact(
   0, //id
+  null, //externalId
   'test/file/path/1.jpg', //image
   'First name', //firstName
   'Last name', //lastName
@@ -124,6 +127,7 @@ final Contact testContactComplex = Contact(
 
 final Contact testContactComplex2 = Contact(
   0, //id
+  null, //externalId
   null, //image
   'First name $specialCharsBase', //firstName
   'Last name $specialCharsBase', //lastName
@@ -131,8 +135,8 @@ final Contact testContactComplex2 = Contact(
   'Full Name $specialCharsBase', //fullName
   //phoneInfos
   [
-    StringLabeledField(LabeledFieldLabelType.CUSTOM, 'Custom Field Name For Phone $specialCharsBase',
-        '1234567896 $specialCharsBase'),
+    StringLabeledField(
+        LabeledFieldLabelType.CUSTOM, 'Custom Field Name For Phone $specialCharsBase', '1234567896 $specialCharsBase'),
     StringLabeledField(LabeledFieldLabelType.WORK, '', '1234567892 $specialCharsBase'),
     StringLabeledField(LabeledFieldLabelType.HOME, '', '1234567893 $specialCharsBase'),
     StringLabeledField(LabeledFieldLabelType.CELL, '', '1234567891 $specialCharsBase'),
@@ -209,6 +213,7 @@ END:VCARD\r
 
 const String CONTACT_SIMPLE_EXPECTED_OUTPUT = '''BEGIN:VCARD\r
 VERSION:2.1\r
+UID:urn:uuid:f81d4fae-7dec-11d0-a765-000000012345\r
 FN:Full Name Contact 2\r
 N:Last name Contact 2;First name Contact 2;;;\r
 NICKNAME:Nickname Contact 2\r
