@@ -105,9 +105,11 @@ class SyncProcedure<T> {
         syncResult.initialData.remoteFileETag,
       );
     }
+    await _syncController.markCandidateUploadFileAsSyncSucceeded();
     if (syncResult.hasLocalChanges && !_localDataChanged) {
-      _syncController.overwriteLocalItems(syncResult.syncResultData);
+      await _syncController.overwriteLocalItems(syncResult.syncResultData);
     }
+    await _syncController.markSyncSucceededFileAsSyncFinalized();
   }
 
   Future<void> execute() async {

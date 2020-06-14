@@ -211,6 +211,32 @@ abstract class SyncController<T> {
     return fileEntityByName(_UPLOADED_SYNC_FILE_PRE_UPLOAD);
   }
 
+  Future<void> markCandidateUploadFileAsSyncSucceeded() async {
+    if (!await fileWithNameExists(_UPLOADED_SYNC_FILE_PRE_UPLOAD)) {
+      return;
+    }
+    if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED)) {
+      await deleteFileWithName(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED);
+    }
+    await moveFileByName(
+      _UPLOADED_SYNC_FILE_PRE_UPLOAD,
+      _UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED,
+    );
+  }
+
+  Future<void> markSyncSucceededFileAsSyncFinalized() async {
+    if (!await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED)) {
+      return;
+    }
+    if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED)) {
+      await deleteFileWithName(_UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED);
+    }
+    await moveFileByName(
+      _UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED,
+      _UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED,
+    );
+  }
+
   Future<FileEntity> getLastSyncedFile() async {
     if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED)) {
       return fileEntityByName(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED);
