@@ -28,7 +28,6 @@ flutter build web
 
 cd $(git rev-parse --show-toplevel)
 mv bin/tmp/build/web bin/web
-rm -rf bin/tmp
 
 echo "Web app successfully built under 'bin/web'"
 echo "web_build completed"

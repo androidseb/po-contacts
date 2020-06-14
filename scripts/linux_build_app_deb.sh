@@ -57,4 +57,8 @@ echo "Moving the result file into bin/linux_app.deb"
 rm -f ../linux_app.deb
 mv $DEB_OUTPUT_FILE ../linux_app.deb
 
+echo "Deleting temporary build files..."
+rm -rf bin/tmp
+rm -rf bin/web
+
 echo "linux_build_app_deb completed"

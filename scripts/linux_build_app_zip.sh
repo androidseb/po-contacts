@@ -17,4 +17,8 @@ echo "Moving the result file into bin/linux_app.zip"
 rm -f ../linux_app.zip
 mv linux_app.zip ../
 
+echo "Deleting temporary build files..."
+rm -rf bin/tmp
+rm -rf bin/web
+
 echo "linux_build_app_zip completed"

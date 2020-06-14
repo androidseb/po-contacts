@@ -28,4 +28,7 @@ cd ios
 fastlane gym scheme:"Runner" export_method:"app-store"
 mv Runner.ipa ../../ios_app.ipa
 
+echo "Deleting temporary build files..."
+rm -rf bin/tmp
+
 echo "iOS app successfully built under 'bin/ios_app.ipa'"

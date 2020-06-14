@@ -17,4 +17,8 @@ echo "Moving the result file into bin/windows_app.zip"
 rm -f ../windows_app.zip
 mv windows_app.zip ../
 
+echo "Deleting temporary build files..."
+rm -rf bin/tmp
+rm -rf bin/web
+
 echo "windows_build_app_zip completed"

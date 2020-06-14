@@ -25,4 +25,7 @@ flutter pub get
 flutter build apk
 mv build/app/outputs/apk/release/app-release.apk ../android_app.apk
 
+echo "Deleting temporary build files..."
+rm -rf bin/tmp
+
 echo "Android app successfully built under 'bin/android_app.apk'"
