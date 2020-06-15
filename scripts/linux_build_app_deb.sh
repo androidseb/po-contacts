@@ -5,7 +5,7 @@ cd $(git rev-parse --show-toplevel)
 
 echo "linux_build_app_deb started"
 
-APP_VERSION=$(cat po_contacts_flutter/lib/app_version.dart|cut -d\' -f2|cut -d\+ -f1)
+APP_VERSION=$(cat po_contacts_flutter/lib/assets/constants/app_version.dart|cut -d\' -f2|cut -d\+ -f1)
 sh scripts/subscripts/linux_build_app_folder.sh
 cd bin/tmp_linux
 OUTPUT_FOLDER_PATH="po-contacts"
