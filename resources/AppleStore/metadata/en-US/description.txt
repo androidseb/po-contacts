@@ -10,6 +10,7 @@ Disclaimer
 I built this app on my free time and mostly as a learning experience. I intend to use it myself and I'm happy to share it publicly for free if it can help others. I also made the code available publicly, because I believe being open source is an important part of a privacy-focused app. That being said, if you choose to use it, you use it at your own risks, there is no warranty (see the licence for more details).
 
 Features:
+- Open source
 - Create and edit contact details
 - Start email from contact
 - Start phone from contact

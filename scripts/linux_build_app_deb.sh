@@ -34,9 +34,9 @@ echo "Architecture: all">>$DEB_CONTROL_OUTPUT_FILE_PATH
 echo "Maintainer: theandroidseb+pocontactssupport@gmail.com">>$DEB_CONTROL_OUTPUT_FILE_PATH
 echo "Depends: libatomic1">>$DEB_CONTROL_OUTPUT_FILE_PATH
 echo "Installed-Size: 100000">>$DEB_CONTROL_OUTPUT_FILE_PATH
-echo "Homepage: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo "Homepage: https://pocontacts.app">>$DEB_CONTROL_OUTPUT_FILE_PATH
 echo "Description: Privacy Oriented Contacts Manager">>$DEB_CONTROL_OUTPUT_FILE_PATH
-echo " For a complete description, see the website: https://github.com/androidseb/po-contacts">>$DEB_CONTROL_OUTPUT_FILE_PATH
+echo " For a complete description, see the website: https://pocontacts.app">>$DEB_CONTROL_OUTPUT_FILE_PATH
 cp -r $OUTPUT_FOLDER_PATH/* $DEB_SHARE_OUTPUT_FOLDER_PATH/
 echo $DEB_BIN_OUTPUT_FILE_CONTENT>$DEB_BIN_OUTPUT_FILE_PATH
 chmod 0755 $DEB_BIN_OUTPUT_FILE_PATH
