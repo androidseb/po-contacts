@@ -6,7 +6,7 @@ The vision and end goal of this project is to have a **portable** and **privacy 
 
 * Portable means you can use it on "any" platform (see [supported platforms](#supported-platforms)).
 
-* Privacy oriented means it's built with a "privacy first" mindset. See the [privacy policy](./privacy_policy.md) for details.
+* Privacy oriented means it's built with a "privacy first" mindset. See the [privacy policy](https://www.pocontacts.app/privacy) for details.
 
 ## Disclaimer
 
@@ -68,7 +68,7 @@ I built this app on my free time and mostly as a learning experience. I intend t
 * Extract the zip archive
 * Launch the "nw.exe" file from the extracted folder
 
-For more download options like older versions download, see the [releases download page](#https://github.com/androidseb/po-contacts/releases).
+For more download options like older versions download, see the [releases download page](https://github.com/androidseb/po-contacts/releases).
 
 ## Troubleshooting
 
