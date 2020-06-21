@@ -23,7 +23,11 @@ class WebAbstractFS {
 
   void writeFile(final String fileAbsPath, final String base64ContentString) {
     final String fileKey = '$_FILE_KEY_PREFIX://$fileAbsPath';
-    _htmlWindow.localStorage[fileKey] = base64ContentString;
+    if (base64ContentString == null) {
+      _htmlWindow.localStorage.remove(fileKey);
+    } else {
+      _htmlWindow.localStorage[fileKey] = base64ContentString;
+    }
   }
 }
 
