@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive_code_based_auth.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';

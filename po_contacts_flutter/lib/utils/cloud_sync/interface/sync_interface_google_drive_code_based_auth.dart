@@ -1,19 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
-import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class _OAuthCodeData {
@@ -52,16 +44,16 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
     return (await _sharedPreferences).getString(_GOOGLE_DRIVE_ACCESS_TOKEN);
   }
 
-  static Future<String> _setAccessToken(final String accessToken) async {
-    (await _sharedPreferences).setString(_GOOGLE_DRIVE_ACCESS_TOKEN, accessToken);
+  static Future<void> _setAccessToken(final String accessToken) async {
+    await (await _sharedPreferences).setString(_GOOGLE_DRIVE_ACCESS_TOKEN, accessToken);
   }
 
   static Future<String> _getRefreshToken() async {
     return (await _sharedPreferences).getString(_GOOGLE_DRIVE_REFRESH_TOKEN);
   }
 
-  static Future<String> _setRefreshToken(final String refreshToken) async {
-    (await _sharedPreferences).setString(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
+  static Future<void> _setRefreshToken(final String refreshToken) async {
+    await (await _sharedPreferences).setString(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
   }
 
   static Future<bool> _isAccessTokenValid(final String accessToken) async {
@@ -296,7 +288,7 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
       refreshToken,
     );
     if (refreshedAccessToken != null) {
-      _setAccessToken(refreshedAccessToken);
+      await _setAccessToken(refreshedAccessToken);
       return refreshedAccessToken;
     }
     if (!allowUI) {
@@ -329,8 +321,8 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
       return null;
     }
 
-    _setRefreshToken(createdTokenData.refresh_token);
-    _setAccessToken(createdTokenData.access_token);
+    await _setRefreshToken(createdTokenData.refresh_token);
+    await _setAccessToken(createdTokenData.access_token);
     return createdTokenData.access_token;
   }
 }
