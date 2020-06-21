@@ -17,11 +17,7 @@ import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 class ContactIdProvider extends SyncDataInfoProvider<Contact> {
   @override
   String getItemId(final Contact item) {
-    if (item.externalId == null) {
-      return '${item.id}';
-    } else {
-      return '${item.externalId}';
-    }
+    return '${item.id}';
   }
 
   @override
@@ -125,9 +121,10 @@ class POCSyncController extends SyncController<Contact> {
         DiskFileInflater(),
       ),
     );
-    int counter = 0;
     for (final ContactBuilder cb in lastSyncedContacts) {
-      res.add(ContactBuilder.build(counter++, cb));
+      if (cb.externalId != null) {
+        res.add(ContactBuilder.build(cb.externalId, cb));
+      }
     }
     return res;
   }

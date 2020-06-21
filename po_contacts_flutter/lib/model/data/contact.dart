@@ -23,7 +23,6 @@ abstract class ContactData {
   static const String JSON_FIELD_NOTES = 'notes';
   static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
 
-  int get externalId;
   String get image;
   String get firstName;
   String get lastName;
@@ -41,7 +40,6 @@ abstract class ContactData {
 
   static String toJsonString(final ContactData contactData) {
     return jsonEncode({
-      JSON_FIELD_EXTERNAL_ID: contactData.externalId,
       JSON_FIELD_IMAGE: contactData.image,
       JSON_FIELD_FIRST_NAME: contactData.firstName,
       JSON_FIELD_LAST_NAME: contactData.lastName,
@@ -97,7 +95,6 @@ abstract class ContactData {
 
 class Contact extends ContactData {
   final int id;
-  final int _externalId;
   final String _image;
   final String _firstName;
   final String _lastName;
@@ -115,7 +112,6 @@ class Contact extends ContactData {
 
   Contact(
     this.id,
-    this._externalId,
     this._image,
     this._firstName,
     this._lastName,
@@ -132,8 +128,6 @@ class Contact extends ContactData {
     this._unknownVCFFieldLines,
   ) : super();
 
-  @override
-  int get externalId => _externalId;
   @override
   String get image => _image;
   @override
@@ -324,7 +318,6 @@ class ContactBuilder extends ContactData {
   String _notes;
   final List<String> _unknownVCFFieldLines = [];
 
-  @override
   int get externalId => _externalId;
   @override
   String get image => _image;
@@ -408,7 +401,6 @@ class ContactBuilder extends ContactData {
     }
     return Contact(
       id,
-      contactData.externalId,
       contactData.image,
       getNonNullString(contactData.firstName),
       getNonNullString(contactData.lastName),

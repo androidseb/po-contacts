@@ -4,6 +4,11 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 
+Contact contactBuilderToContact(final ContactBuilder contactBuilder) {
+  final int contactId = contactBuilder.externalId == null ? 0 : contactBuilder.externalId;
+  return ContactBuilder.build(contactId, contactBuilder);
+}
+
 const String specialCharsBase = ' ; & \\ : * & \' " . \t ~ @ ç';
 const String specialCharsEscaped = ' \\; & \\\\ \\: * & \' " . \t ~ @ ç';
 const String specialCharsBadlyEscaped = ' \\; & \\ \\: * & \' " . \t ~ @ ç';
@@ -11,7 +16,6 @@ const String specialCharsWorstlyEscaped = ' ; & \\ \\: * & \' " . \t ~ @ ç';
 
 final Contact testContactSimplest = Contact(
   0, //id
-  0, //externalId
   null, //image
   '', //firstName
   '', //lastName
@@ -29,29 +33,27 @@ final Contact testContactSimplest = Contact(
   [], //unknownVCFFieldLines
 );
 
-final Contact testContactSimple = Contact(
-  0, //id
-  12345, //externalId
-  null, //image
-  'First name Contact 2', //firstName
-  'Last name Contact 2', //lastName
-  'Nickname Contact 2', //nickName
-  'Full Name Contact 2', //fullName
-  //phoneInfos
-  [],
-  [], //emailInfos
-  [], //addressInfos
-  'Organization Name Contact 2', //organizationName
-  'Organization Division Contact 2', //organizationDivision
-  'Organization Title Contact 2', //organizationTitle
-  'www.website.com Contact 2', //website
-  'Notes\nAnd\nmore\nlines Contact 2', //notes
-  [], //unknownVCFFieldLines
-);
+final ContactBuilder testContactSimpleBuilder = ContactBuilder()
+      ..setExternalId(12345) //id
+      ..setImage(null) //image
+      ..setFirstName('First name Contact 2') //firstName
+      ..setLastName('Last name Contact 2') //lastName
+      ..setNickName('Nickname Contact 2') //nickName
+      ..setFullName('Full Name Contact 2') //fullName
+      ..setPhoneInfos([]) //phoneInfos
+      ..setEmailInfos([]) //emailInfos
+      ..setAddressInfos([]) //addressInfos
+      ..setOrganizationName('Organization Name Contact 2') //organizationName
+      ..setOrganizationDivision('Organization Division Contact 2') //organizationDivision
+      ..setOrganizationTitle('Organization Title Contact 2') //organizationTitle
+      ..setWebsite('www.website.com Contact 2') //website
+      ..setNotes('Notes\nAnd\nmore\nlines Contact 2') //notes
+    ;
+
+final Contact testContactSimple = contactBuilderToContact(testContactSimpleBuilder);
 
 final Contact testContactComplex = Contact(
   0, //id
-  0, //externalId
   'test/file/path/1.jpg', //image
   'First name', //firstName
   'Last name', //lastName
@@ -127,7 +129,6 @@ final Contact testContactComplex = Contact(
 
 final Contact testContactComplex2 = Contact(
   0, //id
-  0, //externalId
   null, //image
   'First name $specialCharsBase', //firstName
   'Last name $specialCharsBase', //lastName
