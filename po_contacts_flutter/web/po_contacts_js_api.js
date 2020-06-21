@@ -23,3 +23,16 @@ try {
         }
     }
 }
+
+//Overriding the window.open function so that it opens the system browser instead of a nwjs window
+{
+    try {
+        const gui = require('nw.gui');
+        function _windowOpenOverride(url) {
+            gui.Shell.openExternal(url);
+        }
+        window.open = _windowOpenOverride;
+    } catch (error) {
+        console.error(error, error.stack);
+    }
+}

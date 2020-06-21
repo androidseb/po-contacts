@@ -16,9 +16,12 @@ class SyncModel {
     await (await _sharedPreferences).setString(_PREF_KEY_SYNC_INTERFACE, syncInterfaceValue);
   }
 
-  Future<SyncInterface> getCurrentSyncInterface(final SyncInterfaceConfig config) async {
+  Future<SyncInterface> getCurrentSyncInterface(
+    final SyncInterfaceConfig config,
+    final SyncInterfaceUIController uiController,
+  ) async {
     final String syncInterfaceValue = await _readSyncInterfaceValue();
-    return SyncInterface.stringToSyncInterface(config, this, syncInterfaceValue);
+    return SyncInterface.stringToSyncInterface(config, uiController, this, syncInterfaceValue);
   }
 
   void updateLastSyncError(final SyncException syncException) {

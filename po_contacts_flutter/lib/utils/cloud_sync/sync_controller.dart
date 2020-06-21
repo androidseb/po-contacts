@@ -50,6 +50,8 @@ abstract class SyncController<T> {
 
   SyncInterfaceConfig getSyncInterfaceConfig();
 
+  SyncInterfaceUIController getSyncInterfaceUIController();
+
   SyncDataInfoProvider<T> getItemInfoProvider();
 
   Future<List<T>> getLocalItems();
@@ -143,7 +145,11 @@ abstract class SyncController<T> {
   }
 
   Future<SyncInterface> _initializeSyncInterface() async {
-    final SyncInterface syncInterface = SyncInterfaceForGoogleDrive(getSyncInterfaceConfig(), _syncModel);
+    final SyncInterface syncInterface = SyncInterfaceForGoogleDrive(
+      getSyncInterfaceConfig(),
+      getSyncInterfaceUIController(),
+      _syncModel,
+    );
     final bool couldAuthenticateExplicitly = await syncInterface.authenticateExplicitly();
     if (!couldAuthenticateExplicitly) {
       throw SyncException(SyncExceptionType.AUTHENTICATION);
@@ -178,7 +184,10 @@ abstract class SyncController<T> {
   }
 
   Future<SyncInterface> _getAuthenticatedSyncInterface({bool directUserAction = false}) async {
-    SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface(getSyncInterfaceConfig());
+    SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface(
+      getSyncInterfaceConfig(),
+      getSyncInterfaceUIController(),
+    );
     if (syncInterface == null) {
       syncInterface = await _initializeSyncInterface();
       if (syncInterface == null) {

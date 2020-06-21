@@ -13,6 +13,7 @@ rm -rf bin/tmp
 rm -rf bin/web
 cp -r po_contacts_flutter bin/tmp
 echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID';">bin/tmp/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_SECRET = 'Not needed for this implementation';">>bin/tmp/lib/assets/constants/google_oauth_client_id.dart
 
 cd bin/tmp
 
@@ -26,6 +27,7 @@ flutter build apk
 mv build/app/outputs/apk/release/app-release.apk ../android_app.apk
 
 echo "Deleting temporary build files..."
+cd $(git rev-parse --show-toplevel)
 rm -rf bin/tmp
 
 echo "Android app successfully built under 'bin/android_app.apk'"

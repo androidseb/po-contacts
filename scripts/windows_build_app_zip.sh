@@ -18,6 +18,7 @@ rm -f ../windows_app.zip
 mv windows_app.zip ../
 
 echo "Deleting temporary build files..."
+cd $(git rev-parse --show-toplevel)
 rm -rf bin/tmp
 rm -rf bin/web
 

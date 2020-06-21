@@ -58,6 +58,7 @@ rm -f ../linux_app.deb
 mv $DEB_OUTPUT_FILE ../linux_app.deb
 
 echo "Deleting temporary build files..."
+cd $(git rev-parse --show-toplevel)
 rm -rf bin/tmp
 rm -rf bin/web
 

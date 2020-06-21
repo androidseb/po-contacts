@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
@@ -25,6 +27,32 @@ class ContactIdProvider extends SyncDataInfoProvider<Contact> {
   @override
   bool itemsEqualExceptId(final Contact item1, final Contact item2) {
     return Contact.equalExceptId(item1, item2);
+  }
+}
+
+class POCSyncInterfaceUIController extends SyncInterfaceUIController {
+  POCSyncInterfaceUIController()
+      : super(
+        //TODO use I18n for this
+        //googleAuthCancelButtonText: '',
+        //googleAuthDialogTitleText: '',
+        //googleAuthDialogMessageText: '',
+        //googleAuthDialogCopyCodeButtonText: '',
+        //googleAuthDialogOpenBrowserButtonText: '',
+        //continueGoogleAuthDialogTitleText: '',
+        //continueGoogleAuthDialogMessageText: '',
+        //continueGoogleAuthDialogProceedButtonText: '',
+        //continueGoogleAuthDialogRestartButtonText: '',
+        );
+
+  @override
+  BuildContext getUIBuildContext() {
+    return MainController.get().context;
+  }
+
+  @override
+  void copyTextToClipBoard(final String text) {
+    MainController.get().psController.actionsManager.copyTextToClipBoard(text);
   }
 }
 
@@ -59,7 +87,14 @@ class POCSyncController extends SyncController<Contact> {
     return SyncInterfaceConfig(
       'pocontacts',
       'po_contacts_index.json',
+      POC_GOOGLE_OAUTH_CLIENT_ID,
+      POC_GOOGLE_OAUTH_CLIENT_SECRET,
     );
+  }
+
+  @override
+  SyncInterfaceUIController getSyncInterfaceUIController() {
+    return POCSyncInterfaceUIController();
   }
 
   @override

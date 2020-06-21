@@ -18,4 +18,4 @@ git update-index --skip-worktree po_contacts_flutter/lib/assets/constants/google
 
 # overwrite the google oauth client id in the source code
 echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_WEB_APP_GOOGLE_OAUTH_CLIENT_ID';">po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
-
+echo "const POC_GOOGLE_OAUTH_CLIENT_SECRET = '$POC_WEB_APP_GOOGLE_OAUTH_CLIENT_SECRET';">>po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart

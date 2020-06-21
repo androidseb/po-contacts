@@ -1,28 +1,24 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive_code_based_auth.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 
 class SyncInterfaceForGoogleDrive extends SyncInterface {
-  static const String MULTIPART_REQUESTS_BOUNDARY_STRING = '5408960f22bc432e938025d3e6034c33';
+  static const String _MULTIPART_REQUESTS_BOUNDARY_STRING = '5408960f22bc432e938025d3e6034c33';
 
-  final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: POC_GOOGLE_OAUTH_CLIENT_ID,
-    scopes: <String>[
-      'email',
-      'https://www.googleapis.com/auth/drive.file',
-    ],
-  );
+  String _accessToken;
 
-  Map<String, String> _authHeaders;
-
-  SyncInterfaceForGoogleDrive(final SyncInterfaceConfig config, final SyncModel syncModel) : super(config, syncModel);
+  SyncInterfaceForGoogleDrive(
+      final SyncInterfaceConfig config, final SyncInterfaceUIController uiController, final SyncModel syncModel)
+      : super(config, uiController, syncModel);
 
   SyncInterfaceType getSyncInterfaceType() {
     return SyncInterfaceType.GOOGLE_DRIVE;
@@ -30,20 +26,50 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   @override
   Future<bool> authenticateImplicitly() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: true);
-    if (googleSignInAccount != null) {
-      _authHeaders = await googleSignInAccount.authHeaders;
+    String resultingAccessToken = null;
+    if (kIsWeb) {
+      resultingAccessToken = await SyncInterfaceForGoogleDriveCodeBasedAuth.authenticateWithCode(this, false);
+    } else {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: config.clientId,
+        scopes: <String>[
+          'email',
+          'https://www.googleapis.com/auth/drive.file',
+        ],
+      );
+      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: true);
+      if (googleSignInAccount != null) {
+        resultingAccessToken = (await googleSignInAccount.authHeaders)['Authorization'];
+      }
     }
-    return googleSignInAccount != null;
+    if (resultingAccessToken != null) {
+      _accessToken = resultingAccessToken;
+    }
+    return resultingAccessToken != null;
   }
 
   @override
   Future<bool> authenticateExplicitly() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    if (googleSignInAccount != null) {
-      _authHeaders = await googleSignInAccount.authHeaders;
+    String resultingAccessToken = null;
+    if (kIsWeb) {
+      resultingAccessToken = await SyncInterfaceForGoogleDriveCodeBasedAuth.authenticateWithCode(this, true);
+    } else {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: config.clientId,
+        scopes: <String>[
+          'email',
+          'https://www.googleapis.com/auth/drive.file',
+        ],
+      );
+      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        resultingAccessToken = (await googleSignInAccount.authHeaders)['Authorization'];
+      }
     }
-    return googleSignInAccount != null;
+    if (resultingAccessToken != null) {
+      _accessToken = resultingAccessToken;
+    }
+    return resultingAccessToken != null;
   }
 
   @override
@@ -51,7 +77,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.Response httpGetResponse = await http.get(
       'https://www.googleapis.com/drive/v2/about',
       headers: {
-        'Authorization': _authHeaders['Authorization'],
+        'Authorization': _accessToken,
         'Accept': 'application/json',
       },
     );
@@ -85,7 +111,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.Response httpPostResponse = await http.post(
       'https://www.googleapis.com/drive/v3/files',
       headers: {
-        'Authorization': _authHeaders['Authorization'],
+        'Authorization': _accessToken,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
@@ -110,12 +136,12 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final Map<String, dynamic> requestMetaData,
     final Uint8List fileContent,
   ) {
-    return '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING\r\n' +
+    return '\r\n--$_MULTIPART_REQUESTS_BOUNDARY_STRING\r\n' +
         'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
         jsonEncode(requestMetaData) +
-        '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING\r\nContent-Type: application/octet-stream\r\nContent-Transfer-Encoding: base64\r\n\r\n' +
+        '\r\n--$_MULTIPART_REQUESTS_BOUNDARY_STRING\r\nContent-Type: application/octet-stream\r\nContent-Transfer-Encoding: base64\r\n\r\n' +
         base64.encode(fileContent) +
-        '\r\n--$MULTIPART_REQUESTS_BOUNDARY_STRING--';
+        '\r\n--$_MULTIPART_REQUESTS_BOUNDARY_STRING--';
   }
 
   Future<RemoteFile> _uploadFile(
@@ -146,9 +172,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       Uri.parse(requestUrl),
     );
     fileStreamedRequest.headers.addAll({
-      'Authorization': _authHeaders['Authorization'],
+      'Authorization': _accessToken,
       'Accept': 'application/json',
-      'Content-Type': 'multipart/related; boundary=$MULTIPART_REQUESTS_BOUNDARY_STRING',
+      'Content-Type': 'multipart/related; boundary=$_MULTIPART_REQUESTS_BOUNDARY_STRING',
       'Content-Length': multiPartRequestBodyString.length.toString(),
     });
     if (targetETag != null) {
@@ -210,7 +236,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {
-        'Authorization': _authHeaders['Authorization'],
+        'Authorization': _accessToken,
         'Accept': 'application/json',
       },
     );
@@ -256,7 +282,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {
-        'Authorization': _authHeaders['Authorization'],
+        'Authorization': _accessToken,
         'Accept': 'application/json',
       },
     );
@@ -283,7 +309,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {
-        'Authorization': _authHeaders['Authorization'],
+        'Authorization': _accessToken,
         'Accept': 'text/plain',
       },
     );
@@ -314,7 +340,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final http.Response httpGetResponse = await http.get(
       url,
       headers: {
-        'Authorization': _authHeaders['Authorization'],
+        'Authorization': _accessToken,
         'Accept': 'text/plain',
       },
     );

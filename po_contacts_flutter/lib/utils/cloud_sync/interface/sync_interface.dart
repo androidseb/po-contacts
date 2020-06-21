@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
@@ -13,10 +14,43 @@ enum SyncInterfaceType {
 class SyncInterfaceConfig {
   final String rootSyncFolderName;
   final String indexFileName;
+  final String clientId;
+  final String clientSecret;
   SyncInterfaceConfig(
     this.rootSyncFolderName,
     this.indexFileName,
+    this.clientId,
+    this.clientSecret,
   );
+}
+
+abstract class SyncInterfaceUIController {
+  BuildContext getUIBuildContext();
+  void copyTextToClipBoard(final String text);
+
+  final String googleAuthCancelButtonText;
+  final String googleAuthDialogTitleText;
+  final String googleAuthDialogMessageText;
+  final String googleAuthDialogCopyCodeButtonText;
+  final String googleAuthDialogOpenBrowserButtonText;
+  final String continueGoogleAuthDialogTitleText;
+  final String continueGoogleAuthDialogMessageText;
+  final String continueGoogleAuthDialogProceedButtonText;
+  final String continueGoogleAuthDialogRestartButtonText;
+
+  SyncInterfaceUIController({
+    this.googleAuthCancelButtonText = 'Cancel',
+    this.googleAuthDialogTitleText = 'Google Authentication',
+    this.googleAuthDialogMessageText =
+        'In order to authenticate this app with Google, you will need the special code below. Click the "Copy code" button, then click the "Open browser" button and paste the code there. This should start the authentication process with Google. Once you\'re done, come back to the app to finish authenticating.',
+    this.googleAuthDialogCopyCodeButtonText = 'Copy code',
+    this.googleAuthDialogOpenBrowserButtonText = 'Open browser',
+    this.continueGoogleAuthDialogTitleText = 'Finalize Google Authentication',
+    this.continueGoogleAuthDialogMessageText =
+        'Once you have authenticated to Google in your browser, click the "Proceed" button. If something went wrong and you need to restart the process, simply click the "Retry" button.',
+    this.continueGoogleAuthDialogRestartButtonText = 'Retry',
+    this.continueGoogleAuthDialogProceedButtonText = 'Proceed',
+  });
 }
 
 abstract class SyncInterface {
@@ -39,6 +73,7 @@ abstract class SyncInterface {
 
   static SyncInterface stringToSyncInterface(
     final SyncInterfaceConfig config,
+    final SyncInterfaceUIController uiController,
     final SyncModel syncModel,
     final String syncInterfaceAsString,
   ) {
@@ -48,7 +83,7 @@ abstract class SyncInterface {
     final Map<String, dynamic> syncInterfaceData = jsonDecode(syncInterfaceAsString);
     SyncInterface res;
     if (syncInterfaceData[_JSON_KEY_SYNC_INTERFACE_TYPE] == SyncInterfaceType.GOOGLE_DRIVE.index) {
-      res = SyncInterfaceForGoogleDrive(config, syncModel);
+      res = SyncInterfaceForGoogleDrive(config, uiController, syncModel);
     }
     if (res != null) {
       res._cloudIndexFileId = syncInterfaceData[_JSON_KEY_SYNC_INTERFACE_INDEX_FILE_ID];
@@ -57,13 +92,14 @@ abstract class SyncInterface {
   }
 
   final SyncInterfaceConfig config;
+  final SyncInterfaceUIController uiController;
   SyncModel _syncModel;
 
   String _cloudIndexFileId;
 
   String _encryptionKey;
 
-  SyncInterface(this.config, final SyncModel syncModel) {
+  SyncInterface(this.config, this.uiController, final SyncModel syncModel) {
     _syncModel = syncModel;
   }
 
