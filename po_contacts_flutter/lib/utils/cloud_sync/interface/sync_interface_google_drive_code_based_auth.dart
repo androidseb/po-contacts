@@ -102,7 +102,8 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
           Uri.encodeComponent(refreshToken),
     );
     if (httpPostResponse.statusCode == 200) {
-      return jsonDecode(httpPostResponse.body)['access_token'];
+      final Map<String, dynamic> httpPostResponseJSON = jsonDecode(httpPostResponse.body);
+      return httpPostResponseJSON['token_type'] + ' ' + httpPostResponseJSON['access_token'];
     } else {
       return null;
     }
