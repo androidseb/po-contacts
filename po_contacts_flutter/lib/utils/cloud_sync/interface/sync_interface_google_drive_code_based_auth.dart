@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 
 class _OAuthCodeData {
   final String device_code;
@@ -35,18 +34,9 @@ class _OAuthCreateTokenData {
 }
 
 class SyncInterfaceForGoogleDriveCodeBasedAuth {
-  static const String _GOOGLE_DRIVE_ACCESS_TOKEN = 'google_drive_access_token';
   static const String _GOOGLE_DRIVE_REFRESH_TOKEN = 'google_drive_refresh_token';
 
   static final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
-
-  static Future<String> _getAccessToken() async {
-    return (await _sharedPreferences).getString(_GOOGLE_DRIVE_ACCESS_TOKEN);
-  }
-
-  static Future<void> _setAccessToken(final String accessToken) async {
-    await (await _sharedPreferences).setString(_GOOGLE_DRIVE_ACCESS_TOKEN, accessToken);
-  }
 
   static Future<String> _getRefreshToken() async {
     return (await _sharedPreferences).getString(_GOOGLE_DRIVE_REFRESH_TOKEN);
@@ -54,30 +44,6 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
 
   static Future<void> _setRefreshToken(final String refreshToken) async {
     await (await _sharedPreferences).setString(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
-  }
-
-  static Future<bool> _isAccessTokenValid(final String accessToken) async {
-    if (accessToken == null) {
-      return false;
-    }
-    final http.Response httpGetResponse = await http.get(
-      'https://www.googleapis.com/drive/v2/about',
-      headers: {
-        'Authorization': accessToken,
-        'Accept': 'application/json',
-      },
-    );
-    if (httpGetResponse.statusCode == 200) {
-      return true;
-    } else if (httpGetResponse.statusCode == 401 || httpGetResponse.statusCode == 403) {
-      return false;
-    } else {
-      throw SyncException(
-        SyncExceptionType.SERVER,
-        message:
-            'SyncInterfaceForGoogleDriveCodeBasedAuth._isAccessTokenValid failed status code ${httpGetResponse.statusCode}',
-      );
-    }
   }
 
   static Future<String> _getRefreshedAccessToken(
@@ -276,10 +242,6 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
   }
 
   static Future<String> authenticateWithCode(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
-    final String accessToken = await _getAccessToken();
-    if (await _isAccessTokenValid(accessToken)) {
-      return accessToken;
-    }
     final String clientId = gdsi.config.clientId;
     final String clientSecret = gdsi.config.clientSecret;
     final String refreshToken = await _getRefreshToken();
@@ -289,7 +251,6 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
       refreshToken,
     );
     if (refreshedAccessToken != null) {
-      await _setAccessToken(refreshedAccessToken);
       return refreshedAccessToken;
     }
     if (!allowUI) {
@@ -323,7 +284,6 @@ class SyncInterfaceForGoogleDriveCodeBasedAuth {
     }
 
     await _setRefreshToken(createdTokenData.refresh_token);
-    await _setAccessToken(createdTokenData.access_token);
     return createdTokenData.access_token;
   }
 }
