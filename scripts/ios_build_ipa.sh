@@ -6,6 +6,11 @@ if [ -z "$POC_IOS_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
     exit 1
 fi
 
+if [ -z "$POC_IOS_APP_GOOGLE_OAUTH_REVERSED_CLIENT_ID" ]; then
+    echo "Missing env variable: POC_IOS_APP_GOOGLE_OAUTH_REVERSED_CLIENT_ID"
+    exit 1
+fi
+
 cd $(git rev-parse --show-toplevel)
 
 echo "Copying 'po_contacts_flutter' to 'bin/tmp'..."
@@ -18,6 +23,12 @@ cd bin/tmp
 echo "Editing source file locally for ios..."
 # Deleting all .web.dart files
 find . -type f -name '*.web.dart' -delete
+# Injecting Google oAuth reverse client ID into ios/Runner/Info.plist
+sed -i -e "s/SCRIPT_WILL_INSERT_REVERSED_CLIENT_ID_HERE/$POC_IOS_APP_GOOGLE_OAUTH_REVERSED_CLIENT_ID/" ios/Runner/Info.plist
+# Injecting Google oAuth client ID into ios/Runner/GoogleService-Info.plist
+sed -i -e "s/SCRIPT_WILL_INSERT_CLIENT_ID_HERE/$POC_IOS_APP_GOOGLE_OAUTH_CLIENT_ID/" ios/Runner/GoogleService-Info.plist
+# Injecting Google oAuth reverse client ID into ios/Runner/GoogleService-Info.plist
+sed -i -e "s/SCRIPT_WILL_INSERT_REVERSED_CLIENT_ID_HERE/$POC_IOS_APP_GOOGLE_OAUTH_REVERSED_CLIENT_ID/" ios/Runner/GoogleService-Info.plist
 
 echo "Executing flutter build ios..."
 flutter pub get

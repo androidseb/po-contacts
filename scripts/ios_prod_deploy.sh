@@ -11,6 +11,11 @@ if [ -z "$POC_IOS_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
     exit 1
 fi
 
+if [ -z "$POC_IOS_APP_GOOGLE_OAUTH_REVERSED_CLIENT_ID" ]; then
+    echo "Missing env variable: POC_IOS_APP_GOOGLE_OAUTH_REVERSED_CLIENT_ID"
+    exit 1
+fi
+
 cd $(git rev-parse --show-toplevel)
 
 echo $POC_APPLE_REVIEW_PHONE_NUMBER>resources/AppleStore/metadata/review_information/phone_number.txt

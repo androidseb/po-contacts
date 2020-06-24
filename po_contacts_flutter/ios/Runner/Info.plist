@@ -100,5 +100,16 @@
 			</dict>
 		</dict>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>SCRIPT_WILL_INSERT_REVERSED_CLIENT_ID_HERE</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

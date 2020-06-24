@@ -12,7 +12,7 @@ dependencies:
   # Common - pure dart
   pointycastle: 1.0.2
   http: ^0.12.1
-  crypto: ^2.1.5
+  crypto: ^2.1.4
   uuid: ^2.1.0
 
   # Common - flutter

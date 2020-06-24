@@ -18,7 +18,6 @@ enum SyncState {
   LAST_SYNC_FAILED,
 }
 
-//TODO make it work for iOS
 //TODO UX around encryption
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
