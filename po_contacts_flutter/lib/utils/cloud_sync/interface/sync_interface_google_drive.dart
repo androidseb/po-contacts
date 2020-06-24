@@ -23,19 +23,27 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     return SyncInterfaceType.GOOGLE_DRIVE;
   }
 
+  GoogleSignIn _createGoogleSignIn() {
+    return GoogleSignIn(
+      clientId: config.clientId,
+      // Workaround for the bug in the google_sign_in library causing the app to crash on iOS:
+      // https://github.com/flutter/flutter/issues/46532#issuecomment-575882966
+      // TLDR: hostedDomain cannot be null so it must be specificed with an empty string
+      hostedDomain: '',
+      scopes: <String>[
+        'email',
+        'https://www.googleapis.com/auth/drive.file',
+      ],
+    );
+  }
+
   @override
   Future<bool> authenticateImplicitly() async {
     String resultingAccessToken = null;
     if (kIsWeb) {
       resultingAccessToken = await SyncInterfaceForGoogleDriveCodeBasedAuth.authenticateWithCode(this, false);
     } else {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId: config.clientId,
-        scopes: <String>[
-          'email',
-          'https://www.googleapis.com/auth/drive.file',
-        ],
-      );
+      final GoogleSignIn googleSignIn = _createGoogleSignIn();
       final GoogleSignInAccount googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: true);
       if (googleSignInAccount != null) {
         resultingAccessToken = (await googleSignInAccount.authHeaders)['Authorization'];
@@ -53,13 +61,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     if (kIsWeb) {
       resultingAccessToken = await SyncInterfaceForGoogleDriveCodeBasedAuth.authenticateWithCode(this, true);
     } else {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId: config.clientId,
-        scopes: <String>[
-          'email',
-          'https://www.googleapis.com/auth/drive.file',
-        ],
-      );
+      final GoogleSignIn googleSignIn = _createGoogleSignIn();
       final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
       if (googleSignInAccount != null) {
         resultingAccessToken = (await googleSignInAccount.authHeaders)['Authorization'];
