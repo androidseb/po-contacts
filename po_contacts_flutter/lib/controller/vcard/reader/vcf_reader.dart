@@ -147,7 +147,7 @@ abstract class VCFReader {
 
     final SingleValueField uidField = getSingleValueField(fieldLine, VCFConstants.FIELD_UID);
     if (uidField != null) {
-      contactBuilder.setExternalId(ContactData.uidToExternalId(uidField.fieldValue));
+      contactBuilder.setUID(uidField.fieldValue);
       return;
     }
 

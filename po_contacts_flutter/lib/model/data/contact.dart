@@ -7,7 +7,7 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 abstract class ContactData {
-  static const String JSON_FIELD_EXTERNAL_ID = 'external_id';
+  static const String JSON_FIELD_UID = 'uid';
   static const String JSON_FIELD_IMAGE = 'image';
   static const String JSON_FIELD_FIRST_NAME = 'first_name';
   static const String JSON_FIELD_LAST_NAME = 'last_name';
@@ -23,6 +23,7 @@ abstract class ContactData {
   static const String JSON_FIELD_NOTES = 'notes';
   static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
 
+  String get uid;
   String get image;
   String get firstName;
   String get lastName;
@@ -40,6 +41,7 @@ abstract class ContactData {
 
   static String toJsonString(final ContactData contactData) {
     return jsonEncode({
+      JSON_FIELD_UID: contactData.uid,
       JSON_FIELD_IMAGE: contactData.image,
       JSON_FIELD_FIRST_NAME: contactData.firstName,
       JSON_FIELD_LAST_NAME: contactData.lastName,
@@ -56,45 +58,11 @@ abstract class ContactData {
       JSON_FIELD_UNKNOWN_VCF_FIELDS: contactData.unknownVCFFieldLines
     });
   }
-
-  // Using the UID example provided here:
-  // https://tools.ietf.org/html/rfc6350#section-6.7.6
-  static const _UID_PREFIX = 'f81d4fae-7dec-11d0-a765-';
-  // The suffix length should be 12, for example: f81d4fae-7dec-11d0-a765-00a0c91e6bf6
-  static const _UID_SUFFIX_PLACEHOLDER = '000000000000';
-
-  static String externalIdToUid(final int externaId) {
-    if (externaId == null) {
-      return null;
-    }
-    String externalIdString = externaId.toString();
-    final int lengthToAdd = _UID_SUFFIX_PLACEHOLDER.length - externalIdString.length;
-    if (lengthToAdd < 0) {
-      externalIdString = externalIdString.substring(0, _UID_SUFFIX_PLACEHOLDER.length);
-    } else if (lengthToAdd > 0) {
-      externalIdString = _UID_SUFFIX_PLACEHOLDER.substring(0, lengthToAdd) + externalIdString;
-    }
-    return _UID_PREFIX + externalIdString;
-  }
-
-  static int uidToExternalId(final String uid) {
-    if (uid == null) {
-      return null;
-    }
-    if (!uid.startsWith(_UID_PREFIX)) {
-      return null;
-    }
-    final String externalIdString = uid.substring(_UID_PREFIX.length);
-    try {
-      return int.parse(externalIdString);
-    } catch (error) {
-      return null;
-    }
-  }
 }
 
 class Contact extends ContactData {
   final int id;
+  final String uid;
   final String _image;
   final String _firstName;
   final String _lastName;
@@ -112,6 +80,7 @@ class Contact extends ContactData {
 
   Contact(
     this.id,
+    this.uid,
     this._image,
     this._firstName,
     this._lastName,
@@ -267,7 +236,7 @@ class ContactBuilder extends ContactData {
   static Contact buildFromJson(final int id, final String json) {
     final Map<String, dynamic> decodedJson = jsonDecode(json);
     final ContactBuilder contactBuilder = ContactBuilder();
-    contactBuilder.setExternalId(decodedJson[ContactData.JSON_FIELD_EXTERNAL_ID]);
+    contactBuilder.setUID(decodedJson[ContactData.JSON_FIELD_UID]);
     contactBuilder.setImage(decodedJson[ContactData.JSON_FIELD_IMAGE]);
     contactBuilder.setFirstName(decodedJson[ContactData.JSON_FIELD_FIRST_NAME]);
     contactBuilder.setLastName(decodedJson[ContactData.JSON_FIELD_LAST_NAME]);
@@ -302,7 +271,7 @@ class ContactBuilder extends ContactData {
     return ContactBuilder.build(id, contactBuilder);
   }
 
-  int _externalId;
+  String _uid = Utils.generateUID();
   String _image;
   String _fullName;
   String _firstName;
@@ -318,7 +287,7 @@ class ContactBuilder extends ContactData {
   String _notes;
   final List<String> _unknownVCFFieldLines = [];
 
-  int get externalId => _externalId;
+  String get uid => _uid;
   @override
   String get image => _image;
   @override
@@ -401,6 +370,7 @@ class ContactBuilder extends ContactData {
     }
     return Contact(
       id,
+      contactData.uid == null ? '$id' : contactData.uid,
       contactData.image,
       getNonNullString(contactData.firstName),
       getNonNullString(contactData.lastName),
@@ -418,8 +388,10 @@ class ContactBuilder extends ContactData {
     );
   }
 
-  ContactBuilder setExternalId(final int externalId) {
-    _externalId = externalId;
+  ContactBuilder setUID(final String uid) {
+    if (uid != null) {
+      _uid = uid;
+    }
     return this;
   }
 

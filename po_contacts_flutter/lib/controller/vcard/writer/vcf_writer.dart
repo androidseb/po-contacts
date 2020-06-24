@@ -129,7 +129,7 @@ abstract class VCFWriter {
   Future<void> writeContactFields(final Contact contact) async {
     _writeVCFStringFieldValue(
       VCFConstants.FIELD_UID,
-      ContactData.externalIdToUid(contact.id),
+      contact.uid,
       isUID: true,
     );
     if (contact.image != null) {

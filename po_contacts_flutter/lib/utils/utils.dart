@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:uuid/uuid.dart';
 
 import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
@@ -149,5 +150,9 @@ class Utils {
     final Uint8List strData = new Utf8Encoder().convert(str);
     final crypto.Digest md5Digest = crypto.md5.convert(strData);
     return hex.encode(md5Digest.bytes);
+  }
+
+  static String generateUID() {
+    return Uuid().v1();
   }
 }
