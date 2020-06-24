@@ -19,7 +19,6 @@ enum SyncState {
 }
 
 //TODO make it work for iOS
-//TODO make it work for web
 //TODO UX around encryption
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit

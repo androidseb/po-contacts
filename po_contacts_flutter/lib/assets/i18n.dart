@@ -92,6 +92,15 @@ class I18nString {
   final String use_dark_display = 'use_dark_display';
   final String cloud_sync = 'cloud_sync';
   final String sync_to_new_file = 'sync_to_new_file';
+  final String google_auth_cancel_button_text = 'google_auth_cancel_button_text';
+  final String google_auth_dialog_title_text = 'google_auth_dialog_title_text';
+  final String google_auth_dialog_message_text = 'google_auth_dialog_message_text';
+  final String google_auth_dialog_copy_code_button_text = 'google_auth_dialog_copy_code_button_text';
+  final String google_auth_dialog_open_browser_button_text = 'google_auth_dialog_open_browser_button_text';
+  final String continue_google_auth_dialog_title_text = 'continue_google_auth_dialog_title_text';
+  final String continue_google_auth_dialog_message_text = 'continue_google_auth_dialog_message_text';
+  final String continue_google_auth_dialog_restart_button_text = 'continue_google_auth_dialog_restart_button_text';
+  final String continue_google_auth_dialog_proceed_button_text = 'continue_google_auth_dialog_proceed_button_text';
 }
 
 class I18n {
@@ -190,6 +199,15 @@ class I18n {
     string.use_dark_display: 'Use dark display',
     string.cloud_sync: 'Cloud sync',
     string.sync_to_new_file: 'Sync to new file',
+    string.google_auth_cancel_button_text: 'Cancel',
+    string.google_auth_dialog_title_text: 'Google Authentication',
+    string.google_auth_dialog_message_text: 'In order to authenticate this app with Google, you will need the special code below. Click the "Copy code" button, then click the "Open browser" button and paste the code there. This should start the authentication process with Google. Once you\'re done, come back to the app to finish authenticating.',
+    string.google_auth_dialog_copy_code_button_text: 'Copy code',
+    string.google_auth_dialog_open_browser_button_text: 'Open browser',
+    string.continue_google_auth_dialog_title_text: 'Finalize Google Authentication',
+    string.continue_google_auth_dialog_message_text: 'Once you have authenticated to Google in your browser, click the "Proceed" button. If something went wrong and you need to restart the process, simply click the "Retry" button.',
+    string.continue_google_auth_dialog_restart_button_text: 'Retry',
+    string.continue_google_auth_dialog_proceed_button_text: 'Proceed',
   };
 
   static String _getObjString(final Object _obj) {

@@ -29,16 +29,18 @@ class ContactIdProvider extends SyncDataInfoProvider<Contact> {
 class POCSyncInterfaceUIController extends SyncInterfaceUIController {
   POCSyncInterfaceUIController()
       : super(
-        //TODO use I18n for this
-        //googleAuthCancelButtonText: '',
-        //googleAuthDialogTitleText: '',
-        //googleAuthDialogMessageText: '',
-        //googleAuthDialogCopyCodeButtonText: '',
-        //googleAuthDialogOpenBrowserButtonText: '',
-        //continueGoogleAuthDialogTitleText: '',
-        //continueGoogleAuthDialogMessageText: '',
-        //continueGoogleAuthDialogProceedButtonText: '',
-        //continueGoogleAuthDialogRestartButtonText: '',
+          googleAuthCancelButtonText: I18n.getString(I18n.string.google_auth_cancel_button_text),
+          googleAuthDialogTitleText: I18n.getString(I18n.string.google_auth_dialog_title_text),
+          googleAuthDialogMessageText: I18n.getString(I18n.string.google_auth_dialog_message_text),
+          googleAuthDialogCopyCodeButtonText: I18n.getString(I18n.string.google_auth_dialog_copy_code_button_text),
+          googleAuthDialogOpenBrowserButtonText:
+              I18n.getString(I18n.string.google_auth_dialog_open_browser_button_text),
+          continueGoogleAuthDialogTitleText: I18n.getString(I18n.string.continue_google_auth_dialog_title_text),
+          continueGoogleAuthDialogMessageText: I18n.getString(I18n.string.continue_google_auth_dialog_message_text),
+          continueGoogleAuthDialogRestartButtonText:
+              I18n.getString(I18n.string.continue_google_auth_dialog_restart_button_text),
+          continueGoogleAuthDialogProceedButtonText:
+              I18n.getString(I18n.string.continue_google_auth_dialog_proceed_button_text),
         );
 
   @override
