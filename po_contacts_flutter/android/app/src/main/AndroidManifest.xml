@@ -11,6 +11,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="PO Contacts"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".MainActivity"
