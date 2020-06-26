@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:po_contacts_flutter/utils/secure_storage/secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
@@ -36,14 +36,12 @@ class _OAuthCreateTokenData {
 class SyncInterfaceForGoogleDriveCodeBasedAuth {
   static const String _GOOGLE_DRIVE_REFRESH_TOKEN = 'google_drive_refresh_token';
 
-  static final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
-
   static Future<String> _getRefreshToken() async {
-    return (await _sharedPreferences).getString(_GOOGLE_DRIVE_REFRESH_TOKEN);
+    return SecureStorage.instance.getValue(_GOOGLE_DRIVE_REFRESH_TOKEN);
   }
 
   static Future<void> _setRefreshToken(final String refreshToken) async {
-    await (await _sharedPreferences).setString(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
+    return SecureStorage.instance.setValue(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
   }
 
   static Future<String> _getRefreshedAccessToken(
