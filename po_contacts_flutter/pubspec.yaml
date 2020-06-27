@@ -1,6 +1,6 @@
 name: po_contacts_flutter
 description: The PO contacts app built with flutter.
-version: 2.0.0+38
+version: 2.0.0+39
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
