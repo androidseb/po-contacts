@@ -53,7 +53,7 @@ class ExportController {
     final TaskSetProgressCallback progressCallback,
   ) async {
     final List<Contact> contacts = MainController.get().model.contactsList;
-    exportAsVCFToFile(contacts, outputFile, encryptionKey, progressCallback: progressCallback);
+    return exportAsVCFToFile(contacts, outputFile, encryptionKey, progressCallback: progressCallback);
   }
 
   static Future<void> exportAsVCFToFile(
