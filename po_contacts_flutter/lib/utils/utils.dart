@@ -148,4 +148,26 @@ class Utils {
   static String generateUID() {
     return Uuid().v1();
   }
+
+  static bool areListsEqual(final List list1, final List list2) {
+    if (list1 == list2) {
+      return true;
+    }
+    if (list1 == null || list2 == null) {
+      return false;
+    }
+    if (list1.length != list2.length) {
+      return false;
+    }
+    for (int i = 0; i < list1.length; i++) {
+      final Object item1 = list1[i];
+      for (int j = 0; j < list2.length; j++) {
+        final Object item2 = list1[j];
+        if (item1 != item2) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }

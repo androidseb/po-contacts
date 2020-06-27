@@ -113,4 +113,19 @@ class AddressInfo {
     addedText = _addString(res, country, addedText);
     return res.toString();
   }
+
+  static bool areEqual(final AddressInfo item1, final AddressInfo item2) {
+    if (item1 == item2) {
+      return true;
+    }
+    if (item1 == null || item2 == null) {
+      return false;
+    }
+    if (item1.streetAddress != item2.streetAddress) return false;
+    if (item1.locality != item2.locality) return false;
+    if (item1.region != item2.region) return false;
+    if (item1.postalCode != item2.postalCode) return false;
+    if (item1.country != item2.country) return false;
+    return true;
+  }
 }
