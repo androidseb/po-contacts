@@ -5,7 +5,7 @@ import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart'
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
@@ -24,7 +24,6 @@ enum SyncState {
 //TODO add an option to cancel the sync
 //TODO add an option to view history and restore
 //TODO move file import/export to an isolate to avoid the UI freeze
-//TODO make sure the Google Auth works even without Google Play Services on Android
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
   static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:po_contacts_flutter/utils/secure_storage/secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_interface_google_drive.dart';
 
 class _OAuthCodeData {
   final String device_code;
@@ -33,7 +33,7 @@ class _OAuthCreateTokenData {
   );
 }
 
-class SyncInterfaceForGoogleDriveCodeBasedAuth {
+class GoogleOAuthWithDeviceCode {
   static const String _GOOGLE_DRIVE_REFRESH_TOKEN = 'google_drive_refresh_token';
 
   static Future<String> _getRefreshToken() async {

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/secure_storage/secure_storage.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';

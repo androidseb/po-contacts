@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
-import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive_code_based_auth.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/oauth/google_oauth.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
@@ -23,32 +21,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     return SyncInterfaceType.GOOGLE_DRIVE;
   }
 
-  GoogleSignIn _createGoogleSignIn() {
-    return GoogleSignIn(
-      clientId: config.clientId,
-      // Workaround for the bug in the google_sign_in library causing the app to crash on iOS:
-      // https://github.com/flutter/flutter/issues/46532#issuecomment-575882966
-      // TLDR: hostedDomain cannot be null so it must be specificed with an empty string
-      hostedDomain: '',
-      scopes: <String>[
-        'email',
-        'https://www.googleapis.com/auth/drive.file',
-      ],
-    );
-  }
-
   @override
   Future<bool> authenticateImplicitly() async {
-    String resultingAccessToken = null;
-    if (kIsWeb) {
-      resultingAccessToken = await SyncInterfaceForGoogleDriveCodeBasedAuth.authenticateWithCode(this, false);
-    } else {
-      final GoogleSignIn googleSignIn = _createGoogleSignIn();
-      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: true);
-      if (googleSignInAccount != null) {
-        resultingAccessToken = (await googleSignInAccount.authHeaders)['Authorization'];
-      }
-    }
+    final String resultingAccessToken = await GoogleOAuth.instance.obtainAccessToken(this, false);
     if (resultingAccessToken != null) {
       _accessToken = resultingAccessToken;
     }
@@ -57,16 +32,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   @override
   Future<bool> authenticateExplicitly() async {
-    String resultingAccessToken = null;
-    if (kIsWeb) {
-      resultingAccessToken = await SyncInterfaceForGoogleDriveCodeBasedAuth.authenticateWithCode(this, true);
-    } else {
-      final GoogleSignIn googleSignIn = _createGoogleSignIn();
-      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-      if (googleSignInAccount != null) {
-        resultingAccessToken = (await googleSignInAccount.authHeaders)['Authorization'];
-      }
-    }
+    final String resultingAccessToken = await GoogleOAuth.instance.obtainAccessToken(this, true);
     if (resultingAccessToken != null) {
       _accessToken = resultingAccessToken;
     }
