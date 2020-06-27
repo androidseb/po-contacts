@@ -9,6 +9,7 @@ import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_inter
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
@@ -23,7 +24,6 @@ enum SyncState {
 //TODO add an option to view the last sync error
 //TODO add an option to cancel the sync
 //TODO add an option to view history and restore
-//TODO move file import/export to an isolate to avoid the UI freeze
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
   static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';
@@ -110,7 +110,7 @@ abstract class SyncController<T> {
   Future<void> cancelSync() async {
     while (_syncState.currentValue == SyncState.SYNCING) {
       if (_currentSyncProcedure == null) {
-        await Utils.yieldMainQueue();
+        await MainQueueYielder.check();
       } else {
         _currentSyncProcedure.cancel();
         _currentSyncProcedure = null;

@@ -9,6 +9,7 @@ import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.d
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
@@ -41,7 +42,7 @@ class ImportController {
 
     if (userApprovedImport) {
       _importFileWithId(fileId);
-      await Utils.yieldMainQueue();
+      await MainQueueYielder.check();
     } else {
       _discardFileWithId(fileId);
       _currentlyImporting = false;
@@ -97,11 +98,13 @@ class ImportController {
         ),
       );
       await progressCallback.reportOneTaskCompleted();
+       await MainQueueYielder.check();
       int importedContactsCount = 0;
       for (final ContactBuilder cb in readContacts) {
         await MainController.get().model.addContact(cb);
         importedContactsCount++;
         await progressCallback.broadcastProgress(importedContactsCount / readContacts.length);
+        await MainQueueYielder.check();
       }
       importSuccessful = true;
     } finally {

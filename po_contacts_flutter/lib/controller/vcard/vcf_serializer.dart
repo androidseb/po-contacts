@@ -1,6 +1,7 @@
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 
 //Serializer for vcard based on specs here:
@@ -31,6 +32,7 @@ class VCFSerializer {
       final Contact c = contacts[i];
       await vcfWriter.writeContact(c);
       await progressCallback?.broadcastProgress((i + 1) / contacts.length);
+      await MainQueueYielder.check();
     }
   }
 }

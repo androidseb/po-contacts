@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 import "package:pointycastle/export.dart";
@@ -64,6 +65,7 @@ class EncryptionUtils {
     for (int i = 0; i < _DIGEST_ITERATIONS_COUNT; i++) {
       digestedData = d.process(dataToDigest);
       await progressCallback?.broadcastProgress(i / _DIGEST_ITERATIONS_COUNT);
+      await MainQueueYielder.check();
     }
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
@@ -104,6 +106,7 @@ class EncryptionUtils {
     while (offset < paddedPlainData.length) {
       offset += cbc.processBlock(paddedPlainData, offset, cipherText, offset);
       await progressCallback?.broadcastProgress(offset / paddedPlainData.length);
+      await MainQueueYielder.check();
     }
     assert(offset == paddedPlainData.length);
 
@@ -122,6 +125,7 @@ class EncryptionUtils {
     while (offset < cipherData.length) {
       offset += cbc.processBlock(cipherData, offset, paddedPlainText, offset);
       await progressCallback?.broadcastProgress(offset / cipherData.length);
+      await MainQueueYielder.check();
     }
     assert(offset == cipherData.length);
 
@@ -134,6 +138,7 @@ class EncryptionUtils {
     final Uint8List keySalt = _generateSalt();
     final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt, progressCallback);
     await progressCallback?.reportOneTaskCompleted();
+    await MainQueueYielder.check();
     final Uint8List paddedPlainTextData = _padData(plainData);
     final Uint8List encryptedBytes = await _aesCbcEncrypt(saltedDerivedKey, iv, paddedPlainTextData, progressCallback);
     return Utils.combineUInt8Lists([iv, keySalt, encryptedBytes]);
@@ -153,6 +158,7 @@ class EncryptionUtils {
     final Uint8List keySalt = cipherData.sublist(_AES_BLOCK_BYTES_COUNT, _AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
     final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt, progressCallback);
     await progressCallback?.reportOneTaskCompleted();
+     await MainQueueYielder.check();
     final Uint8List cipherDataBytes = cipherData.sublist(_AES_BLOCK_BYTES_COUNT + _SALT_BYTES_COUNT);
     final Uint8List decryptedBytes = await _aesCbcDecrypt(saltedDerivedKey, iv, cipherDataBytes, progressCallback);
     final Uint8List unPaddedData = _unPadData(decryptedBytes);

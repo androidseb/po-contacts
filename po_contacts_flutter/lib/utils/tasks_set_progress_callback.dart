@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:po_contacts_flutter/utils/utils.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 
 abstract class TaskSetProgressCallback {
   final List<int> taskIds;
@@ -39,13 +39,13 @@ abstract class TaskSetProgressCallback {
   }
 
   Future<void> broadcastProgress(final double progress) async {
+    await MainQueueYielder.check();
     _currentProgress = progress;
     final int approximateProgress = (100 * progress).floor();
     if (approximateProgress == _lastApproximateProgress) {
       return;
     }
     _lastApproximateProgress = approximateProgress;
-    await Utils.yieldMainQueue();
   }
 
   void reportAllTasksFinished(final int error) {

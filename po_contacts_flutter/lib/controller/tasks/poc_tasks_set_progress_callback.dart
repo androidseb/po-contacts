@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
-import 'package:po_contacts_flutter/utils/utils.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 
 enum POCTask {
@@ -62,6 +62,8 @@ class POCTaskSetProgressCallback extends TaskSetProgressCallback {
                   decoration: null,
                 ),
                 SizedBox(height: 16),
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
                 TextField(
                   textAlign: TextAlign.center,
                   enabled: false,
@@ -75,7 +77,7 @@ class POCTaskSetProgressCallback extends TaskSetProgressCallback {
     );
     final TaskSetProgressCallback progressCallback =
         POCTaskSetProgressCallback(tasks, (final String stringKey, final int progress) async {
-      await Utils.yieldMainQueue();
+      await MainQueueYielder.check();
       if (progress < 0) {
         if (Navigator.canPop(context)) {
           Navigator.pop(context);

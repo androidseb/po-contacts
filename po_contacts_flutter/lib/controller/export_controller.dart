@@ -6,6 +6,7 @@ import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_file_writer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
@@ -77,6 +78,8 @@ class ExportController {
       progressCallback: progressCallback,
     );
     await progressCallback?.reportOneTaskCompleted();
+    await MainQueueYielder.check();
     await vcfWriter.flushOutputBuffer(progressCallback: progressCallback);
+    await MainQueueYielder.check();
   }
 }

@@ -6,6 +6,7 @@ import 'package:po_contacts_flutter/controller/vcard/reader/abs_file_inflater.da
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/utils/encryption_utils.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 
 class VCFFileReader extends VCFReader {
@@ -33,6 +34,7 @@ class VCFFileReader extends VCFReader {
     final String decryptedContent = utf8.decode(decryptedContentBytes);
     final List<String> res = FileEntity.rawFileContentToLines(decryptedContent);
     await progressCallback?.reportOneTaskCompleted();
+    await MainQueueYielder.check();
     return res;
   }
 
@@ -48,6 +50,7 @@ class VCFFileReader extends VCFReader {
     readLine = _lines[_currentLine];
     _currentLine++;
     await progressCallback?.broadcastProgress(_currentLine / _lines.length);
+    await MainQueueYielder.check();
     return readLine;
   }
 }

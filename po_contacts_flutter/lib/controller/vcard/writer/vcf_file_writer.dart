@@ -7,6 +7,7 @@ import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/writer/vcf_writer.dart';
 import 'package:po_contacts_flutter/utils/encryption_utils.dart';
+import 'package:po_contacts_flutter/utils/main_queue_yielder.dart';
 import 'package:po_contacts_flutter/utils/tasks_set_progress_callback.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
@@ -37,6 +38,7 @@ class VCFFileWriter extends VCFWriter {
       );
       outputFinalBytes = Utils.combineUInt8Lists([fileHeaderContent, outputEncryptedBytes]);
       await progressCallback?.reportOneTaskCompleted();
+      await MainQueueYielder.check();
     }
     final String outputBase64String = base64.encode(outputFinalBytes);
     _file.writeAsBase64String(outputBase64String);

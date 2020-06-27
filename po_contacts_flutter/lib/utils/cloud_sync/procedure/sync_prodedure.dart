@@ -21,11 +21,10 @@ class SyncCancelationHandler {
 
   SyncCancelationHandler(this.syncProcedure);
 
-  void checkForCancelation() {
+  void checkForCancelation() async {
     if (_canceled) {
       throw SyncException(SyncExceptionType.CANCELED);
     }
-    Utils.yieldMainQueue();
   }
 }
 
