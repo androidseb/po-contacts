@@ -163,32 +163,38 @@ class MainController {
     );
   }
 
-  void startExportAllAsVCF() {
+  Future<String> promptUserForPasswordUsage({
+    @required final String promptTitle,
+    @required final String promptMessage,
+    final bool barrierDismissible = false,
+  }) async {
+    final Completer<String> passwordCompleter = Completer<String>();
     if (_context == null) {
-      return;
+      return passwordCompleter.future;
     }
     showDialog<Object>(
       context: _context,
+      barrierDismissible: barrierDismissible,
       builder: (final BuildContext context) {
         return AlertDialog(
-          title: Text(I18n.getString(I18n.string.export_all_as_vcf)),
+          title: Text(promptTitle),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(I18n.getString(I18n.string.export_encrypt_question)),
+                Text(promptMessage),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(I18n.getString(I18n.string.export_encrypt_option_unprotected)),
+              child: Text(I18n.getString(I18n.string.encrypt_option_unprotected)),
               onPressed: () {
                 Navigator.of(context).pop();
-                _exportController.exportAllAsVCF(null);
+                passwordCompleter.complete(null);
               },
             ),
             FlatButton(
-              child: Text(I18n.getString(I18n.string.export_encrypt_option_encrypted)),
+              child: Text(I18n.getString(I18n.string.encrypt_option_encrypted)),
               onPressed: () async {
                 Navigator.of(context).pop();
                 final String encryptionKey = await showTextInputDialog(
@@ -198,13 +204,22 @@ class MainController {
                 if (encryptionKey == null || encryptionKey.isEmpty) {
                   return;
                 }
-                _exportController.exportAllAsVCF(encryptionKey);
+                passwordCompleter.complete(encryptionKey);
               },
             ),
           ],
         );
       },
     );
+    return passwordCompleter.future;
+  }
+
+  void startExportAllAsVCF() async {
+    final String encryptionPassword = await promptUserForPasswordUsage(
+      promptTitle: I18n.getString(I18n.string.export_all_as_vcf),
+      promptMessage: I18n.getString(I18n.string.export_encrypt_question),
+    );
+    _exportController.exportAllAsVCF(encryptionPassword);
   }
 
   void showMessageDialog(final String title, final String message) {
@@ -373,17 +388,21 @@ class MainController {
     showSearch(context: _context, delegate: _contactsSearchDelegate);
   }
 
-  void promptUserForFileImport(final Function(bool approved) userApprovedImportCallback) {
+  Future<bool> promptUserForYesNoQuestion({
+    @required final String titleText,
+    @required final String messageText,
+  }) {
+    final Completer<bool> userResponseCompleter = Completer<bool>();
     showDialog<Object>(
       context: _context,
       barrierDismissible: false,
       builder: (final BuildContext context) {
         return AlertDialog(
-          title: Text(I18n.getString(I18n.string.import_file_title)),
+          title: Text(titleText),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(I18n.getString(I18n.string.import_file_question)),
+                Text(messageText),
               ],
             ),
           ),
@@ -392,20 +411,21 @@ class MainController {
               child: Text(I18n.getString(I18n.string.no)),
               onPressed: () {
                 Navigator.of(context).pop();
-                userApprovedImportCallback(false);
+                userResponseCompleter.complete(false);
               },
             ),
             FlatButton(
               child: Text(I18n.getString(I18n.string.yes)),
               onPressed: () {
                 Navigator.of(context).pop();
-                userApprovedImportCallback(true);
+                userResponseCompleter.complete(true);
               },
             ),
           ],
         );
       },
     );
+    return userResponseCompleter.future;
   }
 
   Future<FileEntity> createNewImageFile(final String fileExtension) async {

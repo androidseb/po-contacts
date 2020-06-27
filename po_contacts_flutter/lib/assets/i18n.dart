@@ -83,8 +83,8 @@ class I18nString {
   final String open_application_x = 'open_application_x';
   final String open_with_system = 'open_with_system';
   final String export_encrypt_question = 'export_encrypt_question';
-  final String export_encrypt_option_unprotected = 'export_encrypt_option_unprotected';
-  final String export_encrypt_option_encrypted = 'export_encrypt_option_encrypted';
+  final String encrypt_option_unprotected = 'encrypt_option_unprotected';
+  final String encrypt_option_encrypted = 'encrypt_option_encrypted';
   final String enter_password = 'enter_password';
   final String import_error_title = 'import_error_title';
   final String import_error_message = 'import_error_message';
@@ -92,6 +92,7 @@ class I18nString {
   final String use_dark_display = 'use_dark_display';
   final String cloud_sync = 'cloud_sync';
   final String sync_to_new_file = 'sync_to_new_file';
+  final String sync_to_new_file_encrypt_question = 'sync_to_new_file_encrypt_question';
   final String google_auth_cancel_button_text = 'google_auth_cancel_button_text';
   final String google_auth_dialog_title_text = 'google_auth_dialog_title_text';
   final String google_auth_dialog_message_text = 'google_auth_dialog_message_text';
@@ -101,6 +102,8 @@ class I18nString {
   final String continue_google_auth_dialog_message_text = 'continue_google_auth_dialog_message_text';
   final String continue_google_auth_dialog_restart_button_text = 'continue_google_auth_dialog_restart_button_text';
   final String continue_google_auth_dialog_proceed_button_text = 'continue_google_auth_dialog_proceed_button_text';
+  final String sync_remember_password_title = 'sync_remember_password_title';
+  final String sync_remember_password_message = 'sync_remember_password_message';
 }
 
 class I18n {
@@ -190,8 +193,8 @@ class I18n {
     string.open_application_x: 'Open application: %s',
     string.open_with_system: 'Open with system',
     string.export_encrypt_question: 'How do you want to export your data?\nYou can leave it unprotected or you can encrypt it with a password.\n\nIMPORTANT NOTE: if you decide to encrypt your exported data with a password, it should be impossible to read the data back without the password, which means losing the password is equivalent to losing the data. For that reason, it is highly recommended to use a password manager to store your password if you decide to use encryption.',
-    string.export_encrypt_option_unprotected: 'Unprotected',
-    string.export_encrypt_option_encrypted: 'Encrypt',
+    string.encrypt_option_unprotected: 'Unprotected',
+    string.encrypt_option_encrypted: 'Encrypt',
     string.enter_password: 'Enter password',
     string.import_error_title: 'Import error',
     string.import_error_message: 'Some error happened during the import, most likely because the file could not be read.',
@@ -199,6 +202,7 @@ class I18n {
     string.use_dark_display: 'Use dark display',
     string.cloud_sync: 'Cloud sync',
     string.sync_to_new_file: 'Sync to new file',
+    string.sync_to_new_file_encrypt_question: 'How do you want to sync your data?\nYou can leave it unprotected or you can encrypt it with a password.\n\nIMPORTANT NOTE: if you decide to encrypt your synced data with a password, it should be impossible to read the data back without the password, which means losing the password is equivalent to losing the data. For that reason, it is highly recommended to use a password manager to store your password if you decide to use encryption.',
     string.google_auth_cancel_button_text: 'Cancel',
     string.google_auth_dialog_title_text: 'Google Authentication',
     string.google_auth_dialog_message_text: 'In order to authenticate this app with Google, you will need the special code below. Click the "Copy code" button, then click the "Open browser" button and paste the code there. This should start the authentication process with Google. Once you\'re done, come back to the app to finish authenticating.',
@@ -208,6 +212,8 @@ class I18n {
     string.continue_google_auth_dialog_message_text: 'Once you have authenticated to Google in your browser, click the "Proceed" button. If something went wrong and you need to restart the process, simply click the "Retry" button.',
     string.continue_google_auth_dialog_restart_button_text: 'Retry',
     string.continue_google_auth_dialog_proceed_button_text: 'Proceed',
+    string.sync_remember_password_title: 'Remember encryption key?',
+    string.sync_remember_password_message: 'Do you want this application to remember the encryption key? For more details on how the encryption key is protected when stored on your device, please see the privacy policy.',
   };
 
   static String _getObjString(final Object _obj) {

@@ -1,5 +1,6 @@
 enum SyncExceptionType {
   AUTHENTICATION,
+  FILE_PARSING_ERROR,
   NETWORK,
   SERVER,
   CONCURRENCY,

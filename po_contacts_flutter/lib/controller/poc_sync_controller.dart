@@ -2,6 +2,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/export_controller.dart';
+import 'package:po_contacts_flutter/controller/import_controller.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.dart';
@@ -12,6 +13,7 @@ import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 
 class ContactIdProvider extends SyncDataInfoProvider<Contact> {
@@ -51,6 +53,30 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
   @override
   void copyTextToClipBoard(final String text) {
     MainController.get().psController.actionsManager.copyTextToClipBoard(text);
+  }
+
+  @override
+  Future<String> promptUserForCreationSyncPassword() async {
+    return MainController.get().promptUserForPasswordUsage(
+      promptTitle: I18n.getString(I18n.string.sync_to_new_file),
+      promptMessage: I18n.getString(I18n.string.sync_to_new_file_encrypt_question),
+    );
+  }
+
+  @override
+  Future<String> promptUserForResumeSyncPassword() {
+    return MainController.get().showTextInputDialog(
+      I18n.getString(I18n.string.enter_password),
+      isPassword: true,
+    );
+  }
+
+  @override
+  Future<bool> promptUserForSyncPasswordRemember() async {
+    return MainController.get().promptUserForYesNoQuestion(
+      titleText: I18n.getString(I18n.string.sync_remember_password_title),
+      messageText: I18n.getString(I18n.string.sync_remember_password_message),
+    );
   }
 }
 
@@ -108,7 +134,24 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
+  Future<bool> isFileEntityEncrypted(final FileEntity fileEntity) {
+    return ImportController.isFileEncrypted(fileEntity);
+  }
+
+  @override
   Future<List<Contact>> fileEntityToItemsList(
+    final FileEntity fileEntity,
+    final String encryptionKey,
+  ) async {
+    try {
+      final List<Contact> result = await _fileEntityToItemsList(fileEntity, encryptionKey);
+      return result;
+    } catch (error) {
+      throw new SyncException(SyncExceptionType.FILE_PARSING_ERROR);
+    }
+  }
+
+  Future<List<Contact>> _fileEntityToItemsList(
     final FileEntity fileEntity,
     final String encryptionKey,
   ) async {

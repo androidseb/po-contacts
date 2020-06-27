@@ -25,7 +25,7 @@ class ImportController {
     return await MainController.get().psController.fileTransitManager.getInboxFileId();
   }
 
-  void _startImportProcedure(final String fileId) {
+  void _startImportProcedure(final String fileId) async {
     if (fileId == null) {
       return;
     }
@@ -34,22 +34,25 @@ class ImportController {
     }
     _currentlyImporting = true;
 
-    MainController.get().promptUserForFileImport((userApprovedImport) async {
-      if (userApprovedImport) {
-        _importFileWithId(fileId);
-        await Utils.yieldMainQueue();
-      } else {
-        _discardFileWithId(fileId);
-        _currentlyImporting = false;
-      }
-    });
+    final bool userApprovedImport = await MainController.get().promptUserForYesNoQuestion(
+      titleText: I18n.getString(I18n.string.import_file_title),
+      messageText: I18n.getString(I18n.string.import_file_question),
+    );
+
+    if (userApprovedImport) {
+      _importFileWithId(fileId);
+      await Utils.yieldMainQueue();
+    } else {
+      _discardFileWithId(fileId);
+      _currentlyImporting = false;
+    }
   }
 
   void _discardFileWithId(final String fileId) {
     MainController.get().psController.fileTransitManager.discardInboxFileId(fileId);
   }
 
-  Future<bool> isFileEncrypted(final FileEntity file) async {
+  static Future<bool> isFileEncrypted(final FileEntity file) async {
     final String fileBase64String = await file.readAsBase64String();
     final Uint8List encryptionFlagHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
     final Uint8List fileRawContent = base64.decode(fileBase64String);

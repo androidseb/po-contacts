@@ -18,7 +18,6 @@ enum SyncState {
   LAST_SYNC_FAILED,
 }
 
-//TODO UX around encryption
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
 //TODO add an option to view the last sync error
@@ -53,6 +52,8 @@ abstract class SyncController<T> {
   SyncDataInfoProvider<T> getItemInfoProvider();
 
   Future<List<T>> getLocalItems();
+
+  Future<bool> isFileEntityEncrypted(final FileEntity fileEntity);
 
   Future<List<T>> fileEntityToItemsList(
     final FileEntity fileEntity,
@@ -135,11 +136,15 @@ abstract class SyncController<T> {
       _syncModel.updateLastSyncError(null);
       return true;
     } on SyncException catch (syncException) {
-      _syncModel.updateLastSyncError(syncException);
+      _handeSyncException(syncException);
     } catch (otherException) {
-      _syncModel.updateLastSyncError(SyncException(SyncExceptionType.OTHER, message: otherException.toString()));
+      _handeSyncException(SyncException(SyncExceptionType.OTHER, message: otherException.toString()));
     }
     return false;
+  }
+
+  void _handeSyncException(final SyncException syncException) {
+    _syncModel.updateLastSyncError(syncException);
   }
 
   Future<SyncInterface> _initializeSyncInterface() async {
@@ -173,11 +178,17 @@ abstract class SyncController<T> {
     }
     if (selectedCloudIndexFile == null) {
       selectedCloudIndexFile = await syncInterface.createNewIndexFile();
+      final String encryptionKey = await getSyncInterfaceUIController().promptUserForCreationSyncPassword();
+      if (encryptionKey != null) {
+        final bool rememberEncryptionKey = await getSyncInterfaceUIController().promptUserForSyncPasswordRemember();
+        syncInterface.setEncryptionKey(encryptionKey, rememberEncryptionKey);
+      }
     }
     if (selectedCloudIndexFile == null) {
       return null;
     }
     await syncInterface.setCloudIndexFileId(selectedCloudIndexFile.fileId);
+
     return syncInterface;
   }
 
@@ -210,7 +221,14 @@ abstract class SyncController<T> {
   Future<void> _performSyncImpl({bool directUserAction = false}) async {
     final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: directUserAction);
     _currentSyncProcedure = SyncProcedure(this, syncInterface);
-    await _currentSyncProcedure.execute();
+    try {
+      await _currentSyncProcedure.execute();
+    } on SyncException catch (syncException) {
+      if (syncException.type == SyncExceptionType.FILE_PARSING_ERROR) {
+        syncInterface.forgetEncryptionKey();
+      }
+      throw syncException;
+    }
     _currentSyncProcedure = null;
   }
 
@@ -282,6 +300,25 @@ abstract class SyncController<T> {
     await overwriteFile(tmpDownloadedFileName, latestCloudFileContent);
     await moveFileByName(tmpDownloadedFileName, downloadedFileName);
     return fileEntityByName(downloadedFileName);
+  }
+
+  Future<void> requestEncryptionKeyIfNeeded(
+    final SyncInterface syncInterface,
+    final FileEntity latestCloudFile,
+  ) async {
+    if (latestCloudFile == null || !await isFileEntityEncrypted(latestCloudFile)) {
+      return;
+    }
+    String encryptionKey = await syncInterface.getEncryptionKey();
+    if (encryptionKey != null) {
+      return;
+    }
+    encryptionKey = await getSyncInterfaceUIController().promptUserForResumeSyncPassword();
+    if (encryptionKey == null) {
+      throw SyncException(SyncExceptionType.CANCELED);
+    }
+    final bool rememberKey = await getSyncInterfaceUIController().promptUserForSyncPasswordRemember();
+    await syncInterface.setEncryptionKey(encryptionKey, rememberKey);
   }
 
   void recordLocalDataChanged() {

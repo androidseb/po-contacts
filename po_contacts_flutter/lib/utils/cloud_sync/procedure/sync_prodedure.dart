@@ -25,6 +25,7 @@ class SyncCancelationHandler {
     if (_canceled) {
       throw SyncException(SyncExceptionType.CANCELED);
     }
+    Utils.yieldMainQueue();
   }
 }
 
@@ -51,18 +52,22 @@ class SyncProcedure<T> {
     _cancelationHandler.checkForCancelation();
     final List<T> localItems = await _syncController.getLocalItems();
     _cancelationHandler.checkForCancelation();
+    final FileEntity latestCloudFile = await _syncController.getLatestCloudFile(_syncInterface);
+    _cancelationHandler.checkForCancelation();
+    await _syncController.requestEncryptionKeyIfNeeded(_syncInterface, latestCloudFile);
+    _cancelationHandler.checkForCancelation();
+    final String encryptionKey = await _syncInterface.getEncryptionKey();
+    _cancelationHandler.checkForCancelation();
+    final List<T> remoteItems = await _syncController.fileEntityToItemsList(
+      latestCloudFile,
+      encryptionKey,
+    );
+    _cancelationHandler.checkForCancelation();
     final FileEntity lastSyncedFile = await _syncController.getLastSyncedFile();
     _cancelationHandler.checkForCancelation();
     final List<T> lastSyncedItems = await _syncController.fileEntityToItemsList(
       lastSyncedFile,
-      _syncInterface.encryptionKey,
-    );
-    _cancelationHandler.checkForCancelation();
-    final FileEntity latestCloudFile = await _syncController.getLatestCloudFile(_syncInterface);
-    _cancelationHandler.checkForCancelation();
-    final List<T> remoteItems = await _syncController.fileEntityToItemsList(
-      latestCloudFile,
-      _syncInterface.encryptionKey,
+      encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
     final String fileETag = await _syncInterface.getFileETag(_syncInterface.cloudIndexFileId);
@@ -88,7 +93,7 @@ class SyncProcedure<T> {
     await _syncController.writeItemsListToFileEntity(
       syncResult.syncResultData,
       fileToUpload,
-      _syncInterface.encryptionKey,
+      await _syncInterface.getEncryptionKey(),
     );
     if (syncResult.hasRemoteChanges) {
       final String cloudIndexFileId = _syncInterface.cloudIndexFileId;

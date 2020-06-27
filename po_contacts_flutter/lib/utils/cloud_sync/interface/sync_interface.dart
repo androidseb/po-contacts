@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface_google_drive.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
+import 'package:po_contacts_flutter/utils/secure_storage/secure_storage.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 enum SyncInterfaceType {
@@ -27,6 +28,9 @@ class SyncInterfaceConfig {
 abstract class SyncInterfaceUIController {
   BuildContext getUIBuildContext();
   void copyTextToClipBoard(final String text);
+  Future<String> promptUserForCreationSyncPassword();
+  Future<String> promptUserForResumeSyncPassword();
+  Future<bool> promptUserForSyncPasswordRemember();
 
   final String googleAuthCancelButtonText;
   final String googleAuthDialogTitleText;
@@ -54,6 +58,7 @@ abstract class SyncInterfaceUIController {
 }
 
 abstract class SyncInterface {
+  static const String _ENCRYPTION_KEY_STORAGE_NAME = 'encryptionKey';
   static const String _JSON_KEY_SYNC_INTERFACE_TYPE = 'type';
   static const String _JSON_KEY_SYNC_INTERFACE_INDEX_FILE_ID = 'index_file_id';
 
@@ -97,7 +102,7 @@ abstract class SyncInterface {
 
   String _cloudIndexFileId;
 
-  String _encryptionKey;
+  String _ramEncryptionKey;
 
   SyncInterface(this.config, this.uiController, final SyncModel syncModel) {
     _syncModel = syncModel;
@@ -204,5 +209,25 @@ abstract class SyncInterface {
 
   String get cloudIndexFileId => _cloudIndexFileId;
 
-  String get encryptionKey => _encryptionKey;
+  Future<String> getEncryptionKey() async {
+    if (_ramEncryptionKey == null) {
+      final String readKey = await SecureStorage.instance.getValue(_ENCRYPTION_KEY_STORAGE_NAME);
+      if (readKey != null && readKey.isNotEmpty) {
+        _ramEncryptionKey = readKey;
+      }
+    }
+    return _ramEncryptionKey;
+  }
+
+  Future<void> setEncryptionKey(final String encryptionKey, final bool rememberKey) async {
+    _ramEncryptionKey = encryptionKey;
+    if (rememberKey) {
+      await SecureStorage.instance.setValue(_ENCRYPTION_KEY_STORAGE_NAME, encryptionKey);
+    }
+  }
+
+  Future<void> forgetEncryptionKey() async {
+    _ramEncryptionKey = null;
+    await SecureStorage.instance.setValue(_ENCRYPTION_KEY_STORAGE_NAME, '');
+  }
 }
