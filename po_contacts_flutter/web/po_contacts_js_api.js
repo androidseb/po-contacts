@@ -36,3 +36,55 @@ try {
         console.error(error, error.stack);
     }
 }
+
+//Overriding the window.localStorage functions to read/write to files if the key starts with abstractfs://
+{
+    try {
+        const fs = require('fs');
+        const fsPrefix = 'abstractfs://';
+        const userFilesDir = 'user_files';
+        const _abstractFSPathToRealPath = (abstractFilePath) => {
+            if (abstractFilePath == null) {
+                return null;
+            }
+            return userFilesDir + '/' + abstractFilePath.substring(fsPrefix.length).replace('/', '-');
+        };
+        const realGetItem = window.localStorage.getItem.bind(window.localStorage);
+        const realSetItem = window.localStorage.setItem.bind(window.localStorage);
+        const realRemoveItem = window.localStorage.removeItem.bind(window.localStorage);
+        window.localStorage.getItem = (itemKey) => {
+            if (itemKey == null || !itemKey.startsWith(fsPrefix)) {
+                return realGetItem(itemKey);
+            }
+            var filePath = _abstractFSPathToRealPath(itemKey);
+            try {
+                return fs.readFileSync(filePath, { encoding: 'utf-8' });
+            } catch (_) {
+                return null;
+            }
+        };
+        window.localStorage.setItem = (itemKey, itemValue) => {
+            if (itemKey == null || !itemKey.startsWith(fsPrefix)) {
+                return realSetItem(itemKey, itemValue);
+            }
+            var filePath = _abstractFSPathToRealPath(itemKey);
+            fs.writeFileSync(filePath, itemValue, { encoding: 'utf-8' });
+        };
+        window.localStorage.removeItem = (itemKey) => {
+            if (itemKey == null || !itemKey.startsWith(fsPrefix)) {
+                return realRemoveItem(itemKey);
+            }
+            var filePath = _abstractFSPathToRealPath(itemKey);
+            if (_fileExists(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        };
+        try {
+            fs.mkdirSync(userFilesDir, {});
+        } catch (error) {
+            // User dir is already created
+        }
+    } catch (error) {
+        console.error(error, error.stack);
+    }
+}

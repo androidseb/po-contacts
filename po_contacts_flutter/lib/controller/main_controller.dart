@@ -21,7 +21,6 @@ import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 import 'package:po_contacts_flutter/view/settings/settings_page.dart';
 
-//TODO fix large files imports not working on the web app
 class MainController {
   static const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
 

@@ -1,7 +1,7 @@
 {
     "main": "index.html",
     "name": "PO Contacts",
-    "dom_storage_quota": 1000,
+    "dom_storage_quota": 100,
     "window": {
         "icon": "ic_launcher-web.png"
     }
