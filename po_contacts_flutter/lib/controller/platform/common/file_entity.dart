@@ -43,5 +43,9 @@ abstract class FileEntity {
 
   Future<String> readAsBase64String();
 
+  Future<Uint8List> readAsBinaryData() async {
+    return base64.decode(await readAsBase64String());
+  }
+
   Future<void> flushOutputBuffer();
 }

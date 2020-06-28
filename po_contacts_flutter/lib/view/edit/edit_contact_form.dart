@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
@@ -63,10 +64,11 @@ class _EditContactFormState extends State<EditContactForm> {
   }
 
   void _onChangeImageButtonClicked() async {
-    final FileEntity selectedImageFile = await MainController.get().pickImageFile();
+    final FileEntity selectedImageFile = await MainController.get().pickImageFile(maxSize: 384);
     if (selectedImageFile == null) {
       return;
     }
+
     final String filePath = selectedImageFile.getAbsolutePath();
     setState(() {
       _currentImage = filePath;

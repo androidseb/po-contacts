@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:image/image.dart' as dartImgLib;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
@@ -20,7 +21,6 @@ import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 import 'package:po_contacts_flutter/view/settings/settings_page.dart';
 
-//TODO fix the image.file flutter bug with a work-around
 //TODO fix large files imports not working on the web app
 class MainController {
   static const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
@@ -448,10 +448,14 @@ class MainController {
     }
   }
 
-  Future<FileEntity> pickImageFile() async {
+  Future<FileEntity> pickImageFile({final int maxSize = null}) async {
     final FileEntity selectedImageFile = await _pickImageFileWithOS();
     if (selectedImageFile == null) {
       return null;
+    }
+
+    if (maxSize != null) {
+      await _resizeImage(selectedImageFile, maxSize);
     }
 
     final String fileExtension = Utils.getFileExtension(selectedImageFile.getAbsolutePath());
@@ -460,6 +464,40 @@ class MainController {
     }
 
     return selectedImageFile;
+  }
+
+  Future<void> _resizeImage(final FileEntity imageFile, final int maxSize) async {
+    showDialog<Object>(
+      context: _context,
+      barrierDismissible: false,
+      builder: (final BuildContext context) {
+        return AlertDialog(
+          title: Text(I18n.getString(I18n.string.importing_image_title)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(I18n.getString(I18n.string.importing_image_message)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    try {
+      final dartImgLib.Image image = dartImgLib.decodeImage(await imageFile.readAsBinaryData());
+      if (image.width > maxSize || image.height > maxSize) {
+        dartImgLib.Image thumbnail;
+        if (image.width > image.height) {
+          thumbnail = dartImgLib.copyResize(image, width: maxSize);
+        } else {
+          thumbnail = dartImgLib.copyResize(image, height: maxSize);
+        }
+        imageFile.writeAsUint8List(dartImgLib.encodePng(thumbnail));
+      }
+    } finally {
+      Navigator.pop(context);
+    }
   }
 
   Future<FileEntity> _pickImageFileWithOS() async {

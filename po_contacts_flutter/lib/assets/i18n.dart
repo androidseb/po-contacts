@@ -104,6 +104,8 @@ class I18nString {
   final String continue_google_auth_dialog_proceed_button_text = 'continue_google_auth_dialog_proceed_button_text';
   final String sync_remember_password_title = 'sync_remember_password_title';
   final String sync_remember_password_message = 'sync_remember_password_message';
+  final String importing_image_title = 'importing_image_title';
+  final String importing_image_message = 'importing_image_message';
 }
 
 class I18n {
@@ -214,6 +216,8 @@ class I18n {
     string.continue_google_auth_dialog_proceed_button_text: 'Proceed',
     string.sync_remember_password_title: 'Remember encryption key?',
     string.sync_remember_password_message: 'Do you want this application to remember the encryption key? For more details on how the encryption key is protected when stored on your device, please see the privacy policy.',
+    string.importing_image_title: 'Importing image',
+    string.importing_image_message: 'Please wait while the image is being imported...',
   };
 
   static String _getObjString(final Object _obj) {
