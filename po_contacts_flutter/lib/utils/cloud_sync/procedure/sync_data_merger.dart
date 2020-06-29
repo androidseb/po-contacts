@@ -78,6 +78,8 @@ class SyncDataMerger<T> {
         // This is done by considering the local modification as a newly created item instead of a modified one.
         if (lmItem != null) {
           localModifiedItems.remove(rmItemId);
+          //TODO generate a new id and a new item based on that id
+          //otherwise this would result in 2 items having the same id which we don't want
           localCreatedItems[rmItemId] = lmItem;
         }
       }
