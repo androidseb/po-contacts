@@ -24,7 +24,12 @@ class GoogleOAuthMobile implements GoogleOAuth {
     try {
       // We try if possible to use the native Google Sign-in SDK
       final GoogleSignIn googleSignIn = _createGoogleSignIn(gdsi.config.clientId);
-      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: false);
+      GoogleSignInAccount googleSignInAccount;
+      if (allowUI) {
+        googleSignInAccount = await googleSignIn.signIn();
+      } else {
+        googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: false);
+      }
       if (googleSignInAccount != null) {
         return (await googleSignInAccount.authHeaders)['Authorization'];
       }
