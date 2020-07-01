@@ -18,7 +18,7 @@ class SyncSummary extends StatelessWidget {
   }
 
   IconData _getIconData(final SyncController syncController) {
-    if (syncController.model?.accountName == null) {
+    if (syncController.model?.cloudIndexFileId == null) {
       return Icons.cloud_off;
     } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
       return Icons.more_horiz;
@@ -32,8 +32,9 @@ class SyncSummary extends StatelessWidget {
   }
 
   String _getTopText(final SyncController syncController) {
+    final String cloudIndexFileId = syncController.model?.cloudIndexFileId;
     final String accountName = syncController.model?.accountName;
-    if (accountName == null) {
+    if (cloudIndexFileId == null || accountName == null) {
       return I18n.getString(I18n.string.cloud_sync_off);
     } else {
       return accountName;
@@ -51,7 +52,7 @@ class SyncSummary extends StatelessWidget {
 
   String _getSyncButtonText(final SyncController syncController) {
     String syncButtonStringKey;
-    if (syncController.model?.accountName == null) {
+    if (syncController.model?.cloudIndexFileId == null) {
       syncButtonStringKey = I18n.string.cloud_sync_sync;
     } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
       syncButtonStringKey = I18n.string.cloud_sync_cancel;
@@ -67,7 +68,7 @@ class SyncSummary extends StatelessWidget {
     if (syncController.syncState == SyncState.SYNC_CANCELING) {
       return null;
     }
-    if (syncController.model?.accountName == null) {
+    if (syncController.model?.cloudIndexFileId == null) {
       return () {
         MainController.get().syncController.startSync();
       };

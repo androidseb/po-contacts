@@ -114,7 +114,8 @@ class I18nString {
   final String last_sync_time_x = 'last_sync_time_x';
   final String last_sync_time_never = 'last_sync_time_never';
   final String cloud_sync_view_history_or_restore = 'cloud_sync_view_history_or_restore';
-  final String cloud_sync_log_out = 'cloud_sync_log_out';
+  final String cloud_sync_disconnect = 'cloud_sync_disconnect';
+  final String cloud_sync_disconnect_confirmation_question = 'cloud_sync_disconnect_confirmation_question';
 }
 
 class I18n {
@@ -235,7 +236,8 @@ class I18n {
     string.last_sync_time_x: 'Last sync time:\n%s',
     string.last_sync_time_never: 'Never',
     string.cloud_sync_view_history_or_restore: 'View history/restore',
-    string.cloud_sync_log_out: 'Disconnect cloud account',
+    string.cloud_sync_disconnect: 'Disconnect cloud account',
+    string.cloud_sync_disconnect_confirmation_question: 'Do you want to disconnect your cloud account sync? Only the cloud account autorization information will be deleted from this app.',
   };
 
   static String _getObjString(final Object _obj) {

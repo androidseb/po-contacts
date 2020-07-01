@@ -21,8 +21,7 @@ enum SyncState {
 
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
-//TODO add an option to view the last sync error
-//TODO add an option to cancel the sync
+//TODO add an option to view the last sync error, especially on first sync
 //TODO prompt user to cancel the sync before editing/deleting
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
@@ -143,6 +142,14 @@ abstract class SyncController<T> {
     _syncState.currentValue = SyncState.SYNC_IN_PROGRESS;
     await _performSync(directUserAction: true);
     _syncState.currentValue = SyncState.SYNC_IDLE;
+  }
+
+  void logout() async {
+    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS || _syncState.currentValue == SyncState.SYNC_CANCELING) {
+      return;
+    }
+    await _syncModelSerializer.clearData();
+    _syncState.notifyDataChanged();
   }
 
   Future<void> _performSync({bool directUserAction = false}) async {

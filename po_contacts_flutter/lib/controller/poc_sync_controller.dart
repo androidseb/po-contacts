@@ -224,10 +224,10 @@ class POCSyncController extends SyncController<Contact> {
         },
       ),
       MultiSelectionChoice(
-        I18n.getString(I18n.string.cloud_sync_log_out),
+        I18n.getString(I18n.string.cloud_sync_disconnect),
         iconData: Icons.cloud_off,
         onSelected: () {
-          //TODO implement the option to log out of your cloud account
+          MainController.get().syncController.promptUserForLogout();
         },
       ),
     ];
@@ -235,5 +235,15 @@ class POCSyncController extends SyncController<Contact> {
       I18n.getString(I18n.string.cloud_sync_options),
       availableEntries,
     );
+  }
+
+  void promptUserForLogout() async {
+    final bool userConfirmed = await MainController.get().promptUserForYesNoQuestion(
+      titleText: I18n.getString(I18n.string.cloud_sync_disconnect),
+      messageText: I18n.getString(I18n.string.cloud_sync_disconnect_confirmation_question),
+    );
+    if (userConfirmed) {
+      logout();
+    }
   }
 }

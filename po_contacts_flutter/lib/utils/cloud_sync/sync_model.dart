@@ -6,6 +6,7 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SyncModelSerializer {
+  static const String _SECURE_STORAGE_KEY_ENCRYPTION_KEY = 'secureStorageEncryptionKey';
   static const String _PREF_KEY_SYNC_MODEL_DATA = 'sync_model_data';
   static const String _JSON_KEY_SYNC_MODEL_INTERFACE_TYPE = 'interface_type';
   static const String _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME = 'account_name';
@@ -76,6 +77,20 @@ class SyncModelSerializer {
       hasRemoteChanges,
     );
   }
+
+  static Future<String> _getSecureStorageValueEncryptionKey() {
+    return SecureStorage.instance.getValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY);
+  }
+
+  static Future<void> _setSecureStorageValueEncryptionKey(final String encryptionKey) {
+    return SecureStorage.instance.setValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY, encryptionKey);
+  }
+
+  Future<void> clearData() async {
+    _setSecureStorageValueEncryptionKey('');
+    await (await _sharedPreferences).setString(_PREF_KEY_SYNC_MODEL_DATA, null);
+    _syncModel = await _readSyncModel();
+  }
 }
 
 class SyncModelData {
@@ -106,8 +121,6 @@ class SyncModelData {
 }
 
 class SyncModel extends SyncModelData {
-  static const String _SECURE_STORAGE_KEY_ENCRYPTION_KEY = 'secureStorageEncryptionKey';
-
   final SyncModelSerializer _syncModelSerializer;
 
   SyncModel(
@@ -153,7 +166,7 @@ class SyncModel extends SyncModelData {
 
   Future<String> getEncryptionKey() async {
     if (_ramEncryptionKey == null) {
-      final String readKey = await SecureStorage.instance.getValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY);
+      final String readKey = await SyncModelSerializer._getSecureStorageValueEncryptionKey();
       if (readKey != null && readKey.isNotEmpty) {
         _ramEncryptionKey = readKey;
       }
@@ -164,12 +177,12 @@ class SyncModel extends SyncModelData {
   Future<void> setEncryptionKey(final String encryptionKey, final bool rememberKey) async {
     _ramEncryptionKey = encryptionKey;
     if (rememberKey) {
-      await SecureStorage.instance.setValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY, encryptionKey);
+      await SyncModelSerializer._setSecureStorageValueEncryptionKey(encryptionKey);
     }
   }
 
   Future<void> forgetEncryptionKey() async {
     _ramEncryptionKey = null;
-    await SecureStorage.instance.setValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY, '');
+    await SyncModelSerializer._setSecureStorageValueEncryptionKey('');
   }
 }
