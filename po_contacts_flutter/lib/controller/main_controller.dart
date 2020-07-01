@@ -15,6 +15,7 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
@@ -73,6 +74,10 @@ class MainController {
     if (_context == null) {
       return;
     }
+    if (syncController.syncState != SyncState.SYNC_IDLE) {
+      syncController.promptUserActionCanceledBySync();
+      return;
+    }
     Navigator.push<Object>(_context, MaterialPageRoute(
       builder: (final BuildContext context) {
         return EditContactPage(contactId);
@@ -125,43 +130,28 @@ class MainController {
     ));
   }
 
-  void startDeleteContact(final int contactId) {
+  void startDeleteContact(final int contactId) async {
     if (_context == null) {
       return;
     }
-    showDialog<Object>(
-      context: _context,
-      builder: (final BuildContext context) {
-        return AlertDialog(
-          title: Text(I18n.getString(I18n.string.delete_contact)),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(I18n.getString(I18n.string.delete_contact_confirmation_message)),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(I18n.getString(I18n.string.no)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(I18n.getString(I18n.string.yes)),
-              onPressed: () {
-                Navigator.of(context).pop();
-                this._model.deleteContact(contactId);
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-        );
-      },
+
+    if (syncController.syncState != SyncState.SYNC_IDLE) {
+      syncController.promptUserActionCanceledBySync();
+      return;
+    }
+
+    final bool userConfirmedDeletion = await promptUserForYesNoQuestion(
+      titleText: I18n.getString(I18n.string.delete_contact),
+      messageText: I18n.getString(I18n.string.delete_contact_confirmation_message),
+      barrierDismissible: true,
     );
+
+    if (userConfirmedDeletion) {
+      this._model.deleteContact(contactId);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    }
   }
 
   Future<String> promptUserForPasswordUsage({
@@ -392,11 +382,12 @@ class MainController {
   Future<bool> promptUserForYesNoQuestion({
     @required final String titleText,
     @required final String messageText,
+    final bool barrierDismissible = false,
   }) {
     final Completer<bool> userResponseCompleter = Completer<bool>();
     showDialog<Object>(
       context: _context,
-      barrierDismissible: false,
+      barrierDismissible: barrierDismissible,
       builder: (final BuildContext context) {
         return AlertDialog(
           title: Text(titleText),

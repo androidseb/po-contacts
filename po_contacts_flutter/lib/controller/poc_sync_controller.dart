@@ -246,4 +246,14 @@ class POCSyncController extends SyncController<Contact> {
       logout();
     }
   }
+
+  void promptUserActionCanceledBySync() async {
+    final bool userAcceptedSyncCancel = await MainController.get().promptUserForYesNoQuestion(
+      titleText: I18n.getString(I18n.string.action_blocked_by_sync_title),
+      messageText: I18n.getString(I18n.string.action_blocked_by_sync_question),
+    );
+    if (userAcceptedSyncCancel) {
+      cancelSync();
+    }
+  }
 }

@@ -22,7 +22,6 @@ enum SyncState {
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
 //TODO add an option to view the last sync error, especially on first sync
-//TODO prompt user to cancel the sync before editing/deleting
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
   static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';
