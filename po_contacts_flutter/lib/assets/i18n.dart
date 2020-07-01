@@ -113,6 +113,8 @@ class I18nString {
   final String cloud_sync_canceling = 'cloud_sync_canceling';
   final String last_sync_time_x = 'last_sync_time_x';
   final String last_sync_time_never = 'last_sync_time_never';
+  final String cloud_sync_view_history_or_restore = 'cloud_sync_view_history_or_restore';
+  final String cloud_sync_log_out = 'cloud_sync_log_out';
 }
 
 class I18n {
@@ -232,6 +234,8 @@ class I18n {
     string.cloud_sync_canceling: 'Canceling...',
     string.last_sync_time_x: 'Last sync time:\n%s',
     string.last_sync_time_never: 'Never',
+    string.cloud_sync_view_history_or_restore: 'View history/restore',
+    string.cloud_sync_log_out: 'Disconnect cloud account',
   };
 
   static String _getObjString(final Object _obj) {

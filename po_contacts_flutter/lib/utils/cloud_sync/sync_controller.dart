@@ -23,7 +23,6 @@ enum SyncState {
 //TODO add an option to start sync on contact edit
 //TODO add an option to view the last sync error
 //TODO add an option to cancel the sync
-//TODO add an option to view history and restore
 //TODO prompt user to cancel the sync before editing/deleting
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
@@ -131,6 +130,7 @@ abstract class SyncController<T> {
         await MainQueueYielder.check();
       } else {
         _currentSyncProcedure.cancel();
+        _syncState.currentValue = SyncState.SYNC_CANCELING;
         _currentSyncProcedure = null;
       }
     }

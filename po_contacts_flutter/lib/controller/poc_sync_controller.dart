@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:po_contacts_flutter/assets/constants/google_oauth_client_id.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
@@ -92,10 +93,13 @@ class POCSyncController extends SyncController<Contact> {
   @override
   Future<int> pickIndexFile(final List<String> cloudIndexFileNames) async {
     final List<MultiSelectionChoice> selectionChoices = [];
-    selectionChoices.add(MultiSelectionChoice(-1, I18n.getString(I18n.string.sync_to_new_file)));
+    selectionChoices.add(MultiSelectionChoice(
+      I18n.getString(I18n.string.sync_to_new_file),
+      entryId: -1,
+    ));
     for (int i = 0; i < cloudIndexFileNames.length; i++) {
       final String indexFileName = cloudIndexFileNames[i];
-      selectionChoices.add(MultiSelectionChoice(i, indexFileName));
+      selectionChoices.add(MultiSelectionChoice(indexFileName, entryId: i));
     }
     final MultiSelectionChoice selectedIndexFile =
         await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
@@ -201,5 +205,35 @@ class POCSyncController extends SyncController<Contact> {
   Future<FileEntity> fileEntityByName(final String fileName) async {
     final String syncFolderPath = await _getSyncFolderPath();
     return MainController.get().psController.filesManager.createFileEntityParentAndName(syncFolderPath, fileName);
+  }
+
+  void showSyncOptionsMenu() {
+    final List<MultiSelectionChoice> availableEntries = [
+      MultiSelectionChoice(
+        I18n.getString(I18n.string.cloud_sync_sync),
+        iconData: Icons.sync,
+        onSelected: () {
+          MainController.get().syncController.startSync();
+        },
+      ),
+      MultiSelectionChoice(
+        I18n.getString(I18n.string.cloud_sync_view_history_or_restore),
+        iconData: Icons.history,
+        onSelected: () {
+          //TODO implement the option to view history and restore
+        },
+      ),
+      MultiSelectionChoice(
+        I18n.getString(I18n.string.cloud_sync_log_out),
+        iconData: Icons.cloud_off,
+        onSelected: () {
+          //TODO implement the option to log out of your cloud account
+        },
+      ),
+    ];
+    MainController.get().promptMultiSelection(
+      I18n.getString(I18n.string.cloud_sync_options),
+      availableEntries,
+    );
   }
 }

@@ -15,58 +15,65 @@ class AppSettings {
   //ignore: non_constant_identifier_names
   static final List<MultiSelectionChoice> _EMAIL_ACTION_CHOICES_LINUX = [
     MultiSelectionChoice(
-        EMAIL_ACTION_SYSTEM_DEFAULT,
-        I18n.getString(
-          I18n.string.open_with_system,
-        )),
+      I18n.getString(
+        I18n.string.open_with_system,
+      ),
+      entryId: EMAIL_ACTION_SYSTEM_DEFAULT,
+    ),
     MultiSelectionChoice(
-        EMAIL_ACTION_THUNDERBIRD,
-        I18n.getString(
-          I18n.string.open_application_x,
-          _THUNDERBIRD_APP_NAME,
-        )),
+      I18n.getString(
+        I18n.string.open_application_x,
+        _THUNDERBIRD_APP_NAME,
+      ),
+      entryId: EMAIL_ACTION_THUNDERBIRD,
+    ),
   ];
   //ignore: non_constant_identifier_names
   static final List<MultiSelectionChoice> _EMAIL_ACTION_CHOICES_MACOS = [
     MultiSelectionChoice(
-        EMAIL_ACTION_SYSTEM_DEFAULT,
-        I18n.getString(
-          I18n.string.open_with_system,
-        )),
+      I18n.getString(
+        I18n.string.open_with_system,
+      ),
+      entryId: EMAIL_ACTION_SYSTEM_DEFAULT,
+    ),
   ];
   //ignore: non_constant_identifier_names
   static final List<MultiSelectionChoice> _EMAIL_ACTION_CHOICES_WINDOWS = [
     MultiSelectionChoice(
-        EMAIL_ACTION_SYSTEM_DEFAULT,
-        I18n.getString(
-          I18n.string.open_with_system,
-        )),
+      I18n.getString(
+        I18n.string.open_with_system,
+      ),
+      entryId: EMAIL_ACTION_SYSTEM_DEFAULT,
+    ),
   ];
 
   //ignore: non_constant_identifier_names
   static final List<MultiSelectionChoice> _CALL_ACTION_CHOICES_LINUX = [
     MultiSelectionChoice(
-        CALL_ACTION_LINPHONE,
-        I18n.getString(
-          I18n.string.open_application_x,
-          _LINPHONE_APP_NAME,
-        )),
+      I18n.getString(
+        I18n.string.open_application_x,
+        _LINPHONE_APP_NAME,
+      ),
+      entryId: CALL_ACTION_LINPHONE,
+    ),
   ];
   //ignore: non_constant_identifier_names
   static final List<MultiSelectionChoice> _CALL_ACTION_CHOICES_MACOS = [
     MultiSelectionChoice(
-        EMAIL_ACTION_SYSTEM_DEFAULT,
-        I18n.getString(
-          I18n.string.open_with_system,
-        )),
+      I18n.getString(
+        I18n.string.open_with_system,
+      ),
+      entryId: EMAIL_ACTION_SYSTEM_DEFAULT,
+    ),
   ];
   //ignore: non_constant_identifier_names
   static final List<MultiSelectionChoice> _CALL_ACTION_CHOICES_WINDOWS = [
     MultiSelectionChoice(
-        EMAIL_ACTION_SYSTEM_DEFAULT,
-        I18n.getString(
-          I18n.string.open_with_system,
-        )),
+      I18n.getString(
+        I18n.string.open_with_system,
+      ),
+      entryId: EMAIL_ACTION_SYSTEM_DEFAULT,
+    ),
   ];
 
   static bool getDefaultDisplayScrollbarOption() {

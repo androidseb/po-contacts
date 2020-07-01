@@ -580,9 +580,13 @@ class MainController {
     final List<Widget> choicesWidgets = [];
     for (final MultiSelectionChoice c in availableEntries) {
       choicesWidgets.add(ListTile(
+        leading: c.iconData == null ? null : Icon(c.iconData),
         title: Text(c.entryLabel),
         onTap: () async {
           Navigator.of(_context).pop();
+          if (c.onSelected != null) {
+            c.onSelected();
+          }
           futureSelectedChoice.complete(c);
         },
       ));

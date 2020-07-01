@@ -67,9 +67,19 @@ class SyncSummary extends StatelessWidget {
     if (syncController.syncState == SyncState.SYNC_CANCELING) {
       return null;
     }
-    return () {
-      //TODO
-    };
+    if (syncController.model?.accountName == null) {
+      return () {
+        MainController.get().syncController.startSync();
+      };
+    } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
+      return () {
+        MainController.get().syncController.cancelSync();
+      };
+    } else {
+      return () {
+        MainController.get().syncController.showSyncOptionsMenu();
+      };
+    }
   }
 
   Widget _buildFromSyncState(final BuildContext context) {

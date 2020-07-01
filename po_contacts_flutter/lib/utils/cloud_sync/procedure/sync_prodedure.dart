@@ -96,6 +96,7 @@ class SyncProcedure<T> {
       fileToUpload,
       await _syncModel.getEncryptionKey(),
     );
+    _cancelationHandler.checkForCancelation();
     if (syncResult.hasRemoteChanges) {
       final String cloudIndexFileId = _syncModel.cloudIndexFileId;
       final String cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
