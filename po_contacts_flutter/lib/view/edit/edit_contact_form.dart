@@ -258,6 +258,7 @@ class _EditContactFormState extends State<EditContactForm> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: RaisedButton(
+                  textColor: Colors.white,
                   onPressed: () {
                     editContactFormController.startSaveAction();
                   },

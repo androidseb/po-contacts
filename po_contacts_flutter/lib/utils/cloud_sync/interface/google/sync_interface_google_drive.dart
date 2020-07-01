@@ -6,16 +6,14 @@ import 'package:po_contacts_flutter/utils/cloud_sync/data/remote_file.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/oauth/google_oauth.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 
 class SyncInterfaceForGoogleDrive extends SyncInterface {
   static const String _MULTIPART_REQUESTS_BOUNDARY_STRING = '5408960f22bc432e938025d3e6034c33';
 
   String _accessToken;
 
-  SyncInterfaceForGoogleDrive(
-      final SyncInterfaceConfig config, final SyncInterfaceUIController uiController, final SyncModel syncModel)
-      : super(config, uiController, syncModel);
+  SyncInterfaceForGoogleDrive(final SyncInterfaceConfig config, final SyncInterfaceUIController uiController)
+      : super(config, uiController);
 
   SyncInterfaceType getSyncInterfaceType() {
     return SyncInterfaceType.GOOGLE_DRIVE;
@@ -39,8 +37,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     return resultingAccessToken != null;
   }
 
-  @override
-  Future<RemoteFile> getRootFolder() async {
+  Future<Map<String, dynamic>> _getAboutData() async {
     final http.Response httpGetResponse = await http.get(
       'https://www.googleapis.com/drive/v2/about',
       headers: {
@@ -49,15 +46,26 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       },
     );
     if (httpGetResponse.statusCode == 200) {
-      final Map<String, dynamic> serverResponse = jsonDecode(httpGetResponse.body);
-      final String rootFolderId = serverResponse['rootFolderId'];
-      return RemoteFile(RemoteFileType.FOLDER, rootFolderId, '', '');
+      return jsonDecode(httpGetResponse.body);
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
-        message: 'GoogleDriveSyncInterface.getRootFolder failed status code ${httpGetResponse.statusCode}',
+        message: 'GoogleDriveSyncInterface._getAboutData failed status code ${httpGetResponse.statusCode}',
       );
     }
+  }
+
+  @override
+  Future<String> getAccountName() async {
+    final Map<String, dynamic> aboutData = await _getAboutData();
+    return aboutData['user']['emailAddress'];
+  }
+
+  @override
+  Future<RemoteFile> getRootFolder() async {
+    final Map<String, dynamic> aboutData = await _getAboutData();
+    final String rootFolderId = aboutData['rootFolderId'];
+    return RemoteFile(RemoteFileType.FOLDER, rootFolderId, '', '');
   }
 
   RemoteFile _googleDriveFileToRemoteFile(final dynamic googleDriveFile) {

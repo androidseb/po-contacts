@@ -14,9 +14,9 @@ import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 enum SyncState {
-  IDLE,
-  SYNCING,
-  LAST_SYNC_FAILED,
+  SYNC_IDLE,
+  SYNC_IN_PROGRESS,
+  SYNC_CANCELING,
 }
 
 //TODO add an option to start sync on app start
@@ -41,10 +41,18 @@ abstract class SyncController<T> {
   /// Suffix of a temporary cloud file (being downloaded and potentially not complete)
   static const String _TMP_CLOUD_FILE_SUFFIX = '.tmp';
 
-  final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.IDLE);
+  final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.SYNC_IDLE);
   SyncState get syncState => _syncState.readOnly.currentValue;
   ReadOnlyStreamableValue<SyncState> get syncStateSV => _syncState.readOnly;
-  final SyncModel _syncModel = SyncModel();
+  SyncException _lastSyncError;
+  SyncException get lastSyncError => _lastSyncError;
+  final SyncModelSerializer _syncModelSerializer = SyncModelSerializer();
+  Future<SyncModel> _getSyncModel() async {
+    return _syncModelSerializer.getSyncModel();
+  }
+
+  SyncModelData get model => _syncModelSerializer.getSyncModelData();
+
   SyncProcedure<T> _currentSyncProcedure;
 
   SyncInterfaceConfig getSyncInterfaceConfig();
@@ -79,6 +87,15 @@ abstract class SyncController<T> {
 
   Future<FileEntity> fileEntityByName(final String fileName);
 
+  SyncController() {
+    _initSyncModelData();
+  }
+
+  void _initSyncModelData() async {
+    await _getSyncModel();
+    _syncState.notifyDataChanged();
+  }
+
   Future<void> deleteFileWithName(final String fileName) async {
     final FileEntity fe = await fileEntityByName(fileName);
     if (await fe.exists()) {
@@ -109,7 +126,7 @@ abstract class SyncController<T> {
   }
 
   Future<void> cancelSync() async {
-    while (_syncState.currentValue == SyncState.SYNCING) {
+    while (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS) {
       if (_currentSyncProcedure == null) {
         await MainQueueYielder.check();
       } else {
@@ -119,46 +136,42 @@ abstract class SyncController<T> {
     }
   }
 
-  void onClickSyncButton() async {
-    if (_syncState.currentValue == SyncState.SYNCING) {
+  void startSync() async {
+    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS) {
       return;
     }
-    _syncState.currentValue = SyncState.SYNCING;
-    final bool syncSuccessful = await performSync(directUserAction: true);
-    if (syncSuccessful) {
-      _syncState.currentValue = SyncState.IDLE;
-    } else {
-      _syncState.currentValue = SyncState.LAST_SYNC_FAILED;
-    }
+    _syncState.currentValue = SyncState.SYNC_IN_PROGRESS;
+    await _performSync(directUserAction: true);
+    _syncState.currentValue = SyncState.SYNC_IDLE;
   }
 
-  Future<bool> performSync({bool directUserAction = false}) async {
+  Future<void> _performSync({bool directUserAction = false}) async {
     try {
       await _performSyncImpl(directUserAction: directUserAction);
-      _syncModel.updateLastSyncError(null);
-      return true;
+      _updateLastSyncError(null);
     } on SyncException catch (syncException) {
-      _handeSyncException(syncException);
+      _updateLastSyncError(syncException);
     } catch (otherException) {
-      _handeSyncException(SyncException(SyncExceptionType.OTHER, message: otherException.toString()));
+      _updateLastSyncError(SyncException(SyncExceptionType.OTHER, message: otherException.toString()));
     }
-    return false;
   }
 
-  void _handeSyncException(final SyncException syncException) {
-    _syncModel.updateLastSyncError(syncException);
+  void _updateLastSyncError(final SyncException syncException) {
+    _lastSyncError = syncException;
   }
 
   Future<SyncInterface> _initializeSyncInterface() async {
+    final SyncModel syncModel = await _getSyncModel();
     final SyncInterface syncInterface = SyncInterfaceForGoogleDrive(
       getSyncInterfaceConfig(),
       getSyncInterfaceUIController(),
-      _syncModel,
     );
     final bool couldAuthenticateExplicitly = await syncInterface.authenticateExplicitly();
     if (!couldAuthenticateExplicitly) {
       throw SyncException(SyncExceptionType.AUTHENTICATION);
     }
+    final String accountName = await syncInterface.getAccountName();
+    syncModel.setAccountName(accountName);
     final List<RemoteFile> cloudIndexFiles = await syncInterface.fetchIndexFilesList();
     RemoteFile selectedCloudIndexFile;
     if (cloudIndexFiles.isNotEmpty) {
@@ -183,22 +196,31 @@ abstract class SyncController<T> {
       final String encryptionKey = await getSyncInterfaceUIController().promptUserForCreationSyncPassword();
       if (encryptionKey != null) {
         final bool rememberEncryptionKey = await getSyncInterfaceUIController().promptUserForSyncPasswordRemember();
-        syncInterface.setEncryptionKey(encryptionKey, rememberEncryptionKey);
+        syncModel.setEncryptionKey(encryptionKey, rememberEncryptionKey);
       }
     }
     if (selectedCloudIndexFile == null) {
       return null;
     }
-    await syncInterface.setCloudIndexFileId(selectedCloudIndexFile.fileId);
+    await syncModel.setSyncInterfaceType(syncInterface.getSyncInterfaceType());
+    await syncModel.setCloudIndexFileId(selectedCloudIndexFile.fileId);
 
     return syncInterface;
   }
 
+  Future<SyncInterface> _readSyncInterfaceFromModel() async {
+    final SyncModel syncModel = await _getSyncModel();
+    if (syncModel.syncInterfaceType == SyncInterfaceType.GOOGLE_DRIVE) {
+      return SyncInterfaceForGoogleDrive(
+        getSyncInterfaceConfig(),
+        getSyncInterfaceUIController(),
+      );
+    }
+    return null;
+  }
+
   Future<SyncInterface> _getAuthenticatedSyncInterface({bool directUserAction = false}) async {
-    SyncInterface syncInterface = await _syncModel.getCurrentSyncInterface(
-      getSyncInterfaceConfig(),
-      getSyncInterfaceUIController(),
-    );
+    SyncInterface syncInterface = await _readSyncInterfaceFromModel();
     if (syncInterface == null) {
       syncInterface = await _initializeSyncInterface();
       if (syncInterface == null) {
@@ -221,13 +243,15 @@ abstract class SyncController<T> {
   }
 
   Future<void> _performSyncImpl({bool directUserAction = false}) async {
+    final SyncModel syncModel = await _getSyncModel();
     final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: directUserAction);
-    _currentSyncProcedure = SyncProcedure(this, syncInterface);
+    _currentSyncProcedure = SyncProcedure(this, syncModel, syncInterface);
     try {
       await _currentSyncProcedure.execute();
+      await (await _getSyncModel()).setLastSyncTimeEpochMillis(Utils.currentTimeMillis());
     } on SyncException catch (syncException) {
       if (syncException.type == SyncExceptionType.FILE_PARSING_ERROR) {
-        syncInterface.forgetEncryptionKey();
+        syncModel.forgetEncryptionKey();
       }
       throw syncException;
     }
@@ -283,7 +307,8 @@ abstract class SyncController<T> {
   }
 
   Future<FileEntity> getLatestCloudFile(final SyncInterface syncInterface) async {
-    final String cloudIndexFileId = syncInterface.cloudIndexFileId;
+    final SyncModel syncModel = await _getSyncModel();
+    final String cloudIndexFileId = syncModel.cloudIndexFileId;
     if (cloudIndexFileId == null) {
       return null;
     }
@@ -308,10 +333,11 @@ abstract class SyncController<T> {
     final SyncInterface syncInterface,
     final FileEntity latestCloudFile,
   ) async {
+    final SyncModel syncModel = await _getSyncModel();
     if (latestCloudFile == null || !await isFileEntityEncrypted(latestCloudFile)) {
       return;
     }
-    String encryptionKey = await syncInterface.getEncryptionKey();
+    String encryptionKey = await syncModel.getEncryptionKey();
     if (encryptionKey != null) {
       return;
     }
@@ -320,7 +346,7 @@ abstract class SyncController<T> {
       throw SyncException(SyncExceptionType.CANCELED);
     }
     final bool rememberKey = await getSyncInterfaceUIController().promptUserForSyncPasswordRemember();
-    await syncInterface.setEncryptionKey(encryptionKey, rememberKey);
+    await syncModel.setEncryptionKey(encryptionKey, rememberKey);
   }
 
   void recordLocalDataChanged() {

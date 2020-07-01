@@ -138,6 +138,16 @@ class Utils {
     return '${t.year}$monthS${dayS}_$hourS$minuteS$secondS';
   }
 
+  static String dateTimeToHumanShortString(final int timeEpochMillis) {
+    final DateTime t = DateTime.fromMillisecondsSinceEpoch(timeEpochMillis);
+    final String monthS = Utils.positiveNumberToXDigitsString(t.month, 2);
+    final String dayS = Utils.positiveNumberToXDigitsString(t.day, 2);
+    final String hourS = Utils.positiveNumberToXDigitsString(t.hour, 2);
+    final String minuteS = Utils.positiveNumberToXDigitsString(t.minute, 2);
+    final String secondS = Utils.positiveNumberToXDigitsString(t.second, 2);
+    return '${t.year}/$monthS/${dayS} @ $hourS:$minuteS:$secondS';
+  }
+
   /// Code found on SO: https://stackoverflow.com/a/47870954/3407126
   static String stringToMD5(final String str) {
     final Uint8List strData = new Utf8Encoder().convert(str);
@@ -169,5 +179,41 @@ class Utils {
       }
     }
     return true;
+  }
+
+  static String getJSONMapString(final Map<String, dynamic> jsonObject, final String jsonKey) {
+    if (jsonObject == null) {
+      return null;
+    }
+    final Object foundValue = jsonObject[jsonKey];
+    if (foundValue is String) {
+      return foundValue;
+    } else {
+      return null;
+    }
+  }
+
+  static int getJSONMapInt(final Map<String, dynamic> jsonObject, final String jsonKey) {
+    if (jsonObject == null) {
+      return null;
+    }
+    final Object foundValue = jsonObject[jsonKey];
+    if (foundValue is int) {
+      return foundValue;
+    } else {
+      return null;
+    }
+  }
+
+  static bool getJSONMapBool(final Map<String, dynamic> jsonObject, final String jsonKey) {
+    if (jsonObject == null) {
+      return null;
+    }
+    final Object foundValue = jsonObject[jsonKey];
+    if (foundValue is bool) {
+      return foundValue;
+    } else {
+      return null;
+    }
   }
 }

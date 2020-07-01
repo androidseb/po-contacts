@@ -106,6 +106,13 @@ class I18nString {
   final String sync_remember_password_message = 'sync_remember_password_message';
   final String importing_image_title = 'importing_image_title';
   final String importing_image_message = 'importing_image_message';
+  final String cloud_sync_off = 'cloud_sync_off';
+  final String cloud_sync_sync = 'cloud_sync_sync';
+  final String cloud_sync_options = 'cloud_sync_options';
+  final String cloud_sync_cancel = 'cloud_sync_cancel';
+  final String cloud_sync_canceling = 'cloud_sync_canceling';
+  final String last_sync_time_x = 'last_sync_time_x';
+  final String last_sync_time_never = 'last_sync_time_never';
 }
 
 class I18n {
@@ -218,6 +225,13 @@ class I18n {
     string.sync_remember_password_message: 'Do you want this application to remember the encryption key? For more details on how the encryption key is protected when stored on your device, please see the privacy policy.',
     string.importing_image_title: 'Importing image',
     string.importing_image_message: 'Please wait while the image is being imported...',
+    string.cloud_sync_off: 'Cloud sync off',
+    string.cloud_sync_sync: 'Sync now',
+    string.cloud_sync_options: 'Sync options',
+    string.cloud_sync_cancel: 'Cancel sync',
+    string.cloud_sync_canceling: 'Canceling...',
+    string.last_sync_time_x: 'Last sync time:\n%s',
+    string.last_sync_time_never: 'Never',
   };
 
   static String _getObjString(final Object _obj) {

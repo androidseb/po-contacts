@@ -9,6 +9,7 @@ import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.da
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_data_merger.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class SyncCancelationHandler {
@@ -30,11 +31,12 @@ class SyncCancelationHandler {
 
 class SyncProcedure<T> {
   final SyncController<T> _syncController;
+  final SyncModel _syncModel;
   final SyncInterface _syncInterface;
   SyncCancelationHandler _cancelationHandler;
   bool _localDataChanged = false;
 
-  SyncProcedure(this._syncController, this._syncInterface) {
+  SyncProcedure(this._syncController, this._syncModel, this._syncInterface) {
     _cancelationHandler = SyncCancelationHandler(this);
   }
 
@@ -55,7 +57,7 @@ class SyncProcedure<T> {
     _cancelationHandler.checkForCancelation();
     await _syncController.requestEncryptionKeyIfNeeded(_syncInterface, latestCloudFile);
     _cancelationHandler.checkForCancelation();
-    final String encryptionKey = await _syncInterface.getEncryptionKey();
+    final String encryptionKey = await _syncModel.getEncryptionKey();
     _cancelationHandler.checkForCancelation();
     final List<T> remoteItems = await _syncController.fileEntityToItemsList(
       latestCloudFile,
@@ -69,7 +71,7 @@ class SyncProcedure<T> {
       encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
-    final String fileETag = await _syncInterface.getFileETag(_syncInterface.cloudIndexFileId);
+    final String fileETag = await _syncInterface.getFileETag(_syncModel.cloudIndexFileId);
     return SyncInitialData<T>(
       candidateSyncFile,
       localItems,
@@ -92,10 +94,10 @@ class SyncProcedure<T> {
     await _syncController.writeItemsListToFileEntity(
       syncResult.syncResultData,
       fileToUpload,
-      await _syncInterface.getEncryptionKey(),
+      await _syncModel.getEncryptionKey(),
     );
     if (syncResult.hasRemoteChanges) {
-      final String cloudIndexFileId = _syncInterface.cloudIndexFileId;
+      final String cloudIndexFileId = _syncModel.cloudIndexFileId;
       final String cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
       final Uint8List fileToUploadContent = base64.decode(await fileToUpload.readAsBase64String());
       final RemoteFile newCloudFile = await _syncInterface.createNewFile(

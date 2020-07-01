@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/constants/app_version.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
+import 'package:po_contacts_flutter/view/home/sync_details/sync_summary.dart';
 
 class HomePageDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> drawerOptionsList = [];
+    drawerOptionsList.add(SyncSummary());
     drawerOptionsList.add(ListTile(
       leading: Icon(Icons.file_download),
       title: Text(I18n.getString(I18n.string.import_vcf_file)),

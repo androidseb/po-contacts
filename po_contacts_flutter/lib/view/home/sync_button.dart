@@ -32,23 +32,27 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
     return StreamedWidget<SyncState>(
       MainController.get().syncController.syncStateSV,
       (BuildContext context, SyncState syncState) {
-        if (syncState == SyncState.SYNCING) {
+        if (syncState == SyncState.SYNC_IN_PROGRESS) {
           _animationController.repeat();
         } else {
           _animationController.stop();
           _animationController.reset();
         }
+        final IconData iconData =
+            MainController.get().syncController.lastSyncError == null || syncState == SyncState.SYNC_IN_PROGRESS
+                ? Icons.sync
+                : Icons.sync_problem;
         return RotationTransition(
           turns: Tween(begin: 1.0, end: 0.0).animate(_animationController),
           child: IconButton(
-            icon: Icon(syncState == SyncState.LAST_SYNC_FAILED ? Icons.sync_problem : Icons.sync),
-            onPressed: syncState == SyncState.SYNCING
+            icon: Icon(iconData),
+            onPressed: syncState == SyncState.SYNC_IN_PROGRESS
                 ? null
                 : () {
-                    if (syncState == SyncState.SYNCING) {
+                    if (syncState == SyncState.SYNC_IN_PROGRESS) {
                       return;
                     }
-                    MainController.get().syncController.onClickSyncButton();
+                    MainController.get().syncController.startSync();
                   },
           ),
         );

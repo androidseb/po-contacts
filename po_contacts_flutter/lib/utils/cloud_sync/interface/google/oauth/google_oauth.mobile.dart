@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/oauth/google_oauth.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/oauth/google_oauth_with_device_code.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_interface_google_drive.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 
 class GoogleOAuthMobile implements GoogleOAuth {
   GoogleSignIn _createGoogleSignIn(final String clientId) {
@@ -38,6 +39,8 @@ class GoogleOAuthMobile implements GoogleOAuth {
         // Most likely the native Google Sign-in SDK is failing (e.g. Android device without Play Services).
         // So we fall back to the code-based authentication for devices
         return GoogleOAuthWithDeviceCode.authenticateWithCode(gdsi, allowUI);
+      } else if (platformException.code == GoogleSignIn.kNetworkError) {
+        throw SyncException(SyncExceptionType.NETWORK);
       }
     } catch (otherException) {
       // Any other exception means the sign-in basically failed
