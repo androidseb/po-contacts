@@ -7,6 +7,11 @@ class GoogleOAuthWeb implements GoogleOAuth {
   Future<String> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) {
     return GoogleOAuthWithDeviceCode.authenticateWithCode(gdsi, allowUI);
   }
+
+  @override
+  Future<void> logout(final SyncInterfaceForGoogleDrive gdsi) {
+    return GoogleOAuthWithDeviceCode.logout();
+  }
 }
 
 GoogleOAuth getInstanceImpl() => GoogleOAuthWeb();

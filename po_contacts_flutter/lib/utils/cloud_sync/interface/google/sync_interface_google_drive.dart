@@ -37,6 +37,11 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     return resultingAccessToken != null;
   }
 
+  @override
+  Future<void> logout() async {
+    return GoogleOAuth.instance.logout(this);
+  }
+
   Future<Map<String, dynamic>> _getAboutData() async {
     final http.Response httpGetResponse = await http.get(
       'https://www.googleapis.com/drive/v2/about',

@@ -49,6 +49,28 @@ class GoogleOAuthMobile implements GoogleOAuth {
 
     return null;
   }
+
+  @override
+  Future<void> logout(final SyncInterfaceForGoogleDrive gdsi) {
+    try {
+      // We try if possible to use the native Google Sign-in SDK
+      final GoogleSignIn googleSignIn = _createGoogleSignIn(gdsi.config.clientId);
+      googleSignIn.signOut();
+    } on PlatformException catch (platformException) {
+      if (platformException.code == GoogleSignIn.kSignInFailedError) {
+        // Most likely the native Google Sign-in SDK is failing (e.g. Android device without Play Services).
+        // So we ignore the exception in this case
+      } else if (platformException.code == GoogleSignIn.kNetworkError) {
+        throw SyncException(SyncExceptionType.NETWORK);
+      } else {
+        throw SyncException(
+          SyncExceptionType.OTHER,
+          message: platformException.message,
+        );
+      }
+    }
+    return GoogleOAuthWithDeviceCode.logout();
+  }
 }
 
 GoogleOAuth getInstanceImpl() => GoogleOAuthMobile();

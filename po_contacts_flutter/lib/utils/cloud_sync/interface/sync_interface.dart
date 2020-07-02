@@ -66,6 +66,7 @@ abstract class SyncInterface {
   SyncInterfaceType getSyncInterfaceType();
   Future<bool> authenticateImplicitly();
   Future<bool> authenticateExplicitly();
+  Future<void> logout();
   Future<String> getAccountName();
   Future<RemoteFile> getRootFolder();
   Future<RemoteFile> getFolder(

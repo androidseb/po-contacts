@@ -16,4 +16,6 @@ abstract class GoogleOAuth {
   }
 
   Future<String> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI);
+
+  Future<void> logout(final SyncInterfaceForGoogleDrive gdsi);
 }

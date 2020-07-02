@@ -284,4 +284,8 @@ class GoogleOAuthWithDeviceCode {
     await _setRefreshToken(createdTokenData.refresh_token);
     return createdTokenData.access_token;
   }
+
+  static Future<void> logout() {
+    return _setRefreshToken('');
+  }
 }

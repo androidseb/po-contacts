@@ -147,6 +147,8 @@ abstract class SyncController<T> {
     if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS || _syncState.currentValue == SyncState.SYNC_CANCELING) {
       return;
     }
+    final SyncInterface syncInterface = await _readSyncInterfaceFromModel();
+    await syncInterface.logout();
     await _syncModelSerializer.clearData();
     _syncState.notifyDataChanged();
   }
