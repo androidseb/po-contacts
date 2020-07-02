@@ -47,7 +47,7 @@ try {
             if (abstractFilePath == null) {
                 return null;
             }
-            return userFilesDir + '/' + abstractFilePath.substring(fsPrefix.length).replace('/', '-');
+            return userFilesDir + '/' + abstractFilePath.substring(fsPrefix.length).split('/').join('-');
         };
         const realGetItem = window.localStorage.getItem.bind(window.localStorage);
         const realSetItem = window.localStorage.setItem.bind(window.localStorage);
@@ -75,8 +75,9 @@ try {
                 return realRemoveItem(itemKey);
             }
             var filePath = _abstractFSPathToRealPath(itemKey);
-            if (_fileExists(filePath)) {
+            try {
                 fs.unlinkSync(filePath);
+            } catch (_) {
             }
         };
         try {
