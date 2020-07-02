@@ -1,16 +1,16 @@
-import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_items_handler.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_initial_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_result_data.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.dart';
 
 class SyncDataMerger<T> {
   final SyncInitialData<T> _syncInitialData;
-  final SyncDataInfoProvider<T> _infoProvider;
+  final SyncItemsHandler<T> _itemsHandler;
   final SyncCancelationHandler _cancelationHandler;
 
   SyncDataMerger(
     this._syncInitialData,
-    this._infoProvider,
+    this._itemsHandler,
     this._cancelationHandler,
   );
 
@@ -18,7 +18,7 @@ class SyncDataMerger<T> {
   Map<String, T> _createIdToItemMap(final List<T> itemsList) {
     final Map<String, T> res = {};
     for (final T item in itemsList) {
-      res[_infoProvider.getItemId(item)] = item;
+      res[_itemsHandler.getItemId(item)] = item;
     }
     return res;
   }
@@ -41,7 +41,7 @@ class SyncDataMerger<T> {
       if (presentItems.containsKey(itemId)) {
         final T pastItem = pastItems[itemId];
         final T presentItem = presentItems[itemId];
-        if (!_infoProvider.itemsEqualExceptId(pastItem, presentItem)) {
+        if (!_itemsHandler.itemsEqualExceptId(pastItem, presentItem)) {
           res[itemId] = presentItem;
         }
       }
@@ -77,10 +77,14 @@ class SyncDataMerger<T> {
         // If the item has been modified both remotely and locally, we will keep both versions.
         // This is done by considering the local modification as a newly created item instead of a modified one.
         if (lmItem != null) {
+          // Removing the "locally modified" record for that item
           localModifiedItems.remove(rmItemId);
-          //TODO generate a new id and a new item based on that id
-          //otherwise this would result in 2 items having the same id which we don't want
-          localCreatedItems[rmItemId] = lmItem;
+          // Cloning the item with a new unique ID to avoid any clash with other items
+          final T clonedItem = _itemsHandler.cloneItemWithNewId(lmItem);
+          // Obtaining the newly cloned item ID
+          final String clonedItemId = _itemsHandler.getItemId(clonedItem);
+          // Adding the newly cloned item to the list of "locally created" records
+          localCreatedItems[clonedItemId] = clonedItem;
         }
       }
       // Handling conflict of "remotely modified item" vs "locally deleted item"

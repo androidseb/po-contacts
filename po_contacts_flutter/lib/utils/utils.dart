@@ -155,7 +155,7 @@ class Utils {
     return hex.encode(md5Digest.bytes);
   }
 
-  static String generateUID() {
+  static String generateUUID() {
     return Uuid().v1();
   }
 

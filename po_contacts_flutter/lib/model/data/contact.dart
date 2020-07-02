@@ -270,7 +270,7 @@ class ContactBuilder extends ContactData {
     return ContactBuilder.build(id, contactBuilder);
   }
 
-  String _uid = Utils.generateUID();
+  String _uid = Utils.generateUUID();
   String _image;
   String _fullName;
   String _firstName;
@@ -363,13 +363,23 @@ class ContactBuilder extends ContactData {
     return str;
   }
 
-  static Contact build(final int id, final ContactData contactData) {
+  static Contact build(
+    final int id,
+    final ContactData contactData, {
+    final String uuidOverride = null,
+  }) {
     if (id == null) {
       return null;
     }
+    String uuid;
+    if (uuidOverride == null) {
+      uuid = contactData.uid == null ? '$id' : contactData.uid;
+    } else {
+      uuid = uuidOverride;
+    }
     return Contact(
       id,
-      contactData.uid == null ? '$id' : contactData.uid,
+      uuid,
       contactData.image,
       getNonNullString(contactData.firstName),
       getNonNullString(contactData.lastName),

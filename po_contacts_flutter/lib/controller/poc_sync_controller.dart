@@ -11,16 +11,22 @@ import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
-import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_data_id_provider.dart';
+import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_items_handler.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
+import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 
-class ContactIdProvider extends SyncDataInfoProvider<Contact> {
+class ContactIdProvider extends SyncItemsHandler<Contact> {
   @override
   String getItemId(final Contact item) {
     return item.uid;
+  }
+
+  @override
+  Contact cloneItemWithNewId(final Contact item) {
+    return ContactBuilder.build(0, item, uuidOverride: Utils.generateUUID());
   }
 
   @override
@@ -126,7 +132,7 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
-  SyncDataInfoProvider<Contact> getItemInfoProvider() {
+  SyncItemsHandler<Contact> getItemsHandler() {
     return ContactIdProvider();
   }
 

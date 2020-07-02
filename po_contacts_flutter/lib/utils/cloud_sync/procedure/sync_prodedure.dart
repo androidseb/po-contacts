@@ -84,7 +84,7 @@ class SyncProcedure<T> {
   Future<SyncResultData<T>> _computeSyncResult(final SyncInitialData<T> syncInitialData) async {
     return await SyncDataMerger<T>(
       syncInitialData,
-      _syncController.getItemInfoProvider(),
+      _syncController.getItemsHandler(),
       _cancelationHandler,
     ).computeSyncResult();
   }
