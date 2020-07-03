@@ -14,7 +14,7 @@ dependencies:
   http: ^0.12.1
   crypto: ^2.1.4
   uuid: ^2.1.0
-  image: ^2.1.13
+  image: ^2.1.12
 
   # Common - flutter
   google_sign_in: ^4.4.6
