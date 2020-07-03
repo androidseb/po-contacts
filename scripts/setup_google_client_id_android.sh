@@ -4,8 +4,8 @@ set -e
 # The purpose of this script is to overwrite the local source code to update the Google oAuth client ID
 # while reducing the risks of accidentally committing this to the repo
 
-if [ -z "$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
-    echo "Missing env variable: POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID"
+if [ -z "$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID_DEBUG" ]; then
+    echo "Missing env variable: POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID_DEBUG"
     exit 1
 fi
 
@@ -17,5 +17,5 @@ cd $(git rev-parse --show-toplevel)
 git update-index --skip-worktree po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
 
 # overwrite the google oauth client id in the source code
-echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID';">po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID_DEBUG';">po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
 echo "const POC_GOOGLE_OAUTH_CLIENT_SECRET = 'Not needed for this implementation';">>po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart

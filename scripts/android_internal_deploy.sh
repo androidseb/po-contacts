@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-if [ -z "$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
-    echo "Missing env variable: POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID"
+if [ -z "$POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID_PRODUCTION" ]; then
+    echo "Missing env variable: POC_ANDROID_APP_GOOGLE_OAUTH_CLIENT_ID_PRODUCTION"
     exit 1
 fi
 
