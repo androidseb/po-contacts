@@ -23,6 +23,7 @@ enum SyncState {
 //TODO add an option to start sync on contact edit
 //TODO add an option to view the last sync error, especially on first sync
 //TODO initially encrypting with an empty dataset doesn't keep encryption
+//TODO initial first sync without encryption clears the data
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
   static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';
