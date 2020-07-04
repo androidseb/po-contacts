@@ -237,6 +237,19 @@ class POCSyncController extends SyncController<Contact> {
         },
       ),
     ];
+    final SyncException lastSyncError = MainController.get().syncController.lastSyncError;
+    if (lastSyncError != null) {
+      availableEntries.add(MultiSelectionChoice(
+        I18n.getString(I18n.string.cloud_sync_view_error),
+        iconData: Icons.error_outline,
+        onSelected: () {
+          MainController.get().showMessageDialog(
+            I18n.getString(I18n.string.cloud_sync_view_error),
+            lastSyncError.toUIMessageString(),
+          );
+        },
+      ));
+    }
     MainController.get().promptMultiSelection(
       I18n.getString(I18n.string.cloud_sync_options),
       availableEntries,

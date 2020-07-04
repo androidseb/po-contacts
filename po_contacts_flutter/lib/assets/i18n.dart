@@ -118,6 +118,7 @@ class I18nString {
   final String cloud_sync_disconnect_confirmation_question = 'cloud_sync_disconnect_confirmation_question';
   final String action_blocked_by_sync_title = 'action_blocked_by_sync_title';
   final String action_blocked_by_sync_question = 'action_blocked_by_sync_question';
+  final String cloud_sync_view_error = 'cloud_sync_view_error';
 }
 
 class I18n {
@@ -242,6 +243,7 @@ class I18n {
     string.cloud_sync_disconnect_confirmation_question: 'Do you want to disconnect your cloud account sync? Only the cloud account autorization information will be deleted from this app.',
     string.action_blocked_by_sync_title: 'Action blocked by sync',
     string.action_blocked_by_sync_question: 'You cannot perform this action right now, because cloud sync is in progress. Do you want to cancel the current cloud sync?',
+    string.cloud_sync_view_error: 'View last sync error',
   };
 
   static String _getObjString(final Object _obj) {

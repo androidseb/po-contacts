@@ -54,10 +54,14 @@ class SyncModelSerializer {
   Future<SyncModel> _readSyncModel() async {
     final String syncInterfaceStateValue = (await _sharedPreferences).getString(_PREF_KEY_SYNC_MODEL_DATA);
     Map<String, dynamic> syncInterfaceData;
-    try {
-      syncInterfaceData = jsonDecode(syncInterfaceStateValue);
-    } catch (_) {
+    if (syncInterfaceStateValue == null) {
       syncInterfaceData = null;
+    } else {
+      try {
+        syncInterfaceData = jsonDecode(syncInterfaceStateValue);
+      } catch (_) {
+        syncInterfaceData = null;
+      }
     }
 
     final SyncInterfaceType syncInterfaceType =

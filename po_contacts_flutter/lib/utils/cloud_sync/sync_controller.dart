@@ -21,7 +21,6 @@ enum SyncState {
 
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
-//TODO add an option to view the last sync error, especially on first sync
 //TODO initially encrypting with an empty dataset doesn't keep encryption
 //TODO initial first sync without encryption clears the data (sync to cloud file -> disconnect account -> sync -> new file)
 abstract class SyncController<T> {
@@ -167,6 +166,10 @@ abstract class SyncController<T> {
   }
 
   void _updateLastSyncError(final SyncException syncException) {
+    if (syncException?.type == SyncExceptionType.CANCELED) {
+      _lastSyncError = null;
+      return;
+    }
     _lastSyncError = syncException;
   }
 
