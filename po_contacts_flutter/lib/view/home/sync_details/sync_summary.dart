@@ -52,10 +52,10 @@ class SyncSummary extends StatelessWidget {
 
   String _getSyncButtonText(final SyncController syncController) {
     String syncButtonStringKey;
-    if (syncController.model?.cloudIndexFileId == null) {
-      syncButtonStringKey = I18n.string.cloud_sync_sync;
-    } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
+    if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
       syncButtonStringKey = I18n.string.cloud_sync_cancel;
+    } else if (syncController.model?.cloudIndexFileId == null) {
+      syncButtonStringKey = I18n.string.cloud_sync_sync;
     } else if (syncController.syncState == SyncState.SYNC_CANCELING) {
       syncButtonStringKey = I18n.string.cloud_sync_canceling;
     } else {
@@ -69,6 +69,9 @@ class SyncSummary extends StatelessWidget {
       return null;
     }
     if (syncController.model?.cloudIndexFileId == null) {
+      if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
+        return null;
+      }
       return () {
         MainController.get().syncController.startSync();
       };
