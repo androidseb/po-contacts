@@ -13,13 +13,15 @@ class SyncInterfaceConfig {
   final String rootSyncFolderName;
   final String indexFileName;
   final String clientId;
+  final String clientIdDesktop;
   final String clientSecret;
-  SyncInterfaceConfig(
+  SyncInterfaceConfig({
     this.rootSyncFolderName,
     this.indexFileName,
     this.clientId,
+    this.clientIdDesktop,
     this.clientSecret,
-  );
+  });
 }
 
 abstract class SyncInterfaceUIController {

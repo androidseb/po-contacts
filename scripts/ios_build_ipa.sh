@@ -17,6 +17,9 @@ echo "Copying 'po_contacts_flutter' to 'bin/tmp'..."
 rm -rf bin/tmp
 rm -rf bin/web
 cp -r po_contacts_flutter bin/tmp
+echo "const POC_GOOGLE_OAUTH_CLIENT_ID = 'Not needed for this implementation';">bin/tmp/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_ID_DESKTOP = '$POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_ID';">>bin/tmp/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_SECRET = '$POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_SECRET';">>bin/tmp/lib/assets/constants/google_oauth_client_id.dart
 
 cd bin/tmp
 

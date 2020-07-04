@@ -240,7 +240,7 @@ class GoogleOAuthWithDeviceCode {
   }
 
   static Future<String> authenticateWithCode(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
-    final String clientId = gdsi.config.clientId;
+    final String clientId = gdsi.config.clientIdDesktop;
     final String clientSecret = gdsi.config.clientSecret;
     final String refreshToken = await _getRefreshToken();
     final String refreshedAccessToken = await _getRefreshedAccessToken(

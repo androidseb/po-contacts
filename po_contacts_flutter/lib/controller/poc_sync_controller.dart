@@ -119,10 +119,11 @@ class POCSyncController extends SyncController<Contact> {
   @override
   SyncInterfaceConfig getSyncInterfaceConfig() {
     return SyncInterfaceConfig(
-      'pocontacts',
-      'po_contacts_index.json',
-      POC_GOOGLE_OAUTH_CLIENT_ID,
-      POC_GOOGLE_OAUTH_CLIENT_SECRET,
+      rootSyncFolderName: 'pocontacts',
+      indexFileName: 'po_contacts_index.json',
+      clientId: POC_GOOGLE_OAUTH_CLIENT_ID,
+      clientIdDesktop: POC_GOOGLE_OAUTH_CLIENT_ID_DESKTOP,
+      clientSecret: POC_GOOGLE_OAUTH_CLIENT_SECRET,
     );
   }
 

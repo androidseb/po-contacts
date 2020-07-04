@@ -3,8 +3,8 @@ set -e
 
 cd $(git rev-parse --show-toplevel)
 
-if [ -z "$POC_WEB_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
-    echo "Missing env variable: POC_WEB_APP_GOOGLE_OAUTH_CLIENT_ID"
+if [ -z "$POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_ID" ]; then
+    echo "Missing env variable: POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_ID"
     exit 1
 fi
 
@@ -14,8 +14,9 @@ echo "Copying 'po_contacts_flutter' to 'bin/tmp'..."
 rm -rf bin/tmp
 rm -rf bin/web
 cp -r po_contacts_flutter bin/tmp
-echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_WEB_APP_GOOGLE_OAUTH_CLIENT_ID';">bin/tmp/lib/assets/constants/google_oauth_client_id.dart
-echo "const POC_GOOGLE_OAUTH_CLIENT_SECRET = '$POC_WEB_APP_GOOGLE_OAUTH_CLIENT_SECRET';">>bin/tmp/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_ID = '$POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_ID';">bin/tmp/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_ID_DESKTOP = '$POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_ID';">>po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
+echo "const POC_GOOGLE_OAUTH_CLIENT_SECRET = '$POC_DESKTOP_APP_GOOGLE_OAUTH_CLIENT_SECRET';">>bin/tmp/lib/assets/constants/google_oauth_client_id.dart
 
 cd bin/tmp
 
