@@ -24,7 +24,6 @@ enum SyncState {
 //TODO initially encrypting with an empty dataset doesn't keep encryption
 //TODO initial first sync without encryption clears the data (sync to cloud file -> disconnect account -> sync -> new file)
 //TODO secure storage crashing on app start
-//TODO non-adaptive icon devices have no app icon
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
   static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';
