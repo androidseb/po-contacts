@@ -33,10 +33,16 @@ class SyncProcedure<T> {
   final SyncController<T> _syncController;
   final SyncModel _syncModel;
   final SyncInterface _syncInterface;
+  final String _restoreDataFileId;
   SyncCancelationHandler _cancelationHandler;
   bool _localDataChanged = false;
 
-  SyncProcedure(this._syncController, this._syncModel, this._syncInterface) {
+  SyncProcedure(
+    this._syncController,
+    this._syncModel,
+    this._syncInterface,
+    this._restoreDataFileId,
+  ) {
     _cancelationHandler = SyncCancelationHandler(this);
   }
 
@@ -103,7 +109,7 @@ class SyncProcedure<T> {
       final Uint8List fileToUploadContent = base64.decode(await fileToUpload.readAsBase64String());
       final RemoteFile newCloudFile = await _syncInterface.createNewFile(
         cloudFolderId,
-        Utils.dateTimeToString(),
+        Utils.dateTimeToString() + _syncInterface.config.versionFileNameSuffix,
         fileToUploadContent,
       );
       await _syncInterface.updateIndexFile(
@@ -119,12 +125,30 @@ class SyncProcedure<T> {
     await _syncController.markSyncSucceededFileAsSyncFinalized();
   }
 
-  Future<void> execute() async {
+  Future<void> _performRegularSync() async {
     _cancelationHandler.checkForCancelation();
     final SyncInitialData<T> syncInitialData = await _initializeSync();
     _cancelationHandler.checkForCancelation();
     final SyncResultData<T> syncResult = await _computeSyncResult(syncInitialData);
     _cancelationHandler.checkForCancelation();
     await _finalizeSync(syncResult);
+  }
+
+  Future<void> _performFileRestore() async {
+    if (this._restoreDataFileId == null) {
+      return;
+    }
+    final String cloudIndexFileId = _syncModel.cloudIndexFileId;
+    await _syncInterface.updateIndexFile(
+      cloudIndexFileId,
+      this._restoreDataFileId,
+      null,
+    );
+    await _performRegularSync();
+  }
+
+  Future<void> execute() async {
+    await _performRegularSync();
+    await _performFileRestore();
   }
 }

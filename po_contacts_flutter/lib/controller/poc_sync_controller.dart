@@ -58,6 +58,42 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
   }
 
   @override
+  Future<int> pickIndexFile(final List<String> cloudIndexFileNames) async {
+    final List<MultiSelectionChoice> selectionChoices = [];
+    selectionChoices.add(MultiSelectionChoice(
+      I18n.getString(I18n.string.sync_to_new_file),
+      entryId: -1,
+    ));
+    for (int i = 0; i < cloudIndexFileNames.length; i++) {
+      final String indexFileName = cloudIndexFileNames[i];
+      selectionChoices.add(MultiSelectionChoice(indexFileName, entryId: i));
+    }
+    final MultiSelectionChoice selectedIndexFile =
+        await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
+    if (selectedIndexFile == null) {
+      return null;
+    } else {
+      return selectedIndexFile.entryId;
+    }
+  }
+
+  @override
+  Future<int> pickHistoryDataFile(List<String> cloudDataFileNames) async {
+    final List<MultiSelectionChoice> selectionChoices = [];
+    for (int i = 0; i < cloudDataFileNames.length; i++) {
+      final String dataFileName = cloudDataFileNames[i];
+      selectionChoices.add(MultiSelectionChoice(dataFileName, entryId: i));
+    }
+    final MultiSelectionChoice selectedIndexFile =
+        await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
+    if (selectedIndexFile == null) {
+      return null;
+    } else {
+      return selectedIndexFile.entryId;
+    }
+  }
+
+  @override
   void copyTextToClipBoard(final String text) {
     MainController.get().psController.actionsManager.copyTextToClipBoard(text);
   }
@@ -97,30 +133,11 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
-  Future<int> pickIndexFile(final List<String> cloudIndexFileNames) async {
-    final List<MultiSelectionChoice> selectionChoices = [];
-    selectionChoices.add(MultiSelectionChoice(
-      I18n.getString(I18n.string.sync_to_new_file),
-      entryId: -1,
-    ));
-    for (int i = 0; i < cloudIndexFileNames.length; i++) {
-      final String indexFileName = cloudIndexFileNames[i];
-      selectionChoices.add(MultiSelectionChoice(indexFileName, entryId: i));
-    }
-    final MultiSelectionChoice selectedIndexFile =
-        await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
-    if (selectedIndexFile == null) {
-      return null;
-    } else {
-      return selectedIndexFile.entryId;
-    }
-  }
-
-  @override
   SyncInterfaceConfig getSyncInterfaceConfig() {
     return SyncInterfaceConfig(
       rootSyncFolderName: 'pocontacts',
       indexFileName: 'po_contacts_index.json',
+      versionFileNameSuffix: '.vcf',
       clientId: POC_GOOGLE_OAUTH_CLIENT_ID,
       clientIdDesktop: POC_GOOGLE_OAUTH_CLIENT_ID_DESKTOP,
       clientSecret: POC_GOOGLE_OAUTH_CLIENT_SECRET,
@@ -227,7 +244,7 @@ class POCSyncController extends SyncController<Contact> {
         I18n.getString(I18n.string.cloud_sync_view_history_or_restore),
         iconData: Icons.history,
         onSelected: () {
-          //TODO implement the option to view history and restore
+          MainController.get().syncController.viewHistoryToRestore();
         },
       ),
       MultiSelectionChoice(

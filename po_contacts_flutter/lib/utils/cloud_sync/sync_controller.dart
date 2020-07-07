@@ -77,13 +77,6 @@ abstract class SyncController<T> {
 
   Future<void> overwriteLocalItems(final List<T> itemsList);
 
-  /// Select a cloud index file based on the name of that index file
-  /// Returns 3 possible types of value:
-  /// * the index of the user's choice
-  /// * -1 if the user chose to create a new index
-  /// * null if the user canceled
-  Future<int> pickIndexFile(final List<String> cloudIndexFileNames);
-
   Future<FileEntity> fileEntityByName(final String fileName);
 
   SyncController() {
@@ -136,12 +129,24 @@ abstract class SyncController<T> {
     }
   }
 
-  void startSync() async {
+  void startSync({
+    final bool directUserAction = true,
+  }) {
     if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS) {
       return;
     }
+    _startSync(directUserAction: directUserAction);
+  }
+
+  void _startSync({
+    final bool directUserAction = true,
+    final String restoreDataFileId = null,
+  }) async {
     _syncState.currentValue = SyncState.SYNC_IN_PROGRESS;
-    await _performSync(directUserAction: true);
+    await _performSync(
+      directUserAction: directUserAction,
+      restoreDataFileId: restoreDataFileId,
+    );
     _syncState.currentValue = SyncState.SYNC_IDLE;
   }
 
@@ -155,9 +160,15 @@ abstract class SyncController<T> {
     _syncState.notifyDataChanged();
   }
 
-  Future<void> _performSync({bool directUserAction = false}) async {
+  Future<void> _performSync({
+    final bool directUserAction = true,
+    final String restoreDataFileId = null,
+  }) async {
     try {
-      await _performSyncImpl(directUserAction: directUserAction);
+      await _performSyncImpl(
+        directUserAction: directUserAction,
+        restoreDataFileId: restoreDataFileId,
+      );
       _updateLastSyncError(null);
     } on SyncException catch (syncException) {
       _updateLastSyncError(syncException);
@@ -198,7 +209,7 @@ abstract class SyncController<T> {
           indexFileNames.add('???');
         }
       }
-      final int indexFileChoiceIndex = await pickIndexFile(indexFileNames);
+      final int indexFileChoiceIndex = await getSyncInterfaceUIController().pickIndexFile(indexFileNames);
       if (indexFileChoiceIndex == null) {
         return null;
       } else if (indexFileChoiceIndex != -1) {
@@ -233,7 +244,7 @@ abstract class SyncController<T> {
     return null;
   }
 
-  Future<SyncInterface> _getAuthenticatedSyncInterface({bool directUserAction = false}) async {
+  Future<SyncInterface> _getAuthenticatedSyncInterface({bool directUserAction = true}) async {
     SyncInterface syncInterface = await _readSyncInterfaceFromModel();
     if (syncInterface == null) {
       syncInterface = await _initializeSyncInterface();
@@ -256,10 +267,18 @@ abstract class SyncController<T> {
     return syncInterface;
   }
 
-  Future<void> _performSyncImpl({bool directUserAction = false}) async {
+  Future<void> _performSyncImpl({
+    final bool directUserAction = false,
+    final String restoreDataFileId = null,
+  }) async {
     final SyncModel syncModel = await _getSyncModel();
     final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: directUserAction);
-    _currentSyncProcedure = SyncProcedure(this, syncModel, syncInterface);
+    _currentSyncProcedure = SyncProcedure(
+      this,
+      syncModel,
+      syncInterface,
+      restoreDataFileId,
+    );
     try {
       await _currentSyncProcedure.execute();
       await (await _getSyncModel()).setLastSyncTimeEpochMillis(Utils.currentTimeMillis());
@@ -366,6 +385,49 @@ abstract class SyncController<T> {
   void recordLocalDataChanged() {
     if (_currentSyncProcedure != null) {
       _currentSyncProcedure.recordLocalDataChanged();
+    }
+  }
+
+  void viewHistoryToRestore() async {
+    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS) {
+      return;
+    }
+    _syncState.currentValue = SyncState.SYNC_IN_PROGRESS;
+    try {
+      await _viewHistoryToRestoreImpl();
+    } catch (error) {
+      // Ignoring those errors, the "restore" procedure will simply fail silently
+    }
+    _syncState.currentValue = SyncState.SYNC_IDLE;
+  }
+
+  void _viewHistoryToRestoreImpl() async {
+    final SyncModel syncModel = await _getSyncModel();
+    final String cloudIndexFileId = syncModel.cloudIndexFileId;
+    if (cloudIndexFileId == null) {
+      return;
+    }
+    final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: false);
+    final List<RemoteFile> dataFiles = await syncInterface.fetchHistoryAsDataFilesList(cloudIndexFileId);
+    if (dataFiles == null || dataFiles.isEmpty) {
+      return;
+    }
+
+    final List<String> dataFileNames = [];
+    for (final RemoteFile cdf in dataFiles) {
+      dataFileNames.add(cdf.fileName);
+    }
+    final int dataFileChoiceIndex = await getSyncInterfaceUIController().pickHistoryDataFile(dataFileNames);
+    if (dataFileChoiceIndex == null) {
+      return;
+    }
+
+    final RemoteFile selectedCloudDataFile = dataFiles[dataFileChoiceIndex];
+    if (selectedCloudDataFile != null) {
+      await _startSync(
+        directUserAction: true,
+        restoreDataFileId: selectedCloudDataFile.fileId,
+      );
     }
   }
 }

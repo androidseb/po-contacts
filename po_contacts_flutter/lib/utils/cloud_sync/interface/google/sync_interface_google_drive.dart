@@ -253,11 +253,8 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     return parents[0]['id'];
   }
 
-  @override
-  Future<List<RemoteFile>> fetchIndexFilesList() async {
-    final String qParamValue = Uri.encodeComponent(
-      'name = "${config.indexFileName}"  and trashed = false',
-    );
+  Future<List<RemoteFile>> _fetchFilesList(final String rawQParamString) async {
+    final String qParamValue = Uri.encodeComponent(rawQParamString);
     final String url = 'https://www.googleapis.com/drive/v3/files?q=$qParamValue';
     final http.Response httpGetResponse = await http.get(
       url,
@@ -282,6 +279,20 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
         message: 'GoogleDriveSyncInterface.getFolder failed status code ${httpGetResponse.statusCode}',
       );
     }
+  }
+
+  @override
+  Future<List<RemoteFile>> fetchIndexFilesList() async {
+    return _fetchFilesList('name = "${config.indexFileName}" and trashed = false');
+  }
+
+  @override
+  Future<List<RemoteFile>> fetchFolderFilesList(final String cloudIndexFileId) async {
+    final String parentFolderId = await getParentFolderId(cloudIndexFileId);
+    if (parentFolderId == null) {
+      return null;
+    }
+    return _fetchFilesList('"$parentFolderId" in parents and trashed = false');
   }
 
   Future<dynamic> _getFileMetadata(final String fileId) async {

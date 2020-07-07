@@ -12,12 +12,14 @@ enum SyncInterfaceType {
 class SyncInterfaceConfig {
   final String rootSyncFolderName;
   final String indexFileName;
+  final String versionFileNameSuffix;
   final String clientId;
   final String clientIdDesktop;
   final String clientSecret;
   SyncInterfaceConfig({
     this.rootSyncFolderName,
     this.indexFileName,
+    this.versionFileNameSuffix,
     this.clientId,
     this.clientIdDesktop,
     this.clientSecret,
@@ -26,9 +28,26 @@ class SyncInterfaceConfig {
 
 abstract class SyncInterfaceUIController {
   BuildContext getUIBuildContext();
+
+  /// Select a cloud index file based on the name of that index file
+  /// Returns 3 possible types of value:
+  /// * the index of the user's choice
+  /// * -1 if the user chose to create a new index
+  /// * null if the user canceled
+  Future<int> pickIndexFile(final List<String> cloudIndexFileNames);
+
+  /// Select a history data file based on the name of that history data file.
+  /// Returns 2 possible types of value:
+  /// * the index of the user's choice
+  /// * null if the user canceled
+  Future<int> pickHistoryDataFile(final List<String> cloudDataFileNames);
+
   void copyTextToClipBoard(final String text);
+
   Future<String> promptUserForCreationSyncPassword();
+
   Future<String> promptUserForResumeSyncPassword();
+
   Future<bool> promptUserForSyncPasswordRemember();
 
   final String googleAuthCancelButtonText;
@@ -93,6 +112,7 @@ abstract class SyncInterface {
     String targetETag,
   });
   Future<List<RemoteFile>> fetchIndexFilesList();
+  Future<List<RemoteFile>> fetchFolderFilesList(final String cloudIndexFileId);
   Future<String> getFileETag(final String fileId);
   Future<Uint8List> downloadCloudFile(final String fileId);
 
@@ -116,14 +136,6 @@ abstract class SyncInterface {
       Utils.dateTimeToString(),
     );
     return newIndexFolder;
-  }
-
-  Future<RemoteFile> createNewTextFile(
-    final String parentFolderId,
-    final String fileName,
-    final String fileTextContent,
-  ) {
-    return createNewFile(parentFolderId, fileName, utf8.encode(fileTextContent));
   }
 
   Future<RemoteFile> createNewIndexFile() async {
@@ -155,5 +167,19 @@ abstract class SyncInterface {
 
   Future<Map<String, dynamic>> getIndexFileContent(final String fileId) async {
     return jsonDecode(await getTextFileContent(fileId));
+  }
+
+  Future<List<RemoteFile>> fetchHistoryAsDataFilesList(final String cloudIndexFileId) async {
+    final List<RemoteFile> rawFilesList = await fetchFolderFilesList(cloudIndexFileId);
+    if (rawFilesList == null) {
+      return null;
+    }
+    final List<RemoteFile> filteredFilesList = [];
+    for (final RemoteFile f in rawFilesList) {
+      if (f.fileName.endsWith(config.versionFileNameSuffix)) {
+        filteredFilesList.add(f);
+      }
+    }
+    return filteredFilesList;
   }
 }
