@@ -32,24 +32,25 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
     return StreamedWidget<SyncState>(
       MainController.get().syncController.syncStateSV,
       (BuildContext context, SyncState syncState) {
-        if (syncState == SyncState.SYNC_IN_PROGRESS) {
+        if (syncState == SyncState.SYNC_IN_PROGRESS || syncState == SyncState.SYNC_CANCELING) {
           _animationController.repeat();
         } else {
           _animationController.stop();
           _animationController.reset();
         }
-        final IconData iconData =
-            MainController.get().syncController.lastSyncError == null || syncState == SyncState.SYNC_IN_PROGRESS
-                ? Icons.sync
-                : Icons.sync_problem;
+        final IconData iconData = MainController.get().syncController.lastSyncError == null ||
+                syncState == SyncState.SYNC_IN_PROGRESS ||
+                syncState == SyncState.SYNC_CANCELING
+            ? Icons.sync
+            : Icons.sync_problem;
         return RotationTransition(
           turns: Tween(begin: 1.0, end: 0.0).animate(_animationController),
           child: IconButton(
             icon: Icon(iconData),
-            onPressed: syncState == SyncState.SYNC_IN_PROGRESS
+            onPressed: syncState == SyncState.SYNC_IN_PROGRESS || syncState == SyncState.SYNC_CANCELING
                 ? null
                 : () {
-                    if (syncState == SyncState.SYNC_IN_PROGRESS) {
+                    if (syncState == SyncState.SYNC_IN_PROGRESS || syncState == SyncState.SYNC_CANCELING) {
                       return;
                     }
                     MainController.get().syncController.startSync();

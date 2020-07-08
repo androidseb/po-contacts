@@ -20,7 +20,8 @@ class SyncSummary extends StatelessWidget {
   IconData _getIconData(final SyncController syncController) {
     if (syncController.model?.cloudIndexFileId == null) {
       return Icons.cloud_off;
-    } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
+    } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS ||
+        syncController.syncState == SyncState.SYNC_CANCELING) {
       return Icons.more_horiz;
     } else if (syncController.model?.hasLocalChanges == true) {
       return Icons.cloud_upload;

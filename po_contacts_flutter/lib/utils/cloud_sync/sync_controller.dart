@@ -130,7 +130,7 @@ abstract class SyncController<T> {
   void startSync({
     final bool directUserAction = true,
   }) {
-    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS) {
+    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS || _syncState.currentValue == SyncState.SYNC_CANCELING) {
       return;
     }
     _startSync(directUserAction: directUserAction);
@@ -390,7 +390,7 @@ abstract class SyncController<T> {
   }
 
   void viewHistoryToRestore() async {
-    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS) {
+    if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS || syncState == SyncState.SYNC_CANCELING) {
       return;
     }
     _syncState.currentValue = SyncState.SYNC_IN_PROGRESS;
