@@ -21,7 +21,6 @@ enum SyncState {
 
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
-//TODO initially encrypting with an empty dataset doesn't keep encryption
 //TODO initial first sync without encryption clears the data (sync to cloud file -> disconnect account -> sync -> new file)
 //TODO secure storage crashing on app start
 abstract class SyncController<T> {

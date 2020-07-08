@@ -5,6 +5,7 @@ class SyncInitialData<T> {
   final List<T> localItems;
   final List<T> lastSyncedItems;
   final List<T> remoteItems;
+  final bool hasRemoteDataFile;
   final String remoteFileETag;
 
   SyncInitialData(
@@ -12,6 +13,7 @@ class SyncInitialData<T> {
     this.localItems,
     this.lastSyncedItems,
     this.remoteItems,
+    this.hasRemoteDataFile,
     this.remoteFileETag,
   );
 }

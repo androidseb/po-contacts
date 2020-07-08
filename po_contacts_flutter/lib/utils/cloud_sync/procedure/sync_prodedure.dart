@@ -59,6 +59,8 @@ class SyncProcedure<T> {
     _cancelationHandler.checkForCancelation();
     final List<T> localItems = await _syncController.getLocalItems();
     _cancelationHandler.checkForCancelation();
+    final String fileETag = await _syncInterface.getFileETag(_syncModel.cloudIndexFileId);
+    _cancelationHandler.checkForCancelation();
     final FileEntity latestCloudFile = await _syncController.getLatestCloudFile(_syncInterface);
     _cancelationHandler.checkForCancelation();
     await _syncController.requestEncryptionKeyIfNeeded(_syncInterface, latestCloudFile);
@@ -77,12 +79,12 @@ class SyncProcedure<T> {
       encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
-    final String fileETag = await _syncInterface.getFileETag(_syncModel.cloudIndexFileId);
     return SyncInitialData<T>(
       candidateSyncFile,
       localItems,
       lastSyncedItems,
       remoteItems,
+      latestCloudFile != null,
       fileETag,
     );
   }
@@ -103,7 +105,7 @@ class SyncProcedure<T> {
       await _syncModel.getEncryptionKey(),
     );
     _cancelationHandler.checkForCancelation();
-    if (syncResult.hasRemoteChanges) {
+    if (syncResult.hasRemoteChanges || !syncResult.initialData.hasRemoteDataFile) {
       final String cloudIndexFileId = _syncModel.cloudIndexFileId;
       final String cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
       final Uint8List fileToUploadContent = base64.decode(await fileToUpload.readAsBase64String());
