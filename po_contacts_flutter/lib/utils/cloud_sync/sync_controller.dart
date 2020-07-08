@@ -21,7 +21,6 @@ enum SyncState {
 
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
-//TODO secure storage crashing on app start
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
   static const String _UPLOADED_SYNC_FILE_PRE_UPLOAD = 'uploaded_sync_file_pre_upload';
