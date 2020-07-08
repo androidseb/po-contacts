@@ -140,7 +140,7 @@ class POCSyncController extends SyncController<Contact> {
       versionFileNameSuffix: '.vcf',
       clientId: POC_GOOGLE_OAUTH_CLIENT_ID,
       clientIdDesktop: POC_GOOGLE_OAUTH_CLIENT_ID_DESKTOP,
-      clientSecret: POC_GOOGLE_OAUTH_CLIENT_SECRET,
+      clientSecret: POC_GOOGLE_OAUTH_CLIENT_SECRET_DESKTOP,
     );
   }
 
