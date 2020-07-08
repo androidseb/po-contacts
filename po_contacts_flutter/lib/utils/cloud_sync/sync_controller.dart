@@ -21,7 +21,6 @@ enum SyncState {
 
 //TODO add an option to start sync on app start
 //TODO add an option to start sync on contact edit
-//TODO initial first sync without encryption clears the data (sync to cloud file -> disconnect account -> sync -> new file)
 //TODO secure storage crashing on app start
 abstract class SyncController<T> {
   /// Name for the candidate file to upload containing the next sync's result
@@ -156,6 +155,9 @@ abstract class SyncController<T> {
     final SyncInterface syncInterface = await _readSyncInterfaceFromModel();
     await syncInterface.logout();
     await _syncModelSerializer.clearData();
+    await deleteFileWithName(_UPLOADED_SYNC_FILE_PRE_UPLOAD);
+    await deleteFileWithName(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED);
+    await deleteFileWithName(_UPLOADED_SYNC_FILE_POST_SYNC_FINALIZED);
     _syncState.notifyDataChanged();
   }
 
