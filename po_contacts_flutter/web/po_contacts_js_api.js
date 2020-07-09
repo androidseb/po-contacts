@@ -67,6 +67,7 @@ try {
             if (itemKey == null || !itemKey.startsWith(fsPrefix)) {
                 return realSetItem(itemKey, itemValue);
             }
+            realSetItem(itemKey, 'file');
             var filePath = _abstractFSPathToRealPath(itemKey);
             fs.writeFileSync(filePath, itemValue, { encoding: 'utf-8' });
         };
@@ -74,6 +75,7 @@ try {
             if (itemKey == null || !itemKey.startsWith(fsPrefix)) {
                 return realRemoveItem(itemKey);
             }
+            realRemoveItem(itemKey);
             var filePath = _abstractFSPathToRealPath(itemKey);
             try {
                 fs.unlinkSync(filePath);

@@ -8,6 +8,8 @@ enum ImageFileSource {
 }
 
 abstract class FilesManager {
+  Future<List<FileEntity>> getFilesList(final String folderPath);
+
   Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName);
 
   Future<FileEntity> createFileEntityAbsPath(final String fileAbsPath);

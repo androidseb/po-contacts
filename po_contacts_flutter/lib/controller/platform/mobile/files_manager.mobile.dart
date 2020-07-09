@@ -11,6 +11,18 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 
 class FilesManagerMobile extends FilesManager {
   @override
+  Future<List<FileEntity>> getFilesList(final String folderPath) async {
+    final List<FileEntity> result = [];
+    final List<FileSystemEntity> filesList = Directory(folderPath).listSync();
+    for (final FileSystemEntity f in filesList) {
+      if (f.statSync().type == FileSystemEntityType.file) {
+        result.add(new FileEntityMobile(File(f.absolute.path)));
+      }
+    }
+    return result;
+  }
+
+  @override
   Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName) async {
     return createFileEntityAbsPath('$parentFolderPath/$fileName');
   }

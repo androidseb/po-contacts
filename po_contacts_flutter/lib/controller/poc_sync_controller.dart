@@ -231,6 +231,12 @@ class POCSyncController extends SyncController<Contact> {
     return MainController.get().psController.filesManager.createFileEntityParentAndName(syncFolderPath, fileName);
   }
 
+  @override
+  Future<List<FileEntity>> getFileEntitiesList() async {
+    final String syncFolderPath = await _getSyncFolderPath();
+    return MainController.get().psController.filesManager.getFilesList(syncFolderPath);
+  }
+
   void showSyncOptionsMenu() {
     final List<MultiSelectionChoice> availableEntries = [
       MultiSelectionChoice(

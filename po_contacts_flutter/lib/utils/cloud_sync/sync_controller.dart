@@ -76,6 +76,8 @@ abstract class SyncController<T> {
 
   Future<FileEntity> fileEntityByName(final String fileName);
 
+  Future<List<FileEntity>> getFileEntitiesList();
+
   SyncController() {
     _initSyncModelData();
   }
@@ -354,7 +356,13 @@ abstract class SyncController<T> {
     if (await fileWithNameExists(downloadedFileName)) {
       return fileEntityByName(downloadedFileName);
     }
-    //TODO cleanup older downloaded files
+    final List<FileEntity> currentFiles = await getFileEntitiesList();
+    for (final FileEntity fe in currentFiles) {
+      final String fileName = Utils.getFileName(fe.getAbsolutePath());
+      if (fileName.startsWith(_DOWNLOADED_CLOUD_FILE_PREFIX) && fileName != downloadedFileName) {
+        await deleteFileWithName(fileName);
+      }
+    }
     final String tmpDownloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + _TMP_CLOUD_FILE_SUFFIX;
     final Uint8List latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId as String);
     await overwriteFile(tmpDownloadedFileName, latestCloudFileContent);

@@ -16,6 +16,17 @@ class WebAbstractFS {
 
   final Window _htmlWindow = window;
 
+  List<String> getFilePathsForDir(final String folderPath) {
+    final List<String> result = [];
+    final String filesKeyPrefix = '$_FILE_KEY_PREFIX://$folderPath/';
+    for (final String fileKey in _htmlWindow.localStorage.keys) {
+      if (fileKey.startsWith(filesKeyPrefix)) {
+        result.add(fileKey);
+      }
+    }
+    return result;
+  }
+
   String readFile(final String fileAbsPath) {
     final String fileKey = '$_FILE_KEY_PREFIX://$fileAbsPath';
     return _htmlWindow.localStorage[fileKey];
@@ -33,6 +44,16 @@ class WebAbstractFS {
 
 class FilesManagerWeb extends FilesManager {
   final WebAbstractFS _webFS = WebAbstractFS();
+
+  @override
+  Future<List<FileEntity>> getFilesList(final String folderPath) async {
+    final List<FileEntity> result = [];
+    final List<String> filePaths = _webFS.getFilePathsForDir(folderPath);
+    for (final String filePath in filePaths) {
+      result.add(FileEntityWeb(_webFS, filePath, null));
+    }
+    return result;
+  }
 
   @override
   Future<FileEntity> createFileEntityAbsPath(final String fileAbsPath) async {
