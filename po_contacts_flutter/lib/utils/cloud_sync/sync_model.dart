@@ -12,6 +12,7 @@ class SyncModelSerializer {
   static const String _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME = 'account_name';
   static const String _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID = 'index_file_id';
   static const String _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME = 'last_sync_time';
+  static const String _JSON_KEY_SYNC_MODEL_LAST_SYNC_DATA_FILE_ID = 'last_sync_data_file_id';
   static const String _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES = 'has_local_changes';
   static const String _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES = 'has_remote_changes';
 
@@ -36,6 +37,7 @@ class SyncModelSerializer {
       _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME: _syncModel._accountName,
       _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID: _syncModel.cloudIndexFileId,
       _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME: _syncModel._lastSyncTimeEpochMillis,
+      _JSON_KEY_SYNC_MODEL_LAST_SYNC_DATA_FILE_ID: _syncModel._lastSyncDataFileId,
       _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES: _syncModel._hasLocalChanges,
       _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES: _syncModel._hasRemoteChanges,
     });
@@ -69,6 +71,8 @@ class SyncModelSerializer {
     final String accountName = Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME);
     final String cloudIndexFileId = Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID);
     final int lastSyncTimeEpochMillis = Utils.getJSONMapInt(syncInterfaceData, _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME);
+    final String lastSyncDataFileId =
+        Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_LAST_SYNC_DATA_FILE_ID);
     final bool hasLocalChanges = Utils.getJSONMapBool(syncInterfaceData, _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES);
     final bool hasRemoteChanges = Utils.getJSONMapBool(syncInterfaceData, _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES);
     return SyncModel(
@@ -77,6 +81,7 @@ class SyncModelSerializer {
       accountName,
       cloudIndexFileId,
       lastSyncTimeEpochMillis,
+      lastSyncDataFileId,
       hasLocalChanges,
       hasRemoteChanges,
     );
@@ -103,6 +108,7 @@ class SyncModelData {
   String _cloudIndexFileId;
   String _ramEncryptionKey;
   int _lastSyncTimeEpochMillis;
+  String _lastSyncDataFileId;
   bool _hasLocalChanges;
   bool _hasRemoteChanges;
 
@@ -111,6 +117,7 @@ class SyncModelData {
     this._accountName,
     this._cloudIndexFileId,
     this._lastSyncTimeEpochMillis,
+    this._lastSyncDataFileId,
     this._hasLocalChanges,
     this._hasRemoteChanges,
   );
@@ -120,6 +127,7 @@ class SyncModelData {
   String get cloudIndexFileId => _cloudIndexFileId;
   String get ramEncryptionKey => _ramEncryptionKey;
   int get lastSyncTimeEpochMillis => _lastSyncTimeEpochMillis;
+  String get lastSyncDataFileId => _lastSyncDataFileId;
   bool get hasLocalChanges => _hasLocalChanges;
   bool get hasRemoteChanges => _hasRemoteChanges;
 }
@@ -133,6 +141,7 @@ class SyncModel extends SyncModelData {
     final String accountName,
     final String cloudIndexFileId,
     final int lastSyncTimeEpochMillis,
+    final String lastSyncDataFileId,
     final bool hasLocalChanges,
     final bool hasRemoteChanges,
   ) : super(
@@ -140,6 +149,7 @@ class SyncModel extends SyncModelData {
           accountName,
           cloudIndexFileId,
           lastSyncTimeEpochMillis,
+          lastSyncDataFileId,
           hasLocalChanges,
           hasRemoteChanges,
         );
@@ -168,6 +178,11 @@ class SyncModel extends SyncModelData {
     return saveDataToDisk();
   }
 
+  Future<void> setLastSyncDataFileId(final String lastSyncDataFileId) {
+    _lastSyncDataFileId = lastSyncDataFileId;
+    return saveDataToDisk();
+  }
+
   Future<String> getEncryptionKey() async {
     if (_ramEncryptionKey == null) {
       final String readKey = await SyncModelSerializer._getSecureStorageValueEncryptionKey();
@@ -188,5 +203,15 @@ class SyncModel extends SyncModelData {
   Future<void> forgetEncryptionKey() async {
     _ramEncryptionKey = null;
     await SyncModelSerializer._setSecureStorageValueEncryptionKey('');
+  }
+
+  Future<void> setHasLocalChanges(final bool hasLocalChanges) async {
+    _hasLocalChanges = hasLocalChanges;
+    return saveDataToDisk();
+  }
+
+  Future<void> setHasRemoteChanges(final bool hasRemoteChanges) async {
+    _hasRemoteChanges = hasRemoteChanges;
+    return saveDataToDisk();
   }
 }

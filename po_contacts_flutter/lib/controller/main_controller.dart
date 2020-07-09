@@ -52,7 +52,7 @@ class MainController {
       return msg;
     });
     _importController.startImportIfNeeded();
-    _syncController.initializeSyncController(model);
+    _syncController.checkForRemoteChanges();
   }
 
   BuildContext get context => _context;
@@ -115,6 +115,7 @@ class MainController {
     } else {
       this._model.overwriteContact(contactId, targetContactData);
     }
+    _syncController.recordLocalDataChanged();
     Navigator.pop(_context);
   }
 
@@ -148,6 +149,7 @@ class MainController {
 
     if (userConfirmedDeletion) {
       this._model.deleteContact(contactId);
+      _syncController.recordLocalDataChanged();
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }

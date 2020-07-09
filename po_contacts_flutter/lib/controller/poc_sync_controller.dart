@@ -10,7 +10,6 @@ import 'package:po_contacts_flutter/controller/vcard/reader/disk_file_inflater.d
 import 'package:po_contacts_flutter/controller/vcard/reader/vcf_file_reader.dart';
 import 'package:po_contacts_flutter/controller/vcard/vcf_serializer.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
-import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_items_handler.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/sync_interface.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
@@ -125,12 +124,6 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
 
 class POCSyncController extends SyncController<Contact> {
   static const SYNC_FOLDER_NAME = 'cloud_sync';
-
-  void initializeSyncController(final MainModel model) {
-    model.contactsListSV.valueStream.listen((event) {
-      recordLocalDataChanged();
-    });
-  }
 
   @override
   SyncInterfaceConfig getSyncInterfaceConfig() {

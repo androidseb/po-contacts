@@ -246,7 +246,7 @@ abstract class SyncController<T> {
     return null;
   }
 
-  Future<SyncInterface> _getAuthenticatedSyncInterface({bool directUserAction = true}) async {
+  Future<SyncInterface> _getAuthenticatedSyncInterface({final bool directUserAction = true}) async {
     SyncInterface syncInterface = await _readSyncInterfaceFromModel();
     if (syncInterface == null) {
       syncInterface = await _initializeSyncInterface();
@@ -282,8 +282,15 @@ abstract class SyncController<T> {
       restoreDataFileId,
     );
     try {
-      await _currentSyncProcedure.execute();
-      await (await _getSyncModel()).setLastSyncTimeEpochMillis(Utils.currentTimeMillis());
+      final SyncProcedureResult syncProcedureResult = await _currentSyncProcedure.execute();
+      final SyncModel syncModel = await _getSyncModel();
+      await syncModel.setLastSyncTimeEpochMillis(Utils.currentTimeMillis());
+      final String uploadedDataFileId = syncProcedureResult.uploadedDataFileId;
+      if (uploadedDataFileId != null) {
+        await syncModel.setLastSyncDataFileId(uploadedDataFileId);
+      }
+      await syncModel.setHasLocalChanges(false);
+      await syncModel.setHasRemoteChanges(false);
     } on SyncException catch (syncException) {
       if (syncException.type == SyncExceptionType.FILE_PARSING_ERROR) {
         syncModel.forgetEncryptionKey();
@@ -341,7 +348,7 @@ abstract class SyncController<T> {
     return null;
   }
 
-  Future<FileEntity> getLatestCloudFile(final SyncInterface syncInterface) async {
+  Future<String> getLatestCloudFileId(final SyncInterface syncInterface) async {
     final SyncModel syncModel = await _getSyncModel();
     final String cloudIndexFileId = syncModel.cloudIndexFileId;
     if (cloudIndexFileId == null) {
@@ -352,7 +359,15 @@ abstract class SyncController<T> {
     if (!(latestCloudFileId is String)) {
       return null;
     }
-    final String downloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + Utils.stringToMD5(latestCloudFileId as String);
+    return latestCloudFileId as String;
+  }
+
+  Future<FileEntity> getLatestCloudFile(final SyncInterface syncInterface) async {
+    final String latestCloudFileId = await getLatestCloudFileId(syncInterface);
+    if (latestCloudFileId == null) {
+      return null;
+    }
+    final String downloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + Utils.stringToMD5(latestCloudFileId);
     if (await fileWithNameExists(downloadedFileName)) {
       return fileEntityByName(downloadedFileName);
     }
@@ -364,7 +379,7 @@ abstract class SyncController<T> {
       }
     }
     final String tmpDownloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + _TMP_CLOUD_FILE_SUFFIX;
-    final Uint8List latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId as String);
+    final Uint8List latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId);
     await overwriteFile(tmpDownloadedFileName, latestCloudFileContent);
     await moveFileByName(tmpDownloadedFileName, downloadedFileName);
     return fileEntityByName(downloadedFileName);
@@ -390,9 +405,26 @@ abstract class SyncController<T> {
     await syncModel.setEncryptionKey(encryptionKey, rememberKey);
   }
 
-  void recordLocalDataChanged() {
-    if (_currentSyncProcedure != null) {
-      _currentSyncProcedure.recordLocalDataChanged();
+  void checkForRemoteChanges() async {
+    final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: false);
+    if (syncInterface == null) {
+      return;
+    }
+    final SyncModel syncModel = await _getSyncModel();
+    final String latestCloudFileId = await getLatestCloudFileId(syncInterface);
+    if (latestCloudFileId != syncModel.lastSyncDataFileId) {
+      syncModel.setHasRemoteChanges(true);
+      if (_syncState.currentValue == SyncState.SYNC_IDLE) {
+        _syncState.notifyDataChanged();
+      }
+    }
+  }
+
+  void recordLocalDataChanged() async {
+    final SyncModel syncModel = await _getSyncModel();
+    syncModel.setHasLocalChanges(true);
+    if (_syncState.currentValue == SyncState.SYNC_IDLE) {
+      _syncState.notifyDataChanged();
     }
   }
 

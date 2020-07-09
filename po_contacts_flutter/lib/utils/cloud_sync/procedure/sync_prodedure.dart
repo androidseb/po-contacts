@@ -29,13 +29,17 @@ class SyncCancelationHandler {
   }
 }
 
+class SyncProcedureResult {
+  final String uploadedDataFileId;
+  SyncProcedureResult(this.uploadedDataFileId);
+}
+
 class SyncProcedure<T> {
   final SyncController<T> _syncController;
   final SyncModel _syncModel;
   final SyncInterface _syncInterface;
   final String _restoreDataFileId;
   SyncCancelationHandler _cancelationHandler;
-  bool _localDataChanged = false;
 
   SyncProcedure(
     this._syncController,
@@ -48,10 +52,6 @@ class SyncProcedure<T> {
 
   void cancel() {
     _cancelationHandler.cancel();
-  }
-
-  void recordLocalDataChanged() {
-    _localDataChanged = true;
   }
 
   Future<SyncInitialData<T>> _initializeSync() async {
@@ -97,7 +97,7 @@ class SyncProcedure<T> {
     ).computeSyncResult();
   }
 
-  Future<void> _finalizeSync(final SyncResultData<T> syncResult) async {
+  Future<SyncProcedureResult> _finalizeSync(final SyncResultData<T> syncResult) async {
     final FileEntity fileToUpload = syncResult.initialData.candidateSyncFile;
     await _syncController.writeItemsListToFileEntity(
       syncResult.syncResultData,
@@ -105,6 +105,7 @@ class SyncProcedure<T> {
       await _syncModel.getEncryptionKey(),
     );
     _cancelationHandler.checkForCancelation();
+    String uploadedDataFileId;
     if (syncResult.hasRemoteChanges || !syncResult.initialData.hasRemoteDataFile) {
       final String cloudIndexFileId = _syncModel.cloudIndexFileId;
       final String cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
@@ -114,31 +115,33 @@ class SyncProcedure<T> {
         Utils.dateTimeToString() + _syncInterface.config.versionFileNameSuffix,
         fileToUploadContent,
       );
+      uploadedDataFileId = newCloudFile.fileId;
       await _syncInterface.updateIndexFile(
         cloudIndexFileId,
-        newCloudFile.fileId,
+        uploadedDataFileId,
         syncResult.initialData.remoteFileETag,
       );
     }
     await _syncController.markCandidateUploadFileAsSyncSucceeded();
-    if (syncResult.hasLocalChanges && !_localDataChanged) {
+    if (syncResult.hasLocalChanges) {
       await _syncController.overwriteLocalItems(syncResult.syncResultData);
     }
     await _syncController.markSyncSucceededFileAsSyncFinalized();
+    return SyncProcedureResult(uploadedDataFileId);
   }
 
-  Future<void> _performRegularSync() async {
+  Future<SyncProcedureResult> _performRegularSync() async {
     _cancelationHandler.checkForCancelation();
     final SyncInitialData<T> syncInitialData = await _initializeSync();
     _cancelationHandler.checkForCancelation();
     final SyncResultData<T> syncResult = await _computeSyncResult(syncInitialData);
     _cancelationHandler.checkForCancelation();
-    await _finalizeSync(syncResult);
+    return _finalizeSync(syncResult);
   }
 
-  Future<void> _performFileRestore() async {
+  Future<SyncProcedureResult> _performFileRestore(final SyncProcedureResult regularSyncResult) async {
     if (this._restoreDataFileId == null) {
-      return;
+      return regularSyncResult;
     }
     final String cloudIndexFileId = _syncModel.cloudIndexFileId;
     await _syncInterface.updateIndexFile(
@@ -147,10 +150,11 @@ class SyncProcedure<T> {
       null,
     );
     await _performRegularSync();
+    return SyncProcedureResult(_restoreDataFileId);
   }
 
-  Future<void> execute() async {
-    await _performRegularSync();
-    await _performFileRestore();
+  Future<SyncProcedureResult> execute() async {
+    final SyncProcedureResult regularSyncResult = await _performRegularSync();
+    return _performFileRestore(regularSyncResult);
   }
 }
