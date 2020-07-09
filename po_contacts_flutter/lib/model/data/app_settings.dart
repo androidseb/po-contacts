@@ -124,11 +124,15 @@ class AppSettings {
   final int emailActionId;
   final int callActionId;
   final bool useDarkDisplay;
+  final bool syncOnAppStart;
+  final bool syncOnDataEdit;
 
   AppSettings({
     this.displayDraggableScrollbar: false,
     this.emailActionId: 0,
     this.callActionId: 0,
     this.useDarkDisplay: false,
+    this.syncOnAppStart: true,
+    this.syncOnDataEdit: false,
   });
 }

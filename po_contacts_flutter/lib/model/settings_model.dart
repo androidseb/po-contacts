@@ -9,6 +9,8 @@ class SettingsModel {
   static const String _SETTING_ID_EMAIL_ACTION = 'email_action';
   static const String _SETTING_ID_CALL_ACTION = 'call_action';
   static const String _SETTING_ID_USE_DARK_DISPLAY = 'dark_display';
+  static const String _SETTING_ID_SYNC_ON_APP_START = 'sync_on_app_start';
+  static const String _SETTING_ID_SYNC_ON_DATA_EDIT = 'sync_on_data_edit';
 
   final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   final StreamableValue<AppSettings> _appSettings = StreamableValue(AppSettings());
@@ -17,6 +19,10 @@ class SettingsModel {
 
   SettingsModel() {
     _updateSettingsFromStorage();
+  }
+
+  Future<void> waitForSettingsLoaded(){
+    return _updateSettingsFromStorage();
   }
 
   Future<bool> _readDisplayDraggableScrollbarValue() async {
@@ -51,12 +57,30 @@ class SettingsModel {
     return AppSettings.getDefaultUseDarkDisplayOption();
   }
 
+  Future<bool> _readSyncOnAppStart() async {
+    final bool syncOnAppStart = (await _sharedPreferences).getBool(_SETTING_ID_SYNC_ON_APP_START);
+    if (syncOnAppStart != null) {
+      return syncOnAppStart;
+    }
+    return true;
+  }
+
+  Future<bool> _readSyncOnDataEdit() async {
+    final bool syncOnDataEdit = (await _sharedPreferences).getBool(_SETTING_ID_SYNC_ON_DATA_EDIT);
+    if (syncOnDataEdit != null) {
+      return syncOnDataEdit;
+    }
+    return false;
+  }
+
   Future<void> _updateSettingsFromStorage() async {
     _appSettings.currentValue = AppSettings(
       displayDraggableScrollbar: await _readDisplayDraggableScrollbarValue(),
       emailActionId: await _readEmailActionId(),
       callActionId: await _readCallActionId(),
       useDarkDisplay: await _readUseDarkDisplay(),
+      syncOnAppStart: await _readSyncOnAppStart(),
+      syncOnDataEdit: await _readSyncOnDataEdit(),
     );
   }
 
@@ -77,6 +101,16 @@ class SettingsModel {
 
   void setUseDarkDisplay(final bool useDarkDisplay) async {
     (await _sharedPreferences).setBool(_SETTING_ID_USE_DARK_DISPLAY, useDarkDisplay);
+    _updateSettingsFromStorage();
+  }
+
+  void setSyncOnAppStart(final bool syncOnAppStart) async {
+    (await _sharedPreferences).setBool(_SETTING_ID_SYNC_ON_APP_START, syncOnAppStart);
+    _updateSettingsFromStorage();
+  }
+
+  void setSyncOnDataEdit(final bool syncOnDataEdit) async {
+    (await _sharedPreferences).setBool(_SETTING_ID_SYNC_ON_DATA_EDIT, syncOnDataEdit);
     _updateSettingsFromStorage();
   }
 }

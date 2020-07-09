@@ -4,6 +4,8 @@ import 'package:po_contacts_flutter/view/settings/pref_for_call_action.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_dark_display.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_email_action.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_scrollbar.dart';
+import 'package:po_contacts_flutter/view/settings/pref_for_sync_on_app_start.dart';
+import 'package:po_contacts_flutter/view/settings/pref_for_sync_on_data_edit.dart';
 
 class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -15,6 +17,8 @@ class SettingsPage extends StatelessWidget {
         children: [
           PrefForDarkDisplay(),
           PrefForScrollbar(),
+          PrefForSyncOnAppStart(),
+          PrefForSyncOnDataEdit(),
           PrefForEmailAction(),
           PrefForCallAction(),
         ],

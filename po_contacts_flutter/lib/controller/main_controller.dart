@@ -43,7 +43,7 @@ class MainController {
   final ExportController _exportController = ExportController();
   final POCSyncController _syncController = POCSyncController();
 
-  void _initializeMainController() {
+  void _initializeMainController() async {
     _model.initializeMainModel(_psController.contactsStorage);
     SystemChannels.lifecycle.setMessageHandler((final String msg) async {
       if (msg == AppLifecycleState.resumed.toString()) {
@@ -53,6 +53,10 @@ class MainController {
     });
     _importController.startImportIfNeeded();
     _syncController.checkForRemoteChanges();
+    await model.settings.waitForSettingsLoaded();
+    if (model.settings.appSettings.syncOnAppStart) {
+      _syncController.startSync(directUserAction: false);
+    }
   }
 
   BuildContext get context => _context;
@@ -116,6 +120,9 @@ class MainController {
       this._model.overwriteContact(contactId, targetContactData);
     }
     _syncController.recordLocalDataChanged();
+    if (model.settings.appSettings.syncOnDataEdit) {
+      _syncController.startSync(directUserAction: false);
+    }
     Navigator.pop(_context);
   }
 

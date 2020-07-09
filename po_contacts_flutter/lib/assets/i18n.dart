@@ -119,6 +119,8 @@ class I18nString {
   final String action_blocked_by_sync_title = 'action_blocked_by_sync_title';
   final String action_blocked_by_sync_question = 'action_blocked_by_sync_question';
   final String cloud_sync_view_error = 'cloud_sync_view_error';
+  final String start_sync_on_app_start = 'start_sync_on_app_start';
+  final String start_sync_on_data_edit = 'start_sync_on_data_edit';
 }
 
 class I18n {
@@ -244,6 +246,8 @@ class I18n {
     string.action_blocked_by_sync_title: 'Action blocked by sync',
     string.action_blocked_by_sync_question: 'You cannot perform this action right now, because cloud sync is in progress. Do you want to cancel the current cloud sync?',
     string.cloud_sync_view_error: 'View last sync error',
+    string.start_sync_on_app_start: 'Start sync on app start',
+    string.start_sync_on_data_edit: 'Start sync on data edit',
   };
 
   static String _getObjString(final Object _obj) {
