@@ -247,8 +247,12 @@ abstract class SyncController<T> {
   Future<SyncInterface> _getAuthenticatedSyncInterface({final bool directUserAction = true}) async {
     SyncInterface syncInterface = await _readSyncInterfaceFromModel();
     if (syncInterface == null) {
-      syncInterface = await _initializeSyncInterface();
-      if (syncInterface == null) {
+      if (directUserAction) {
+        syncInterface = await _initializeSyncInterface();
+        if (syncInterface == null) {
+          throw SyncException(SyncExceptionType.CANCELED);
+        }
+      } else {
         throw SyncException(SyncExceptionType.CANCELED);
       }
     } else {
