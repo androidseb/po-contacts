@@ -13,14 +13,13 @@ import 'package:po_contacts_flutter/utils/cloud_sync/sync_model.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class SyncCancelationHandler {
-  final SyncProcedure syncProcedure;
   bool _canceled = false;
 
   void cancel() {
     _canceled = false;
   }
 
-  SyncCancelationHandler(this.syncProcedure);
+  SyncCancelationHandler();
 
   void checkForCancelation() async {
     if (_canceled) {
@@ -47,7 +46,7 @@ class SyncProcedure<T> {
     this._syncInterface,
     this._restoreDataFileId,
   ) {
-    _cancelationHandler = SyncCancelationHandler(this);
+    _cancelationHandler = SyncCancelationHandler();
   }
 
   void cancel() {
