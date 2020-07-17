@@ -100,12 +100,15 @@ class SyncDataMerger<T> {
     }
 
     // Handling conflicts for any remotely deleted item
-    for (final String rdItemId in remoteDeletedItems.keys) {
+    // Extracting the remotely deleted item ids from the remoteDeletedItems map into a dedicated variable since the
+    // iteration might remove items from the map causing concurrent modification errors
+    final Set<String> remoteDeletedItemIds = remoteDeletedItems.keys.toSet();
+    for (final String rdItemId in remoteDeletedItemIds) {
       // Handling conflict of "remotely deleted item" vs "locally modified item"
       {
         // Checking for a locally modified item matching the remotely deleted item id
         final T lmItem = localModifiedItems[rdItemId];
-        // If the item has been modified deleted remotely and modified locally, we will cancel its deletion.
+        // If the item has been deleted remotely and modified locally, we will cancel its deletion.
         // This is done by ignoring the remote deletion.
         if (lmItem != null) {
           remoteDeletedItems.remove(rdItemId);
