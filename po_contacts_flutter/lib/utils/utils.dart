@@ -171,11 +171,9 @@ class Utils {
     }
     for (int i = 0; i < list1.length; i++) {
       final Object item1 = list1[i];
-      for (int j = 0; j < list2.length; j++) {
-        final Object item2 = list1[j];
-        if (item1 != item2) {
-          return false;
-        }
+      final Object item2 = list2[i];
+      if (item1 != item2) {
+        return false;
       }
     }
     return true;
