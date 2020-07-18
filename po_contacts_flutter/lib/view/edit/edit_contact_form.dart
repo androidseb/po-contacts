@@ -33,7 +33,9 @@ class _EditContactFormState extends State<EditContactForm> {
   void initState() {
     final Contact initialContact = widget.initialContact;
     if (initialContact != null) {
+      _contactBuilder.setUID(initialContact.uid);
       _currentImage = initialContact.image;
+      _contactBuilder.setImage(_currentImage);
       _contactBuilder.setFullName(initialContact.fullName);
       _currentFirstName = initialContact.firstName;
       _contactBuilder.setFirstName(_currentFirstName);
