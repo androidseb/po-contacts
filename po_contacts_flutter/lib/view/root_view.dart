@@ -11,6 +11,7 @@ class RootView extends StatelessWidget {
     return StreamedWidget<AppSettings>(MainController.get().model.settings.appSettingsSV,
         (final BuildContext context, final AppSettings appSettings) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: I18n.getString(I18n.string.app_name),
         theme: ThemeData(
           brightness: appSettings != null && appSettings.useDarkDisplay ? Brightness.dark : Brightness.light,
