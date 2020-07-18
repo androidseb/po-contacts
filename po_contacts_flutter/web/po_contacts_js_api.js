@@ -42,7 +42,7 @@ try {
     try {
         const fs = require('fs');
         const fsPrefix = 'abstractfs://';
-        const userFilesDir = nw.App.dataPath + '/user_files';
+        const userFilesDir = nw.App.dataPath + '/po_contact_files';
         const _abstractFSPathToRealPath = (abstractFilePath) => {
             if (abstractFilePath == null) {
                 return null;
