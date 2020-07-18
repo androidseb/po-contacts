@@ -19,7 +19,7 @@ class VCFConstants {
   static const String VCF_SEPARATOR_COLON = ':';
   static const String VCF_SEPARATOR_SEMICOLON = ';';
   static const String VCF_SEPARATOR_EQUAL = '=';
-  static const VCF_VERSION_LINE = 'VERSION:2.1';
+  static const VCF_VERSION_LINE = 'VERSION:3.0';
 
   static const FIELD_BEGIN_VCARD = 'BEGIN:VCARD';
   static const FIELD_END_VCARD = 'END:VCARD';
