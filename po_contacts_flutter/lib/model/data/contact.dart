@@ -223,9 +223,27 @@ class Contact extends ContactData {
     if (item1.organizationTitle != item2.organizationTitle) return false;
     if (item1.website != item2.website) return false;
     if (item1.notes != item2.notes) return false;
-    if (!StringLabeledField.areListsEqual(item1.phoneInfos, item2.phoneInfos)) return false;
-    if (!StringLabeledField.areListsEqual(item1.emailInfos, item2.emailInfos)) return false;
-    if (!AddressLabeledField.areListsEqual(item1.addressInfos, item2.addressInfos)) return false;
+    if (!Utils.areListsEqual(
+      item1.phoneInfos,
+      item2.phoneInfos,
+      equalsFunction: StringLabeledField.areEqual,
+    )) {
+      return false;
+    }
+    if (!Utils.areListsEqual(
+      item1.emailInfos,
+      item2.emailInfos,
+      equalsFunction: StringLabeledField.areEqual,
+    )) {
+      return false;
+    }
+    if (!Utils.areListsEqual(
+      item1.addressInfos,
+      item2.addressInfos,
+      equalsFunction: AddressLabeledField.areEqual,
+    )) {
+      return false;
+    }
     if (!Utils.areListsEqual(item1.unknownVCFFieldLines, item2.unknownVCFFieldLines)) return false;
     return true;
   }

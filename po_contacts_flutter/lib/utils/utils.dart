@@ -159,7 +159,11 @@ class Utils {
     return Uuid().v1();
   }
 
-  static bool areListsEqual(final List list1, final List list2) {
+  static bool areListsEqual<T>(
+    final List<T> list1,
+    final List<T> list2, {
+    bool equalsFunction(T a, T b),
+  }) {
     if (list1 == list2) {
       return true;
     }
@@ -169,10 +173,15 @@ class Utils {
     if (list1.length != list2.length) {
       return false;
     }
+
     for (int i = 0; i < list1.length; i++) {
-      final Object item1 = list1[i];
-      final Object item2 = list2[i];
-      if (item1 != item2) {
+      final T item1 = list1[i];
+      final T item2 = list2[i];
+      if (equalsFunction == null) {
+        if (item1 != item2) {
+          return false;
+        }
+      } else if (!equalsFunction(item1, item2)) {
         return false;
       }
     }
