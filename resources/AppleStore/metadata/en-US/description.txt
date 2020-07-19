@@ -18,3 +18,4 @@ Features:
 - Export contacts to .vcf files
 - Import contacts from .vcf files
 - Protect your exported files with password-based AES encryption
+- Sync your contacts data to the cloud (with encryption option)
