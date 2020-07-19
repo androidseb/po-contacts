@@ -170,6 +170,8 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     if (httpPostResponse.statusCode == 200) {
       final Map<String, dynamic> serverResponse = jsonDecode(await httpPostResponse.stream.bytesToString());
       return _googleDriveFileToRemoteFile(serverResponse);
+    } else if (httpPostResponse.statusCode == 412) {
+      throw SyncException(SyncExceptionType.CONCURRENCY);
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
@@ -339,8 +341,6 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       return httpGetResponse.bodyBytes;
     } else if (httpGetResponse.statusCode == 404) {
       return null;
-    } else if (httpGetResponse.statusCode == 412) {
-      throw SyncException(SyncExceptionType.CONCURRENCY);
     } else {
       throw SyncException(
         SyncExceptionType.SERVER,
