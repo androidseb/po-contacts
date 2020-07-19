@@ -13,7 +13,11 @@ class FilesManagerMobile extends FilesManager {
   @override
   Future<List<FileEntity>> getFilesList(final String folderPath) async {
     final List<FileEntity> result = [];
-    final List<FileSystemEntity> filesList = Directory(folderPath).listSync();
+    final Directory dir = Directory(folderPath);
+    if (!dir.existsSync()) {
+      return result;
+    }
+    final List<FileSystemEntity> filesList = dir.listSync();
     for (final FileSystemEntity f in filesList) {
       if (f.statSync().type == FileSystemEntityType.file) {
         result.add(new FileEntityMobile(File(f.absolute.path)));
