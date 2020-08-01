@@ -23,7 +23,7 @@ cd $(git rev-parse --show-toplevel)
 
 # mark the file as ignored by git indexing (changes will not be detected and committed)
 # can be reversed with this command:
-# git update-index --no-skip-worktree
+# git update-index --no-skip-worktree po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
 git update-index --skip-worktree po_contacts_flutter/lib/assets/constants/google_oauth_client_id.dart
 
 # overwrite the google oauth client id in the source code
