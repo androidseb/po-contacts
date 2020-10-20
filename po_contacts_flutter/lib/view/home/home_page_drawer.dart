@@ -20,7 +20,7 @@ class HomePageDrawer extends StatelessWidget {
       leading: Icon(Icons.file_upload),
       title: Text(I18n.getString(I18n.string.export_all_as_vcf)),
       onTap: () {
-        MainController.get().startExportAllAsVCF();
+        MainController.get().startExportAsVCF();
       },
     ));
     drawerOptionsList.add(ListTile(

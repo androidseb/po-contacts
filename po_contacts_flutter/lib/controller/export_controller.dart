@@ -13,7 +13,10 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 class ExportController {
   bool _isExporting = false;
 
-  void exportAllAsVCF(final String encryptionKey) async {
+  void exportAsVCF(
+    final String encryptionKey,
+    final Iterable<int> targetContactIds,
+  ) async {
     if (_isExporting) {
       return;
     }
@@ -33,7 +36,7 @@ class ExportController {
         .filesManager
         .createFileEntityParentAndName(outputFilesDirPath, 'contacts_$dateTimeStr.vcf');
     try {
-      await _exportAllAsVCFToFile(destFile, encryptionKey, progressCallback);
+      await _exportAsVCFToFile(destFile, encryptionKey, targetContactIds, progressCallback);
     } finally {
       _isExporting = false;
       progressCallback.reportAllTasksFinished(POCTaskSetProgressCallback.TASK_PROGRESS_COMPLETED_SUCCESS);
@@ -48,13 +51,22 @@ class ExportController {
     }
   }
 
-  Future<void> _exportAllAsVCFToFile(
+  Future<void> _exportAsVCFToFile(
     final FileEntity outputFile,
     final String encryptionKey,
+    final Iterable<int> targetContactIds,
     final TaskSetProgressCallback progressCallback,
   ) async {
-    final List<Contact> contacts = MainController.get().model.contactsList;
-    return exportAsVCFToFile(contacts, outputFile, encryptionKey, progressCallback: progressCallback);
+    final List<Contact> targetContacts = List.from(MainController.get().model.contactsList);
+    if (targetContactIds != null) {
+      for (int i = targetContacts.length - 1; i >= 0; i--) {
+        final Contact c = targetContacts[i];
+        if (!targetContactIds.contains(c.id)) {
+          targetContacts.removeAt(i);
+        }
+      }
+    }
+    return exportAsVCFToFile(targetContacts, outputFile, encryptionKey, progressCallback: progressCallback);
   }
 
   static Future<void> exportAsVCFToFile(

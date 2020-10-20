@@ -3,6 +3,7 @@ class I18nString {
   final String app_name = 'app_name';
   final String create_new_contact = 'create_new_contact';
   final String export_all_as_vcf = 'export_all_as_vcf';
+  final String export_as_vcf = 'export_as_vcf';
   final String about = 'about';
   final String about_message = 'about_message';
   final String ok = 'ok';
@@ -121,6 +122,7 @@ class I18nString {
   final String cloud_sync_view_error = 'cloud_sync_view_error';
   final String start_sync_on_app_start = 'start_sync_on_app_start';
   final String start_sync_on_data_edit = 'start_sync_on_data_edit';
+  final String export_contact = 'export_contact';
 }
 
 class I18n {
@@ -130,6 +132,7 @@ class I18n {
     string.app_name: 'PO Contacts',
     string.create_new_contact: 'Create new contact',
     string.export_all_as_vcf: 'Export all as VCF file',
+    string.export_as_vcf: 'Export as VCF',
     string.about: 'About (v%s)',
     string.about_message: 'PO Contacts stands for "Privacy Oriented Contacts".\n\nThe vision and end goal of this project is to have a portable and privacy oriented contacts manager.\n\n- Portable means you can use it on "any" platform (see supported platforms on the website).\n- Privacy oriented means it\'s built with a "privacy first" mindset. See the privacy policy for details.\n\nDISCLAIMER\n\nI built this app on my free time and mostly as a learning experience. I intend to use it myself and I\'m happy to share it publicly for free if it can help others. That being said, if you choose to use it, you use it at your own risks, there is no warranty (see the licence on the website for more details).',
     string.ok: 'OK',
@@ -248,6 +251,7 @@ class I18n {
     string.cloud_sync_view_error: 'View last sync error',
     string.start_sync_on_app_start: 'Start sync on app start',
     string.start_sync_on_data_edit: 'Start sync on data edit',
+    string.export_contact: 'Export contact',
   };
 
   static String _getObjString(final Object _obj) {

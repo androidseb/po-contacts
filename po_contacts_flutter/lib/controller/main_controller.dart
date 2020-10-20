@@ -214,12 +214,12 @@ class MainController {
     return passwordCompleter.future;
   }
 
-  void startExportAllAsVCF() async {
+  void startExportAsVCF({final Iterable<int> targetContactIds = null}) async {
     final String encryptionPassword = await promptUserForPasswordUsage(
-      promptTitle: I18n.getString(I18n.string.export_all_as_vcf),
+      promptTitle: I18n.getString(targetContactIds == null ? I18n.string.export_all_as_vcf : I18n.string.export_as_vcf),
       promptMessage: I18n.getString(I18n.string.export_encrypt_question),
     );
-    _exportController.exportAllAsVCF(encryptionPassword);
+    _exportController.exportAsVCF(encryptionPassword, targetContactIds);
   }
 
   void showMessageDialog(final String title, final String message) {
@@ -357,6 +357,14 @@ class MainController {
       onTap: () {
         Navigator.of(_context).pop();
         MainController.get().startDeleteContact(contact.id);
+      },
+    ));
+    listOptions.add(ListTile(
+      leading: Icon(Icons.share),
+      title: Text(I18n.getString(I18n.string.export_contact)),
+      onTap: () {
+        Navigator.of(_context).pop();
+        MainController.get().startExportAsVCF(targetContactIds: [contact.id]);
       },
     ));
     showDialog<Object>(
