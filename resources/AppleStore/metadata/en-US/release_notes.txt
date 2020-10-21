@@ -1,1 +1,2 @@
-Added support for cloud sync
+Added the ability to export a single contact from the quick action menu
+Added the ability to select contacts for export and delete (long press on contact)
