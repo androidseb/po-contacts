@@ -11,14 +11,23 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainController.get().updateBuildContext(context);
-    return StreamedWidget(MainController.get().model.contactsListSV,
-        (final BuildContext context, final List<Contact> contactsList) {
-      return StreamedWidget(MainController.get().model.selectedContactIdsSV,
-          (final BuildContext context, final Set<int> selectedContactIds) {
-        final List<Widget> appBarWidgets = _buidAppBarWidgets(contactsList, selectedContactIds);
-        return _buildHomePage(appBarWidgets);
-      });
-    });
+    return WillPopScope(
+      onWillPop: () async {
+        if (MainController.get().model.selectedContactIds.isEmpty) {
+          return true;
+        }
+        MainController.get().selectNoContacts();
+        return false;
+      },
+      child: StreamedWidget(MainController.get().model.contactsListSV,
+          (final BuildContext context, final List<Contact> contactsList) {
+        return StreamedWidget(MainController.get().model.selectedContactIdsSV,
+            (final BuildContext context, final Set<int> selectedContactIds) {
+          final List<Widget> appBarWidgets = _buidAppBarWidgets(contactsList, selectedContactIds);
+          return _buildHomePage(appBarWidgets);
+        });
+      }),
+    );
   }
 
   List<Widget> _buidAppBarWidgets(final List<Contact> contactsList, final Set<int> selectedContactIds) {
