@@ -32,6 +32,7 @@ class MainModel {
   final SettingsModel _settingsModel = SettingsModel();
   final ContactsStorageController _contactsStorageController = ContactsStorageController();
   final StreamableValue<List<Contact>> _contactsList = StreamableValue([]);
+  final StreamableValue<Set<int>> _selectedContactIds = StreamableValue(Set<int>());
 
   void initializeMainModel(final ContactsStorageManager contactsStorage) async {
     _contactsStorageController.initializeStorage(contactsStorage);
@@ -48,6 +49,8 @@ class MainModel {
 
   ReadOnlyStreamableValue<List<Contact>> get contactsListSV => _contactsList.readOnly;
   List<Contact> get contactsList => _contactsList.currentValue;
+  ReadOnlyStreamableValue<Set<int>> get selectedContactIdsSV => _selectedContactIds.readOnly;
+  Set<int> get selectedContactIds => _selectedContactIds.readOnly.currentValue;
 
   Contact getContactById(final int contactId) {
     if (contactId == null) {
@@ -71,7 +74,13 @@ class MainModel {
     _contactsList.notifyDataChanged();
   }
 
-  void deleteContact(final int contactId) async {
+  void deleteContacts(final Iterable<int> contactIds) async {
+    for (final int contactId in contactIds) {
+      _deleteContact(contactId);
+    }
+  }
+
+  void _deleteContact(final int contactId) async {
     final bool deleteSuccessful = await _contactsStorageController.deleteContact(contactId);
     if (!deleteSuccessful) {
       return;
@@ -82,6 +91,7 @@ class MainModel {
         contactsList.removeAt(i);
       }
     }
+    _selectedContactIds.currentValue = Set<int>();
     _contactsList.notifyDataChanged();
   }
 
@@ -124,5 +134,25 @@ class MainModel {
     sortContactsList(contactsList);
 
     _contactsList.notifyDataChanged();
+  }
+
+  Future<void> selectContact(final int contactId) async {
+    selectedContactIds.add(contactId);
+    _selectedContactIds.notifyDataChanged();
+  }
+
+  Future<void> unselectContact(final int contactId) async {
+    selectedContactIds.remove(contactId);
+    _selectedContactIds.notifyDataChanged();
+  }
+
+  Future<void> selectAllContact() async {
+    selectedContactIds.addAll(contactsList.map((e) => e.id));
+    _selectedContactIds.notifyDataChanged();
+  }
+
+  Future<void> selectNoContacts() async {
+    selectedContactIds.clear();
+    _selectedContactIds.notifyDataChanged();
   }
 }

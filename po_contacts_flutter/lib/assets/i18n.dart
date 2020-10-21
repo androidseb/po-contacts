@@ -3,7 +3,7 @@ class I18nString {
   final String app_name = 'app_name';
   final String create_new_contact = 'create_new_contact';
   final String export_all_as_vcf = 'export_all_as_vcf';
-  final String export_as_vcf = 'export_as_vcf';
+  final String export_selected_as_vcf = 'export_selected_as_vcf';
   final String about = 'about';
   final String about_message = 'about_message';
   final String ok = 'ok';
@@ -19,6 +19,8 @@ class I18nString {
   final String contact_details = 'contact_details';
   final String delete_contact = 'delete_contact';
   final String delete_contact_confirmation_message = 'delete_contact_confirmation_message';
+  final String delete_contacts = 'delete_contacts';
+  final String delete_contacts_confirmation_message = 'delete_contacts_confirmation_message';
   final String yes = 'yes';
   final String no = 'no';
   final String add_email = 'add_email';
@@ -123,6 +125,8 @@ class I18nString {
   final String start_sync_on_app_start = 'start_sync_on_app_start';
   final String start_sync_on_data_edit = 'start_sync_on_data_edit';
   final String export_contact = 'export_contact';
+  final String action_on_selected = 'action_on_selected';
+  final String delete_selected_contacts = 'delete_selected_contacts';
 }
 
 class I18n {
@@ -132,7 +136,7 @@ class I18n {
     string.app_name: 'PO Contacts',
     string.create_new_contact: 'Create new contact',
     string.export_all_as_vcf: 'Export all as VCF file',
-    string.export_as_vcf: 'Export as VCF',
+    string.export_selected_as_vcf: 'Export selected as VCF',
     string.about: 'About (v%s)',
     string.about_message: 'PO Contacts stands for "Privacy Oriented Contacts".\n\nThe vision and end goal of this project is to have a portable and privacy oriented contacts manager.\n\n- Portable means you can use it on "any" platform (see supported platforms on the website).\n- Privacy oriented means it\'s built with a "privacy first" mindset. See the privacy policy for details.\n\nDISCLAIMER\n\nI built this app on my free time and mostly as a learning experience. I intend to use it myself and I\'m happy to share it publicly for free if it can help others. That being said, if you choose to use it, you use it at your own risks, there is no warranty (see the licence on the website for more details).',
     string.ok: 'OK',
@@ -148,6 +152,8 @@ class I18n {
     string.contact_details: 'Contact details',
     string.delete_contact: 'Delete contact',
     string.delete_contact_confirmation_message: 'This will delete the contact permanently, are you sure?',
+    string.delete_contacts: 'Delete contacts',
+    string.delete_contacts_confirmation_message: 'This will delete all the %s contacts you have selected permanently, are you sure?',
     string.yes: 'Yes',
     string.no: 'No',
     string.add_email: 'Add email',
@@ -252,6 +258,8 @@ class I18n {
     string.start_sync_on_app_start: 'Start sync on app start',
     string.start_sync_on_data_edit: 'Start sync on data edit',
     string.export_contact: 'Export contact',
+    string.action_on_selected: 'Action on selected',
+    string.delete_selected_contacts: 'Delete selected contacts',
   };
 
   static String _getObjString(final Object _obj) {

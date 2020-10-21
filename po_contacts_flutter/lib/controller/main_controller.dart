@@ -138,8 +138,28 @@ class MainController {
     ));
   }
 
+  void selectContact(final int contactId) {
+    model.selectContact(contactId);
+  }
+
+  void unselectContact(final int contactId) {
+    model.unselectContact(contactId);
+  }
+
+  void selectAllContacts() {
+    model.selectAllContact();
+  }
+
+  void selectNoContacts() {
+    model.selectNoContacts();
+  }
+
   void startDeleteContact(final int contactId) async {
-    if (_context == null) {
+    startDeleteContacts([contactId]);
+  }
+
+  void startDeleteContacts(final Iterable<int> contactIds) async {
+    if (_context == null || contactIds.isEmpty) {
       return;
     }
 
@@ -147,15 +167,21 @@ class MainController {
       syncController.promptUserActionCanceledBySync();
       return;
     }
-
+    final bool singleItem = contactIds.length == 1;
+    String messageText;
+    if (singleItem) {
+      messageText = I18n.getString(I18n.string.delete_contact_confirmation_message);
+    } else {
+      messageText = I18n.getString(I18n.string.delete_contacts_confirmation_message, '${contactIds.length}');
+    }
     final bool userConfirmedDeletion = await promptUserForYesNoQuestion(
-      titleText: I18n.getString(I18n.string.delete_contact),
-      messageText: I18n.getString(I18n.string.delete_contact_confirmation_message),
+      titleText: I18n.getString(singleItem ? I18n.string.delete_contact : I18n.string.delete_contacts),
+      messageText: messageText,
       barrierDismissible: true,
     );
 
     if (userConfirmedDeletion) {
-      this._model.deleteContact(contactId);
+      this._model.deleteContacts(contactIds);
       _syncController.recordLocalDataChanged();
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
@@ -215,8 +241,10 @@ class MainController {
   }
 
   void startExportAsVCF({final Iterable<int> targetContactIds = null}) async {
+    final String promptTitleStringKey =
+        targetContactIds == null ? I18n.string.export_all_as_vcf : I18n.string.export_selected_as_vcf;
     final String encryptionPassword = await promptUserForPasswordUsage(
-      promptTitle: I18n.getString(targetContactIds == null ? I18n.string.export_all_as_vcf : I18n.string.export_as_vcf),
+      promptTitle: I18n.getString(promptTitleStringKey),
       promptMessage: I18n.getString(I18n.string.export_encrypt_question),
     );
     _exportController.exportAsVCF(encryptionPassword, targetContactIds);
@@ -375,6 +403,49 @@ class MainController {
             content: SingleChildScrollView(
               child: ListBody(
                 children: listOptions,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(I18n.getString(I18n.string.cancel)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showContactSelectionActionsMenu() {
+    if (_context == null) {
+      return;
+    }
+    showDialog<Object>(
+        context: _context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(I18n.getString(I18n.string.action_on_selected)),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.share),
+                    title: Text(I18n.getString(I18n.string.export_selected_as_vcf)),
+                    onTap: () {
+                      Navigator.of(_context).pop();
+                      startExportAsVCF(targetContactIds: model.selectedContactIds);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.delete),
+                    title: Text(I18n.getString(I18n.string.delete_selected_contacts)),
+                    onTap: () {
+                      Navigator.of(_context).pop();
+                      startDeleteContacts(model.selectedContactIds);
+                    },
+                  ),
+                ],
               ),
             ),
             actions: <Widget>[
