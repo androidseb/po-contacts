@@ -31,7 +31,7 @@ I built this app on my free time and mostly as a learning experience. I intend t
 
 #### Install from APK file directly (advanced users)
 
-* Download the [APK file](https://github.com/androidseb/po-contacts/releases/download/v1.1/pocontacts_android_1.1.0.apk)
+* Download the [APK file](https://github.com/androidseb/po-contacts/releases)
 * (Optional) Use your favorite search engine to figure out how to install the app from the APK file on your device
 * Install the APK file on your device
 * Start the installed app on your device
@@ -45,18 +45,18 @@ I built this app on my free time and mostly as a learning experience. I intend t
 
 #### Install from ZIP archive
 
-* Download the [zip archive](https://github.com/androidseb/po-contacts/releases/download/v1.1/pocontacts_linux_1.1.0.zip)
+* Download the [zip archive](https://github.com/androidseb/po-contacts/releases)
 * Start the app by executing the `nw` file inside the main folder
 
 #### Install from deb package
 
-* Download the [deb package](https://github.com/androidseb/po-contacts/releases/download/v1.1/pocontacts_linux_1.1.0.deb)
+* Download the [deb package](https://github.com/androidseb/po-contacts/releases)
 * Install the deb package with the command `sudo dpkg -i package_name.deb` where `package_name.deb` is the deb package file
 * Launch the app with either the `pocontacts` command or by launching the `PO Contacts` app in your applications
 
 ### Mac OS
 
-* Download the [zip archive](https://github.com/androidseb/po-contacts/releases/download/v1.1/pocontacts_macos_1.1.0.zip)
+* Download the [zip archive](https://github.com/androidseb/po-contacts/releases)
 * Double click on the zip archive from Finder
 * Wait for the app to be extracted
 * Place the extracted application in your applications folder (Optional)
@@ -64,7 +64,7 @@ I built this app on my free time and mostly as a learning experience. I intend t
 
 ### Windows
 
-* Download the [zip archive](https://github.com/androidseb/po-contacts/releases/download/v1.1/pocontacts_windows_1.1.0.zip)
+* Download the [zip archive](https://github.com/androidseb/po-contacts/releases)
 * Extract the zip archive
 * Launch the "nw.exe" file from the extracted folder
 
