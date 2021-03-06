@@ -129,6 +129,8 @@ class AddressInfo {
   String toString() {
     final StringBuffer res = StringBuffer();
     bool addedText = false;
+    addedText = _addString(res, postOfficeBox, addedText);
+    addedText = _addString(res, extendedAddress, addedText);
     addedText = _addString(res, streetAddress, addedText);
     addedText = _addString(res, locality, addedText);
     addedText = _addString(res, region, addedText);
@@ -144,6 +146,8 @@ class AddressInfo {
     if (item1 == null || item2 == null) {
       return false;
     }
+    if (item1.postOfficeBox != item2.postOfficeBox) return false;
+    if (item1.extendedAddress != item2.extendedAddress) return false;
     if (item1.streetAddress != item2.streetAddress) return false;
     if (item1.locality != item2.locality) return false;
     if (item1.region != item2.region) return false;
