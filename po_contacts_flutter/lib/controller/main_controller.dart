@@ -179,11 +179,12 @@ class MainController {
     );
 
     if (userConfirmedDeletion) {
-      this._model.deleteContacts(contactIds);
+      await this._model.deleteContacts(contactIds);
       _syncController.recordLocalDataChanged();
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
+      refreshSearch();
     }
   }
 
@@ -458,11 +459,24 @@ class MainController {
         });
   }
 
-  void startSearch() {
+  void startSearch({final String query = ''}) {
     if (_context == null) {
       return;
     }
-    showSearch(context: _context, delegate: _contactsSearchDelegate);
+    showSearch(
+      context: _context,
+      delegate: _contactsSearchDelegate,
+      query: query,
+    );
+  }
+
+  void refreshSearch() {
+    if (!_contactsSearchDelegate.searchOpen) {
+      return;
+    }
+    final String searchQuery = _contactsSearchDelegate.query;
+    _contactsSearchDelegate.close(context, null);
+    startSearch(query: searchQuery ?? '');
   }
 
   Future<bool> promptUserForYesNoQuestion({
