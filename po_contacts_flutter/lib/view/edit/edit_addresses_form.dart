@@ -27,7 +27,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
 
   @override
   AddressInfo getEmptyItemValue() {
-    return AddressInfo('', '', '', '', '');
+    return AddressInfo('', '', '', '', '', '', '');
   }
 
   @override
@@ -65,6 +65,48 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
               children: rowWidgets,
             ),
             TextFormField(
+              initialValue: itemAddrInfo.postOfficeBox,
+              textCapitalization: TextCapitalization.none,
+              decoration: InputDecoration(
+                labelText: I18n.getString(I18n.string.post_office_box),
+              ),
+              onChanged: (newTextValue) {
+                parentState.changeItemValue(
+                  item,
+                  AddressInfo(
+                    newTextValue,
+                    itemAddrInfo.extendedAddress,
+                    itemAddrInfo.streetAddress,
+                    itemAddrInfo.locality,
+                    itemAddrInfo.region,
+                    itemAddrInfo.postalCode,
+                    itemAddrInfo.country,
+                  ),
+                );
+              },
+            ),
+            TextFormField(
+              initialValue: itemAddrInfo.extendedAddress,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelText: I18n.getString(I18n.string.extended_address),
+              ),
+              onChanged: (newTextValue) {
+                parentState.changeItemValue(
+                  item,
+                  AddressInfo(
+                    itemAddrInfo.postOfficeBox,
+                    newTextValue,
+                    itemAddrInfo.streetAddress,
+                    itemAddrInfo.locality,
+                    itemAddrInfo.region,
+                    itemAddrInfo.postalCode,
+                    itemAddrInfo.country,
+                  ),
+                );
+              },
+            ),
+            TextFormField(
               initialValue: itemAddrInfo.streetAddress,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
@@ -74,6 +116,8 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
                 parentState.changeItemValue(
                   item,
                   AddressInfo(
+                    itemAddrInfo.postOfficeBox,
+                    itemAddrInfo.extendedAddress,
                     newTextValue,
                     itemAddrInfo.locality,
                     itemAddrInfo.region,
@@ -93,6 +137,8 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
                 parentState.changeItemValue(
                   item,
                   AddressInfo(
+                    itemAddrInfo.postOfficeBox,
+                    itemAddrInfo.extendedAddress,
                     itemAddrInfo.streetAddress,
                     newTextValue,
                     itemAddrInfo.region,
@@ -112,6 +158,8 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
                 parentState.changeItemValue(
                   item,
                   AddressInfo(
+                    itemAddrInfo.postOfficeBox,
+                    itemAddrInfo.extendedAddress,
                     itemAddrInfo.streetAddress,
                     itemAddrInfo.locality,
                     newTextValue,
@@ -131,6 +179,8 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
                 parentState.changeItemValue(
                   item,
                   AddressInfo(
+                    itemAddrInfo.postOfficeBox,
+                    itemAddrInfo.extendedAddress,
                     itemAddrInfo.streetAddress,
                     itemAddrInfo.locality,
                     itemAddrInfo.region,
@@ -150,6 +200,8 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
                 parentState.changeItemValue(
                   item,
                   AddressInfo(
+                    itemAddrInfo.postOfficeBox,
+                    itemAddrInfo.extendedAddress,
                     itemAddrInfo.streetAddress,
                     itemAddrInfo.locality,
                     itemAddrInfo.region,

@@ -162,8 +162,8 @@ abstract class VCFWriter {
       _writeVCFStringFieldValues(
         VCFConstants.FIELD_ADRESS,
         [
-          '',
-          '',
+          addressInfo.postOfficeBox,
+          addressInfo.extendedAddress,
           addressInfo.streetAddress,
           addressInfo.locality,
           addressInfo.region,

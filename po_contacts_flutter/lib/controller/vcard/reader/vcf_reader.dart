@@ -195,6 +195,8 @@ abstract class VCFReader {
       final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
         addrField.fieldParams,
       );
+      String postOfficeBox = '';
+      String extendedAddress = '';
       String streetAddress = '';
       String locality = '';
       String region = '';
@@ -219,6 +221,8 @@ abstract class VCFReader {
           typeFieldValue.labelType,
           typeFieldValue.labelText,
           AddressInfo(
+            postOfficeBox,
+            extendedAddress,
             streetAddress,
             locality,
             region,

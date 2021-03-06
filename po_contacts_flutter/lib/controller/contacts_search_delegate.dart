@@ -92,6 +92,8 @@ class ContactsSearchDelegate extends SearchDelegate<Contact> {
     }
     for (final AddressLabeledField addressLF in contact.addressInfos) {
       final AddressInfo address = addressLF.fieldValue;
+      if (address.nPostOfficeBox.contains(searchText)) return address.postOfficeBox;
+      if (address.nExtendedAddress.contains(searchText)) return address.extendedAddress;
       if (address.nStreetAddress.contains(searchText)) return address.streetAddress;
       if (address.nLocality.contains(searchText)) return address.locality;
       if (address.nRegion.contains(searchText)) return address.region;

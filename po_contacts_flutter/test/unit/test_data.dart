@@ -84,6 +84,8 @@ final Contact testContactComplex = Contact(
       LabeledFieldLabelType.CUSTOM,
       'Custom Address Field Name',
       AddressInfo(
+        'Custom Post Office Box String',
+        'Custom Extended Address String',
         'Custom Street Address String',
         'Custom Locality String',
         'Custom Region String',
@@ -95,6 +97,8 @@ final Contact testContactComplex = Contact(
       LabeledFieldLabelType.WORK,
       '',
       AddressInfo(
+        'Work Post Office Box String',
+        'Work Extended Address String',
         'Work Street Address String',
         'Work Locality String',
         'Work Region String',
@@ -106,6 +110,8 @@ final Contact testContactComplex = Contact(
       LabeledFieldLabelType.HOME,
       '',
       AddressInfo(
+        'Home Post Office Box String',
+        'Home Extended Address String',
         'Home Street Address String',
         'Home Locality String',
         'Home Region String',
@@ -162,6 +168,8 @@ final Contact testContactComplex2 = Contact(
       LabeledFieldLabelType.CUSTOM,
       'Custom Address Field Name $specialCharsBase',
       AddressInfo(
+        'Custom Post Office Box String $specialCharsBase',
+        'Custom Extended Address String $specialCharsBase',
         'Custom Street Address String $specialCharsBase',
         'Custom Locality String $specialCharsBase',
         'Custom Region String $specialCharsBase',
@@ -173,6 +181,8 @@ final Contact testContactComplex2 = Contact(
       LabeledFieldLabelType.WORK,
       '',
       AddressInfo(
+        'Work Post Office Box String $specialCharsBase',
+        'Work Extended Address String $specialCharsBase',
         'Work Street Address String $specialCharsBase',
         'Work Locality String $specialCharsBase',
         'Work Region String $specialCharsBase',
@@ -184,6 +194,8 @@ final Contact testContactComplex2 = Contact(
       LabeledFieldLabelType.HOME,
       '',
       AddressInfo(
+        'Home Post Office Box String $specialCharsBase',
+        'Home Extended Address String $specialCharsBase',
         'Home Street Address String $specialCharsBase',
         'Home Locality String $specialCharsBase',
         'Home Region String $specialCharsBase',
@@ -236,9 +248,9 @@ PHOTO;ENCODING=BASE64;JPEG:/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDX1BST0ZJTEUAAQEAA
 FN:Full Name\r
 N:Last name;First name;;;\r
 NICKNAME:Nickname\r
-ADR;X-Custom Address Field Name:;;Custom Street Address String;Custom Locality String;Custom Region String;Custom Postal Code String;Custom Country String\r
-ADR;WORK:;;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
-ADR;HOME:;;Home Street Address String;Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
+ADR;X-Custom Address Field Name:Custom Post Office Box String;Custom Extended Address String;Custom Street Address String;Custom Locality String;Custom Region String;Custom Postal Code String;Custom Country String\r
+ADR;WORK:Work Post Office Box String;Work Extended Address String;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
+ADR;HOME:Home Post Office Box String;Home Extended Address String;Home Street Address String;Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
 TEL;X-Custom Field Name For Phone:1234567896\r
 TEL;WORK:1234567892\r
 TEL;HOME:1234567893\r
@@ -280,15 +292,15 @@ NICKNAME:Nickname\r
 \r
 \r
 ADR;X-Custom Address Field \r
- Name:;;Custom Street Addre\r
+ Name:Custom Post Office Box String;Custom Extended Address String;Custom Street Addre\r
  ss String;Custom Locality String;Custom Region String;Custom Pos\r
  tal Code String;Custom Country String\r
 \r
 \r
 \r
-ADR;WORK:;;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
+ADR;WORK:Work Post Office Box String;Work Extended Address String;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
 \r
-ADR;HOME:;;Home Street Address String;\r
+ADR;HOME:Home Post Office Box String;Home Extended Address String;Home Street Address String;\r
  Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
 TEL;X-Custom Field Name \r
  For Phone:1234567896\r
@@ -329,9 +341,9 @@ PHOTO;ENCODING=BASE64;JPEG:/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDX1BST0ZJTEUAAQEAA
 FN:Full Name\r
 N:Last name;First name;;;\r
 NICKNAME:Nickname\r
-ADR;X-Custom Address Field Name:;;Custom Street Address String;Custom Locality String;Custom Region String;Custom Postal Code String;Custom Country String\r
-ADR;WORK:;;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
-ADR;HOME:;;Home Street Address String;Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
+ADR;X-Custom Address Field Name:Custom Post Office Box String;Custom Extended Address String;Custom Street Address String;Custom Locality String;Custom Region String;Custom Postal Code String;Custom Country String\r
+ADR;WORK:Work Post Office Box String;Work Extended Address String;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
+ADR;HOME:Home Post Office Box String;Home Extended Address String;Home Street Address String;Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
 TEL;X-Custom Field Name For Phone:1234567896\r
 TEL;WORK:1234567892\r
 TEL;HOME:1234567893\r
@@ -365,9 +377,9 @@ PHOTO;ENCODING=BASE64;JPEG:/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDX1BST0ZJTEUAAQEAA
 FN:Full Name\r
 N:Last name;First name;;;\r
 NICKNAME:Nickname\r
-ADR;X-Custom Address Field Name:;;Custom Street Address String;Custom Locality String;Custom Region String;Custom Postal Code String;Custom Country String\r
-ADR;WORK:;;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
-ADR;HOME:;;Home Street Address String;Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
+ADR;X-Custom Address Field Name:Custom Post Office Box String;Custom Extended Address String;Custom Street Address String;Custom Locality String;Custom Region String;Custom Postal Code String;Custom Country String\r
+ADR;WORK:Work Post Office Box String;Work Extended Address String;Work Street Address String;Work Locality String;Work Region String;Work Postal Code String;Work Country String\r
+ADR;HOME:Home Post Office Box String;Home Extended Address String;Home Street Address String;Home Locality String;Home Region String;Home Postal Code String;Home Country String\r
 TEL;X-Custom Field Name For Phone:1234567896\r
 TEL;WORK:1234567892\r
 TEL;HOME:1234567893\r
@@ -400,9 +412,9 @@ UID:urn:uuid:0\r
 FN:Full Name $specialCharsEscaped\r
 N:Last name $specialCharsEscaped;First name $specialCharsEscaped;;;\r
 NICKNAME:Nickname $specialCharsEscaped\r
-ADR;X-Custom Address Field Name $specialCharsEscaped:;;Custom Street Address String $specialCharsEscaped;Custom Locality String $specialCharsEscaped;Custom Region String $specialCharsEscaped;Custom Postal Code String $specialCharsEscaped;Custom Country String $specialCharsEscaped\r
-ADR;WORK:;;Work Street Address String $specialCharsEscaped;Work Locality String $specialCharsEscaped;Work Region String $specialCharsEscaped;Work Postal Code String $specialCharsEscaped;Work Country String $specialCharsEscaped\r
-ADR;HOME:;;Home Street Address String $specialCharsEscaped;Home Locality String $specialCharsEscaped;Home Region String $specialCharsEscaped;Home Postal Code String $specialCharsEscaped;Home Country String $specialCharsEscaped\r
+ADR;X-Custom Address Field Name $specialCharsEscaped:Custom Post Office Box String $specialCharsEscaped;Custom Extended Address String $specialCharsEscaped;Custom Street Address String $specialCharsEscaped;Custom Locality String $specialCharsEscaped;Custom Region String $specialCharsEscaped;Custom Postal Code String $specialCharsEscaped;Custom Country String $specialCharsEscaped\r
+ADR;WORK:Work Post Office Box String $specialCharsEscaped;Work Extended Address String $specialCharsEscaped;Work Street Address String $specialCharsEscaped;Work Locality String $specialCharsEscaped;Work Region String $specialCharsEscaped;Work Postal Code String $specialCharsEscaped;Work Country String $specialCharsEscaped\r
+ADR;HOME:Home Post Office Box String $specialCharsEscaped;Home Extended Address String $specialCharsEscaped;Home Street Address String $specialCharsEscaped;Home Locality String $specialCharsEscaped;Home Region String $specialCharsEscaped;Home Postal Code String $specialCharsEscaped;Home Country String $specialCharsEscaped\r
 TEL;X-Custom Field Name For Phone $specialCharsEscaped:1234567896 $specialCharsEscaped\r
 TEL;WORK:1234567892 $specialCharsEscaped\r
 TEL;HOME:1234567893 $specialCharsEscaped\r
@@ -435,9 +447,9 @@ UID:urn:uuid:0\r
 FN:Full Name $specialCharsWorstlyEscaped\r
 N:Last name $specialCharsBadlyEscaped;First name $specialCharsBadlyEscaped;;;\r
 NICKNAME:Nickname $specialCharsWorstlyEscaped\r
-ADR;X-Custom Address Field Name $specialCharsBadlyEscaped:;;Custom Street Address String $specialCharsBadlyEscaped;Custom Locality String $specialCharsBadlyEscaped;Custom Region String $specialCharsBadlyEscaped;Custom Postal Code String $specialCharsBadlyEscaped;Custom Country String $specialCharsBadlyEscaped\r
-ADR;WORK:;;Work Street Address String $specialCharsBadlyEscaped;Work Locality String $specialCharsBadlyEscaped;Work Region String $specialCharsBadlyEscaped;Work Postal Code String $specialCharsBadlyEscaped;Work Country String $specialCharsBadlyEscaped\r
-ADR;HOME:;;Home Street Address String $specialCharsBadlyEscaped;Home Locality String $specialCharsBadlyEscaped;Home Region String $specialCharsBadlyEscaped;Home Postal Code String $specialCharsBadlyEscaped;Home Country String $specialCharsBadlyEscaped\r
+ADR;X-Custom Address Field Name $specialCharsBadlyEscaped:Custom Post Office Box String $specialCharsBadlyEscaped;Custom Extended Address String $specialCharsBadlyEscaped;Custom Street Address String $specialCharsBadlyEscaped;Custom Locality String $specialCharsBadlyEscaped;Custom Region String $specialCharsBadlyEscaped;Custom Postal Code String $specialCharsBadlyEscaped;Custom Country String $specialCharsBadlyEscaped\r
+ADR;WORK:Work Post Office Box String $specialCharsBadlyEscaped;Work Extended Address String $specialCharsBadlyEscaped;Work Street Address String $specialCharsBadlyEscaped;Work Locality String $specialCharsBadlyEscaped;Work Region String $specialCharsBadlyEscaped;Work Postal Code String $specialCharsBadlyEscaped;Work Country String $specialCharsBadlyEscaped\r
+ADR;HOME:Home Post Office Box String $specialCharsBadlyEscaped;Home Extended Address String $specialCharsBadlyEscaped;Home Street Address String $specialCharsBadlyEscaped;Home Locality String $specialCharsBadlyEscaped;Home Region String $specialCharsBadlyEscaped;Home Postal Code String $specialCharsBadlyEscaped;Home Country String $specialCharsBadlyEscaped\r
 TEL;X-Custom Field Name For Phone $specialCharsBadlyEscaped:1234567896 $specialCharsWorstlyEscaped\r
 TEL;WORK:1234567892 $specialCharsWorstlyEscaped\r
 TEL;HOME:1234567893 $specialCharsWorstlyEscaped\r

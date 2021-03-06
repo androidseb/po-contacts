@@ -1,12 +1,18 @@
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class AddressInfo {
+  static const String FIELD_POST_OFFICE_BOX = 'post_office_box';
+  static const String FIELD_EXTENDED_ADDRESS = 'extended_address';
   static const String FIELD_STREET_ADDRESS = 'street_address';
   static const String FIELD_LOCALITY = 'locality';
   static const String FIELD_REGION = 'region';
   static const String FIELD_POSTAL_CODE = 'postal_code';
   static const String FIELD_COUNTRY = 'country';
 
+  //the post office box
+  final String postOfficeBox;
+  //the extended address
+  final String extendedAddress;
   //the street address
   final String streetAddress;
   //the locality (e.g., city);
@@ -19,6 +25,8 @@ class AddressInfo {
   final String country;
 
   AddressInfo(
+    this.postOfficeBox,
+    this.extendedAddress,
     this.streetAddress,
     this.locality,
     this.region,
@@ -26,9 +34,24 @@ class AddressInfo {
     this.country,
   );
 
+  NormalizedString _nPostOfficeBox;
+  NormalizedString get nPostOfficeBox {
+    if (_nPostOfficeBox == null) {
+      _nPostOfficeBox = NormalizedString(postOfficeBox);
+    }
+    return _nPostOfficeBox;
+  }
+
+  NormalizedString _nExtendedAddress;
+  NormalizedString get nExtendedAddress {
+    if (_nExtendedAddress == null) {
+      _nExtendedAddress = NormalizedString(extendedAddress);
+    }
+    return _nExtendedAddress;
+  }
+
   NormalizedString _nStreetAddress;
-  NormalizedString get nStreetAddress => _getNStreetAddress();
-  NormalizedString _getNStreetAddress() {
+  NormalizedString get nStreetAddress {
     if (_nStreetAddress == null) {
       _nStreetAddress = NormalizedString(streetAddress);
     }
@@ -36,8 +59,7 @@ class AddressInfo {
   }
 
   NormalizedString _nLocality;
-  NormalizedString get nLocality => _getNLocality();
-  NormalizedString _getNLocality() {
+  NormalizedString get nLocality {
     if (_nLocality == null) {
       _nLocality = NormalizedString(locality);
     }
@@ -45,8 +67,7 @@ class AddressInfo {
   }
 
   NormalizedString _nRegion;
-  NormalizedString get nRegion => _getNRegion();
-  NormalizedString _getNRegion() {
+  NormalizedString get nRegion {
     if (_nRegion == null) {
       _nRegion = NormalizedString(region);
     }
@@ -54,8 +75,7 @@ class AddressInfo {
   }
 
   NormalizedString _nPostalCode;
-  NormalizedString get nPostalCode => _getNPostalCode();
-  NormalizedString _getNPostalCode() {
+  NormalizedString get nPostalCode {
     if (_nPostalCode == null) {
       _nPostalCode = NormalizedString(postalCode);
     }
@@ -63,8 +83,7 @@ class AddressInfo {
   }
 
   NormalizedString _nCountry;
-  NormalizedString get nCountry => _getNCountry();
-  NormalizedString _getNCountry() {
+  NormalizedString get nCountry {
     if (_nCountry == null) {
       _nCountry = NormalizedString(country);
     }
@@ -73,6 +92,8 @@ class AddressInfo {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      FIELD_POST_OFFICE_BOX: postOfficeBox,
+      FIELD_EXTENDED_ADDRESS: extendedAddress,
       FIELD_STREET_ADDRESS: streetAddress,
       FIELD_LOCALITY: locality,
       FIELD_REGION: region,
@@ -83,6 +104,8 @@ class AddressInfo {
 
   static AddressInfo fromMap(final dynamic fieldValue) {
     return AddressInfo(
+      fieldValue[FIELD_POST_OFFICE_BOX],
+      fieldValue[FIELD_EXTENDED_ADDRESS],
       fieldValue[FIELD_STREET_ADDRESS],
       fieldValue[FIELD_LOCALITY],
       fieldValue[FIELD_REGION],
