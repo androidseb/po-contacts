@@ -25,14 +25,20 @@ class AddressInfo {
   final String country;
 
   AddressInfo(
-    this.postOfficeBox,
-    this.extendedAddress,
-    this.streetAddress,
-    this.locality,
-    this.region,
-    this.postalCode,
-    this.country,
-  );
+    final String postOfficeBox,
+    final String extendedAddress,
+    final String streetAddress,
+    final String locality,
+    final String region,
+    final String postalCode,
+    final String country,
+  )   : this.postOfficeBox = postOfficeBox ?? '',
+        this.extendedAddress = extendedAddress ?? '',
+        this.streetAddress = streetAddress ?? '',
+        this.locality = locality ?? '',
+        this.region = region ?? '',
+        this.postalCode = postalCode ?? '',
+        this.country = country ?? '';
 
   NormalizedString _nPostOfficeBox;
   NormalizedString get nPostOfficeBox {
