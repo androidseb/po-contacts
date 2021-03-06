@@ -100,7 +100,6 @@ class MainController {
     if (_context == null) {
       return;
     }
-    _contactsSearchDelegate.close(_context, null);
     _startEditContact(contactId);
   }
 
@@ -130,7 +129,6 @@ class MainController {
     if (_context == null) {
       return;
     }
-    _contactsSearchDelegate.close(_context, null);
     Navigator.push<Object>(_context, MaterialPageRoute(
       builder: (final BuildContext context) {
         return ViewContactPage(contactId);
