@@ -1,1 +1,1 @@
-const POC_APP_VERSION = '2.1.0+57';
+const POC_APP_VERSION = '2.2.0+58';
