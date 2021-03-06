@@ -126,6 +126,7 @@ class AppSettings {
   final bool useDarkDisplay;
   final bool syncOnAppStart;
   final bool syncOnDataEdit;
+  final bool displayObsoleteAddressFields;
 
   AppSettings({
     this.displayDraggableScrollbar: false,
@@ -134,5 +135,6 @@ class AppSettings {
     this.useDarkDisplay: false,
     this.syncOnAppStart: true,
     this.syncOnDataEdit: false,
+    this.displayObsoleteAddressFields: false,
   });
 }

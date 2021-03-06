@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
+import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/address_info.dart';
 import 'package:po_contacts_flutter/model/data/address_labeled_field.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
@@ -51,6 +52,10 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
     ];
     rowWidgets.addAll(buildDropDownAndDeleteRowWidgets(parentState, context, item, itemIndex));
     final AddressInfo itemAddrInfo = item.fieldValue;
+    final bool displayObsoleteAddressFields =
+        MainController.get().model.settings.appSettings.displayObsoleteAddressFields;
+    final bool shouldDisplayObsoleteAddressFields =
+        displayObsoleteAddressFields || itemAddrInfo.postOfficeBox.isNotEmpty || itemAddrInfo.postOfficeBox.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
       child: Container(
@@ -64,48 +69,52 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
               crossAxisAlignment: CrossAxisAlignment.center,
               children: rowWidgets,
             ),
-            TextFormField(
-              initialValue: itemAddrInfo.postOfficeBox,
-              textCapitalization: TextCapitalization.none,
-              decoration: InputDecoration(
-                labelText: I18n.getString(I18n.string.post_office_box),
-              ),
-              onChanged: (newTextValue) {
-                parentState.changeItemValue(
-                  item,
-                  AddressInfo(
-                    newTextValue,
-                    itemAddrInfo.extendedAddress,
-                    itemAddrInfo.streetAddress,
-                    itemAddrInfo.locality,
-                    itemAddrInfo.region,
-                    itemAddrInfo.postalCode,
-                    itemAddrInfo.country,
-                  ),
-                );
-              },
-            ),
-            TextFormField(
-              initialValue: itemAddrInfo.extendedAddress,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                labelText: I18n.getString(I18n.string.extended_address),
-              ),
-              onChanged: (newTextValue) {
-                parentState.changeItemValue(
-                  item,
-                  AddressInfo(
-                    itemAddrInfo.postOfficeBox,
-                    newTextValue,
-                    itemAddrInfo.streetAddress,
-                    itemAddrInfo.locality,
-                    itemAddrInfo.region,
-                    itemAddrInfo.postalCode,
-                    itemAddrInfo.country,
-                  ),
-                );
-              },
-            ),
+            shouldDisplayObsoleteAddressFields
+                ? TextFormField(
+                    initialValue: itemAddrInfo.postOfficeBox,
+                    textCapitalization: TextCapitalization.none,
+                    decoration: InputDecoration(
+                      labelText: I18n.getString(I18n.string.post_office_box),
+                    ),
+                    onChanged: (newTextValue) {
+                      parentState.changeItemValue(
+                        item,
+                        AddressInfo(
+                          newTextValue,
+                          itemAddrInfo.extendedAddress,
+                          itemAddrInfo.streetAddress,
+                          itemAddrInfo.locality,
+                          itemAddrInfo.region,
+                          itemAddrInfo.postalCode,
+                          itemAddrInfo.country,
+                        ),
+                      );
+                    },
+                  )
+                : SizedBox.shrink(),
+            shouldDisplayObsoleteAddressFields
+                ? TextFormField(
+                    initialValue: itemAddrInfo.extendedAddress,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      labelText: I18n.getString(I18n.string.extended_address),
+                    ),
+                    onChanged: (newTextValue) {
+                      parentState.changeItemValue(
+                        item,
+                        AddressInfo(
+                          itemAddrInfo.postOfficeBox,
+                          newTextValue,
+                          itemAddrInfo.streetAddress,
+                          itemAddrInfo.locality,
+                          itemAddrInfo.region,
+                          itemAddrInfo.postalCode,
+                          itemAddrInfo.country,
+                        ),
+                      );
+                    },
+                  )
+                : SizedBox.shrink(),
             TextFormField(
               initialValue: itemAddrInfo.streetAddress,
               textCapitalization: TextCapitalization.sentences,

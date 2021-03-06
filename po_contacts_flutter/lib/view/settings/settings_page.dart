@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_call_action.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_dark_display.dart';
+import 'package:po_contacts_flutter/view/settings/pref_for_display_obsolete_address_fields.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_email_action.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_scrollbar.dart';
 import 'package:po_contacts_flutter/view/settings/pref_for_sync_on_app_start.dart';
@@ -21,6 +22,7 @@ class SettingsPage extends StatelessWidget {
           PrefForSyncOnDataEdit(),
           PrefForEmailAction(),
           PrefForCallAction(),
+          PrefForDisplayObsoleteAddressFields(),
         ],
       ),
     );

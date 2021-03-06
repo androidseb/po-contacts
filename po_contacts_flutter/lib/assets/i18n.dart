@@ -129,6 +129,7 @@ class I18nString {
   final String delete_selected_contacts = 'delete_selected_contacts';
   final String post_office_box = 'post_office_box';
   final String extended_address = 'extended_address';
+  final String display_obsolete_address_fields = 'display_obsolete_address_fields';
 }
 
 class I18n {
@@ -262,8 +263,9 @@ class I18n {
     string.export_contact: 'Export contact',
     string.action_on_selected: 'Action on selected',
     string.delete_selected_contacts: 'Delete selected contacts',
-    string.post_office_box: 'Post Office Box',
-    string.extended_address: 'Extended Address',
+    string.post_office_box: 'Post office box',
+    string.extended_address: 'Extended address',
+    string.display_obsolete_address_fields: 'Always display obsolete address fields',
   };
 
   static String _getObjString(final Object _obj) {

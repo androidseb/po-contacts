@@ -359,7 +359,9 @@ class ContactBuilder extends ContactData {
       if (f.fieldValue == null) {
         continue;
       }
-      if (f.fieldValue.streetAddress.isEmpty &&
+      if (f.fieldValue.postOfficeBox.isEmpty &&
+          f.fieldValue.extendedAddress.isEmpty &&
+          f.fieldValue.streetAddress.isEmpty &&
           f.fieldValue.locality.isEmpty &&
           f.fieldValue.region.isEmpty &&
           f.fieldValue.postalCode.isEmpty &&

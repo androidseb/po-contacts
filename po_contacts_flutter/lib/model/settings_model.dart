@@ -11,6 +11,7 @@ class SettingsModel {
   static const String _SETTING_ID_USE_DARK_DISPLAY = 'dark_display';
   static const String _SETTING_ID_SYNC_ON_APP_START = 'sync_on_app_start';
   static const String _SETTING_ID_SYNC_ON_DATA_EDIT = 'sync_on_data_edit';
+  static const String _SETTING_ID_DISPLAY_OBSOLETE_ADDRESS_FIELDS = 'display_obsolete_address_fields';
 
   final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   final StreamableValue<AppSettings> _appSettings = StreamableValue(AppSettings());
@@ -21,7 +22,7 @@ class SettingsModel {
     _updateSettingsFromStorage();
   }
 
-  Future<void> waitForSettingsLoaded(){
+  Future<void> waitForSettingsLoaded() {
     return _updateSettingsFromStorage();
   }
 
@@ -73,6 +74,15 @@ class SettingsModel {
     return false;
   }
 
+  Future<bool> _readDisplayObsoleteAddressFields() async {
+    final bool displayObsoleteAddressFields =
+        (await _sharedPreferences).getBool(_SETTING_ID_DISPLAY_OBSOLETE_ADDRESS_FIELDS);
+    if (displayObsoleteAddressFields != null) {
+      return displayObsoleteAddressFields;
+    }
+    return false;
+  }
+
   Future<void> _updateSettingsFromStorage() async {
     _appSettings.currentValue = AppSettings(
       displayDraggableScrollbar: await _readDisplayDraggableScrollbarValue(),
@@ -81,6 +91,7 @@ class SettingsModel {
       useDarkDisplay: await _readUseDarkDisplay(),
       syncOnAppStart: await _readSyncOnAppStart(),
       syncOnDataEdit: await _readSyncOnDataEdit(),
+      displayObsoleteAddressFields: await _readDisplayObsoleteAddressFields(),
     );
   }
 
@@ -111,6 +122,11 @@ class SettingsModel {
 
   void setSyncOnDataEdit(final bool syncOnDataEdit) async {
     (await _sharedPreferences).setBool(_SETTING_ID_SYNC_ON_DATA_EDIT, syncOnDataEdit);
+    _updateSettingsFromStorage();
+  }
+
+  void setDisplayObsoleteAddressFields(final bool displayObsoleteAddressFields) async {
+    (await _sharedPreferences).setBool(_SETTING_ID_DISPLAY_OBSOLETE_ADDRESS_FIELDS, displayObsoleteAddressFields);
     _updateSettingsFromStorage();
   }
 }
