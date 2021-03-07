@@ -33,7 +33,7 @@ class EditPhonesForm extends EditCategorizedStringItemsForm {
 
   @override
   List<TextInputFormatter> getInputFormatters() {
-    return [WhitelistingTextInputFormatter(RegExp(r'[\+\-\ 0-9]'))];
+    return [FilteringTextInputFormatter.allow(RegExp(r'[\+\-\ 0-9]'))];
   }
 
   TextInputType getInputKeyboardType() {

@@ -25,7 +25,7 @@ class EditEmailsForm extends EditCategorizedStringItemsForm {
 
   @override
   List<TextInputFormatter> getInputFormatters() {
-    return [WhitelistingTextInputFormatter(RegExp(r'[\@\+\-\.0-9a-zA-Z]'))];
+    return [FilteringTextInputFormatter.allow(RegExp(r'[\@\+\-\.0-9a-zA-Z]'))];
   }
 
   @override
