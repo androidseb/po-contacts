@@ -163,20 +163,20 @@ class GoogleOAuthWithDeviceCode {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(gdsi.uiController.googleAuthCancelButtonText),
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureBrowserOpened.complete(false);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(gdsi.uiController.googleAuthDialogCopyCodeButtonText),
                 onPressed: () {
                   gdsi.uiController.copyTextToClipBoard(oAuthCodeData.user_code);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(gdsi.uiController.googleAuthDialogOpenBrowserButtonText),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -212,21 +212,21 @@ class GoogleOAuthWithDeviceCode {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(gdsi.uiController.googleAuthCancelButtonText),
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureContinuationChoice.complete(null);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(gdsi.uiController.continueGoogleAuthDialogRestartButtonText),
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureContinuationChoice.complete(false);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(gdsi.uiController.continueGoogleAuthDialogProceedButtonText),
                 onPressed: () {
                   Navigator.of(context).pop();

@@ -211,14 +211,14 @@ class MainController {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(I18n.getString(I18n.string.encrypt_option_unprotected)),
               onPressed: () {
                 Navigator.of(context).pop();
                 passwordCompleter.complete(null);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(I18n.getString(I18n.string.encrypt_option_encrypted)),
               onPressed: () async {
                 Navigator.of(context).pop();
@@ -263,7 +263,7 @@ class MainController {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(I18n.getString(I18n.string.ok)),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -297,14 +297,14 @@ class MainController {
               decoration: InputDecoration(hintText: hintText),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureEnteredText.complete(null);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(I18n.getString(I18n.string.ok)),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -405,7 +405,7 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -448,7 +448,7 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -499,14 +499,14 @@ class MainController {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(I18n.getString(I18n.string.no)),
               onPressed: () {
                 Navigator.of(context).pop();
                 userResponseCompleter.complete(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(I18n.getString(I18n.string.yes)),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -629,7 +629,7 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -694,7 +694,7 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(I18n.getString(I18n.string.cancel)),
                 onPressed: () {
                   Navigator.of(context).pop();

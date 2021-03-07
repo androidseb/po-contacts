@@ -210,11 +210,12 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
       widgetRows.add(widget.buildWidgetRow(this, context, item, itemIndex));
     }
     widgetRows.add(
-      FlatButton(
-        color: Colors.green,
-        textColor: Colors.white,
-        padding: EdgeInsets.all(8.0),
-        splashColor: Colors.greenAccent,
+      TextButton(
+        style: TextButton.styleFrom(
+          primary: Colors.white,
+          backgroundColor: Colors.green,
+          padding: EdgeInsets.all(8.0),
+        ),
         onPressed: () {
           addEmptyItem();
         },

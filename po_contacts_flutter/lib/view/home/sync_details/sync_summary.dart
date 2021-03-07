@@ -111,8 +111,7 @@ class SyncSummary extends StatelessWidget {
               ],
             ),
           ),
-          subtitle: RaisedButton(
-            textColor: Colors.white,
+          subtitle: ElevatedButton(
             child: Text(syncButtonText),
             onPressed: syncButtonAction,
           ),

@@ -93,20 +93,20 @@ class _EditContactFormState extends State<EditContactForm> {
     }
     final List<Widget> imageFlatButtons = [];
     if (_currentImage == null) {
-      imageFlatButtons.add(FlatButton(
+      imageFlatButtons.add(TextButton(
         child: Text(I18n.getString(I18n.string.add_image)),
         onPressed: () {
           _onChangeImageButtonClicked();
         },
       ));
     } else {
-      imageFlatButtons.add(FlatButton(
+      imageFlatButtons.add(TextButton(
         child: Text(I18n.getString(I18n.string.change_image)),
         onPressed: () {
           _onChangeImageButtonClicked();
         },
       ));
-      imageFlatButtons.add(FlatButton(
+      imageFlatButtons.add(TextButton(
         child: Text(I18n.getString(I18n.string.delete_image)),
         onPressed: () {
           _onDeleteImageButtonClicked();
@@ -259,8 +259,7 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: RaisedButton(
-                  textColor: Colors.white,
+                child: ElevatedButton(
                   onPressed: () {
                     editContactFormController.startSaveAction();
                   },
