@@ -4,6 +4,7 @@ import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart';
 import 'package:po_contacts_flutter/model/data/contact.dart';
+import 'package:po_contacts_flutter/view/baseuicomponents/poc_button.dart';
 import 'package:po_contacts_flutter/view/edit/edit_addresses_form.dart';
 import 'package:po_contacts_flutter/view/edit/edit_emails_form.dart';
 import 'package:po_contacts_flutter/view/edit/edit_phones_form.dart';
@@ -93,21 +94,21 @@ class _EditContactFormState extends State<EditContactForm> {
     }
     final List<Widget> imageFlatButtons = [];
     if (_currentImage == null) {
-      imageFlatButtons.add(TextButton(
-        child: Text(I18n.getString(I18n.string.add_image)),
+      imageFlatButtons.add(POCButton(
+        textI18nKey: I18n.string.add_image,
         onPressed: () {
           _onChangeImageButtonClicked();
         },
       ));
     } else {
-      imageFlatButtons.add(TextButton(
-        child: Text(I18n.getString(I18n.string.change_image)),
+      imageFlatButtons.add(POCButton(
+        textI18nKey: I18n.string.change_image,
         onPressed: () {
           _onChangeImageButtonClicked();
         },
       ));
-      imageFlatButtons.add(TextButton(
-        child: Text(I18n.getString(I18n.string.delete_image)),
+      imageFlatButtons.add(POCButton(
+        textI18nKey: I18n.string.delete_image,
         onPressed: () {
           _onDeleteImageButtonClicked();
         },
@@ -259,11 +260,12 @@ class _EditContactFormState extends State<EditContactForm> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
+                child: POCButton(
+                  buttonStyle: POCButtonStyle.ELEVATED,
+                  textI18nKey: I18n.string.save,
                   onPressed: () {
                     editContactFormController.startSaveAction();
                   },
-                  child: Text(I18n.getString(I18n.string.save)),
                 ),
               ),
             ],

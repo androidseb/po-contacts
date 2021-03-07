@@ -5,6 +5,7 @@ import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
+import 'package:po_contacts_flutter/view/baseuicomponents/poc_button.dart';
 
 class SyncSummary extends StatelessWidget {
   @override
@@ -111,8 +112,9 @@ class SyncSummary extends StatelessWidget {
               ],
             ),
           ),
-          subtitle: ElevatedButton(
-            child: Text(syncButtonText),
+          subtitle: POCButton(
+            buttonStyle: POCButtonStyle.ELEVATED,
+            textString: syncButtonText,
             onPressed: syncButtonAction,
           ),
         ),

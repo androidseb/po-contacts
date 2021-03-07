@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:po_contacts_flutter/utils/secure_storage/secure_storage.dart';
+import 'package:po_contacts_flutter/view/baseuicomponents/poc_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_interface_google_drive.dart';
@@ -163,21 +164,21 @@ class GoogleOAuthWithDeviceCode {
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(gdsi.uiController.googleAuthCancelButtonText),
+              POCButton(
+                textString: gdsi.uiController.googleAuthCancelButtonText,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureBrowserOpened.complete(false);
                 },
               ),
-              TextButton(
-                child: Text(gdsi.uiController.googleAuthDialogCopyCodeButtonText),
+              POCButton(
+                textString: gdsi.uiController.googleAuthDialogCopyCodeButtonText,
                 onPressed: () {
                   gdsi.uiController.copyTextToClipBoard(oAuthCodeData.user_code);
                 },
               ),
-              TextButton(
-                child: Text(gdsi.uiController.googleAuthDialogOpenBrowserButtonText),
+              POCButton(
+                textString: gdsi.uiController.googleAuthDialogOpenBrowserButtonText,
                 onPressed: () {
                   Navigator.of(context).pop();
                   launch(oAuthCodeData.verification_url);
@@ -212,22 +213,22 @@ class GoogleOAuthWithDeviceCode {
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(gdsi.uiController.googleAuthCancelButtonText),
+              POCButton(
+                textString: gdsi.uiController.googleAuthCancelButtonText,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureContinuationChoice.complete(null);
                 },
               ),
-              TextButton(
-                child: Text(gdsi.uiController.continueGoogleAuthDialogRestartButtonText),
+              POCButton(
+                textString: gdsi.uiController.continueGoogleAuthDialogRestartButtonText,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureContinuationChoice.complete(false);
                 },
               ),
-              TextButton(
-                child: Text(gdsi.uiController.continueGoogleAuthDialogProceedButtonText),
+              POCButton(
+                textString: gdsi.uiController.continueGoogleAuthDialogProceedButtonText,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureContinuationChoice.complete(true);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
 import 'package:po_contacts_flutter/controller/main_controller.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
+import 'package:po_contacts_flutter/view/baseuicomponents/poc_button.dart';
 
 class CategorizedEditableItem<T> {
   LabeledFieldLabelType labelType;
@@ -210,16 +211,12 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
       widgetRows.add(widget.buildWidgetRow(this, context, item, itemIndex));
     }
     widgetRows.add(
-      TextButton(
-        style: TextButton.styleFrom(
-          primary: Colors.white,
-          backgroundColor: Colors.green,
-          padding: EdgeInsets.all(8.0),
-        ),
+      POCButton(
+        buttonStyle: POCButtonStyle.FLAT_FILLED,
+        textI18nKey: widget.getAddEntryActionStringKey(),
         onPressed: () {
           addEmptyItem();
         },
-        child: Text(I18n.getString(widget.getAddEntryActionStringKey())),
       ),
     );
     return Column(

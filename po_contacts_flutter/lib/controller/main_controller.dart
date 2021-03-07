@@ -17,6 +17,7 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/model/main_model.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_controller.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
+import 'package:po_contacts_flutter/view/baseuicomponents/poc_button.dart';
 import 'package:po_contacts_flutter/view/details/view_contact_page.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_page.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
@@ -211,15 +212,15 @@ class MainController {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text(I18n.getString(I18n.string.encrypt_option_unprotected)),
+            POCButton(
+              textI18nKey: I18n.string.encrypt_option_unprotected,
               onPressed: () {
                 Navigator.of(context).pop();
                 passwordCompleter.complete(null);
               },
             ),
-            TextButton(
-              child: Text(I18n.getString(I18n.string.encrypt_option_encrypted)),
+            POCButton(
+              textI18nKey: I18n.string.encrypt_option_encrypted,
               onPressed: () async {
                 Navigator.of(context).pop();
                 final String encryptionKey = await showTextInputDialog(
@@ -263,8 +264,8 @@ class MainController {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text(I18n.getString(I18n.string.ok)),
+            POCButton(
+              textI18nKey: I18n.string.ok,
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -297,15 +298,15 @@ class MainController {
               decoration: InputDecoration(hintText: hintText),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(I18n.getString(I18n.string.cancel)),
+              POCButton(
+                textI18nKey: I18n.string.cancel,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureEnteredText.complete(null);
                 },
               ),
-              TextButton(
-                child: Text(I18n.getString(I18n.string.ok)),
+              POCButton(
+                textI18nKey: I18n.string.ok,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureEnteredText.complete(textFieldController.value.text);
@@ -405,8 +406,8 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(I18n.getString(I18n.string.cancel)),
+              POCButton(
+                textI18nKey: I18n.string.cancel,
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -448,8 +449,8 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(I18n.getString(I18n.string.cancel)),
+              POCButton(
+                textI18nKey: I18n.string.cancel,
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -499,15 +500,15 @@ class MainController {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text(I18n.getString(I18n.string.no)),
+            POCButton(
+              textI18nKey: I18n.string.no,
               onPressed: () {
                 Navigator.of(context).pop();
                 userResponseCompleter.complete(false);
               },
             ),
-            TextButton(
-              child: Text(I18n.getString(I18n.string.yes)),
+            POCButton(
+              textI18nKey: I18n.string.yes,
               onPressed: () {
                 Navigator.of(context).pop();
                 userResponseCompleter.complete(true);
@@ -629,8 +630,8 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(I18n.getString(I18n.string.cancel)),
+              POCButton(
+                textI18nKey: I18n.string.cancel,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureSelectedFile.complete(null);
@@ -694,8 +695,8 @@ class MainController {
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: Text(I18n.getString(I18n.string.cancel)),
+              POCButton(
+                textI18nKey: I18n.string.cancel,
                 onPressed: () {
                   Navigator.of(context).pop();
                   futureSelectedChoice.complete(null);
