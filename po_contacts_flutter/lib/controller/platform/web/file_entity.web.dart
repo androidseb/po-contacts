@@ -77,7 +77,7 @@ class FileEntityWeb extends FileEntity {
   Future<List<String>> readAsLines() async {
     final Uint8List fileData = binaryData;
     if (fileData == null) {
-      return List<String>();
+      return <String>[];
     }
     final String fileContentAsString = utf8.decode(fileData);
     return FileEntity.rawFileContentToLines(fileContentAsString);

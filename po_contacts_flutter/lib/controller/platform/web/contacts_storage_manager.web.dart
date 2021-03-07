@@ -18,7 +18,7 @@ class ContactsStorageManagerWeb implements ContactsStorageManager {
   }
 
   static void _writeContactIdsToStorage(final Window htmlWindow, final Set<int> contactIds) {
-    final List<int> contactIdsList = List();
+    final List<int> contactIdsList = [];
     contactIdsList.addAll(contactIds);
     htmlWindow.localStorage[STORAGE_KEY_INDEX] = jsonEncode(contactIdsList);
   }

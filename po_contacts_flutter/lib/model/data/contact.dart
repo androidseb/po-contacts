@@ -260,17 +260,17 @@ class ContactBuilder extends ContactData {
     contactBuilder.setNickName(decodedJson[ContactData.JSON_FIELD_NICK_NAME]);
     contactBuilder.setFullName(decodedJson[ContactData.JSON_FIELD_FULL_NAME]);
     contactBuilder.setPhoneInfos(LabeledField.fromMapList(
-      List<StringLabeledField>(),
+      <StringLabeledField>[],
       decodedJson[ContactData.JSON_FIELD_PHONE_INFOS],
       StringLabeledField.createFieldFunc,
     ));
     contactBuilder.setEmailInfos(LabeledField.fromMapList(
-      List<StringLabeledField>(),
+      <StringLabeledField>[],
       decodedJson[ContactData.JSON_FIELD_EMAIL_INFOS],
       StringLabeledField.createFieldFunc,
     ));
     contactBuilder.setAddressInfos(LabeledField.fromMapList(
-      List<AddressLabeledField>(),
+      <AddressLabeledField>[],
       decodedJson[ContactData.JSON_FIELD_ADDRESS_INFOS],
       AddressLabeledField.createFieldFunc,
     ));

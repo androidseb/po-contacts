@@ -21,7 +21,6 @@ class RootView extends StatelessWidget {
           toggleableActiveColor: Colors.green,
           accentColor: Colors.green,
           secondaryHeaderColor: Colors.green,
-          textSelectionColor: Colors.green,
           backgroundColor: Colors.green,
           buttonColor: Colors.green,
           primarySwatch: Colors.green,
