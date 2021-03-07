@@ -74,7 +74,7 @@ class FilesManagerMobile extends FilesManager {
     if (imgSource == null) {
       return null;
     }
-    final File selectedImageRawFile = await ImagePicker.pickImage(source: imgSource);
+    final File selectedImageRawFile = File((await ImagePicker().getImage(source: imgSource)).path);
     if (selectedImageRawFile == null) {
       return null;
     }
