@@ -10,28 +10,29 @@ dependencies:
     sdk: flutter
 
   # Common - pure dart
-  pointycastle: 1.0.2
-  http: ^0.12.1
-  crypto: ^2.1.4
-  uuid: ^2.1.0
-  image: ^2.1.12
+  pointycastle: ^3.0.0-nullsafety.2
+  http: ^0.13.0
+  crypto: ^3.0.0
+  uuid: ^3.0.1
+  image: ^3.0.1
 
   # Common - flutter
-  google_sign_in: ^4.4.6
+  google_sign_in: ^5.0.0
   # TODO draggable_scrollbar
   # draggable_scrollbar: ^0.0.4
-  shared_preferences: ^0.5.6+3
+  shared_preferences: ^2.0.4
+  convert: ^3.0.0
 
   # Flutter - Mobile only
-  cupertino_icons: ^0.1.2
-  url_launcher: ^5.4.1
-  sqflite:
-  path_provider: ^1.5.1
-  image_picker: ^0.6.3+1
-  flutter_secure_storage: ^3.3.3
+  cupertino_icons: ^1.0.2
+  url_launcher: ^6.0.2
+  sqflite: ^2.0.0+2
+  path_provider: ^2.0.1
+  image_picker: ^0.7.2+1
+  flutter_secure_storage: ^4.1.0
 
   # Flutter - Web only
-  js: ^0.6.0
+  js: ^0.6.3
 
 dev_dependencies:
   flutter_test:

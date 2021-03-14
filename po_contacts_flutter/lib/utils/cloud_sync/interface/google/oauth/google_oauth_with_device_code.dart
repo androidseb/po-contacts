@@ -54,7 +54,7 @@ class GoogleOAuthWithDeviceCode {
       return null;
     }
     final http.Response httpPostResponse = await http.post(
-      'https://oauth2.googleapis.com/token',
+      Uri.parse('https://oauth2.googleapis.com/token'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -76,7 +76,7 @@ class GoogleOAuthWithDeviceCode {
 
   static Future<_OAuthCodeData> _createNewOAuthCodeData(final String clientId) async {
     final http.Response httpPostResponse = await http.post(
-      'https://oauth2.googleapis.com/device/code',
+      Uri.parse('https://oauth2.googleapis.com/device/code'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -108,7 +108,7 @@ class GoogleOAuthWithDeviceCode {
       return null;
     }
     final http.Response httpPostResponse = await http.post(
-      'https://oauth2.googleapis.com/token',
+      Uri.parse('https://oauth2.googleapis.com/token'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
