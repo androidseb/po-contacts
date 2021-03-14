@@ -12,14 +12,14 @@ class NormalizedString {
 
   NormalizedString(this.sourceStr);
 
-  String _getNormalizedStr() {
+  String/*!*//*!*/ _getNormalizedStr() {
     if (_normalizedStr == null) {
       _normalizedStr = Utils.normalizeString(sourceStr);
     }
     return _normalizedStr;
   }
 
-  String get normalized => _getNormalizedStr();
+  String/*!*/ get normalized => _getNormalizedStr();
 
   bool contains(final String str) {
     return normalized.contains(str);
@@ -31,14 +31,14 @@ class Utils {
     return number.toString().padLeft(digitsCount, '0');
   }
 
-  static String normalizeString(final String sourceString) {
+  static String normalizeString(final String/*?*/ sourceString) {
     if (sourceString == null) {
       return '';
     }
     return removeDiacritics(sourceString).toLowerCase();
   }
 
-  static int stringCompare(final String str1, final String str2) {
+  static int stringCompare(final String/*?*/ str1, final String/*?*/ str2) {
     if (str1 == null && str2 == null) {
       return 0;
     }
@@ -90,7 +90,7 @@ class Utils {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  static String strToBase64(final String str) {
+  static String/*?*/ strToBase64(final String/*?*/ str) {
     if (str == null) {
       return null;
     }
@@ -98,7 +98,7 @@ class Utils {
     return base64.encode(strBytes);
   }
 
-  static String base64ToString(final String base64String) {
+  static String/*?*/ base64ToString(final String/*?*/ base64String) {
     if (base64String == null) {
       return null;
     }
