@@ -9,9 +9,9 @@ import 'package:po_contacts_flutter/controller/platform/common/files_transit_man
 class FilesTransitManagerMobile implements FilesTransitManager {
   static const platform = const MethodChannel('com.exlyo.pocontacts/files');
 
-  Future<String> _getInboxFileIdInDirForIOS(final Directory dir, final String inboxDirName) async {
+  Future<String?> _getInboxFileIdInDirForIOS(final Directory dir, final String inboxDirName) async {
     final List<FileSystemEntity> filesList = dir.listSync();
-    FileSystemEntity foundInboxDir;
+    FileSystemEntity? foundInboxDir;
     for (final FileSystemEntity fse in filesList) {
       if (!fse.path.endsWith('/$inboxDirName')) {
         continue;
@@ -33,8 +33,8 @@ class FilesTransitManagerMobile implements FilesTransitManager {
     return null;
   }
 
-  Future<String> _getInboxFileIdForIOS() async {
-    String foundInboxFileId;
+  Future<String?> _getInboxFileIdForIOS() async {
+    String? foundInboxFileId;
     final Directory applicationDocumentsDir = await getApplicationDocumentsDirectory();
     foundInboxFileId = await _getInboxFileIdInDirForIOS(applicationDocumentsDir, 'Inbox');
     if (foundInboxFileId != null) {
@@ -46,7 +46,7 @@ class FilesTransitManagerMobile implements FilesTransitManager {
   }
 
   @override
-  Future<String> getInboxFileId() async {
+  Future<String?> getInboxFileId() async {
     if (Platform.isIOS) {
       return _getInboxFileIdForIOS();
     }
@@ -63,7 +63,7 @@ class FilesTransitManagerMobile implements FilesTransitManager {
   }
 
   @override
-  Future<String> getCopiedInboxFilePath(final String inboxFileId) async {
+  Future<String?> getCopiedInboxFilePath(final String? inboxFileId) async {
     if (Platform.isIOS) {
       return inboxFileId;
     }
@@ -71,7 +71,7 @@ class FilesTransitManagerMobile implements FilesTransitManager {
   }
 
   @override
-  Future<String> getOutputFilesDirectoryPath() async {
+  Future<String?> getOutputFilesDirectoryPath() async {
     if (Platform.isIOS) {
       final Directory tempDir = await getTemporaryDirectory();
       return tempDir.path;

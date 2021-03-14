@@ -19,7 +19,7 @@ class EncryptionUtils {
   /// in user-facing code since we want to avoid storing sensitive information
   /// in memory as much as possible.
   @deprecated
-  static Map<String, Uint8List> derivedKeysCache;
+  static Map<String?, Uint8List>? derivedKeysCache;
 
   /// The number of bytes in an AES block (IV or encrypted block size)
   static const _AES_BLOCK_BYTES_COUNT = 16;
@@ -50,16 +50,16 @@ class EncryptionUtils {
   /// Derives a plain encryption key to make it ready for encryption
   /// Applies the SHA256 digest quite a few times
   static Future<Uint8List> _deriveKey(
-      final String plainKey, final Uint8List salt, final TaskSetProgressCallback progressCallback) async {
+      final String? plainKey, final Uint8List salt, final TaskSetProgressCallback? progressCallback) async {
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
       //ignore: deprecated_member_use_from_same_package
-      final Uint8List cachedDerivedKey = derivedKeysCache[plainKey];
+      final Uint8List? cachedDerivedKey = derivedKeysCache![plainKey];
       if (cachedDerivedKey != null) {
         return cachedDerivedKey;
       }
     }
-    final Uint8List dataToDigest = Utils.combineUInt8Lists([utf8.encode(plainKey), salt]);
+    final Uint8List dataToDigest = Utils.combineUInt8Lists([utf8.encode(plainKey!) as Uint8List, salt]);
     final SHA256Digest d = SHA256Digest();
     Uint8List digestedData = dataToDigest;
     for (int i = 0; i < _DIGEST_ITERATIONS_COUNT; i++) {
@@ -70,14 +70,14 @@ class EncryptionUtils {
     //ignore: deprecated_member_use_from_same_package
     if (derivedKeysCache != null) {
       //ignore: deprecated_member_use_from_same_package
-      derivedKeysCache[plainKey] = digestedData;
+      derivedKeysCache![plainKey] = digestedData;
     }
     return digestedData;
   }
 
   static Uint8List _padData(final Uint8List _data) {
     final int numberOfCharsToPad = _AES_BLOCK_BYTES_COUNT - (_data.length % _AES_BLOCK_BYTES_COUNT);
-    final Uint8List paddingText = utf8.encode('\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0');
+    final Uint8List paddingText = utf8.encode('\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0') as Uint8List;
     return Utils.combineUInt8Lists([_data, paddingText.sublist(0, numberOfCharsToPad)]);
   }
 
@@ -95,7 +95,7 @@ class EncryptionUtils {
   }
 
   static Future<Uint8List> _aesCbcEncrypt(final Uint8List key, Uint8List iv, final Uint8List paddedPlainData,
-      final TaskSetProgressCallback progressCallback) async {
+      final TaskSetProgressCallback? progressCallback) async {
     // Create a CBC block cipher with AES, and initialize with key and IV
     final cbc = CBCBlockCipher(AESFastEngine())..init(true, ParametersWithIV(KeyParameter(key), iv)); // true=encrypt
 
@@ -114,7 +114,7 @@ class EncryptionUtils {
   }
 
   static Future<Uint8List> _aesCbcDecrypt(final Uint8List key, final Uint8List iv, final Uint8List cipherData,
-      final TaskSetProgressCallback progressCallback) async {
+      final TaskSetProgressCallback? progressCallback) async {
     // Create a CBC block cipher with AES, and initialize with key and IV
     final cbc = CBCBlockCipher(AESFastEngine())..init(false, ParametersWithIV(KeyParameter(key), iv)); // false=decrypt
 
@@ -132,8 +132,8 @@ class EncryptionUtils {
     return paddedPlainText;
   }
 
-  static Future<Uint8List> encryptData(final Uint8List plainData, final String encryptionKey,
-      {final TaskSetProgressCallback progressCallback}) async {
+  static Future<Uint8List> encryptData(final Uint8List plainData, final String? encryptionKey,
+      {final TaskSetProgressCallback? progressCallback}) async {
     final Uint8List iv = _generateRandomIV();
     final Uint8List keySalt = _generateSalt();
     final Uint8List saltedDerivedKey = await _deriveKey(encryptionKey, keySalt, progressCallback);
@@ -144,8 +144,8 @@ class EncryptionUtils {
     return Utils.combineUInt8Lists([iv, keySalt, encryptedBytes]);
   }
 
-  static Future<Uint8List> decryptData(final Uint8List cipherData, final String encryptionKey,
-      {final TaskSetProgressCallback progressCallback}) async {
+  static Future<Uint8List> decryptData(final Uint8List cipherData, final String? encryptionKey,
+      {final TaskSetProgressCallback? progressCallback}) async {
     // If there isn't at least 2 AES blocks (IV block + at least one data block), we give up here
     if (cipherData.length < _AES_BLOCK_BYTES_COUNT * 2) {
       throw Exception('Cipher data is too short');

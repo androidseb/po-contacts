@@ -6,12 +6,12 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/view/edit/edit_cat_items_form.dart';
 
 abstract class EditCategorizedStringItemsForm extends EditCategorizedItemsForm<StringLabeledField, String> {
-  EditCategorizedStringItemsForm(final List<StringLabeledField> initialItems,
-      {final Function(List<StringLabeledField> updatedItems) onDataChanged})
+  EditCategorizedStringItemsForm(final List<StringLabeledField>? initialItems,
+      {final Function(List<StringLabeledField> updatedItems)? onDataChanged})
       : super(initialItems, onDataChanged: onDataChanged);
 
   @override
-  StringLabeledField toGenericItem(final CategorizedEditableItem<String> item) {
+  StringLabeledField toGenericItem(final CategorizedEditableItem<String?> item) {
     return StringLabeledField(item.labelType, item.labelText, item.fieldValue);
   }
 
@@ -23,7 +23,7 @@ abstract class EditCategorizedStringItemsForm extends EditCategorizedItemsForm<S
     return TextInputType.text;
   }
 
-  String validateValue(final String value) {
+  String? validateValue(final String? value) {
     return null;
   }
 
@@ -49,7 +49,7 @@ abstract class EditCategorizedStringItemsForm extends EditCategorizedItemsForm<S
           ),
           inputFormatters: getInputFormatters(),
           keyboardType: getInputKeyboardType(),
-          validator: (final String value) {
+          validator: (final String? value) {
             return validateValue(value);
           },
           onChanged: (nameValue) {

@@ -20,8 +20,8 @@ class MockFileReader extends FileReader {
   MockFileReader() : super(null);
 
   @override
-  Future<String> fileToBase64String(String filePath) async {
-    return MOCK_FILES_BASE64_CONTENT[filePath];
+  Future<String?> fileToBase64String(String? filePath) async {
+    return MOCK_FILES_BASE64_CONTENT[filePath!];
   }
 }
 
@@ -35,13 +35,13 @@ class MockVCFWriter extends VCFWriter {
   }
 
   @override
-  Future<void> flushOutputBuffer({TaskSetProgressCallback progressCallback}) async {}
+  Future<void> flushOutputBuffer({TaskSetProgressCallback? progressCallback}) async {}
 }
 
 class MockFileSystem {
-  static Map<String, MockFileEntry> content = {};
+  static Map<String, MockFileEntry?> content = {};
 
-  static String getFileBase64StringContent(final String filePath) {
+  static String? getFileBase64StringContent(final String? filePath) {
     if (filePath == null) {
       return null;
     }
@@ -51,7 +51,7 @@ class MockFileSystem {
     if (content[filePath] == null) {
       return null;
     }
-    return content[filePath].base64StringContent;
+    return content[filePath]!.base64StringContent;
   }
 }
 
@@ -64,8 +64,8 @@ class MockFileEntry extends FileEntity {
   }
 
   @override
-  Future<bool> writeAsUint8List(final Uint8List outputData) {
-    return writeAsBase64String(base64.encode(outputData));
+  Future<bool> writeAsUint8List(final Uint8List? outputData) {
+    return writeAsBase64String(base64.encode(outputData!));
   }
 
   Future<bool> writeAsBase64String(String base64String) async {
@@ -84,7 +84,7 @@ class MockFileEntry extends FileEntity {
   }
 
   @override
-  Future<FileEntity> create() {
+  Future<FileEntity>? create() {
     return null;
   }
 
@@ -102,12 +102,12 @@ class MockFileEntry extends FileEntity {
   }
 
   @override
-  Future<String> readAsBase64String() async {
+  Future<String?> readAsBase64String() async {
     return null;
   }
 
   @override
-  Future<FileEntity> copy(FileEntity targetFile) {
+  Future<FileEntity>? copy(FileEntity? targetFile) {
     return null;
   }
 
@@ -124,7 +124,7 @@ class MockFileInflater extends FileInflater<MockFileEntry> {
 
 class MockVCFReader extends VCFReader {
   final String sourceString;
-  List<String> lines;
+  List<String>? lines;
   int currentLine = 0;
 
   MockVCFReader(this.sourceString) : super(MockFileInflater()) {
@@ -132,14 +132,14 @@ class MockVCFReader extends VCFReader {
   }
 
   @override
-  Future<String> readLineImpl() async {
+  Future<String?> readLineImpl() async {
     if (lines == null) {
       return null;
     }
-    if (currentLine >= lines.length) {
+    if (currentLine >= lines!.length) {
       return null;
     }
-    final String res = lines[currentLine];
+    final String res = lines![currentLine];
     currentLine++;
     return res;
   }
@@ -175,11 +175,11 @@ void expectAddressLabeledFieldsEqual(final List<AddressLabeledField> alfl1, fina
   for (int i = 0; i < alfl1.length; i++) {
     expect(alfl1[i].labelType, alfl2[i].labelType);
     expect(alfl1[i].labelText, alfl2[i].labelText);
-    expect(alfl1[i].fieldValue.streetAddress, alfl2[i].fieldValue.streetAddress);
-    expect(alfl1[i].fieldValue.locality, alfl2[i].fieldValue.locality);
-    expect(alfl1[i].fieldValue.region, alfl2[i].fieldValue.region);
-    expect(alfl1[i].fieldValue.postalCode, alfl2[i].fieldValue.postalCode);
-    expect(alfl1[i].fieldValue.country, alfl2[i].fieldValue.country);
+    expect(alfl1[i].fieldValue!.streetAddress, alfl2[i].fieldValue!.streetAddress);
+    expect(alfl1[i].fieldValue!.locality, alfl2[i].fieldValue!.locality);
+    expect(alfl1[i].fieldValue!.region, alfl2[i].fieldValue!.region);
+    expect(alfl1[i].fieldValue!.postalCode, alfl2[i].fieldValue!.postalCode);
+    expect(alfl1[i].fieldValue!.country, alfl2[i].fieldValue!.country);
   }
 }
 
@@ -223,7 +223,7 @@ void main() {
   });
 
   test('VCF export - simple contact', () async {
-    final List<Contact> contacts = [testContactSimple];
+    final List<Contact?> contacts = [testContactSimple];
     final MockVCFWriter vcfWriter = MockVCFWriter();
     await VCFSerializer.writeToVCF(
       contacts,
@@ -253,7 +253,7 @@ void main() {
   });
 
   test('VCF export - multiple contact', () async {
-    final List<Contact> contacts = [testContactSimplest, testContactSimple, testContactComplex, testContactComplex2];
+    final List<Contact?> contacts = [testContactSimplest, testContactSimple, testContactComplex, testContactComplex2];
     final MockVCFWriter vcfWriter = MockVCFWriter();
     await VCFSerializer.writeToVCF(
       contacts,
@@ -271,71 +271,71 @@ void main() {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_SIMPLEST_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactSimplest);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactSimplest);
   });
 
   test('VCF import - simple contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_SIMPLE_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactSimple);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactSimple!);
   });
 
   test('VCF import - complex contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactComplex);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactComplex);
   });
 
   test('VCF import - complex contact alt1', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_1));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactComplex);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactComplex);
   });
 
   test('VCF import - complex contact alt2', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_2));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactComplex);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactComplex);
   });
 
   test('VCF import - complex contact alt3', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_ALTERNATE_INPUT_3));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactComplex);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactComplex);
   });
 
   test('VCF import - complex contact 2', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_2_EXPECTED_OUTPUT));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactComplex2);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactComplex2);
   });
 
   test('VCF import - complex contact 2 alt1', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACT_COMPLEX_2_ALTERNATE_INPUT_1));
     expect(contacts.length, 1);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactComplex2);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactComplex2);
   });
 
   test('VCF import - multiple contact', () async {
     final List<ContactBuilder> contacts =
         await VCFSerializer.readFromVCF(MockVCFReader(CONTACTS_MULTIPLE_EXPECTED_OUTPUT));
     expect(contacts.length, 4);
-    expectContactsEqual(contactBuilderToContact(contacts[0]), testContactSimplest);
-    expectContactsEqual(contactBuilderToContact(contacts[1]), testContactSimple);
-    expectContactsEqual(contactBuilderToContact(contacts[2]), testContactComplex);
-    expectContactsEqual(contactBuilderToContact(contacts[3]), testContactComplex2);
+    expectContactsEqual(contactBuilderToContact(contacts[0])!, testContactSimplest);
+    expectContactsEqual(contactBuilderToContact(contacts[1])!, testContactSimple!);
+    expectContactsEqual(contactBuilderToContact(contacts[2])!, testContactComplex);
+    expectContactsEqual(contactBuilderToContact(contacts[3])!, testContactComplex2);
   });
 
   test('VCF import of export - consistent data', () async {
     //Export contacts as a string
-    final List<Contact> initialContacts = [
+    final List<Contact?> initialContacts = [
       testContactSimplest,
       testContactSimple,
       testContactComplex,
@@ -354,7 +354,7 @@ void main() {
     //Test that the imported contacts are identical to the initial contacts
     expect(initialContacts.length, importedContacts.length);
     for (int i = 0; i < initialContacts.length; i++) {
-      expectContactsEqual(initialContacts[i], contactBuilderToContact(importedContacts[i]));
+      expectContactsEqual(initialContacts[i]!, contactBuilderToContact(importedContacts[i])!);
     }
   });
 }

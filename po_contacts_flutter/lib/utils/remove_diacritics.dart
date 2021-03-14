@@ -178,20 +178,20 @@ const List<Map<String, String>> _DIACRITICS_REMOVAL_MAP = [
   {'base': 'z', 'letters': '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763'}
 ];
 
-final Map<String, String> _diacriticsMap = {};
+final Map<String, String?> _diacriticsMap = {};
 
 final RegExp _diacriticsRegExp = RegExp('[^\u0000-\u007E]', multiLine: true);
 
 String removeDiacritics(String str) {
   if (_diacriticsMap.isEmpty) {
     for (var i = 0; i < _DIACRITICS_REMOVAL_MAP.length; i++) {
-      var letters = _DIACRITICS_REMOVAL_MAP[i]['letters'];
+      var letters = _DIACRITICS_REMOVAL_MAP[i]['letters']!;
       for (var j = 0; j < letters.length; j++) {
         _diacriticsMap[letters[j]] = _DIACRITICS_REMOVAL_MAP[i]['base'];
       }
     }
   }
   return str.replaceAllMapped(_diacriticsRegExp, (a) {
-    return _diacriticsMap[a.group(0)] != null ? _diacriticsMap[a.group(0)] : a.group(0);
+    return _diacriticsMap[a.group(0)!] != null ? _diacriticsMap[a.group(0)!]! : a.group(0)!;
   });
 }

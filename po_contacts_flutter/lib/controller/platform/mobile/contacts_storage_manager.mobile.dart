@@ -15,7 +15,7 @@ class ContactsStorageManagerMobile implements ContactsStorageManager {
 
   static Future<Database> _createDatabase() async {
     return openDatabase(
-      join(await getDatabasesPath(), '$DB_FILE_NAME'),
+      join(await (getDatabasesPath() as Future<String>), '$DB_FILE_NAME'),
       onCreate: (db, version) {
         return db.execute(
           "CREATE TABLE $TABLE_CONTACTS($FIELD_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, $FIELD_JSON TEXT)",
@@ -40,7 +40,7 @@ class ContactsStorageManagerMobile implements ContactsStorageManager {
     final Database db = await _database;
     final int insertedId = await db.insert(
       '$TABLE_CONTACTS',
-      <String, String>{
+      <String, String?>{
         FIELD_JSON: storageEntry.json,
       },
     );
@@ -51,7 +51,7 @@ class ContactsStorageManagerMobile implements ContactsStorageManager {
     final Database db = await _database;
     await db.update(
       '$TABLE_CONTACTS',
-      <String, String>{
+      <String, String?>{
         FIELD_JSON: storageEntry.json,
       },
       where: '$FIELD_ID = ?',

@@ -8,8 +8,8 @@ import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/view/edit/edit_cat_items_form.dart';
 
 class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, AddressInfo> {
-  EditAddressesForm(final List<AddressLabeledField> initialAddressInfos,
-      {final Function(List<AddressLabeledField> updatedItems) onDataChanged})
+  EditAddressesForm(final List<AddressLabeledField>? initialAddressInfos,
+      {final Function(List<AddressLabeledField> updatedItems)? onDataChanged})
       : super(initialAddressInfos, onDataChanged: onDataChanged);
 
   @override
@@ -22,7 +22,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
   }
 
   @override
-  AddressLabeledField toGenericItem(final CategorizedEditableItem<AddressInfo> item) {
+  AddressLabeledField toGenericItem(final CategorizedEditableItem<AddressInfo?> item) {
     return AddressLabeledField(item.labelType, item.labelText, item.fieldValue);
   }
 
@@ -53,7 +53,7 @@ class EditAddressesForm extends EditCategorizedItemsForm<AddressLabeledField, Ad
     rowWidgets.addAll(buildDropDownAndDeleteRowWidgets(parentState, context, item, itemIndex));
     final AddressInfo itemAddrInfo = item.fieldValue;
     final bool displayObsoleteAddressFields =
-        MainController.get().model.settings.appSettings.displayObsoleteAddressFields;
+        MainController.get()!.model.settings.appSettings!.displayObsoleteAddressFields;
     final bool shouldDisplayObsoleteAddressFields =
         displayObsoleteAddressFields || itemAddrInfo.postOfficeBox.isNotEmpty || itemAddrInfo.postOfficeBox.isNotEmpty;
     return Padding(

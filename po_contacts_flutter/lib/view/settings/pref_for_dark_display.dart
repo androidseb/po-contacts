@@ -10,11 +10,11 @@ class PrefForDarkDisplay extends BoolSettingEntry {
 
   @override
   bool readCurrentValue() {
-    return MainController.get().model.settings.appSettings.useDarkDisplay;
+    return MainController.get()!.model.settings.appSettings!.useDarkDisplay;
   }
 
   @override
-  void writeCurrentValue(final bool v) {
-    MainController.get().model.settings.setUseDarkDisplay(v);
+  void writeCurrentValue(final bool? v) {
+    MainController.get()!.model.settings.setUseDarkDisplay(v!);
   }
 }

@@ -44,8 +44,8 @@ class FileEntityMobile extends FileEntity {
   }
 
   @override
-  Future<bool> writeAsUint8List(final Uint8List outputData) {
-    return FileEntityMobile.uint8ListToFile(outputData, _file);
+  Future<bool> writeAsUint8List(final Uint8List? outputData) {
+    return FileEntityMobile.uint8ListToFile(outputData!, _file);
   }
 
   static Future<bool> uint8ListToFile(final Uint8List outputData, final File destFile) async {
@@ -63,11 +63,11 @@ class FileEntityMobile extends FileEntity {
   }
 
   @override
-  Future<String> readAsBase64String() {
+  Future<String?> readAsBase64String() {
     return fileContentToBase64String(_file);
   }
 
-  static Future<String> fileContentToBase64String(final File file) async {
+  static Future<String?> fileContentToBase64String(final File file) async {
     try {
       if (!await file.exists()) {
         return null;
@@ -80,8 +80,8 @@ class FileEntityMobile extends FileEntity {
   }
 
   @override
-  Future<FileEntity> copy(FileEntity targetFile) async {
-    return FileEntityMobile(await _file.copy(targetFile.getAbsolutePath()));
+  Future<FileEntity> copy(FileEntity? targetFile) async {
+    return FileEntityMobile(await _file.copy(targetFile!.getAbsolutePath()!));
   }
 
   @override

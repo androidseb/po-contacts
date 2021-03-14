@@ -5,8 +5,8 @@ import 'package:po_contacts_flutter/controller/vcard/vcf_constants.dart';
 import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 
 class VCFFieldLabelParamValue {
-  final LabeledFieldLabelType labelType;
-  final String labelText;
+  final LabeledFieldLabelType? labelType;
+  final String? labelText;
 
   VCFFieldLabelParamValue(
     this.labelType,
@@ -37,10 +37,10 @@ abstract class VCFField {
 
   static String unEscapeVCFString(
     final String str, {
-    final Map<String, String> fieldParams,
+    final Map<String, String>? fieldParams,
   }) {
     if (fieldParams != null) {
-      final String stringEncoding = fieldParams['ENCODING'];
+      final String? stringEncoding = fieldParams['ENCODING'];
       if (stringEncoding == 'QUOTED-PRINTABLE') {
         return _unEscapeQuotedPrintableString(str);
       }
@@ -61,7 +61,7 @@ abstract class VCFField {
     if (startIndex >= str.length) {
       return -1;
     }
-    String lastChar;
+    String? lastChar;
     for (int i = startIndex; i < str.length; i++) {
       final String currentChar = str[i];
       //If the current character is a separator character

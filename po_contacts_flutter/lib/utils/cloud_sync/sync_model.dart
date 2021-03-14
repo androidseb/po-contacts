@@ -17,34 +17,34 @@ class SyncModelSerializer {
   static const String _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES = 'has_remote_changes';
 
   static final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
-  SyncModel _syncModel;
+  SyncModel? _syncModel;
 
-  Future<SyncModel> getSyncModel() async {
+  Future<SyncModel?> getSyncModel() async {
     if (_syncModel == null) {
       _syncModel = await _readSyncModel();
     }
     return _syncModel;
   }
 
-  SyncModelData getSyncModelData() {
+  SyncModelData? getSyncModelData() {
     return _syncModel;
   }
 
   Future<void> _saveDataToDisk() async {
     final String syncModelStringValue = jsonEncode(<String, dynamic>{
       _JSON_KEY_SYNC_MODEL_INTERFACE_TYPE:
-          _syncModel._syncInterfaceType == null ? null : _syncModel._syncInterfaceType.index,
-      _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME: _syncModel._accountName,
-      _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID: _syncModel.cloudIndexFileId,
-      _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME: _syncModel._lastSyncTimeEpochMillis,
-      _JSON_KEY_SYNC_MODEL_LAST_SYNC_DATA_FILE_ID: _syncModel._lastSyncDataFileId,
-      _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES: _syncModel._hasLocalChanges,
-      _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES: _syncModel._hasRemoteChanges,
+          _syncModel!._syncInterfaceType == null ? null : _syncModel!._syncInterfaceType!.index,
+      _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME: _syncModel!._accountName,
+      _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID: _syncModel!.cloudIndexFileId,
+      _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME: _syncModel!._lastSyncTimeEpochMillis,
+      _JSON_KEY_SYNC_MODEL_LAST_SYNC_DATA_FILE_ID: _syncModel!._lastSyncDataFileId,
+      _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES: _syncModel!._hasLocalChanges,
+      _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES: _syncModel!._hasRemoteChanges,
     });
     await (await _sharedPreferences).setString(_PREF_KEY_SYNC_MODEL_DATA, syncModelStringValue);
   }
 
-  static SyncInterfaceType _intToSyncInterfaceType(final int syncInterfaceTypeInt) {
+  static SyncInterfaceType? _intToSyncInterfaceType(final int? syncInterfaceTypeInt) {
     for (final SyncInterfaceType t in SyncInterfaceType.values) {
       if (syncInterfaceTypeInt == t.index) {
         return t;
@@ -54,8 +54,8 @@ class SyncModelSerializer {
   }
 
   Future<SyncModel> _readSyncModel() async {
-    final String syncInterfaceStateValue = (await _sharedPreferences).getString(_PREF_KEY_SYNC_MODEL_DATA);
-    Map<String, dynamic> syncInterfaceData;
+    final String? syncInterfaceStateValue = (await _sharedPreferences).getString(_PREF_KEY_SYNC_MODEL_DATA);
+    Map<String, dynamic>? syncInterfaceData;
     if (syncInterfaceStateValue == null) {
       syncInterfaceData = null;
     } else {
@@ -66,15 +66,15 @@ class SyncModelSerializer {
       }
     }
 
-    final SyncInterfaceType syncInterfaceType =
+    final SyncInterfaceType? syncInterfaceType =
         _intToSyncInterfaceType(Utils.getJSONMapInt(syncInterfaceData, _JSON_KEY_SYNC_MODEL_INTERFACE_TYPE));
-    final String accountName = Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME);
-    final String cloudIndexFileId = Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID);
-    final int lastSyncTimeEpochMillis = Utils.getJSONMapInt(syncInterfaceData, _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME);
-    final String lastSyncDataFileId =
+    final String? accountName = Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_ACCOUNT_NAME);
+    final String? cloudIndexFileId = Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_INDEX_FILE_ID);
+    final int? lastSyncTimeEpochMillis = Utils.getJSONMapInt(syncInterfaceData, _JSON_KEY_SYNC_MODEL_LAST_SYNC_TIME);
+    final String? lastSyncDataFileId =
         Utils.getJSONMapString(syncInterfaceData, _JSON_KEY_SYNC_MODEL_LAST_SYNC_DATA_FILE_ID);
-    final bool hasLocalChanges = Utils.getJSONMapBool(syncInterfaceData, _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES);
-    final bool hasRemoteChanges = Utils.getJSONMapBool(syncInterfaceData, _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES);
+    final bool? hasLocalChanges = Utils.getJSONMapBool(syncInterfaceData, _JSON_KEY_SYNC_MODEL_HAS_LOCAL_CHANGES);
+    final bool? hasRemoteChanges = Utils.getJSONMapBool(syncInterfaceData, _JSON_KEY_SYNC_MODEL_HAS_REMOTE_CHANGES);
     return SyncModel(
       this,
       syncInterfaceType,
@@ -87,30 +87,30 @@ class SyncModelSerializer {
     );
   }
 
-  static Future<String> _getSecureStorageValueEncryptionKey() {
-    return SecureStorage.instance.getValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY);
+  static Future<String?> _getSecureStorageValueEncryptionKey() {
+    return SecureStorage.instance!.getValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY);
   }
 
   static Future<void> _setSecureStorageValueEncryptionKey(final String encryptionKey) {
-    return SecureStorage.instance.setValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY, encryptionKey);
+    return SecureStorage.instance!.setValue(_SECURE_STORAGE_KEY_ENCRYPTION_KEY, encryptionKey);
   }
 
   Future<void> clearData() async {
     _setSecureStorageValueEncryptionKey('');
-    await (await _sharedPreferences).setString(_PREF_KEY_SYNC_MODEL_DATA, null);
+    await (await _sharedPreferences).remove(_PREF_KEY_SYNC_MODEL_DATA);
     _syncModel = await _readSyncModel();
   }
 }
 
 class SyncModelData {
-  SyncInterfaceType _syncInterfaceType;
-  String _accountName;
-  String _cloudIndexFileId;
-  String _ramEncryptionKey;
-  int _lastSyncTimeEpochMillis;
-  String _lastSyncDataFileId;
-  bool _hasLocalChanges;
-  bool _hasRemoteChanges;
+  SyncInterfaceType? _syncInterfaceType;
+  String? _accountName;
+  String? _cloudIndexFileId;
+  String? _ramEncryptionKey;
+  int? _lastSyncTimeEpochMillis;
+  String? _lastSyncDataFileId;
+  bool? _hasLocalChanges;
+  bool? _hasRemoteChanges;
 
   SyncModelData(
     this._syncInterfaceType,
@@ -122,14 +122,14 @@ class SyncModelData {
     this._hasRemoteChanges,
   );
 
-  SyncInterfaceType get syncInterfaceType => _syncInterfaceType;
-  String get accountName => _accountName;
-  String get cloudIndexFileId => _cloudIndexFileId;
-  String get ramEncryptionKey => _ramEncryptionKey;
-  int get lastSyncTimeEpochMillis => _lastSyncTimeEpochMillis;
-  String get lastSyncDataFileId => _lastSyncDataFileId;
-  bool get hasLocalChanges => _hasLocalChanges;
-  bool get hasRemoteChanges => _hasRemoteChanges;
+  SyncInterfaceType? get syncInterfaceType => _syncInterfaceType;
+  String? get accountName => _accountName;
+  String? get cloudIndexFileId => _cloudIndexFileId;
+  String? get ramEncryptionKey => _ramEncryptionKey;
+  int? get lastSyncTimeEpochMillis => _lastSyncTimeEpochMillis;
+  String? get lastSyncDataFileId => _lastSyncDataFileId;
+  bool? get hasLocalChanges => _hasLocalChanges;
+  bool? get hasRemoteChanges => _hasRemoteChanges;
 }
 
 class SyncModel extends SyncModelData {
@@ -137,13 +137,13 @@ class SyncModel extends SyncModelData {
 
   SyncModel(
     this._syncModelSerializer,
-    SyncInterfaceType syncInterfaceType,
-    final String accountName,
-    final String cloudIndexFileId,
-    final int lastSyncTimeEpochMillis,
-    final String lastSyncDataFileId,
-    final bool hasLocalChanges,
-    final bool hasRemoteChanges,
+    SyncInterfaceType? syncInterfaceType,
+    final String? accountName,
+    final String? cloudIndexFileId,
+    final int? lastSyncTimeEpochMillis,
+    final String? lastSyncDataFileId,
+    final bool? hasLocalChanges,
+    final bool? hasRemoteChanges,
   ) : super(
           syncInterfaceType,
           accountName,
@@ -163,12 +163,12 @@ class SyncModel extends SyncModelData {
     return saveDataToDisk();
   }
 
-  Future<void> setCloudIndexFileId(final String cloudIndexFileId) async {
+  Future<void> setCloudIndexFileId(final String? cloudIndexFileId) async {
     _cloudIndexFileId = cloudIndexFileId;
     return saveDataToDisk();
   }
 
-  Future<void> setAccountName(final String accountName) async {
+  Future<void> setAccountName(final String? accountName) async {
     _accountName = accountName;
     return saveDataToDisk();
   }
@@ -183,9 +183,9 @@ class SyncModel extends SyncModelData {
     return saveDataToDisk();
   }
 
-  Future<String> getEncryptionKey() async {
+  Future<String?> getEncryptionKey() async {
     if (_ramEncryptionKey == null) {
-      final String readKey = await SyncModelSerializer._getSecureStorageValueEncryptionKey();
+      final String? readKey = await SyncModelSerializer._getSecureStorageValueEncryptionKey();
       if (readKey != null && readKey.isNotEmpty) {
         _ramEncryptionKey = readKey;
       }

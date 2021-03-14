@@ -5,8 +5,8 @@ import 'package:po_contacts_flutter/utils/cloud_sync/procedure/sync_prodedure.da
 
 class SyncDataMerger<T> {
   final SyncInitialData<T> _syncInitialData;
-  final SyncItemsHandler<T> _itemsHandler;
-  final SyncCancelationHandler _cancelationHandler;
+  final SyncItemsHandler<T?> _itemsHandler;
+  final SyncCancelationHandler? _cancelationHandler;
 
   SyncDataMerger(
     this._syncInitialData,
@@ -24,8 +24,8 @@ class SyncDataMerger<T> {
   }
 
   /// Compute the list of created items between two versions sets of items (past vs present)
-  Map<String, T> _computeCreatedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
-    final Map<String, T> res = {};
+  Map<String, T?> _computeCreatedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
+    final Map<String, T?> res = {};
     for (final String itemId in presentItems.keys) {
       if (!pastItems.containsKey(itemId)) {
         res[itemId] = presentItems[itemId];
@@ -35,12 +35,12 @@ class SyncDataMerger<T> {
   }
 
   /// Compute the list of modified items between two versions sets of items (past vs present)
-  Map<String, T> _computeModifiedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
-    final Map<String, T> res = {};
+  Map<String, T?> _computeModifiedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
+    final Map<String, T?> res = {};
     for (final String itemId in pastItems.keys) {
       if (presentItems.containsKey(itemId)) {
-        final T pastItem = pastItems[itemId];
-        final T presentItem = presentItems[itemId];
+        final T? pastItem = pastItems[itemId];
+        final T? presentItem = presentItems[itemId];
         if (!_itemsHandler.itemsEqualExceptId(pastItem, presentItem)) {
           res[itemId] = presentItem;
         }
@@ -50,8 +50,8 @@ class SyncDataMerger<T> {
   }
 
   /// Compute the list of modified items between two versions sets of items (past vs present)
-  Map<String, T> _computeDeletedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
-    final Map<String, T> res = {};
+  Map<String, T?> _computeDeletedItems(final Map<String, T> pastItems, final Map<String, T> presentItems) {
+    final Map<String, T?> res = {};
     for (final String itemId in pastItems.keys) {
       if (!presentItems.containsKey(itemId)) {
         res[itemId] = pastItems[itemId];
@@ -61,26 +61,26 @@ class SyncDataMerger<T> {
   }
 
   void _resolveMergeConflicts(
-    final Map<String, T> localCreatedItems,
-    final Map<String, T> localModifiedItems,
-    final Map<String, T> localDeletedItems,
-    final Map<String, T> remoteCreatedItems,
-    final Map<String, T> remoteModifiedItems,
-    final Map<String, T> remoteDeletedItems,
+    final Map<String, T?> localCreatedItems,
+    final Map<String, T?> localModifiedItems,
+    final Map<String, T?> localDeletedItems,
+    final Map<String, T?> remoteCreatedItems,
+    final Map<String, T?> remoteModifiedItems,
+    final Map<String, T?> remoteDeletedItems,
   ) {
     // Handling conflicts for any remotely modified item
     for (final String rmItemId in remoteModifiedItems.keys) {
       // Handling conflict of "remotely modified item" vs "locally modified item"
       {
         // Checking for a locally modified item matching the remotely modified item id
-        final T lmItem = localModifiedItems[rmItemId];
+        final T? lmItem = localModifiedItems[rmItemId];
         // If the item has been modified both remotely and locally, we will keep both versions.
         // This is done by considering the local modification as a newly created item instead of a modified one.
         if (lmItem != null) {
           // Removing the "locally modified" record for that item
           localModifiedItems.remove(rmItemId);
           // Cloning the item with a new unique ID to avoid any clash with other items
-          final T clonedItem = _itemsHandler.cloneItemWithNewId(lmItem);
+          final T? clonedItem = _itemsHandler.cloneItemWithNewId(lmItem);
           // Obtaining the newly cloned item ID
           final String clonedItemId = _itemsHandler.getItemId(clonedItem);
           // Adding the newly cloned item to the list of "locally created" records
@@ -90,7 +90,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely modified item" vs "locally deleted item"
       {
         // Checking for a locally deleted item matching the remotely modified item id
-        final T ldItem = localDeletedItems[rmItemId];
+        final T? ldItem = localDeletedItems[rmItemId];
         // If the item has been modified remotely and deleted locally, we will cancel its deletion.
         // This is done by ignoring the local deletion.
         if (ldItem != null) {
@@ -107,7 +107,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely deleted item" vs "locally modified item"
       {
         // Checking for a locally modified item matching the remotely deleted item id
-        final T lmItem = localModifiedItems[rdItemId];
+        final T? lmItem = localModifiedItems[rdItemId];
         // If the item has been deleted remotely and modified locally, we will cancel its deletion.
         // This is done by ignoring the remote deletion.
         if (lmItem != null) {
@@ -117,7 +117,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely deleted item" vs "locally deleted item"
       {
         // Checking for a locally deleted item matching the remotely deleted item id
-        final T ldItem = localDeletedItems[rdItemId];
+        final T? ldItem = localDeletedItems[rdItemId];
         // If the item has been deleted both remotely locally, we will delete it.
         // However we will avoid registering two deletions.
         // This is done by ignoring the local deletion, since the remote deletion will be enough.
@@ -130,7 +130,7 @@ class SyncDataMerger<T> {
 
   /// Adds or overwrite map entries from mapToAdd to destMap
   /// Returns true if at least one item was added, false otherwise
-  bool _appendMapEntries(final Map<String, T> destMap, final Map<String, T> mapToAdd) {
+  bool _appendMapEntries(final Map<String, T?> destMap, final Map<String, T?> mapToAdd) {
     bool mapChanged = false;
     for (final String itemId in mapToAdd.keys) {
       destMap[itemId] = mapToAdd[itemId];
@@ -141,7 +141,7 @@ class SyncDataMerger<T> {
 
   /// Removes map entries from mapToDelete to destMap
   /// Returns true if at least one item was removed, false otherwise
-  bool _removeMapEntries(final Map<String, T> destMap, final Map<String, T> mapToDelete) {
+  bool _removeMapEntries(final Map<String, T> destMap, final Map<String, T?> mapToDelete) {
     bool mapChanged = false;
     for (final String itemId in mapToDelete.keys) {
       if (destMap.remove(itemId) != null) {
@@ -164,29 +164,29 @@ class SyncDataMerger<T> {
   Future<SyncResultData<T>> computeSyncResult() async {
     // Initializing an ID <=> item map for the last synced items
     final Map<String, T> lastSyncedItems = _createIdToItemMap(_syncInitialData.lastSyncedItems);
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Initializing an ID <=> item map for the local items
     final Map<String, T> localItems = _createIdToItemMap(_syncInitialData.localItems);
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Initializing an ID <=> item map for the remote items
     final Map<String, T> remoteItems = _createIdToItemMap(_syncInitialData.remoteItems);
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Based on the last synced items, computing what changes have occurred locally and remotely
-    final Map<String, T> localCreatedItems = _computeCreatedItems(lastSyncedItems, localItems);
-    _cancelationHandler.checkForCancelation();
-    final Map<String, T> localModifiedItems = _computeModifiedItems(lastSyncedItems, localItems);
-    _cancelationHandler.checkForCancelation();
-    final Map<String, T> localDeletedItems = _computeDeletedItems(lastSyncedItems, localItems);
-    _cancelationHandler.checkForCancelation();
-    final Map<String, T> remoteCreatedItems = _computeCreatedItems(lastSyncedItems, remoteItems);
-    _cancelationHandler.checkForCancelation();
-    final Map<String, T> remoteModifiedItems = _computeModifiedItems(lastSyncedItems, remoteItems);
-    _cancelationHandler.checkForCancelation();
-    final Map<String, T> remoteDeletedItems = _computeDeletedItems(lastSyncedItems, remoteItems);
-    _cancelationHandler.checkForCancelation();
+    final Map<String, T?> localCreatedItems = _computeCreatedItems(lastSyncedItems, localItems);
+    _cancelationHandler!.checkForCancelation();
+    final Map<String, T?> localModifiedItems = _computeModifiedItems(lastSyncedItems, localItems);
+    _cancelationHandler!.checkForCancelation();
+    final Map<String, T?> localDeletedItems = _computeDeletedItems(lastSyncedItems, localItems);
+    _cancelationHandler!.checkForCancelation();
+    final Map<String, T?> remoteCreatedItems = _computeCreatedItems(lastSyncedItems, remoteItems);
+    _cancelationHandler!.checkForCancelation();
+    final Map<String, T?> remoteModifiedItems = _computeModifiedItems(lastSyncedItems, remoteItems);
+    _cancelationHandler!.checkForCancelation();
+    final Map<String, T?> remoteDeletedItems = _computeDeletedItems(lastSyncedItems, remoteItems);
+    _cancelationHandler!.checkForCancelation();
 
     // Initializing the syncResult variable based on the result of the last sync
     final Map<String, T> syncResult = Map<String, T>.from(lastSyncedItems);
@@ -206,31 +206,31 @@ class SyncDataMerger<T> {
       remoteModifiedItems,
       remoteDeletedItems,
     );
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Applying created cloud items to the result
     changesToLocal = _appendMapEntries(syncResult, remoteCreatedItems) || changesToLocal;
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Applying modified cloud items to the result
     changesToLocal = _appendMapEntries(syncResult, remoteModifiedItems) || changesToLocal;
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Applying deleted cloud items to the result
     changesToLocal = _removeMapEntries(syncResult, remoteDeletedItems) || changesToLocal;
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Applying created local items to the result
     changesToRemote = _appendMapEntries(syncResult, localCreatedItems) || changesToRemote;
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Applying modified local items to the result
     changesToRemote = _appendMapEntries(syncResult, localModifiedItems) || changesToRemote;
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     // Applying deleted local items to the result
     changesToRemote = _removeMapEntries(syncResult, localDeletedItems) || changesToRemote;
-    _cancelationHandler.checkForCancelation();
+    _cancelationHandler!.checkForCancelation();
 
     return SyncResultData<T>(
       initialData: _syncInitialData,

@@ -24,19 +24,19 @@ abstract class ContactData {
   static const String JSON_FIELD_UNKNOWN_VCF_FIELDS = 'unknown_vcf_fields';
 
   String get uid;
-  String get image;
-  String get firstName;
-  String get lastName;
-  String get nickName;
-  String get fullName;
-  List<StringLabeledField> get phoneInfos;
-  List<StringLabeledField> get emailInfos;
-  List<AddressLabeledField> get addressInfos;
-  String get organizationName;
-  String get organizationDivision;
-  String get organizationTitle;
-  String get website;
-  String get notes;
+  String? get image;
+  String? get firstName;
+  String? get lastName;
+  String? get nickName;
+  String? get fullName;
+  List<StringLabeledField>? get phoneInfos;
+  List<StringLabeledField>? get emailInfos;
+  List<AddressLabeledField>? get addressInfos;
+  String? get organizationName;
+  String? get organizationDivision;
+  String? get organizationTitle;
+  String? get website;
+  String? get notes;
   List<String> get unknownVCFFieldLines;
 
   static String toJsonString(final ContactData contactData) {
@@ -63,7 +63,7 @@ abstract class ContactData {
 class Contact extends ContactData {
   final int id;
   final String uid;
-  final String _image;
+  final String? _image;
   final String _firstName;
   final String _lastName;
   final String _nickName;
@@ -98,7 +98,7 @@ class Contact extends ContactData {
   ) : super();
 
   @override
-  String get image => _image;
+  String? get image => _image;
   @override
   String get firstName => _firstName;
   @override
@@ -126,88 +126,88 @@ class Contact extends ContactData {
   @override
   List<String> get unknownVCFFieldLines => _unknownVCFFieldLines;
 
-  NormalizedString _nFirstName;
-  NormalizedString get nFirstName => _getNFirstName();
-  NormalizedString _getNFirstName() {
+  NormalizedString? _nFirstName;
+  NormalizedString? get nFirstName => _getNFirstName();
+  NormalizedString? _getNFirstName() {
     if (_nFirstName == null) {
       _nFirstName = NormalizedString(firstName);
     }
     return _nFirstName;
   }
 
-  NormalizedString _nLastName;
-  NormalizedString get nLastName => _getNLastName();
-  NormalizedString _getNLastName() {
+  NormalizedString? _nLastName;
+  NormalizedString? get nLastName => _getNLastName();
+  NormalizedString? _getNLastName() {
     if (_nLastName == null) {
       _nLastName = NormalizedString(lastName);
     }
     return _nLastName;
   }
 
-  NormalizedString _nNickName;
-  NormalizedString get nNickName => _getNNickName();
-  NormalizedString _getNNickName() {
+  NormalizedString? _nNickName;
+  NormalizedString? get nNickName => _getNNickName();
+  NormalizedString? _getNNickName() {
     if (_nNickName == null) {
       _nNickName = NormalizedString(nickName);
     }
     return _nNickName;
   }
 
-  NormalizedString _nFullName;
-  NormalizedString get nFullName => _getNFullName();
-  NormalizedString _getNFullName() {
+  NormalizedString? _nFullName;
+  NormalizedString? get nFullName => _getNFullName();
+  NormalizedString? _getNFullName() {
     if (_nFullName == null) {
       _nFullName = NormalizedString(fullName);
     }
     return _nFullName;
   }
 
-  NormalizedString _nOrganizationName;
-  NormalizedString get nOrganizationName => _getNOrganizationName();
-  NormalizedString _getNOrganizationName() {
+  NormalizedString? _nOrganizationName;
+  NormalizedString? get nOrganizationName => _getNOrganizationName();
+  NormalizedString? _getNOrganizationName() {
     if (_nOrganizationName == null) {
       _nOrganizationName = NormalizedString(organizationName);
     }
     return _nOrganizationName;
   }
 
-  NormalizedString _nOrganizationDivision;
-  NormalizedString get nOrganizationDivision => _getNOrganizationDivision();
-  NormalizedString _getNOrganizationDivision() {
+  NormalizedString? _nOrganizationDivision;
+  NormalizedString? get nOrganizationDivision => _getNOrganizationDivision();
+  NormalizedString? _getNOrganizationDivision() {
     if (_nOrganizationDivision == null) {
       _nOrganizationDivision = NormalizedString(organizationDivision);
     }
     return _nOrganizationDivision;
   }
 
-  NormalizedString _nOrganizationTitle;
-  NormalizedString get nOrganizationTitle => _getNOrganizationTitle();
-  NormalizedString _getNOrganizationTitle() {
+  NormalizedString? _nOrganizationTitle;
+  NormalizedString? get nOrganizationTitle => _getNOrganizationTitle();
+  NormalizedString? _getNOrganizationTitle() {
     if (_nOrganizationTitle == null) {
       _nOrganizationTitle = NormalizedString(organizationTitle);
     }
     return _nOrganizationTitle;
   }
 
-  NormalizedString _nWebsite;
-  NormalizedString get nWebsite => _getNWebsite();
-  NormalizedString _getNWebsite() {
+  NormalizedString? _nWebsite;
+  NormalizedString? get nWebsite => _getNWebsite();
+  NormalizedString? _getNWebsite() {
     if (_nWebsite == null) {
       _nWebsite = NormalizedString(website);
     }
     return _nWebsite;
   }
 
-  NormalizedString _nNotes;
-  NormalizedString get nNotes => _getNNotes();
-  NormalizedString _getNNotes() {
+  NormalizedString? _nNotes;
+  NormalizedString? get nNotes => _getNNotes();
+  NormalizedString? _getNNotes() {
     if (_nNotes == null) {
       _nNotes = NormalizedString(notes);
     }
     return _nNotes;
   }
 
-  static bool equalExceptId(final Contact item1, final Contact item2) {
+  static bool equalExceptId(final Contact? item1, final Contact? item2) {
     if (item1 == item2) {
       return true;
     }
@@ -250,7 +250,7 @@ class Contact extends ContactData {
 }
 
 class ContactBuilder extends ContactData {
-  static Contact buildFromJson(final int id, final String json) {
+  static Contact? buildFromJson(final int? id, final String json) {
     final Map<String, dynamic> decodedJson = jsonDecode(json);
     final ContactBuilder contactBuilder = ContactBuilder();
     contactBuilder.setUID(decodedJson[ContactData.JSON_FIELD_UID]);
@@ -263,17 +263,17 @@ class ContactBuilder extends ContactData {
       <StringLabeledField>[],
       decodedJson[ContactData.JSON_FIELD_PHONE_INFOS],
       StringLabeledField.createFieldFunc,
-    ));
+    ) as List<StringLabeledField>);
     contactBuilder.setEmailInfos(LabeledField.fromMapList(
       <StringLabeledField>[],
       decodedJson[ContactData.JSON_FIELD_EMAIL_INFOS],
       StringLabeledField.createFieldFunc,
-    ));
+    ) as List<StringLabeledField>);
     contactBuilder.setAddressInfos(LabeledField.fromMapList(
       <AddressLabeledField>[],
       decodedJson[ContactData.JSON_FIELD_ADDRESS_INFOS],
       AddressLabeledField.createFieldFunc,
-    ));
+    ) as List<AddressLabeledField>);
     contactBuilder.setOrganizationName(decodedJson[ContactData.JSON_FIELD_ORGANIZATION_NAME]);
     contactBuilder.setOrganizationDivision(decodedJson[ContactData.JSON_FIELD_ORGANIZATION_DIVISION]);
     contactBuilder.setOrganizationTitle(decodedJson[ContactData.JSON_FIELD_ORGANIZATION_TITLE]);
@@ -289,68 +289,68 @@ class ContactBuilder extends ContactData {
   }
 
   String _uid = Utils.generateUUID();
-  String _image;
-  String _fullName;
-  String _firstName;
-  String _lastName;
-  String _nickName;
-  List<StringLabeledField> _phoneInfos;
-  List<StringLabeledField> _emailInfos;
-  List<LabeledField<AddressInfo>> _addressInfos;
-  String _organizationName;
-  String _organizationDivision;
-  String _organizationTitle;
-  String _website;
-  String _notes;
+  String? _image;
+  String? _fullName;
+  String? _firstName;
+  String? _lastName;
+  String? _nickName;
+  List<StringLabeledField>? _phoneInfos;
+  List<StringLabeledField>? _emailInfos;
+  List<LabeledField<AddressInfo?>>? _addressInfos;
+  String? _organizationName;
+  String? _organizationDivision;
+  String? _organizationTitle;
+  String? _website;
+  String? _notes;
   final List<String> _unknownVCFFieldLines = [];
 
   String get uid => _uid;
   @override
-  String get image => _image;
+  String? get image => _image;
   @override
-  String get firstName => _firstName;
+  String? get firstName => _firstName;
   @override
-  String get lastName => _lastName;
+  String? get lastName => _lastName;
   @override
-  String get nickName => _nickName;
+  String? get nickName => _nickName;
   @override
-  String get fullName => _fullName;
+  String? get fullName => _fullName;
   @override
-  List<StringLabeledField> get phoneInfos => _phoneInfos;
+  List<StringLabeledField>? get phoneInfos => _phoneInfos;
   @override
-  List<StringLabeledField> get emailInfos => _emailInfos;
+  List<StringLabeledField>? get emailInfos => _emailInfos;
   @override
-  List<AddressLabeledField> get addressInfos => _addressInfos;
+  List<AddressLabeledField>? get addressInfos => _addressInfos as List<AddressLabeledField>?;
   @override
-  String get organizationName => _organizationName;
+  String? get organizationName => _organizationName;
   @override
-  String get organizationDivision => _organizationDivision;
+  String? get organizationDivision => _organizationDivision;
   @override
-  String get organizationTitle => _organizationTitle;
+  String? get organizationTitle => _organizationTitle;
   @override
-  String get website => _website;
+  String? get website => _website;
   @override
-  String get notes => _notes;
+  String? get notes => _notes;
   @override
   List<String> get unknownVCFFieldLines => _unknownVCFFieldLines;
 
-  static List<StringLabeledField> getSanitizedStringLabeledField(final List<StringLabeledField> list) {
+  static List<StringLabeledField> getSanitizedStringLabeledField(final List<StringLabeledField>? list) {
     if (list == null) {
       return [];
     }
     final List<StringLabeledField> res = [];
     for (final StringLabeledField f in list) {
-      if (f.fieldValue.trim().isNotEmpty) {
+      if (f.fieldValue!.trim().isNotEmpty) {
         res.add(f);
       }
     }
     res.sort((a, b) {
-      return a.labelType.index - b.labelType.index;
+      return a.labelType!.index - b.labelType!.index;
     });
     return res;
   }
 
-  static List<AddressLabeledField> getSanitizedAddressLabeledField(final List<AddressLabeledField> list) {
+  static List<AddressLabeledField> getSanitizedAddressLabeledField(final List<AddressLabeledField>? list) {
     if (list == null) {
       return [];
     }
@@ -359,48 +359,48 @@ class ContactBuilder extends ContactData {
       if (f.fieldValue == null) {
         continue;
       }
-      if (f.fieldValue.postOfficeBox.isEmpty &&
-          f.fieldValue.extendedAddress.isEmpty &&
-          f.fieldValue.streetAddress.isEmpty &&
-          f.fieldValue.locality.isEmpty &&
-          f.fieldValue.region.isEmpty &&
-          f.fieldValue.postalCode.isEmpty &&
-          f.fieldValue.country.isEmpty) {
+      if (f.fieldValue!.postOfficeBox.isEmpty &&
+          f.fieldValue!.extendedAddress.isEmpty &&
+          f.fieldValue!.streetAddress.isEmpty &&
+          f.fieldValue!.locality.isEmpty &&
+          f.fieldValue!.region.isEmpty &&
+          f.fieldValue!.postalCode.isEmpty &&
+          f.fieldValue!.country.isEmpty) {
         continue;
       }
       res.add(f);
     }
     res.sort((a, b) {
-      return a.labelType.index - b.labelType.index;
+      return a.labelType!.index - b.labelType!.index;
     });
     return res;
   }
 
-  static String getNonNullString(final String str) {
+  static String getNonNullString(final String? str) {
     if (str == null) {
       return '';
     }
     return str;
   }
 
-  static Contact build(
-    final int id,
-    final ContactData contactData, {
-    final String uuidOverride = null,
+  static Contact? build(
+    final int? id,
+    final ContactData? contactData, {
+    final String? uuidOverride = null,
   }) {
     if (id == null) {
       return null;
     }
     String uuid;
     if (uuidOverride == null) {
-      uuid = contactData.uid == null ? '$id' : contactData.uid;
+      uuid = contactData!.uid == null ? '$id' : contactData.uid;
     } else {
       uuid = uuidOverride;
     }
     return Contact(
       id,
       uuid,
-      contactData.image,
+      contactData!.image,
       getNonNullString(contactData.firstName),
       getNonNullString(contactData.lastName),
       getNonNullString(contactData.nickName),
@@ -417,34 +417,34 @@ class ContactBuilder extends ContactData {
     );
   }
 
-  ContactBuilder setUID(final String uid) {
+  ContactBuilder setUID(final String? uid) {
     if (uid != null) {
       _uid = uid;
     }
     return this;
   }
 
-  ContactBuilder setImage(final String image) {
+  ContactBuilder setImage(final String? image) {
     _image = image;
     return this;
   }
 
-  ContactBuilder setFirstName(final String firstName) {
+  ContactBuilder setFirstName(final String? firstName) {
     _firstName = firstName;
     return this;
   }
 
-  ContactBuilder setLastName(final String lastName) {
+  ContactBuilder setLastName(final String? lastName) {
     _lastName = lastName;
     return this;
   }
 
-  ContactBuilder setNickName(final String nickName) {
+  ContactBuilder setNickName(final String? nickName) {
     _nickName = nickName;
     return this;
   }
 
-  ContactBuilder setFullName(final String fullName) {
+  ContactBuilder setFullName(final String? fullName) {
     _fullName = fullName;
     return this;
   }
@@ -464,27 +464,27 @@ class ContactBuilder extends ContactData {
     return this;
   }
 
-  ContactBuilder setOrganizationName(final String organizationName) {
+  ContactBuilder setOrganizationName(final String? organizationName) {
     _organizationName = organizationName;
     return this;
   }
 
-  ContactBuilder setOrganizationDivision(final String organizationDivision) {
+  ContactBuilder setOrganizationDivision(final String? organizationDivision) {
     _organizationDivision = organizationDivision;
     return this;
   }
 
-  ContactBuilder setOrganizationTitle(final String organizationTitle) {
+  ContactBuilder setOrganizationTitle(final String? organizationTitle) {
     _organizationTitle = organizationTitle;
     return this;
   }
 
-  ContactBuilder setWebsite(final String website) {
+  ContactBuilder setWebsite(final String? website) {
     _website = website;
     return this;
   }
 
-  ContactBuilder setNotes(final String notes) {
+  ContactBuilder setNotes(final String? notes) {
     _notes = notes;
     return this;
   }

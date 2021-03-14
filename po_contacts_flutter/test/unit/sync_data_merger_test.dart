@@ -71,12 +71,12 @@ class TestSyncDataMerger extends SyncDataMerger<TestData> {
 }
 
 void testSyncDataMerger({
-  @required final List<TestData> localItems,
-  @required final List<TestData> lastSyncedItems,
-  @required final List<TestData> remoteItems,
-  @required final List<TestData> expectedSyncResultData,
-  @required final bool expectedHasLocalChangesValue,
-  @required final bool expectedHasRemoteChangesValue,
+  required final List<TestData> localItems,
+  required final List<TestData> lastSyncedItems,
+  required final List<TestData> remoteItems,
+  required final List<TestData> expectedSyncResultData,
+  required final bool expectedHasLocalChangesValue,
+  required final bool expectedHasRemoteChangesValue,
 }) async {
   final SyncResultData<TestData> syncResult = await TestSyncDataMerger(
     TestSyncInitialData(

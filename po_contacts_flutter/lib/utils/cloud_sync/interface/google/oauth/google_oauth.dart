@@ -5,17 +5,17 @@ import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_inter
 
 /// Utility class to authenticate using Google oAuth
 abstract class GoogleOAuth {
-  static GoogleOAuth _currentInstance;
+  static GoogleOAuth? _currentInstance;
   factory GoogleOAuth() => getInstanceImpl();
 
-  static GoogleOAuth get instance {
+  static GoogleOAuth? get instance {
     if (_currentInstance == null) {
       _currentInstance = getInstanceImpl();
     }
     return _currentInstance;
   }
 
-  Future<String> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI);
+  Future<String?> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI);
 
   Future<void> logout(final SyncInterfaceForGoogleDrive gdsi);
 }

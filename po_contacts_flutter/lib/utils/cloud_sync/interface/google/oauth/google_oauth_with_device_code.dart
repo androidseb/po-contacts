@@ -9,11 +9,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_interface_google_drive.dart';
 
 class _OAuthCodeData {
-  final String device_code;
-  final String user_code;
-  final String verification_url;
-  final int expires_in;
-  final int interval;
+  final String? device_code;
+  final String? user_code;
+  final String? verification_url;
+  final int? expires_in;
+  final int? interval;
 
   _OAuthCodeData(
     this.device_code,
@@ -25,8 +25,8 @@ class _OAuthCodeData {
 }
 
 class _OAuthCreateTokenData {
-  final String access_token;
-  final String refresh_token;
+  final String? access_token;
+  final String? refresh_token;
 
   _OAuthCreateTokenData(
     this.access_token,
@@ -37,18 +37,18 @@ class _OAuthCreateTokenData {
 class GoogleOAuthWithDeviceCode {
   static const String _GOOGLE_DRIVE_REFRESH_TOKEN = 'google_drive_refresh_token';
 
-  static Future<String> _getRefreshToken() async {
-    return SecureStorage.instance.getValue(_GOOGLE_DRIVE_REFRESH_TOKEN);
+  static Future<String?> _getRefreshToken() async {
+    return SecureStorage.instance!.getValue(_GOOGLE_DRIVE_REFRESH_TOKEN);
   }
 
-  static Future<void> _setRefreshToken(final String refreshToken) async {
-    return SecureStorage.instance.setValue(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
+  static Future<void> _setRefreshToken(final String? refreshToken) async {
+    return SecureStorage.instance!.setValue(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
   }
 
-  static Future<String> _getRefreshedAccessToken(
-    final String clientId,
-    final String clientSecret,
-    final String refreshToken,
+  static Future<String?> _getRefreshedAccessToken(
+    final String? clientId,
+    final String? clientSecret,
+    final String? refreshToken,
   ) async {
     if (refreshToken == null) {
       return null;
@@ -60,9 +60,9 @@ class GoogleOAuthWithDeviceCode {
       },
       body: 'grant_type=refresh_token' +
           '&client_id=' +
-          Uri.encodeComponent(clientId) +
+          Uri.encodeComponent(clientId!) +
           '&client_secret=' +
-          Uri.encodeComponent(clientSecret) +
+          Uri.encodeComponent(clientSecret!) +
           '&refresh_token=' +
           Uri.encodeComponent(refreshToken),
     );
@@ -74,7 +74,7 @@ class GoogleOAuthWithDeviceCode {
     }
   }
 
-  static Future<_OAuthCodeData> _createNewOAuthCodeData(final String clientId) async {
+  static Future<_OAuthCodeData?> _createNewOAuthCodeData(final String clientId) async {
     final http.Response httpPostResponse = await http.post(
       Uri.parse('https://oauth2.googleapis.com/device/code'),
       headers: {
@@ -99,9 +99,9 @@ class GoogleOAuthWithDeviceCode {
     }
   }
 
-  static Future<_OAuthCreateTokenData> _createNewOAuthToken(
-    final String clientId,
-    final String clientSecret,
+  static Future<_OAuthCreateTokenData?> _createNewOAuthToken(
+    final String? clientId,
+    final String? clientSecret,
     final _OAuthCodeData oAuthCodeData,
   ) async {
     if (oAuthCodeData == null) {
@@ -114,11 +114,11 @@ class GoogleOAuthWithDeviceCode {
       },
       body: 'grant_type=http://oauth.net/grant_type/device/1.0' +
           '&client_id=' +
-          Uri.encodeComponent(clientId) +
+          Uri.encodeComponent(clientId!) +
           '&client_secret=' +
-          Uri.encodeComponent(clientSecret) +
+          Uri.encodeComponent(clientSecret!) +
           '&code=' +
-          Uri.encodeComponent(oAuthCodeData.device_code),
+          Uri.encodeComponent(oAuthCodeData.device_code!),
     );
     if (httpPostResponse.statusCode == 200) {
       final Map<String, dynamic> httpPostResponseJSON = jsonDecode(httpPostResponse.body);
@@ -136,7 +136,7 @@ class GoogleOAuthWithDeviceCode {
   /// If the user requests to cancel, the result will be false
   static Future<bool> _openVerificationUrlIntoBrowser(
       final SyncInterfaceForGoogleDrive gdsi, final _OAuthCodeData oAuthCodeData) {
-    final BuildContext currentContext = gdsi.uiController.getUIBuildContext();
+    final BuildContext currentContext = gdsi.uiController.getUIBuildContext()!;
     final Completer<bool> futureBrowserOpened = Completer<bool>();
     showDialog<Object>(
         context: currentContext,
@@ -152,7 +152,7 @@ class GoogleOAuthWithDeviceCode {
                     padding: EdgeInsets.all(16),
                     child: Center(
                       child: Text(
-                        oAuthCodeData.user_code,
+                        oAuthCodeData.user_code!,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20.0,
@@ -181,7 +181,7 @@ class GoogleOAuthWithDeviceCode {
                 textString: gdsi.uiController.googleAuthDialogOpenBrowserButtonText,
                 onPressed: () {
                   Navigator.of(context).pop();
-                  launch(oAuthCodeData.verification_url);
+                  launch(oAuthCodeData.verification_url!);
                   futureBrowserOpened.complete(true);
                 },
               ),
@@ -197,7 +197,7 @@ class GoogleOAuthWithDeviceCode {
   /// If the user requests to cancel, the result will be null
   static Future<bool> _askForAuthContinuation(
       final SyncInterfaceForGoogleDrive gdsi, final _OAuthCodeData oAuthCodeData) {
-    final BuildContext currentContext = gdsi.uiController.getUIBuildContext();
+    final BuildContext currentContext = gdsi.uiController.getUIBuildContext()!;
     final Completer<bool> futureContinuationChoice = Completer<bool>();
     showDialog<Object>(
         context: currentContext,
@@ -240,11 +240,11 @@ class GoogleOAuthWithDeviceCode {
     return futureContinuationChoice.future;
   }
 
-  static Future<String> authenticateWithCode(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
-    final String clientId = gdsi.config.clientIdDesktop;
-    final String clientSecret = gdsi.config.clientSecret;
-    final String refreshToken = await _getRefreshToken();
-    final String refreshedAccessToken = await _getRefreshedAccessToken(
+  static Future<String?> authenticateWithCode(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
+    final String? clientId = gdsi.config.clientIdDesktop;
+    final String? clientSecret = gdsi.config.clientSecret;
+    final String? refreshToken = await _getRefreshToken();
+    final String? refreshedAccessToken = await _getRefreshedAccessToken(
       clientId,
       clientSecret,
       refreshToken,
@@ -258,7 +258,7 @@ class GoogleOAuthWithDeviceCode {
 
     bool retry = true;
 
-    final _OAuthCodeData oAuthCodeData = await _createNewOAuthCodeData(clientId);
+    final _OAuthCodeData? oAuthCodeData = await _createNewOAuthCodeData(clientId!);
     if (oAuthCodeData == null) {
       return null;
     }
@@ -276,7 +276,7 @@ class GoogleOAuthWithDeviceCode {
       }
     }
 
-    final _OAuthCreateTokenData createdTokenData = await _createNewOAuthToken(clientId, clientSecret, oAuthCodeData);
+    final _OAuthCreateTokenData? createdTokenData = await _createNewOAuthToken(clientId, clientSecret, oAuthCodeData);
 
     if (createdTokenData == null) {
       return null;

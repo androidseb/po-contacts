@@ -76,8 +76,8 @@ class AppSettings {
     ),
   ];
 
-  static bool getDefaultDisplayScrollbarOption() {
-    return MainController.get().psController.basicInfoManager.isDesktop;
+  static bool? getDefaultDisplayScrollbarOption() {
+    return MainController.get()!.psController.basicInfoManager!.isDesktop;
   }
 
   static int getDefaultEmailActionId() {
@@ -85,7 +85,7 @@ class AppSettings {
   }
 
   static int getDefaultCallActionId() {
-    if (MainController.get().psController.basicInfoManager.isLinux) {
+    if (MainController.get()!.psController.basicInfoManager!.isLinux!) {
       return CALL_ACTION_LINPHONE;
     } else {
       return CALL_ACTION_SYSTEM_DEFAULT;
@@ -93,15 +93,15 @@ class AppSettings {
   }
 
   static Future<bool> getDefaultUseDarkDisplayOption() async {
-    return WidgetsBinding.instance.window.platformBrightness == Brightness.dark;
+    return WidgetsBinding.instance!.window.platformBrightness == Brightness.dark;
   }
 
   static List<MultiSelectionChoice> getEmailActionChoices() {
-    if (MainController.get().psController.basicInfoManager.isLinux) {
+    if (MainController.get()!.psController.basicInfoManager!.isLinux!) {
       return _EMAIL_ACTION_CHOICES_LINUX;
-    } else if (MainController.get().psController.basicInfoManager.isMacOS) {
+    } else if (MainController.get()!.psController.basicInfoManager!.isMacOS!) {
       return _EMAIL_ACTION_CHOICES_MACOS;
-    } else if (MainController.get().psController.basicInfoManager.isWindows) {
+    } else if (MainController.get()!.psController.basicInfoManager!.isWindows!) {
       return _EMAIL_ACTION_CHOICES_WINDOWS;
     } else {
       return [];
@@ -109,18 +109,18 @@ class AppSettings {
   }
 
   static List<MultiSelectionChoice> getCallActionChoices() {
-    if (MainController.get().psController.basicInfoManager.isLinux) {
+    if (MainController.get()!.psController.basicInfoManager!.isLinux!) {
       return _CALL_ACTION_CHOICES_LINUX;
-    } else if (MainController.get().psController.basicInfoManager.isMacOS) {
+    } else if (MainController.get()!.psController.basicInfoManager!.isMacOS!) {
       return _CALL_ACTION_CHOICES_MACOS;
-    } else if (MainController.get().psController.basicInfoManager.isWindows) {
+    } else if (MainController.get()!.psController.basicInfoManager!.isWindows!) {
       return _CALL_ACTION_CHOICES_WINDOWS;
     } else {
       return [];
     }
   }
 
-  final bool displayDraggableScrollbar;
+  final bool? displayDraggableScrollbar;
   final int emailActionId;
   final int callActionId;
   final bool useDarkDisplay;

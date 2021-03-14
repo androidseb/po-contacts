@@ -15,13 +15,13 @@ abstract class FileEntity {
     return result;
   }
 
-  String getAbsolutePath();
+  String? getAbsolutePath();
 
   Future<bool> exists();
 
   Future<bool> delete();
 
-  Future<FileEntity> create();
+  Future<FileEntity>? create();
 
   Future<FileEntity> move(final FileEntity targetFile) async {
     await copy(targetFile);
@@ -29,7 +29,7 @@ abstract class FileEntity {
     return targetFile;
   }
 
-  Future<FileEntity> copy(final FileEntity targetFile);
+  Future<FileEntity>? copy(final FileEntity? targetFile);
 
   void writeAsStringAppendSync(String str);
 
@@ -39,12 +39,12 @@ abstract class FileEntity {
     return writeAsUint8List(base64.decode(base64String));
   }
 
-  Future<bool> writeAsUint8List(final Uint8List outputData);
+  Future<bool> writeAsUint8List(final Uint8List? outputData);
 
-  Future<String> readAsBase64String();
+  Future<String?> readAsBase64String();
 
   Future<Uint8List> readAsBinaryData() async {
-    return base64.decode(await readAsBase64String());
+    return base64.decode(await (readAsBase64String() as Future<String>));
   }
 
   Future<void> flushOutputBuffer();

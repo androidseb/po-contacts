@@ -6,38 +6,38 @@ import 'package:po_contacts_flutter/controller/platform/web/utils.web.dart';
 import 'package:po_contacts_flutter/model/data/app_settings.dart';
 
 class ActionsManagerWeb extends ActionsManager {
-  static void _startEmailWithSystemDefault(final String targetEmailAddress) {
+  static void _startEmailWithSystemDefault(final String? targetEmailAddress) {
     final String mailToLink = 'mailto:$targetEmailAddress';
-    final BasicInfoManager bim = MainController.get().psController.basicInfoManager;
-    if (bim.isLinux) {
+    final BasicInfoManager bim = MainController.get()!.psController.basicInfoManager!;
+    if (bim.isLinux!) {
       POCJSAPI.executeShellCommand('xdg-open $mailToLink');
-    } else if (bim.isMacOS) {
+    } else if (bim.isMacOS!) {
       POCJSAPI.executeShellCommand('open $mailToLink');
-    } else if (bim.isWindows) {
+    } else if (bim.isWindows!) {
       POCJSAPI.executeShellCommand('start $mailToLink');
     }
   }
 
   static void _startPhoneWithSystemDefault(final String targetPhoneNumber) {
     final String telLink = 'tel:$targetPhoneNumber';
-    final BasicInfoManager bim = MainController.get().psController.basicInfoManager;
-    if (bim.isLinux) {
+    final BasicInfoManager bim = MainController.get()!.psController.basicInfoManager!;
+    if (bim.isLinux!) {
       POCJSAPI.executeShellCommand('xdg-open $telLink');
-    } else if (bim.isMacOS) {
+    } else if (bim.isMacOS!) {
       POCJSAPI.executeShellCommand('open $telLink');
-    } else if (bim.isWindows) {
+    } else if (bim.isWindows!) {
       POCJSAPI.executeShellCommand('start $telLink');
     }
   }
 
   @override
-  void copyTextToClipBoard(final String text) {
+  void copyTextToClipBoard(final String? text) {
     UtilsWeb.copyTextToClipBoard(text);
   }
 
   @override
-  void startEmail(final String targetEmailAddress) {
-    final int emailActionId = MainController.get().model.settings.appSettings.emailActionId;
+  void startEmail(final String? targetEmailAddress) {
+    final int emailActionId = MainController.get()!.model.settings.appSettings!.emailActionId;
     if (emailActionId == AppSettings.EMAIL_ACTION_SYSTEM_DEFAULT) {
       _startEmailWithSystemDefault(targetEmailAddress);
     } else if (emailActionId == AppSettings.EMAIL_ACTION_THUNDERBIRD) {
@@ -47,7 +47,7 @@ class ActionsManagerWeb extends ActionsManager {
 
   @override
   void startPhoneCallImpl(final String targetPhoneNumber) {
-    final int callActionId = MainController.get().model.settings.appSettings.callActionId;
+    final int callActionId = MainController.get()!.model.settings.appSettings!.callActionId;
     if (callActionId == AppSettings.CALL_ACTION_SYSTEM_DEFAULT) {
       _startPhoneWithSystemDefault(targetPhoneNumber);
     } else if (callActionId == AppSettings.CALL_ACTION_LINPHONE) {

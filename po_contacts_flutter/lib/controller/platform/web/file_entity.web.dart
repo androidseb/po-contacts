@@ -6,28 +6,28 @@ import 'package:po_contacts_flutter/controller/platform/web/files_manager.web.da
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class FileEntityWeb extends FileEntity {
-  WebAbstractFS _webFS;
-  String _absolutePath;
-  String _base64Content;
-  Uint8List _binaryContent;
+  WebAbstractFS? _webFS;
+  String? _absolutePath;
+  String? _base64Content;
+  Uint8List? _binaryContent;
   final List<String> _outputBuffer = [];
 
-  FileEntityWeb(final WebAbstractFS webFS, final String absolutePath, final String base64Content) {
+  FileEntityWeb(final WebAbstractFS? webFS, final String? absolutePath, final String? base64Content) {
     _webFS = webFS;
     _absolutePath = absolutePath;
     _base64Content = base64Content;
   }
 
-  String get base64Content {
+  String? get base64Content {
     if (_base64Content == null) {
-      _base64Content = _webFS.readFile(_absolutePath);
+      _base64Content = _webFS!.readFile(_absolutePath);
     }
     return _base64Content;
   }
 
-  Uint8List get binaryData {
+  Uint8List? get binaryData {
     if (_binaryContent == null) {
-      final String latestBase64Content = base64Content;
+      final String? latestBase64Content = base64Content;
       _binaryContent = latestBase64Content == null ? null : base64.decode(latestBase64Content);
     }
     return _binaryContent;
@@ -35,23 +35,23 @@ class FileEntityWeb extends FileEntity {
 
   @override
   Future<FileEntity> create() async {
-    _webFS.writeFile(_absolutePath, '');
+    _webFS!.writeFile(_absolutePath, '');
     return this;
   }
 
   @override
   Future<bool> delete() async {
-    _webFS.writeFile(_absolutePath, null);
+    _webFS!.writeFile(_absolutePath, null);
     return true;
   }
 
   @override
   Future<bool> exists() async {
-    return _webFS.readFile(_absolutePath) != null;
+    return _webFS!.readFile(_absolutePath) != null;
   }
 
   @override
-  String getAbsolutePath() {
+  String? getAbsolutePath() {
     return _absolutePath;
   }
 
@@ -61,21 +61,21 @@ class FileEntityWeb extends FileEntity {
   }
 
   @override
-  Future<bool> writeAsUint8List(final Uint8List outputData) {
-    return writeAsBase64String(base64.encode(outputData));
+  Future<bool> writeAsUint8List(final Uint8List? outputData) {
+    return writeAsBase64String(base64.encode(outputData!));
   }
 
   @override
   Future<bool> writeAsBase64String(final String base64String) async {
     _base64Content = base64String;
     _binaryContent = null;
-    _webFS.writeFile(_absolutePath, base64String);
+    _webFS!.writeFile(_absolutePath, base64String);
     return true;
   }
 
   @override
   Future<List<String>> readAsLines() async {
-    final Uint8List fileData = binaryData;
+    final Uint8List? fileData = binaryData;
     if (fileData == null) {
       return <String>[];
     }
@@ -84,21 +84,21 @@ class FileEntityWeb extends FileEntity {
   }
 
   @override
-  Future<String> readAsBase64String() async {
+  Future<String?> readAsBase64String() async {
     return base64Content;
   }
 
   @override
-  Future<FileEntity> copy(final FileEntity targetFile) async {
-    final String newFileAbsPath = targetFile.getAbsolutePath();
-    _webFS.writeFile(newFileAbsPath, base64Content);
+  Future<FileEntity> copy(final FileEntity? targetFile) async {
+    final String? newFileAbsPath = targetFile!.getAbsolutePath();
+    _webFS!.writeFile(newFileAbsPath, base64Content);
     return FileEntityWeb(_webFS, newFileAbsPath, base64Content);
   }
 
   @override
   Future<void> flushOutputBuffer() async {
-    final String latestBase64Content = base64Content;
+    final String? latestBase64Content = base64Content;
     final String currentContentBase64 = latestBase64Content == null ? '' : latestBase64Content;
-    await writeAsBase64String(currentContentBase64 + Utils.strToBase64(_outputBuffer.join()));
+    await writeAsBase64String(currentContentBase64 + Utils.strToBase64(_outputBuffer.join())!);
   }
 }

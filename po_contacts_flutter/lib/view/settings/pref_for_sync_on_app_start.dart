@@ -10,11 +10,11 @@ class PrefForSyncOnAppStart extends BoolSettingEntry {
 
   @override
   bool readCurrentValue() {
-    return MainController.get().model.settings.appSettings.syncOnAppStart;
+    return MainController.get()!.model.settings.appSettings!.syncOnAppStart;
   }
 
   @override
-  void writeCurrentValue(final bool v) {
-    MainController.get().model.settings.setSyncOnAppStart(v);
+  void writeCurrentValue(final bool? v) {
+    MainController.get()!.model.settings.setSyncOnAppStart(v!);
   }
 }

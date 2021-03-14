@@ -15,8 +15,8 @@ class SettingsModel {
 
   final Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   final StreamableValue<AppSettings> _appSettings = StreamableValue(AppSettings());
-  AppSettings get appSettings => _appSettings.readOnly.currentValue;
-  ReadOnlyStreamableValue<AppSettings> get appSettingsSV => _appSettings.readOnly;
+  AppSettings? get appSettings => _appSettings.readOnly!.currentValue;
+  ReadOnlyStreamableValue<AppSettings>? get appSettingsSV => _appSettings.readOnly;
 
   SettingsModel() {
     _updateSettingsFromStorage();
@@ -26,8 +26,8 @@ class SettingsModel {
     return _updateSettingsFromStorage();
   }
 
-  Future<bool> _readDisplayDraggableScrollbarValue() async {
-    final bool displayDraggableScrollbar = (await _sharedPreferences).getBool(_SETTING_ID_USE_DRAGGABLE_SCROLLBAR);
+  Future<bool?> _readDisplayDraggableScrollbarValue() async {
+    final bool? displayDraggableScrollbar = (await _sharedPreferences).getBool(_SETTING_ID_USE_DRAGGABLE_SCROLLBAR);
     if (displayDraggableScrollbar != null) {
       return displayDraggableScrollbar;
     }
@@ -35,7 +35,7 @@ class SettingsModel {
   }
 
   Future<int> _readEmailActionId() async {
-    final int emailActionId = (await _sharedPreferences).getInt(_SETTING_ID_EMAIL_ACTION);
+    final int? emailActionId = (await _sharedPreferences).getInt(_SETTING_ID_EMAIL_ACTION);
     if (emailActionId != null) {
       return emailActionId;
     }
@@ -43,7 +43,7 @@ class SettingsModel {
   }
 
   Future<int> _readCallActionId() async {
-    final int callActionId = (await _sharedPreferences).getInt(_SETTING_ID_CALL_ACTION);
+    final int? callActionId = (await _sharedPreferences).getInt(_SETTING_ID_CALL_ACTION);
     if (callActionId != null) {
       return callActionId;
     }
@@ -51,7 +51,7 @@ class SettingsModel {
   }
 
   Future<bool> _readUseDarkDisplay() async {
-    final bool useDarkDisplay = (await _sharedPreferences).getBool(_SETTING_ID_USE_DARK_DISPLAY);
+    final bool? useDarkDisplay = (await _sharedPreferences).getBool(_SETTING_ID_USE_DARK_DISPLAY);
     if (useDarkDisplay != null) {
       return useDarkDisplay;
     }
@@ -59,7 +59,7 @@ class SettingsModel {
   }
 
   Future<bool> _readSyncOnAppStart() async {
-    final bool syncOnAppStart = (await _sharedPreferences).getBool(_SETTING_ID_SYNC_ON_APP_START);
+    final bool? syncOnAppStart = (await _sharedPreferences).getBool(_SETTING_ID_SYNC_ON_APP_START);
     if (syncOnAppStart != null) {
       return syncOnAppStart;
     }
@@ -67,7 +67,7 @@ class SettingsModel {
   }
 
   Future<bool> _readSyncOnDataEdit() async {
-    final bool syncOnDataEdit = (await _sharedPreferences).getBool(_SETTING_ID_SYNC_ON_DATA_EDIT);
+    final bool? syncOnDataEdit = (await _sharedPreferences).getBool(_SETTING_ID_SYNC_ON_DATA_EDIT);
     if (syncOnDataEdit != null) {
       return syncOnDataEdit;
     }
@@ -75,7 +75,7 @@ class SettingsModel {
   }
 
   Future<bool> _readDisplayObsoleteAddressFields() async {
-    final bool displayObsoleteAddressFields =
+    final bool? displayObsoleteAddressFields =
         (await _sharedPreferences).getBool(_SETTING_ID_DISPLAY_OBSOLETE_ADDRESS_FIELDS);
     if (displayObsoleteAddressFields != null) {
       return displayObsoleteAddressFields;

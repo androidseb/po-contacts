@@ -6,12 +6,12 @@ class SecureStorageMobile implements SecureStorage {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   @override
-  Future<String> getValue(final String key) {
+  Future<String?> getValue(final String key) {
     return _storage.read(key: key);
   }
 
   @override
-  Future<void> setValue(final String key, final String value) {
+  Future<void> setValue(final String key, final String? value) {
     return _storage.write(key: key, value: value);
   }
 }

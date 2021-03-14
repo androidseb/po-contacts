@@ -31,41 +31,41 @@ abstract class PSHelper {
 class PlatformSpecificController {
   final PSHelper _psHelper = PSHelper();
 
-  BasicInfoManager _basicInfoManager;
-  ContactsStorageManager _contactsStorage;
-  FilesTransitManager _filesTransitManager;
-  FilesManager _filesManager;
-  ActionsManager _actionsManager;
+  BasicInfoManager? _basicInfoManager;
+  ContactsStorageManager? _contactsStorage;
+  FilesTransitManager? _filesTransitManager;
+  FilesManager? _filesManager;
+  ActionsManager? _actionsManager;
 
-  BasicInfoManager get basicInfoManager {
+  BasicInfoManager? get basicInfoManager {
     if (_basicInfoManager == null) {
       _basicInfoManager = _psHelper.createBasicInfoManager();
     }
     return _basicInfoManager;
   }
 
-  ContactsStorageManager get contactsStorage {
+  ContactsStorageManager? get contactsStorage {
     if (_contactsStorage == null) {
       _contactsStorage = _psHelper.createContactStorageManager();
     }
     return _contactsStorage;
   }
 
-  FilesTransitManager get fileTransitManager {
+  FilesTransitManager? get fileTransitManager {
     if (_filesTransitManager == null) {
       _filesTransitManager = _psHelper.createFilesTransitManager();
     }
     return _filesTransitManager;
   }
 
-  FilesManager get filesManager {
+  FilesManager? get filesManager {
     if (_filesManager == null) {
       _filesManager = _psHelper.createFilesManager();
     }
     return _filesManager;
   }
 
-  ActionsManager get actionsManager {
+  ActionsManager? get actionsManager {
     if (_actionsManager == null) {
       _actionsManager = _psHelper.createActionsManager();
     }

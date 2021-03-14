@@ -13,21 +13,21 @@ class HomePageDrawer extends StatelessWidget {
       leading: Icon(Icons.file_download),
       title: Text(I18n.getString(I18n.string.import_vcf_file)),
       onTap: () {
-        MainController.get().startImportVCF();
+        MainController.get()!.startImportVCF();
       },
     ));
     drawerOptionsList.add(ListTile(
       leading: Icon(Icons.file_upload),
       title: Text(I18n.getString(I18n.string.export_all_as_vcf)),
       onTap: () {
-        MainController.get().startExportAsVCF();
+        MainController.get()!.startExportAsVCF();
       },
     ));
     drawerOptionsList.add(ListTile(
       leading: Icon(Icons.settings),
       title: Text(I18n.getString(I18n.string.settings)),
       onTap: () {
-        MainController.get().openSettingsPage();
+        MainController.get()!.openSettingsPage();
       },
     ));
     drawerOptionsList.add(ListTile(

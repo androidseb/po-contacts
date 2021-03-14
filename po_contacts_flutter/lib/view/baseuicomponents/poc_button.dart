@@ -8,13 +8,13 @@ enum POCButtonStyle {
 }
 
 class POCButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final POCButtonStyle buttonStyle;
-  final String textString;
-  final String textI18nKey;
+  final String? textString;
+  final String? textI18nKey;
 
   POCButton({
-    final Key key,
+    final Key? key,
     this.buttonStyle = POCButtonStyle.FLAT,
     this.onPressed = null,
     this.textString = null,
@@ -67,12 +67,12 @@ class POCButton extends StatelessWidget {
   }
 
   Text createText() {
-    String resultTextString = '';
+    String? resultTextString = '';
     if (textString != null) {
       resultTextString = textString;
     } else if (textI18nKey != null) {
-      resultTextString = I18n.getString(this.textI18nKey);
+      resultTextString = I18n.getString(this.textI18nKey!);
     }
-    return Text(resultTextString);
+    return Text(resultTextString!);
   }
 }

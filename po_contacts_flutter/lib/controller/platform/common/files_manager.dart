@@ -10,14 +10,14 @@ enum ImageFileSource {
 abstract class FilesManager {
   Future<List<FileEntity>> getFilesList(final String folderPath);
 
-  Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName);
+  Future<FileEntity> createFileEntityParentAndName(final String? parentFolderPath, final String fileName);
 
-  Future<FileEntity> createFileEntityAbsPath(final String fileAbsPath);
+  Future<FileEntity> createFileEntityAbsPath(final String? fileAbsPath);
 
   Future<String> getApplicationDocumentsDirectoryPath();
 
-  Widget fileToImageWidget(final FileEntity currentFile,
-      {final BoxFit fit, final double imageWidth, final double imageHeight});
+  Widget? fileToImageWidget(final FileEntity? currentFile,
+      {final BoxFit? fit, final double? imageWidth, final double? imageHeight});
 
-  Future<FileEntity> pickImageFile(final ImageFileSource imageFileSource);
+  Future<FileEntity?> pickImageFile(final ImageFileSource imageFileSource);
 }

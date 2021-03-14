@@ -36,18 +36,18 @@ abstract class SyncController<T> {
   static const String _TMP_CLOUD_FILE_SUFFIX = '.tmp';
 
   final StreamableValue<SyncState> _syncState = StreamableValue(SyncState.SYNC_IDLE);
-  SyncState get syncState => _syncState.readOnly.currentValue;
-  ReadOnlyStreamableValue<SyncState> get syncStateSV => _syncState.readOnly;
-  SyncException _lastSyncError;
-  SyncException get lastSyncError => _lastSyncError;
+  SyncState? get syncState => _syncState.readOnly!.currentValue;
+  ReadOnlyStreamableValue<SyncState>? get syncStateSV => _syncState.readOnly;
+  SyncException? _lastSyncError;
+  SyncException? get lastSyncError => _lastSyncError;
   final SyncModelSerializer _syncModelSerializer = SyncModelSerializer();
-  Future<SyncModel> _getSyncModel() async {
+  Future<SyncModel?> _getSyncModel() async {
     return _syncModelSerializer.getSyncModel();
   }
 
-  SyncModelData get model => _syncModelSerializer.getSyncModelData();
+  SyncModelData? get model => _syncModelSerializer.getSyncModelData();
 
-  SyncProcedure<T> _currentSyncProcedure;
+  SyncProcedure<T>? _currentSyncProcedure;
 
   SyncInterfaceConfig getSyncInterfaceConfig();
 
@@ -60,14 +60,14 @@ abstract class SyncController<T> {
   Future<bool> isFileEntityEncrypted(final FileEntity fileEntity);
 
   Future<List<T>> fileEntityToItemsList(
-    final FileEntity fileEntity,
-    final String encryptionKey,
+    final FileEntity? fileEntity,
+    final String? encryptionKey,
   );
 
   Future<void> writeItemsListToFileEntity(
     final List<T> itemsList,
-    final FileEntity fileEntity,
-    final String encryptionKey,
+    final FileEntity? fileEntity,
+    final String? encryptionKey,
   );
 
   Future<void> overwriteLocalItems(final List<T> itemsList);
@@ -106,7 +106,7 @@ abstract class SyncController<T> {
     await feSource.move(feDest);
   }
 
-  Future<void> overwriteFile(final String fileName, final Uint8List fileContent) async {
+  Future<void> overwriteFile(final String fileName, final Uint8List? fileContent) async {
     final FileEntity fe = await fileEntityByName(fileName);
     if (!await fe.exists()) {
       await fe.create();
@@ -119,7 +119,7 @@ abstract class SyncController<T> {
       if (_currentSyncProcedure == null) {
         await MainQueueYielder.check();
       } else {
-        _currentSyncProcedure.cancel();
+        _currentSyncProcedure!.cancel();
         _syncState.currentValue = SyncState.SYNC_CANCELING;
         _currentSyncProcedure = null;
       }
@@ -135,9 +135,9 @@ abstract class SyncController<T> {
     _startSync(directUserAction: directUserAction);
   }
 
-  void _startSync({
+  Future<void> _startSync({
     final bool directUserAction = true,
-    final String restoreDataFileId = null,
+    final String? restoreDataFileId = null,
   }) async {
     _syncState.currentValue = SyncState.SYNC_IN_PROGRESS;
     await _performSync(
@@ -151,7 +151,7 @@ abstract class SyncController<T> {
     if (_syncState.currentValue == SyncState.SYNC_IN_PROGRESS || _syncState.currentValue == SyncState.SYNC_CANCELING) {
       return;
     }
-    final SyncInterface syncInterface = await _readSyncInterfaceFromModel();
+    final SyncInterface syncInterface = await (_readSyncInterfaceFromModel() as Future<SyncInterface>);
     await syncInterface.logout();
     await _syncModelSerializer.clearData();
     await deleteFileWithName(_UPLOADED_SYNC_FILE_PRE_UPLOAD);
@@ -162,7 +162,7 @@ abstract class SyncController<T> {
 
   Future<void> _performSync({
     final bool directUserAction = true,
-    final String restoreDataFileId = null,
+    final String? restoreDataFileId = null,
   }) async {
     try {
       await _performSyncImpl(
@@ -177,7 +177,7 @@ abstract class SyncController<T> {
     }
   }
 
-  void _updateLastSyncError(final SyncException syncException) {
+  void _updateLastSyncError(final SyncException? syncException) {
     if (syncException?.type == SyncExceptionType.CANCELED) {
       _lastSyncError = null;
       return;
@@ -185,8 +185,8 @@ abstract class SyncController<T> {
     _lastSyncError = syncException;
   }
 
-  Future<SyncInterface> _initializeSyncInterface() async {
-    final SyncModel syncModel = await _getSyncModel();
+  Future<SyncInterface?> _initializeSyncInterface() async {
+    final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
     final SyncInterface syncInterface = SyncInterfaceForGoogleDrive(
       getSyncInterfaceConfig(),
       getSyncInterfaceUIController(),
@@ -195,21 +195,21 @@ abstract class SyncController<T> {
     if (!couldAuthenticateExplicitly) {
       throw SyncException(SyncExceptionType.AUTHENTICATION);
     }
-    final String accountName = await syncInterface.getAccountName();
+    final String? accountName = await syncInterface.getAccountName();
     syncModel.setAccountName(accountName);
     final List<RemoteFile> cloudIndexFiles = await syncInterface.fetchIndexFilesList();
-    RemoteFile selectedCloudIndexFile;
+    RemoteFile? selectedCloudIndexFile;
     if (cloudIndexFiles.isNotEmpty) {
-      final List<String> indexFileNames = [];
+      final List<String?> indexFileNames = [];
       for (final RemoteFile cif in cloudIndexFiles) {
-        final Map<String, dynamic> indexFileContent = await syncInterface.getIndexFileContent(cif.fileId);
+        final Map<String, dynamic>? indexFileContent = await syncInterface.getIndexFileContent(cif.fileId);
         if (indexFileContent != null && indexFileContent[SyncInterface.INDEX_FILE_KEY_NAME] != null) {
           indexFileNames.add(indexFileContent[SyncInterface.INDEX_FILE_KEY_NAME]);
         } else {
           indexFileNames.add('???');
         }
       }
-      final int indexFileChoiceIndex = await getSyncInterfaceUIController().pickIndexFile(indexFileNames);
+      final int? indexFileChoiceIndex = await getSyncInterfaceUIController().pickIndexFile(indexFileNames);
       if (indexFileChoiceIndex == null) {
         return null;
       } else if (indexFileChoiceIndex != -1) {
@@ -233,8 +233,8 @@ abstract class SyncController<T> {
     return syncInterface;
   }
 
-  Future<SyncInterface> _readSyncInterfaceFromModel() async {
-    final SyncModel syncModel = await _getSyncModel();
+  Future<SyncInterface?> _readSyncInterfaceFromModel() async {
+    final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
     if (syncModel.syncInterfaceType == SyncInterfaceType.GOOGLE_DRIVE) {
       return SyncInterfaceForGoogleDrive(
         getSyncInterfaceConfig(),
@@ -245,7 +245,7 @@ abstract class SyncController<T> {
   }
 
   Future<SyncInterface> _getAuthenticatedSyncInterface({final bool directUserAction = true}) async {
-    SyncInterface syncInterface = await _readSyncInterfaceFromModel();
+    SyncInterface? syncInterface = await _readSyncInterfaceFromModel();
     if (syncInterface == null) {
       if (directUserAction) {
         syncInterface = await _initializeSyncInterface();
@@ -273,9 +273,9 @@ abstract class SyncController<T> {
 
   Future<void> _performSyncImpl({
     final bool directUserAction = false,
-    final String restoreDataFileId = null,
+    final String? restoreDataFileId = null,
   }) async {
-    final SyncModel syncModel = await _getSyncModel();
+    final SyncModel? syncModel = await _getSyncModel();
     final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: directUserAction);
     _currentSyncProcedure = SyncProcedure(
       this,
@@ -284,10 +284,10 @@ abstract class SyncController<T> {
       restoreDataFileId,
     );
     try {
-      final SyncProcedureResult syncProcedureResult = await _currentSyncProcedure.execute();
-      final SyncModel syncModel = await _getSyncModel();
+      final SyncProcedureResult syncProcedureResult = await _currentSyncProcedure!.execute();
+      final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
       await syncModel.setLastSyncTimeEpochMillis(Utils.currentTimeMillis());
-      final String uploadedDataFileId = syncProcedureResult.uploadedDataFileId;
+      final String? uploadedDataFileId = syncProcedureResult.uploadedDataFileId;
       if (uploadedDataFileId != null) {
         await syncModel.setLastSyncDataFileId(uploadedDataFileId);
       }
@@ -295,7 +295,7 @@ abstract class SyncController<T> {
       await syncModel.setHasRemoteChanges(false);
     } on SyncException catch (syncException) {
       if (syncException.type == SyncExceptionType.FILE_PARSING_ERROR) {
-        syncModel.forgetEncryptionKey();
+        syncModel!.forgetEncryptionKey();
       }
       throw syncException;
     }
@@ -340,7 +340,7 @@ abstract class SyncController<T> {
     );
   }
 
-  Future<FileEntity> getLastSyncedFile() async {
+  Future<FileEntity?> getLastSyncedFile() async {
     if (await fileWithNameExists(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED)) {
       return fileEntityByName(_UPLOADED_SYNC_FILE_POST_SYNC_SUCCEEDED);
     }
@@ -350,22 +350,23 @@ abstract class SyncController<T> {
     return null;
   }
 
-  Future<String> getLatestCloudFileId(final SyncInterface syncInterface) async {
-    final SyncModel syncModel = await _getSyncModel();
-    final String cloudIndexFileId = syncModel.cloudIndexFileId;
+  Future<String?> getLatestCloudFileId(final SyncInterface syncInterface) async {
+    final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
+    final String? cloudIndexFileId = syncModel.cloudIndexFileId;
     if (cloudIndexFileId == null) {
       return null;
     }
-    final Map<String, dynamic> cloudIndexFileContent = await syncInterface.getIndexFileContent(cloudIndexFileId);
+    final Map<String, dynamic> cloudIndexFileContent =
+        await (syncInterface.getIndexFileContent(cloudIndexFileId) as Future<Map<String, dynamic>>);
     final dynamic latestCloudFileId = cloudIndexFileContent[SyncInterface.INDEX_FILE_KEY_FILE_ID];
     if (!(latestCloudFileId is String)) {
       return null;
     }
-    return latestCloudFileId as String;
+    return latestCloudFileId;
   }
 
-  Future<FileEntity> getLatestCloudFile(final SyncInterface syncInterface) async {
-    final String latestCloudFileId = await getLatestCloudFileId(syncInterface);
+  Future<FileEntity?> getLatestCloudFile(final SyncInterface syncInterface) async {
+    final String? latestCloudFileId = await getLatestCloudFileId(syncInterface);
     if (latestCloudFileId == null) {
       return null;
     }
@@ -381,7 +382,7 @@ abstract class SyncController<T> {
       }
     }
     final String tmpDownloadedFileName = _DOWNLOADED_CLOUD_FILE_PREFIX + _TMP_CLOUD_FILE_SUFFIX;
-    final Uint8List latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId);
+    final Uint8List? latestCloudFileContent = await syncInterface.downloadCloudFile(latestCloudFileId);
     await overwriteFile(tmpDownloadedFileName, latestCloudFileContent);
     await moveFileByName(tmpDownloadedFileName, downloadedFileName);
     return fileEntityByName(downloadedFileName);
@@ -389,13 +390,13 @@ abstract class SyncController<T> {
 
   Future<void> requestEncryptionKeyIfNeeded(
     final SyncInterface syncInterface,
-    final FileEntity latestCloudFile,
+    final FileEntity? latestCloudFile,
   ) async {
-    final SyncModel syncModel = await _getSyncModel();
+    final SyncModel? syncModel = await _getSyncModel();
     if (latestCloudFile == null || !await isFileEntityEncrypted(latestCloudFile)) {
       return;
     }
-    String encryptionKey = await syncModel.getEncryptionKey();
+    String? encryptionKey = await syncModel!.getEncryptionKey();
     if (encryptionKey != null) {
       return;
     }
@@ -412,8 +413,8 @@ abstract class SyncController<T> {
     if (syncInterface == null) {
       return;
     }
-    final SyncModel syncModel = await _getSyncModel();
-    final String latestCloudFileId = await getLatestCloudFileId(syncInterface);
+    final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
+    final String? latestCloudFileId = await getLatestCloudFileId(syncInterface);
     if (latestCloudFileId != syncModel.lastSyncDataFileId) {
       syncModel.setHasRemoteChanges(true);
       if (_syncState.currentValue == SyncState.SYNC_IDLE) {
@@ -423,7 +424,7 @@ abstract class SyncController<T> {
   }
 
   void recordLocalDataChanged() async {
-    final SyncModel syncModel = await _getSyncModel();
+    final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
     syncModel.setHasLocalChanges(true);
     if (_syncState.currentValue == SyncState.SYNC_IDLE) {
       _syncState.notifyDataChanged();
@@ -443,23 +444,23 @@ abstract class SyncController<T> {
     _syncState.currentValue = SyncState.SYNC_IDLE;
   }
 
-  void _viewHistoryToRestoreImpl() async {
-    final SyncModel syncModel = await _getSyncModel();
-    final String cloudIndexFileId = syncModel.cloudIndexFileId;
+  Future<void> _viewHistoryToRestoreImpl() async {
+    final SyncModel syncModel = await (_getSyncModel() as Future<SyncModel>);
+    final String? cloudIndexFileId = syncModel.cloudIndexFileId;
     if (cloudIndexFileId == null) {
       return;
     }
     final SyncInterface syncInterface = await _getAuthenticatedSyncInterface(directUserAction: false);
-    final List<RemoteFile> dataFiles = await syncInterface.fetchHistoryAsDataFilesList(cloudIndexFileId);
+    final List<RemoteFile>? dataFiles = await syncInterface.fetchHistoryAsDataFilesList(cloudIndexFileId);
     if (dataFiles == null || dataFiles.isEmpty) {
       return;
     }
 
-    final List<String> dataFileNames = [];
+    final List<String?> dataFileNames = [];
     for (final RemoteFile cdf in dataFiles) {
       dataFileNames.add(cdf.fileName);
     }
-    final int dataFileChoiceIndex = await getSyncInterfaceUIController().pickHistoryDataFile(dataFileNames);
+    final int? dataFileChoiceIndex = await getSyncInterfaceUIController().pickHistoryDataFile(dataFileNames);
     if (dataFileChoiceIndex == null) {
       return;
     }

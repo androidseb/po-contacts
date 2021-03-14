@@ -17,19 +17,19 @@ import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 import 'package:po_contacts_flutter/view/misc/multi_selection_choice.dart';
 
-class ContactIdProvider extends SyncItemsHandler<Contact> {
+class ContactIdProvider extends SyncItemsHandler<Contact?> {
   @override
-  String getItemId(final Contact item) {
-    return item.uid;
+  String getItemId(final Contact? item) {
+    return item!.uid;
   }
 
   @override
-  Contact cloneItemWithNewId(final Contact item) {
+  Contact? cloneItemWithNewId(final Contact? item) {
     return ContactBuilder.build(0, item, uuidOverride: Utils.generateUUID());
   }
 
   @override
-  bool itemsEqualExceptId(final Contact item1, final Contact item2) {
+  bool itemsEqualExceptId(final Contact? item1, final Contact? item2) {
     return Contact.equalExceptId(item1, item2);
   }
 }
@@ -52,23 +52,23 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
         );
 
   @override
-  BuildContext getUIBuildContext() {
-    return MainController.get().context;
+  BuildContext? getUIBuildContext() {
+    return MainController.get()!.context;
   }
 
   @override
-  Future<int> pickIndexFile(final List<String> cloudIndexFileNames) async {
+  Future<int?> pickIndexFile(final List<String?> cloudIndexFileNames) async {
     final List<MultiSelectionChoice> selectionChoices = [];
     selectionChoices.add(MultiSelectionChoice(
       I18n.getString(I18n.string.sync_to_new_file),
       entryId: -1,
     ));
     for (int i = 0; i < cloudIndexFileNames.length; i++) {
-      final String indexFileName = cloudIndexFileNames[i];
+      final String? indexFileName = cloudIndexFileNames[i];
       selectionChoices.add(MultiSelectionChoice(indexFileName, entryId: i));
     }
     final MultiSelectionChoice selectedIndexFile =
-        await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
+        await MainController.get()!.promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
     if (selectedIndexFile == null) {
       return null;
     } else {
@@ -77,14 +77,14 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
   }
 
   @override
-  Future<int> pickHistoryDataFile(List<String> cloudDataFileNames) async {
+  Future<int?> pickHistoryDataFile(List<String?> cloudDataFileNames) async {
     final List<MultiSelectionChoice> selectionChoices = [];
     for (int i = 0; i < cloudDataFileNames.length; i++) {
-      final String dataFileName = cloudDataFileNames[i];
+      final String? dataFileName = cloudDataFileNames[i];
       selectionChoices.add(MultiSelectionChoice(dataFileName, entryId: i));
     }
     final MultiSelectionChoice selectedIndexFile =
-        await MainController.get().promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
+        await MainController.get()!.promptMultiSelection(I18n.getString(I18n.string.cloud_sync), selectionChoices);
     if (selectedIndexFile == null) {
       return null;
     } else {
@@ -93,21 +93,21 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
   }
 
   @override
-  void copyTextToClipBoard(final String text) {
-    MainController.get().psController.actionsManager.copyTextToClipBoard(text);
+  void copyTextToClipBoard(final String? text) {
+    MainController.get()!.psController.actionsManager!.copyTextToClipBoard(text);
   }
 
   @override
   Future<String> promptUserForCreationSyncPassword() async {
-    return MainController.get().promptUserForPasswordUsage(
+    return MainController.get()!.promptUserForPasswordUsage(
       promptTitle: I18n.getString(I18n.string.sync_to_new_file),
       promptMessage: I18n.getString(I18n.string.sync_to_new_file_encrypt_question),
     );
   }
 
   @override
-  Future<String> promptUserForResumeSyncPassword() {
-    return MainController.get().showTextInputDialog(
+  Future<String?> promptUserForResumeSyncPassword() {
+    return MainController.get()!.showTextInputDialog(
       I18n.getString(I18n.string.enter_password),
       isPassword: true,
     );
@@ -115,14 +115,14 @@ class POCSyncInterfaceUIController extends SyncInterfaceUIController {
 
   @override
   Future<bool> promptUserForSyncPasswordRemember() async {
-    return MainController.get().promptUserForYesNoQuestion(
+    return MainController.get()!.promptUserForYesNoQuestion(
       titleText: I18n.getString(I18n.string.sync_remember_password_title),
       messageText: I18n.getString(I18n.string.sync_remember_password_message),
     );
   }
 }
 
-class POCSyncController extends SyncController<Contact> {
+class POCSyncController extends SyncController<Contact?> {
   static const SYNC_FOLDER_NAME = 'cloud_sync';
 
   @override
@@ -143,14 +143,14 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
-  SyncItemsHandler<Contact> getItemsHandler() {
+  SyncItemsHandler<Contact?> getItemsHandler() {
     return ContactIdProvider();
   }
 
   @override
-  Future<List<Contact>> getLocalItems() async {
-    final List<Contact> localContacts = [];
-    localContacts.addAll(MainController.get().model.contactsList);
+  Future<List<Contact?>> getLocalItems() async {
+    final List<Contact?> localContacts = [];
+    localContacts.addAll(MainController.get()!.model.contactsList!);
     return localContacts;
   }
 
@@ -160,26 +160,26 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   @override
-  Future<List<Contact>> fileEntityToItemsList(
-    final FileEntity fileEntity,
-    final String encryptionKey,
+  Future<List<Contact?>> fileEntityToItemsList(
+    final FileEntity? fileEntity,
+    final String? encryptionKey,
   ) async {
     try {
-      final List<Contact> result = await _fileEntityToItemsList(fileEntity, encryptionKey);
+      final List<Contact?> result = await _fileEntityToItemsList(fileEntity, encryptionKey);
       return result;
     } catch (error) {
       throw new SyncException(SyncExceptionType.FILE_PARSING_ERROR);
     }
   }
 
-  Future<List<Contact>> _fileEntityToItemsList(
-    final FileEntity fileEntity,
-    final String encryptionKey,
+  Future<List<Contact?>> _fileEntityToItemsList(
+    final FileEntity? fileEntity,
+    final String? encryptionKey,
   ) async {
     if (fileEntity == null) {
       return [];
     }
-    final List<Contact> res = [];
+    final List<Contact?> res = [];
     final List<ContactBuilder> lastSyncedContacts = await VCFSerializer.readFromVCF(
       VCFFileReader(
         fileEntity,
@@ -196,38 +196,38 @@ class POCSyncController extends SyncController<Contact> {
 
   @override
   Future<void> writeItemsListToFileEntity(
-    final List<Contact> itemsList,
-    final FileEntity fileEntity,
-    final String encryptionKey,
+    final List<Contact?> itemsList,
+    final FileEntity? fileEntity,
+    final String? encryptionKey,
   ) async {
     await ExportController.exportAsVCFToFile(
       itemsList,
-      fileEntity,
+      fileEntity!,
       encryptionKey,
     );
   }
 
   @override
-  Future<void> overwriteLocalItems(final List<Contact> itemsList) async {
-    MainController.get().model.overwriteAllContacts(itemsList);
+  Future<void> overwriteLocalItems(final List<Contact?> itemsList) async {
+    MainController.get()!.model.overwriteAllContacts(itemsList);
   }
 
   Future<String> _getSyncFolderPath() async {
     final String homeDirPath =
-        await MainController.get().psController.filesManager.getApplicationDocumentsDirectoryPath();
+        await MainController.get()!.psController.filesManager!.getApplicationDocumentsDirectoryPath();
     return '$homeDirPath/$SYNC_FOLDER_NAME';
   }
 
   @override
   Future<FileEntity> fileEntityByName(final String fileName) async {
     final String syncFolderPath = await _getSyncFolderPath();
-    return MainController.get().psController.filesManager.createFileEntityParentAndName(syncFolderPath, fileName);
+    return MainController.get()!.psController.filesManager!.createFileEntityParentAndName(syncFolderPath, fileName);
   }
 
   @override
   Future<List<FileEntity>> getFileEntitiesList() async {
     final String syncFolderPath = await _getSyncFolderPath();
-    return MainController.get().psController.filesManager.getFilesList(syncFolderPath);
+    return MainController.get()!.psController.filesManager!.getFilesList(syncFolderPath);
   }
 
   void showSyncOptionsMenu() {
@@ -236,45 +236,45 @@ class POCSyncController extends SyncController<Contact> {
         I18n.getString(I18n.string.cloud_sync_sync),
         iconData: Icons.sync,
         onSelected: () {
-          MainController.get().syncController.startSync();
+          MainController.get()!.syncController.startSync();
         },
       ),
       MultiSelectionChoice(
         I18n.getString(I18n.string.cloud_sync_view_history_or_restore),
         iconData: Icons.history,
         onSelected: () {
-          MainController.get().syncController.viewHistoryToRestore();
+          MainController.get()!.syncController.viewHistoryToRestore();
         },
       ),
       MultiSelectionChoice(
         I18n.getString(I18n.string.cloud_sync_disconnect),
         iconData: Icons.cloud_off,
         onSelected: () {
-          MainController.get().syncController.promptUserForLogout();
+          MainController.get()!.syncController.promptUserForLogout();
         },
       ),
     ];
-    final SyncException lastSyncError = MainController.get().syncController.lastSyncError;
+    final SyncException? lastSyncError = MainController.get()!.syncController.lastSyncError;
     if (lastSyncError != null) {
       availableEntries.add(MultiSelectionChoice(
         I18n.getString(I18n.string.cloud_sync_view_error),
         iconData: Icons.error_outline,
         onSelected: () {
-          MainController.get().showMessageDialog(
+          MainController.get()!.showMessageDialog(
             I18n.getString(I18n.string.cloud_sync_view_error),
             lastSyncError.toUIMessageString(),
           );
         },
       ));
     }
-    MainController.get().promptMultiSelection(
+    MainController.get()!.promptMultiSelection(
       I18n.getString(I18n.string.cloud_sync_options),
       availableEntries,
     );
   }
 
   void promptUserForLogout() async {
-    final bool userConfirmed = await MainController.get().promptUserForYesNoQuestion(
+    final bool userConfirmed = await MainController.get()!.promptUserForYesNoQuestion(
       titleText: I18n.getString(I18n.string.cloud_sync_disconnect),
       messageText: I18n.getString(I18n.string.cloud_sync_disconnect_confirmation_question),
     );
@@ -284,7 +284,7 @@ class POCSyncController extends SyncController<Contact> {
   }
 
   void promptUserActionCanceledBySync() async {
-    final bool userAcceptedSyncCancel = await MainController.get().promptUserForYesNoQuestion(
+    final bool userAcceptedSyncCancel = await MainController.get()!.promptUserForYesNoQuestion(
       titleText: I18n.getString(I18n.string.action_blocked_by_sync_title),
       messageText: I18n.getString(I18n.string.action_blocked_by_sync_question),
     );

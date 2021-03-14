@@ -10,7 +10,7 @@ enum SyncExceptionType {
 
 class SyncException implements Exception {
   final SyncExceptionType type;
-  final String message;
+  final String? message;
 
   SyncException(this.type, {this.message});
 

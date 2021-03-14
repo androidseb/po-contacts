@@ -15,18 +15,18 @@ class UtilsWeb {
   static Future<SelectedFileWeb> selectFile(final String mimeType) async {
     final Completer<String> fileNameCompleter = Completer<String>();
     final Completer<String> fileContentCompleter = Completer<String>();
-    final InputElement input = document.createElement('input');
+    final InputElement input = document.createElement('input') as InputElement;
     input
       ..type = 'file'
       ..accept = mimeType;
     input.onChange.listen((e) async {
-      final File file = input.files[0];
+      final File file = input.files![0];
       final FileReader reader = FileReader();
       reader.readAsDataUrl(file);
       reader.onError.listen((error) => fileContentCompleter.completeError(error));
       await reader.onLoad.first;
       fileNameCompleter.complete(file.name);
-      final String dataUrl = reader.result as String;
+      final String? dataUrl = reader.result as String?;
       fileContentCompleter.complete(dataUrl);
     });
     input.click();
@@ -42,11 +42,11 @@ class UtilsWeb {
     return SelectedFileWeb(selectedFileName, selectedFileBase64String);
   }
 
-  static void copyTextToClipBoard(final String text) {
+  static void copyTextToClipBoard(final String? text) {
     //Code copied from:
     //https://gist.github.com/bergwerf/1b427ad2b1f9770b260dd4dac295b6f0
     final TextAreaElement tea = TextAreaElement();
-    document.body.append(tea);
+    document.body!.append(tea);
     tea.style.border = '0';
     tea.style.margin = '0';
     tea.style.padding = '0';

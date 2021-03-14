@@ -10,7 +10,7 @@ class VCFSerializer {
   static const String ENCRYPTED_FILE_PREFIX = 'ENCRYPTED VCARD CONTENT V001:';
   static Future<List<ContactBuilder>> readFromVCF(final VCFReader vcfReader) async {
     final List<ContactBuilder> res = [];
-    ContactBuilder lastReadContact;
+    ContactBuilder? lastReadContact;
     do {
       lastReadContact = await vcfReader.readContact();
       if (lastReadContact != null) {
@@ -21,15 +21,15 @@ class VCFSerializer {
   }
 
   static Future<void> writeToVCF(
-    final List<Contact> contacts,
+    final List<Contact?> contacts,
     final VCFWriter vcfWriter, {
-    TaskSetProgressCallback progressCallback,
+    TaskSetProgressCallback? progressCallback,
   }) async {
     if (contacts == null) {
       return;
     }
     for (int i = 0; i < contacts.length; i++) {
-      final Contact c = contacts[i];
+      final Contact? c = contacts[i];
       await vcfWriter.writeContact(c);
       await progressCallback?.broadcastProgress((i + 1) / contacts.length);
       await MainQueueYielder.check();

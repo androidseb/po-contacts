@@ -16,7 +16,7 @@ abstract class VCFWriter {
 
   void writeStringImpl(final String line);
 
-  Future<void> flushOutputBuffer({TaskSetProgressCallback progressCallback});
+  Future<void> flushOutputBuffer({TaskSetProgressCallback? progressCallback});
 
   void writeLine(final String line) {
     //We choose to not respect the "Line Delimiting and Folding" strictly:
@@ -27,15 +27,15 @@ abstract class VCFWriter {
     writeStringImpl(line + VCFConstants.VCF_LINE_RETURN_FIELD_SEPARATION);
   }
 
-  String _escapeStringToVCF(final String str) {
-    String res = str;
+  String? _escapeStringToVCF(final String? str) {
+    String? res = str;
     VCFConstants.VCF_ESCAPED_CHARS_MAP.forEach((key, value) {
-      res = res.replaceAll(key, value);
+      res = res!.replaceAll(key, value);
     });
     return res;
   }
 
-  void _writeVCFFieldLabelParam(final StringBuffer output, final VCFFieldLabelParamValue labelParamValue) {
+  void _writeVCFFieldLabelParam(final StringBuffer output, final VCFFieldLabelParamValue? labelParamValue) {
     if (labelParamValue == null) {
       return;
     }
@@ -50,7 +50,7 @@ abstract class VCFWriter {
     }
   }
 
-  void _writeVCFPhotoParams(final StringBuffer output, final String photoFileExtension) {
+  void _writeVCFPhotoParams(final StringBuffer output, final String? photoFileExtension) {
     if (photoFileExtension == null) {
       return;
     }
@@ -73,13 +73,13 @@ abstract class VCFWriter {
 
   void _writeVCFStringFieldValue(
     final String fieldName,
-    final String fieldValue, {
-    final VCFFieldLabelParamValue labelParamValue,
-    final String photoFileExtension,
+    final String? fieldValue, {
+    final VCFFieldLabelParamValue? labelParamValue,
+    final String? photoFileExtension,
     final bool writeEmpty = false,
     final bool isUID = false,
   }) {
-    if (!writeEmpty && fieldValue.trim().isEmpty) {
+    if (!writeEmpty && fieldValue!.trim().isEmpty) {
       return;
     }
     final StringBuffer res = StringBuffer();
@@ -95,7 +95,7 @@ abstract class VCFWriter {
   void _writeVCFStringFieldValues(
     final String fieldName,
     final List<String> fieldValues, {
-    final VCFFieldLabelParamValue labelParamValue,
+    final VCFFieldLabelParamValue? labelParamValue,
     final bool writeEmpty = false,
   }) {
     if (!writeEmpty) {
@@ -134,7 +134,7 @@ abstract class VCFWriter {
     );
     if (contact.image != null) {
       final String fileExtension = Utils.getFileExtension(contact.image);
-      final String photoAsBase64String = await fileReader.fileToBase64String(contact.image);
+      final String? photoAsBase64String = await fileReader.fileToBase64String(contact.image);
       if (photoAsBase64String != null) {
         _writeVCFStringFieldValue(
           VCFConstants.FIELD_PHOTO,
@@ -158,7 +158,7 @@ abstract class VCFWriter {
       contact.nickName,
     );
     for (final AddressLabeledField alf in contact.addressInfos) {
-      final AddressInfo addressInfo = alf.fieldValue;
+      final AddressInfo addressInfo = alf.fieldValue!;
       _writeVCFStringFieldValues(
         VCFConstants.FIELD_ADRESS,
         [
@@ -209,7 +209,7 @@ abstract class VCFWriter {
     }
   }
 
-  Future<void> writeContact(final Contact contact) async {
+  Future<void> writeContact(final Contact? contact) async {
     if (contact == null) {
       return;
     }

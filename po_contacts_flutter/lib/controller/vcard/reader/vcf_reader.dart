@@ -16,12 +16,12 @@ abstract class VCFReader {
 
   VCFReader(this.fileInflater);
 
-  Future<String> readLineImpl();
+  Future<String?> readLineImpl();
 
-  String _pendingReadLine;
+  String? _pendingReadLine;
 
-  Future<String> _readFieldLine() async {
-    String readLine;
+  Future<String?> _readFieldLine() async {
+    String? readLine;
     if (_pendingReadLine == null) {
       readLine = await readLineImpl();
     } else {
@@ -35,7 +35,7 @@ abstract class VCFReader {
     while (true) {
       if (readLine != null) {
         res.write(readLine);
-        readLine = await readLineImpl();
+        readLine = await (readLineImpl() as Future<String>);
       }
       if (readLine == null) {
         break;
@@ -51,12 +51,12 @@ abstract class VCFReader {
 
   Future<List<String>> _readContactFieldLines() async {
     final List<String> res = [];
-    String fieldLine;
+    String? fieldLine;
 
     //Process all field lines until we find the BEGIN:VCARD field
     fieldLine = await _readFieldLine();
     while (fieldLine != null && !fieldLine.startsWith(VCFConstants.FIELD_BEGIN_VCARD)) {
-      fieldLine = await _readFieldLine();
+      fieldLine = await (_readFieldLine() as Future<String>);
     }
 
     //If we couldn't get to the BEGIN:VCARD field, we stop here
@@ -65,10 +65,10 @@ abstract class VCFReader {
     }
 
     //We add all lines we find until we hit reach a END:VCARD field or the end of the file
-    fieldLine = await _readFieldLine();
+    fieldLine = await (_readFieldLine() as Future<String>);
     while (fieldLine != null && !fieldLine.startsWith(VCFConstants.FIELD_END_VCARD)) {
       res.add(fieldLine);
-      fieldLine = await _readFieldLine();
+      fieldLine = await (_readFieldLine() as Future<String>);
     }
 
     return res;
@@ -78,7 +78,7 @@ abstract class VCFReader {
     return fieldLine.startsWith('$fieldName:') || fieldLine.startsWith('$fieldName;');
   }
 
-  static SingleValueField getSingleValueField(final String fieldLine, final String fieldName) {
+  static SingleValueField? getSingleValueField(final String fieldLine, final String fieldName) {
     if (isLineForField(fieldLine, fieldName)) {
       return SingleValueField.create(fieldName, fieldLine);
     } else {
@@ -86,7 +86,7 @@ abstract class VCFReader {
     }
   }
 
-  static MultiValueField getMultiValueField(final String fieldLine, final String fieldName) {
+  static MultiValueField? getMultiValueField(final String fieldLine, final String fieldName) {
     if (isLineForField(fieldLine, fieldName)) {
       return MultiValueField.create(fieldName, fieldLine);
     } else {
@@ -95,13 +95,13 @@ abstract class VCFReader {
   }
 
   static VCFFieldLabelParamValue getLabeledFieldLabelTypeForFieldParams(final Map<String, String> fieldParams) {
-    LabeledFieldLabelType resultLabelType = LabeledFieldLabelType.WORK;
-    String resultLabelText = '';
+    LabeledFieldLabelType? resultLabelType = LabeledFieldLabelType.WORK;
+    String? resultLabelText = '';
     for (final String key in fieldParams.keys) {
-      final String value = fieldParams[key];
+      final String? value = fieldParams[key];
       if (Utils.stringEqualsIgnoreCase(key, VCFConstants.FIELD_PARAM_TYPE)) {
         resultLabelType = LabeledField.stringToLabeledFieldLabelType(
-          value,
+          value!,
           LabeledFieldLabelType.CUSTOM,
         );
         if (resultLabelType == LabeledFieldLabelType.CUSTOM) {
@@ -109,12 +109,12 @@ abstract class VCFReader {
         }
         break;
       }
-      if (value.isEmpty && key.startsWith('X-')) {
+      if (value!.isEmpty && key.startsWith('X-')) {
         resultLabelType = LabeledFieldLabelType.CUSTOM;
         resultLabelText = VCFField.unEscapeVCFString(key.substring(2));
         break;
       }
-      final LabeledFieldLabelType foundClearType = LabeledField.stringToLabeledFieldLabelType(
+      final LabeledFieldLabelType? foundClearType = LabeledField.stringToLabeledFieldLabelType(
         key,
         null,
       );
@@ -140,24 +140,24 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField versionField = getSingleValueField(fieldLine, VCFConstants.FIELD_VERSION);
+    final SingleValueField? versionField = getSingleValueField(fieldLine, VCFConstants.FIELD_VERSION);
     if (versionField != null) {
       return;
     }
 
-    final SingleValueField uidField = getSingleValueField(fieldLine, VCFConstants.FIELD_UID);
+    final SingleValueField? uidField = getSingleValueField(fieldLine, VCFConstants.FIELD_UID);
     if (uidField != null) {
       contactBuilder.setUID(uidField.fieldValue);
       return;
     }
 
-    final SingleValueField photoField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHOTO);
+    final SingleValueField? photoField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHOTO);
     if (photoField != null) {
       String fileExtension = '.jpg';
       if (photoField.fieldParams['PNG'] == '') {
         fileExtension = '.png';
       }
-      final FileEntity imageFile = await fileInflater.createNewImageFile(fileExtension);
+      final FileEntity imageFile = await (fileInflater.createNewImageFile(fileExtension) as Future<FileEntity>);
       final bool fileWriteSuccess = await imageFile.writeAsBase64String(photoField.fieldValue);
       if (fileWriteSuccess) {
         contactBuilder.setImage(imageFile.getAbsolutePath());
@@ -167,13 +167,13 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField fnField = getSingleValueField(fieldLine, VCFConstants.FIELD_FULL_NAME);
+    final SingleValueField? fnField = getSingleValueField(fieldLine, VCFConstants.FIELD_FULL_NAME);
     if (fnField != null) {
       contactBuilder.setFullName(fnField.fieldValue);
       return;
     }
 
-    final MultiValueField nField = getMultiValueField(fieldLine, VCFConstants.FIELD_NAME);
+    final MultiValueField? nField = getMultiValueField(fieldLine, VCFConstants.FIELD_NAME);
     if (nField != null) {
       if (nField.fieldValues.isNotEmpty) {
         contactBuilder.setLastName(nField.fieldValues[0]);
@@ -184,13 +184,13 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField nnField = getSingleValueField(fieldLine, VCFConstants.FIELD_NICKNAME);
+    final SingleValueField? nnField = getSingleValueField(fieldLine, VCFConstants.FIELD_NICKNAME);
     if (nnField != null) {
       contactBuilder.setNickName(nnField.fieldValue);
       return;
     }
 
-    final MultiValueField addrField = getMultiValueField(fieldLine, VCFConstants.FIELD_ADRESS);
+    final MultiValueField? addrField = getMultiValueField(fieldLine, VCFConstants.FIELD_ADRESS);
     if (addrField != null && addrField.fieldValues.isNotEmpty) {
       final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
         addrField.fieldParams,
@@ -232,7 +232,7 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField phoneField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHONE);
+    final SingleValueField? phoneField = getSingleValueField(fieldLine, VCFConstants.FIELD_PHONE);
     if (phoneField != null) {
       final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
         phoneField.fieldParams,
@@ -245,7 +245,7 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField emailField = getSingleValueField(fieldLine, VCFConstants.FIELD_EMAIL);
+    final SingleValueField? emailField = getSingleValueField(fieldLine, VCFConstants.FIELD_EMAIL);
     if (emailField != null) {
       final VCFFieldLabelParamValue typeFieldValue = getLabeledFieldLabelTypeForFieldParams(
         emailField.fieldParams,
@@ -258,7 +258,7 @@ abstract class VCFReader {
       return;
     }
 
-    final MultiValueField orgField = getMultiValueField(fieldLine, VCFConstants.FIELD_ORG);
+    final MultiValueField? orgField = getMultiValueField(fieldLine, VCFConstants.FIELD_ORG);
     if (orgField != null && orgField.fieldValues.isNotEmpty) {
       contactBuilder.setOrganizationName(orgField.fieldValues[0]);
       if (orgField.fieldValues.length > 1) {
@@ -267,19 +267,19 @@ abstract class VCFReader {
       return;
     }
 
-    final SingleValueField titleField = getSingleValueField(fieldLine, VCFConstants.FIELD_TITLE);
+    final SingleValueField? titleField = getSingleValueField(fieldLine, VCFConstants.FIELD_TITLE);
     if (titleField != null) {
       contactBuilder.setOrganizationTitle(titleField.fieldValue);
       return;
     }
 
-    final SingleValueField urlField = getSingleValueField(fieldLine, VCFConstants.FIELD_URL);
+    final SingleValueField? urlField = getSingleValueField(fieldLine, VCFConstants.FIELD_URL);
     if (urlField != null) {
       contactBuilder.setWebsite(urlField.fieldValue);
       return;
     }
 
-    final SingleValueField noteField = getSingleValueField(fieldLine, VCFConstants.FIELD_NOTE);
+    final SingleValueField? noteField = getSingleValueField(fieldLine, VCFConstants.FIELD_NOTE);
     if (noteField != null) {
       contactBuilder.setNotes(noteField.fieldValue);
       return;
@@ -294,7 +294,7 @@ abstract class VCFReader {
     contactBuilder.addUnknownVCFFieldLine(fieldLine);
   }
 
-  Future<ContactBuilder> readContact() async {
+  Future<ContactBuilder?> readContact() async {
     final ContactBuilder res = ContactBuilder();
     final List<String> contactFieldLines = await _readContactFieldLines();
     if (contactFieldLines.isEmpty) {
@@ -304,7 +304,7 @@ abstract class VCFReader {
     final List<StringLabeledField> emails = [];
     final List<AddressLabeledField> addresses = [];
     for (final String fieldLine in contactFieldLines) {
-      await processContactFieldLine(res, phones, emails, addresses, fieldLine);
+      processContactFieldLine(res, phones, emails, addresses, fieldLine);
     }
     res.setPhoneInfos(phones);
     res.setEmailInfos(emails);

@@ -5,8 +5,8 @@ import 'package:po_contacts_flutter/model/data/labeled_field.dart';
 import 'package:po_contacts_flutter/view/baseuicomponents/poc_button.dart';
 
 class CategorizedEditableItem<T> {
-  LabeledFieldLabelType labelType;
-  String labelText;
+  LabeledFieldLabelType? labelType;
+  String? labelText;
   T fieldValue;
 
   CategorizedEditableItem(
@@ -17,8 +17,8 @@ class CategorizedEditableItem<T> {
 }
 
 class EditableItemCategory {
-  LabeledFieldLabelType labelType;
-  String labelValue;
+  LabeledFieldLabelType? labelType;
+  String? labelValue;
 
   EditableItemCategory(
     this.labelType,
@@ -30,12 +30,12 @@ class EditableItemCategory {
 
   @override
   bool operator ==(final Object o) =>
-      o is EditableItemCategory && o.labelType.index == labelType.index && o.labelValue == labelValue;
+      o is EditableItemCategory && o.labelType!.index == labelType!.index && o.labelValue == labelValue;
 }
 
-abstract class EditCategorizedItemsForm<F extends LabeledField<T>, T> extends StatefulWidget {
-  final List<F> initialItems;
-  final Function(List<F> updatedItems) onDataChanged;
+abstract class EditCategorizedItemsForm<F extends LabeledField<T?>, T> extends StatefulWidget {
+  final List<F>? initialItems;
+  final Function(List<F> updatedItems)? onDataChanged;
 
   EditCategorizedItemsForm(this.initialItems, {this.onDataChanged});
 
@@ -45,35 +45,35 @@ abstract class EditCategorizedItemsForm<F extends LabeledField<T>, T> extends St
     if (onDataChanged == null) {
       return;
     }
-    onDataChanged(_toGenericItems(currentItems));
+    onDataChanged!(_toGenericItems(currentItems as List<CategorizedEditableItem<T?>>));
   }
 
-  List<CategorizedEditableItem<T>> fromGenericItems(final List<F> genericItems) {
+  List<CategorizedEditableItem<T?>> fromGenericItems(final List<F>? genericItems) {
     if (genericItems == null) {
       return [];
     }
-    final List<CategorizedEditableItem<T>> res = [];
+    final List<CategorizedEditableItem<T?>> res = [];
     for (final F gi in genericItems) {
       res.add(fromGenericItem(gi));
     }
     return res;
   }
 
-  List<F> _toGenericItems(final List<CategorizedEditableItem<T>> categorizedItems) {
+  List<F> _toGenericItems(final List<CategorizedEditableItem<T?>> categorizedItems) {
     final List<F> res = [];
     for (final CategorizedEditableItem ci in categorizedItems) {
-      res.add(toGenericItem(ci));
+      res.add(toGenericItem(ci as CategorizedEditableItem<T?>));
     }
     return res;
   }
 
   List<LabeledFieldLabelType> getAllowedLabelTypes();
 
-  CategorizedEditableItem<T> fromGenericItem(final F item) {
-    return CategorizedEditableItem<T>(item.labelType, item.labelText, item.fieldValue);
+  CategorizedEditableItem<T?> fromGenericItem(final F item) {
+    return CategorizedEditableItem<T?>(item.labelType, item.labelText, item.fieldValue);
   }
 
-  F toGenericItem(final CategorizedEditableItem<T> item);
+  F toGenericItem(final CategorizedEditableItem<T?> item);
 
   T getEmptyItemValue();
 
@@ -93,9 +93,9 @@ abstract class EditCategorizedItemsForm<F extends LabeledField<T>, T> extends St
           value: parentState.getDropDownValue(item),
           icon: Icon(Icons.arrow_downward),
           iconSize: 24,
-          onChanged: (EditableItemCategory newValue) async {
-            if (newValue.labelType == LabeledFieldLabelType.CUSTOM && newValue.labelValue.isEmpty) {
-              final String customLabelString = await MainController.get().showTextInputDialog(I18n.string.custom_label);
+          onChanged: (EditableItemCategory? newValue) async {
+            if (newValue!.labelType == LabeledFieldLabelType.CUSTOM && newValue.labelValue!.isEmpty) {
+              final String? customLabelString = await MainController.get()!.showTextInputDialog(I18n.string.custom_label);
               if (customLabelString == null || customLabelString.isEmpty) {
                 return;
               }
@@ -133,9 +133,9 @@ abstract class EditCategorizedItemsForm<F extends LabeledField<T>, T> extends St
   );
 }
 
-class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<EditCategorizedItemsForm<F, T>> {
-  final Set<String> customLabelTypeNames = Set<String>();
-  final List<CategorizedEditableItem<T>> currentItems = [];
+class EditCategorizedItemsFormState<F extends LabeledField<T?>, T> extends State<EditCategorizedItemsForm<F, T?>> {
+  final Set<String?> customLabelTypeNames = Set<String?>();
+  final List<CategorizedEditableItem<T?>> currentItems = [];
 
   static Text dropDownTextWidget(final String text) {
     return Text(
@@ -158,10 +158,10 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
         child: dropDownTextWidget(labelText),
       ));
     }
-    for (final String customName in customLabelTypeNames) {
+    for (final String? customName in customLabelTypeNames) {
       res.add(DropdownMenuItem<EditableItemCategory>(
         value: EditableItemCategory(LabeledFieldLabelType.CUSTOM, customName),
-        child: dropDownTextWidget(customName),
+        child: dropDownTextWidget(customName!),
       ));
     }
     res.add(DropdownMenuItem<EditableItemCategory>(
@@ -188,15 +188,15 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
       bool addedField = false;
       for (final CategorizedEditableItem cei in editableItems) {
         if (cei.labelType == t) {
-          if (cei.labelType == LabeledFieldLabelType.CUSTOM && cei.labelText.isNotEmpty) {
+          if (cei.labelType == LabeledFieldLabelType.CUSTOM && cei.labelText!.isNotEmpty) {
             customLabelTypeNames.add(cei.labelText);
           }
-          currentItems.add(cei);
+          currentItems.add(cei as CategorizedEditableItem<T?>);
           addedField = true;
         }
       }
       if (t != LabeledFieldLabelType.CUSTOM && !addedField) {
-        currentItems.add(CategorizedEditableItem<T>(t, '', widget.getEmptyItemValue()));
+        currentItems.add(CategorizedEditableItem<T?>(t, '', widget.getEmptyItemValue()));
       }
     }
     super.initState();
@@ -207,7 +207,7 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
     final List<Widget> widgetRows = [];
     for (int i = 0; i < currentItems.length; i++) {
       final int itemIndex = i;
-      final CategorizedEditableItem<T> item = currentItems[itemIndex];
+      final CategorizedEditableItem<T?> item = currentItems[itemIndex];
       widgetRows.add(widget.buildWidgetRow(this, context, item, itemIndex));
     }
     widgetRows.add(
@@ -235,8 +235,8 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
 
   void setItemLabelValue(
     final CategorizedEditableItem<T> item,
-    final LabeledFieldLabelType labelType,
-    final String labelValue,
+    final LabeledFieldLabelType? labelType,
+    final String? labelValue,
   ) {
     setState(() {
       item.labelType = LabeledFieldLabelType.CUSTOM;
@@ -255,7 +255,7 @@ class EditCategorizedItemsFormState<F extends LabeledField<T>, T> extends State<
 
   void addEmptyItem() {
     setState(() {
-      currentItems.add(CategorizedEditableItem<T>(
+      currentItems.add(CategorizedEditableItem<T?>(
         widget.getAllowedLabelTypes()[0],
         '',
         widget.getEmptyItemValue(),

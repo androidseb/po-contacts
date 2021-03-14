@@ -13,11 +13,11 @@ class PrefForEmailAction extends MultiSelectionEntry {
 
   @override
   int readCurrentValue() {
-    return MainController.get().model.settings.appSettings.emailActionId;
+    return MainController.get()!.model.settings.appSettings!.emailActionId;
   }
 
   @override
-  void writeCurrentValue(final int v) {
-    MainController.get().model.settings.setEmailActionId(v);
+  void writeCurrentValue(final int? v) {
+    MainController.get()!.model.settings.setEmailActionId(v!);
   }
 }

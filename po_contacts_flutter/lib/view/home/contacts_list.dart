@@ -7,17 +7,17 @@ import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/view/misc/contacts_list.dart';
 
 class AllContactsList extends StatelessWidget {
-  AllContactsList({Key key}) : super(key: key);
+  AllContactsList({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return StreamedWidget<List<Contact>>(MainController.get().model.contactsListSV,
-        (final BuildContext context, final List<Contact> contacts) {
+    return StreamedWidget<List<Contact?>>(MainController.get()!.model.contactsListSV,
+        (final BuildContext context, final List<Contact?> contacts) {
       return buildWithContacts(context, contacts);
     });
   }
 
-  Widget buildWithContacts(final BuildContext context, final List<Contact> contactsList) {
-    if (MainController.get().model.storageInitialized) {
+  Widget buildWithContacts(final BuildContext context, final List<Contact?> contactsList) {
+    if (MainController.get()!.model.storageInitialized) {
       return ContactsList(contactsList, I18n.string.home_list_empty_placeholder_text);
     } else {
       return ContactsList(contactsList, I18n.string.loading);

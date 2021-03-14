@@ -13,9 +13,9 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 
 class VCFFileWriter extends VCFWriter {
   final FileEntity _file;
-  final String _encryptionKey;
+  final String? _encryptionKey;
   final List<String> _outputBuffer = [];
-  VCFFileWriter(final FilesManager filesManager, this._file, this._encryptionKey) : super(FileReader(filesManager));
+  VCFFileWriter(final FilesManager? filesManager, this._file, this._encryptionKey) : super(FileReader(filesManager));
 
   @override
   void writeStringImpl(String line) {
@@ -23,14 +23,14 @@ class VCFFileWriter extends VCFWriter {
   }
 
   @override
-  Future<void> flushOutputBuffer({TaskSetProgressCallback progressCallback}) async {
+  Future<void> flushOutputBuffer({TaskSetProgressCallback? progressCallback}) async {
     final String outputPlainText = _outputBuffer.join();
-    final Uint8List outputPlainBytes = utf8.encode(outputPlainText);
+    final Uint8List outputPlainBytes = utf8.encode(outputPlainText) as Uint8List;
     Uint8List outputFinalBytes;
-    if (_encryptionKey == null || _encryptionKey.isEmpty) {
+    if (_encryptionKey == null || _encryptionKey!.isEmpty) {
       outputFinalBytes = outputPlainBytes;
     } else {
-      final Uint8List fileHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
+      final Uint8List fileHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX) as Uint8List;
       final Uint8List outputEncryptedBytes = await EncryptionUtils.encryptData(
         outputPlainBytes,
         _encryptionKey,

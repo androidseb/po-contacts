@@ -4,8 +4,8 @@ import 'package:po_contacts_flutter/controller/platform/common/file_entity.dart'
 import 'package:po_contacts_flutter/controller/platform/common/files_manager.dart';
 
 class ContactPicture extends StatefulWidget {
-  final FilesManager filesManager = MainController.get().psController.filesManager;
-  final String imageFilePath;
+  final FilesManager? filesManager = MainController.get()!.psController.filesManager;
+  final String? imageFilePath;
   final double imageWidth;
   final double imageHeight;
   ContactPicture(this.imageFilePath, {this.imageWidth = 96, this.imageHeight = 96});
@@ -14,7 +14,7 @@ class ContactPicture extends StatefulWidget {
 }
 
 class _ContactPictureState extends State<ContactPicture> {
-  FileEntity _currentFile;
+  FileEntity? _currentFile;
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _ContactPictureState extends State<ContactPicture> {
       return;
     }
 
-    final FileEntity imageFile = await widget.filesManager.createFileEntityAbsPath(widget.imageFilePath);
+    final FileEntity imageFile = await widget.filesManager!.createFileEntityAbsPath(widget.imageFilePath);
     final bool fileExists = await imageFile.exists();
     if (!fileExists) {
       return;
@@ -47,9 +47,9 @@ class _ContactPictureState extends State<ContactPicture> {
 
   @override
   Widget build(BuildContext context) {
-    Widget imageWidget;
+    Widget? imageWidget;
     if (_currentFile != null && widget.filesManager != null) {
-      imageWidget = widget.filesManager.fileToImageWidget(
+      imageWidget = widget.filesManager!.fileToImageWidget(
         _currentFile,
         fit: BoxFit.cover,
         imageWidth: widget.imageWidth,

@@ -11,7 +11,7 @@ class SyncSummary extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return StreamedWidget<SyncState>(
-      MainController.get().syncController.syncStateSV,
+      MainController.get()!.syncController.syncStateSV,
       (final BuildContext context, final SyncState syncState) {
         return _buildFromSyncState(context);
       },
@@ -34,8 +34,8 @@ class SyncSummary extends StatelessWidget {
   }
 
   String _getTopText(final SyncController syncController) {
-    final String cloudIndexFileId = syncController.model?.cloudIndexFileId;
-    final String accountName = syncController.model?.accountName;
+    final String? cloudIndexFileId = syncController.model?.cloudIndexFileId;
+    final String? accountName = syncController.model?.accountName;
     if (cloudIndexFileId == null || accountName == null) {
       return I18n.getString(I18n.string.cloud_sync_off);
     } else {
@@ -44,7 +44,7 @@ class SyncSummary extends StatelessWidget {
   }
 
   String _getLastSyncTimeString(final SyncController syncController) {
-    final int lastSyncTimeEpochMillis = syncController.model?.lastSyncTimeEpochMillis;
+    final int? lastSyncTimeEpochMillis = syncController.model?.lastSyncTimeEpochMillis;
     if (lastSyncTimeEpochMillis == null) {
       return I18n.getString(I18n.string.last_sync_time_never);
     } else {
@@ -66,7 +66,7 @@ class SyncSummary extends StatelessWidget {
     return I18n.getString(syncButtonStringKey).toUpperCase();
   }
 
-  Function _getSyncButtonAction(final SyncController syncController) {
+  Function? _getSyncButtonAction(final SyncController syncController) {
     if (syncController.syncState == SyncState.SYNC_CANCELING) {
       return null;
     }
@@ -75,27 +75,27 @@ class SyncSummary extends StatelessWidget {
         return null;
       }
       return () {
-        MainController.get().syncController.startSync();
+        MainController.get()!.syncController.startSync();
       };
     } else if (syncController.syncState == SyncState.SYNC_IN_PROGRESS) {
       return () {
-        MainController.get().syncController.cancelSync();
+        MainController.get()!.syncController.cancelSync();
       };
     } else {
       return () {
-        MainController.get().syncController.showSyncOptionsMenu();
+        MainController.get()!.syncController.showSyncOptionsMenu();
       };
     }
   }
 
   Widget _buildFromSyncState(final BuildContext context) {
-    final SyncController syncController = MainController.get().syncController;
+    final SyncController syncController = MainController.get()!.syncController;
     final IconData syncIconData = _getIconData(syncController);
     final String syncStatusTopText = _getTopText(syncController);
     final String lastSyncTimeString = _getLastSyncTimeString(syncController);
     final String syncStatusBottomText = I18n.getString(I18n.string.last_sync_time_x, lastSyncTimeString);
     final String syncButtonText = _getSyncButtonText(syncController);
-    final Function syncButtonAction = _getSyncButtonAction(syncController);
+    final Function? syncButtonAction = _getSyncButtonAction(syncController);
     return Column(
       children: <Widget>[
         ListTile(
@@ -115,7 +115,7 @@ class SyncSummary extends StatelessWidget {
           subtitle: POCButton(
             buttonStyle: POCButtonStyle.ELEVATED,
             textString: syncButtonText,
-            onPressed: syncButtonAction,
+            onPressed: syncButtonAction as void Function()?,
           ),
         ),
         Divider(

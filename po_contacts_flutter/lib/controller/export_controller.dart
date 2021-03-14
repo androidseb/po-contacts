@@ -15,7 +15,7 @@ class ExportController {
 
   void exportAsVCF(
     final String encryptionKey,
-    final Iterable<int> targetContactIds,
+    final Iterable<int>? targetContactIds,
   ) async {
     if (_isExporting) {
       return;
@@ -28,12 +28,12 @@ class ExportController {
       tasks.add(POCTask.TASK_CODE_ENCRYPTING);
     }
     final TaskSetProgressCallback progressCallback = POCTaskSetProgressCallback.displayLoadingDialog(tasks);
-    final String outputFilesDirPath =
-        await MainController.get().psController.fileTransitManager.getOutputFilesDirectoryPath();
+    final String? outputFilesDirPath =
+        await MainController.get()!.psController.fileTransitManager!.getOutputFilesDirectoryPath();
     final String dateTimeStr = Utils.dateTimeToString();
-    final FileEntity destFile = await MainController.get()
+    final FileEntity destFile = await MainController.get()!
         .psController
-        .filesManager
+        .filesManager!
         .createFileEntityParentAndName(outputFilesDirPath, 'contacts_$dateTimeStr.vcf');
     try {
       await _exportAsVCFToFile(destFile, encryptionKey, targetContactIds, progressCallback);
@@ -42,9 +42,9 @@ class ExportController {
       progressCallback.reportAllTasksFinished(POCTaskSetProgressCallback.TASK_PROGRESS_COMPLETED_SUCCESS);
     }
     final String sharePromptTitle = I18n.getString(I18n.string.share_prompt_title);
-    await MainController.get().psController.fileTransitManager.shareFileExternally(sharePromptTitle, destFile);
-    if (MainController.get().psController.basicInfoManager.isAndroid) {
-      MainController.get().showMessageDialog(
+    await MainController.get()!.psController.fileTransitManager!.shareFileExternally(sharePromptTitle, destFile);
+    if (MainController.get()!.psController.basicInfoManager!.isAndroid!) {
+      MainController.get()!.showMessageDialog(
         I18n.getString(I18n.string.export_completed),
         I18n.getString(I18n.string.exported_contacts_to_file_x, destFile.getAbsolutePath()),
       );
@@ -54,10 +54,10 @@ class ExportController {
   Future<void> _exportAsVCFToFile(
     final FileEntity outputFile,
     final String encryptionKey,
-    final Iterable<int> targetContactIds,
+    final Iterable<int>? targetContactIds,
     final TaskSetProgressCallback progressCallback,
   ) async {
-    final List<Contact> targetContacts = List.from(MainController.get().model.contactsList);
+    final List<Contact> targetContacts = List.from(MainController.get()!.model.contactsList!);
     if (targetContactIds != null) {
       for (int i = targetContacts.length - 1; i >= 0; i--) {
         final Contact c = targetContacts[i];
@@ -70,17 +70,17 @@ class ExportController {
   }
 
   static Future<void> exportAsVCFToFile(
-    final List<Contact> contacts,
+    final List<Contact?> contacts,
     final FileEntity outputFile,
-    final String encryptionKey, {
-    TaskSetProgressCallback progressCallback,
+    final String? encryptionKey, {
+    TaskSetProgressCallback? progressCallback,
   }) async {
     if (await outputFile.exists()) {
       await outputFile.delete();
     }
     await outputFile.create();
     final VCFWriter vcfWriter = VCFFileWriter(
-      MainController.get().psController.filesManager,
+      MainController.get()!.psController.filesManager,
       outputFile,
       encryptionKey,
     );

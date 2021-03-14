@@ -43,9 +43,9 @@ abstract class LabeledField<T> {
   static const String FIELD_LABEL_VALUE = 'label_value';
   static const String FIELD_TEXT_VALUE = 'text_value';
 
-  static LabeledFieldLabelType stringToLabeledFieldLabelType(
-      final String str, final LabeledFieldLabelType defaultValue) {
-    final LabeledFieldLabelType lfLabelType = _stringToLfLabelType[str.toLowerCase()];
+  static LabeledFieldLabelType? stringToLabeledFieldLabelType(
+      final String str, final LabeledFieldLabelType? defaultValue) {
+    final LabeledFieldLabelType? lfLabelType = _stringToLfLabelType[str.toLowerCase()];
     if (lfLabelType == null) {
       return defaultValue;
     } else {
@@ -53,7 +53,7 @@ abstract class LabeledField<T> {
     }
   }
 
-  static String getTypeNameStringKey(final LabeledFieldLabelType labelType) {
+  static String getTypeNameStringKey(final LabeledFieldLabelType? labelType) {
     switch (labelType) {
       case LabeledFieldLabelType.WORK:
         return I18n.string.label_type_work;
@@ -71,7 +71,7 @@ abstract class LabeledField<T> {
     return '???';
   }
 
-  static String getLabelTypeDisplayText(final LabeledField entry) {
+  static String? getLabelTypeDisplayText(final LabeledField entry) {
     if (entry.labelType == LabeledFieldLabelType.CUSTOM) {
       return entry.labelText;
     } else {
@@ -79,7 +79,7 @@ abstract class LabeledField<T> {
     }
   }
 
-  static List<Map<String, dynamic>> fieldsToMapList(final List<LabeledField> labeledFields) {
+  static List<Map<String, dynamic>> fieldsToMapList(final List<LabeledField>? labeledFields) {
     final List<Map<String, dynamic>> res = [];
     if (labeledFields == null) {
       return res;
@@ -90,8 +90,8 @@ abstract class LabeledField<T> {
     return res;
   }
 
-  static String labeledFieldLabelTypeToString(final LabeledFieldLabelType _lfLabelType) {
-    final String lfLabelTypeString = _lfLabelTypeToString[_lfLabelType];
+  static String labeledFieldLabelTypeToString(final LabeledFieldLabelType? _lfLabelType) {
+    final String? lfLabelTypeString = _lfLabelTypeToString[_lfLabelType!];
     if (lfLabelTypeString == null) {
       return LABEL_FIELD_TYPE_WORK;
     } else {
@@ -109,39 +109,39 @@ abstract class LabeledField<T> {
 
   static List<LabeledField> fromMapList(
     final List<dynamic> destList,
-    final List<dynamic> mapList,
+    final List<dynamic>? mapList,
     final LabeledField Function(
-      LabeledFieldLabelType labelType,
-      String labelText,
+      LabeledFieldLabelType? labelType,
+      String? labelText,
       dynamic fieldValue,
     )
         createFieldFunc,
   ) {
     if (mapList == null) {
-      return destList;
+      return destList as List<LabeledField<dynamic>>;
     }
     for (final dynamic map in mapList) {
       if (map is Map<String, dynamic>) {
         destList.add(_fromMap(map, createFieldFunc));
       }
     }
-    return destList;
+    return destList as List<LabeledField<dynamic>>;
   }
 
   static LabeledField _fromMap(
     final Map<String, dynamic> _map,
     final LabeledField Function(
-      LabeledFieldLabelType labelType,
-      String labelText,
+      LabeledFieldLabelType? labelType,
+      String? labelText,
       dynamic fieldValue,
     )
         createFieldFunc,
   ) {
-    final LabeledFieldLabelType labelType = LabeledField.stringToLabeledFieldLabelType(
+    final LabeledFieldLabelType? labelType = LabeledField.stringToLabeledFieldLabelType(
       _map[FIELD_LABEL_TYPE],
       LabeledFieldLabelType.WORK,
     );
-    final String labelText = _map[FIELD_LABEL_VALUE];
+    final String? labelText = _map[FIELD_LABEL_VALUE];
     final dynamic fieldValue = _map[FIELD_TEXT_VALUE];
     return createFieldFunc(
       labelType,
@@ -150,8 +150,8 @@ abstract class LabeledField<T> {
     );
   }
 
-  final LabeledFieldLabelType labelType;
-  final String labelText;
+  final LabeledFieldLabelType? labelType;
+  final String? labelText;
   final T fieldValue;
 
   LabeledField(

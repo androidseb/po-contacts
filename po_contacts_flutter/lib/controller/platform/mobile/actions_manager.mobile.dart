@@ -5,12 +5,12 @@ import 'package:po_contacts_flutter/controller/platform/common/actions_manager.d
 
 class ActionsManagerMobile extends ActionsManager {
   @override
-  void copyTextToClipBoard(final String text) {
+  void copyTextToClipBoard(final String? text) {
     Clipboard.setData(ClipboardData(text: text));
   }
 
   @override
-  void startEmail(final String targetEmailAddress) {
+  void startEmail(final String? targetEmailAddress) {
     launch('mailto:$targetEmailAddress');
   }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:image/image.dart' as dartImgLib;
 import 'package:flutter/material.dart';
@@ -26,17 +27,17 @@ import 'package:po_contacts_flutter/view/settings/settings_page.dart';
 class MainController {
   static const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
 
-  static MainController _controller;
+  static MainController? _controller;
 
-  static MainController get() {
+  static MainController? get() {
     if (_controller == null) {
       _controller = MainController();
-      _controller._initializeMainController();
+      _controller!._initializeMainController();
     }
     return _controller;
   }
 
-  BuildContext _context;
+  BuildContext? _context;
   final MainModel _model = MainModel();
   final ContactsSearchDelegate _contactsSearchDelegate = ContactsSearchDelegate();
   final PlatformSpecificController _psController = PlatformSpecificController();
@@ -46,7 +47,7 @@ class MainController {
 
   void _initializeMainController() async {
     _model.initializeMainModel(_psController.contactsStorage);
-    SystemChannels.lifecycle.setMessageHandler((final String msg) async {
+    SystemChannels.lifecycle.setMessageHandler((final String? msg) async {
       if (msg == AppLifecycleState.resumed.toString()) {
         _importController.startImportIfNeeded();
       }
@@ -55,12 +56,12 @@ class MainController {
     _importController.startImportIfNeeded();
     _syncController.checkForRemoteChanges();
     await model.settings.waitForSettingsLoaded();
-    if (model.settings.appSettings.syncOnAppStart) {
+    if (model.settings.appSettings!.syncOnAppStart) {
       _syncController.startSync(directUserAction: false);
     }
   }
 
-  BuildContext get context => _context;
+  BuildContext? get context => _context;
 
   MainModel get model => _model;
 
@@ -75,7 +76,7 @@ class MainController {
     _context = context;
   }
 
-  void _startEditContact(final int contactId) {
+  void _startEditContact(final int? contactId) {
     if (_context == null) {
       return;
     }
@@ -83,7 +84,7 @@ class MainController {
       syncController.promptUserActionCanceledBySync();
       return;
     }
-    Navigator.push<Object>(_context, MaterialPageRoute(
+    Navigator.push<Object>(_context!, MaterialPageRoute(
       builder: (final BuildContext context) {
         return EditContactPage(contactId);
       },
@@ -104,7 +105,7 @@ class MainController {
     _startEditContact(contactId);
   }
 
-  void saveContact(final int contactId, final ContactData targetContactData) {
+  void saveContact(final int? contactId, final ContactData targetContactData) {
     if (_context == null) {
       return;
     }
@@ -120,17 +121,17 @@ class MainController {
       this._model.overwriteContact(contactId, targetContactData);
     }
     _syncController.recordLocalDataChanged();
-    if (model.settings.appSettings.syncOnDataEdit) {
+    if (model.settings.appSettings!.syncOnDataEdit) {
       _syncController.startSync(directUserAction: false);
     }
-    Navigator.pop(_context);
+    Navigator.pop(_context!);
   }
 
   void startViewContact(final int contactId) {
     if (_context == null) {
       return;
     }
-    Navigator.push<Object>(_context, MaterialPageRoute(
+    Navigator.push<Object>(_context!, MaterialPageRoute(
       builder: (final BuildContext context) {
         return ViewContactPage(contactId);
       },
@@ -157,8 +158,8 @@ class MainController {
     startDeleteContacts([contactId]);
   }
 
-  void startDeleteContacts(final Iterable<int> contactIds) async {
-    if (_context == null || contactIds.isEmpty) {
+  void startDeleteContacts(final Iterable<int>? contactIds) async {
+    if (_context == null || contactIds!.isEmpty) {
       return;
     }
 
@@ -180,18 +181,18 @@ class MainController {
     );
 
     if (userConfirmedDeletion) {
-      await this._model.deleteContacts(contactIds);
+      this._model.deleteContacts(contactIds);
       _syncController.recordLocalDataChanged();
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
+      if (Navigator.canPop(context!)) {
+        Navigator.pop(context!);
       }
       refreshSearch();
     }
   }
 
   Future<String> promptUserForPasswordUsage({
-    @required final String promptTitle,
-    @required final String promptMessage,
+    required final String promptTitle,
+    required final String promptMessage,
     final bool barrierDismissible = false,
   }) async {
     final Completer<String> passwordCompleter = Completer<String>();
@@ -199,7 +200,7 @@ class MainController {
       return passwordCompleter.future;
     }
     showDialog<Object>(
-      context: _context,
+      context: _context!,
       barrierDismissible: barrierDismissible,
       builder: (final BuildContext context) {
         return AlertDialog(
@@ -223,7 +224,7 @@ class MainController {
               textI18nKey: I18n.string.encrypt_option_encrypted,
               onPressed: () async {
                 Navigator.of(context).pop();
-                final String encryptionKey = await showTextInputDialog(
+                final String? encryptionKey = await showTextInputDialog(
                   I18n.getString(I18n.string.enter_password),
                   isPassword: true,
                 );
@@ -240,7 +241,7 @@ class MainController {
     return passwordCompleter.future;
   }
 
-  void startExportAsVCF({final Iterable<int> targetContactIds = null}) async {
+  void startExportAsVCF({final Iterable<int>? targetContactIds = null}) async {
     final String promptTitleStringKey =
         targetContactIds == null ? I18n.string.export_all_as_vcf : I18n.string.export_selected_as_vcf;
     final String encryptionPassword = await promptUserForPasswordUsage(
@@ -252,7 +253,7 @@ class MainController {
 
   void showMessageDialog(final String title, final String message) {
     showDialog<Object>(
-      context: _context,
+      context: _context!,
       builder: (final BuildContext context) {
         return AlertDialog(
           title: Text(title),
@@ -276,7 +277,7 @@ class MainController {
     );
   }
 
-  Future<String> showTextInputDialog(
+  Future<String?> showTextInputDialog(
     final String hintStringKey, {
     bool isPassword: false,
   }) async {
@@ -287,7 +288,7 @@ class MainController {
     final String hintText = I18n.getString(hintStringKey);
     final TextEditingController textFieldController = TextEditingController();
     showDialog<Object>(
-        context: _context,
+        context: _context!,
         builder: (context) {
           return AlertDialog(
             title: Text(hintText),
@@ -318,56 +319,56 @@ class MainController {
     return futureEnteredText.future;
   }
 
-  void showContactQuickActionsMenu(final Contact contact) {
+  void showContactQuickActionsMenu(final Contact? contact) {
     if (_context == null) {
       return;
     }
     final List<Widget> listOptions = [];
-    for (final StringLabeledField pi in contact.phoneInfos) {
-      final String phoneStr = LabeledField.getLabelTypeDisplayText(pi) + ' (${pi.fieldValue})';
+    for (final StringLabeledField pi in contact!.phoneInfos) {
+      final String phoneStr = LabeledField.getLabelTypeDisplayText(pi)! + ' (${pi.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.content_copy),
         title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, phoneStr)),
         onTap: () {
-          Navigator.of(_context).pop();
-          psController.actionsManager.copyTextToClipBoard(pi.fieldValue);
+          Navigator.of(_context!).pop();
+          psController.actionsManager!.copyTextToClipBoard(pi.fieldValue);
         },
       ));
       listOptions.add(ListTile(
         leading: Icon(Icons.phone),
         title: Text(I18n.getString(I18n.string.call_x, phoneStr)),
         onTap: () {
-          Navigator.of(_context).pop();
-          psController.actionsManager.startPhoneCall(pi.fieldValue);
+          Navigator.of(_context!).pop();
+          psController.actionsManager!.startPhoneCall(pi.fieldValue);
         },
       ));
-      if (MainController.get().psController.basicInfoManager.isNotDesktop) {
+      if (MainController.get()!.psController.basicInfoManager!.isNotDesktop) {
         listOptions.add(ListTile(
           leading: Icon(Icons.message),
           title: Text(I18n.getString(I18n.string.text_x, phoneStr)),
           onTap: () {
-            Navigator.of(_context).pop();
-            psController.actionsManager.startSMS(pi.fieldValue);
+            Navigator.of(_context!).pop();
+            psController.actionsManager!.startSMS(pi.fieldValue);
           },
         ));
       }
     }
     for (final StringLabeledField ei in contact.emailInfos) {
-      final String emailStr = LabeledField.getLabelTypeDisplayText(ei) + ' (${ei.fieldValue})';
+      final String emailStr = LabeledField.getLabelTypeDisplayText(ei)! + ' (${ei.fieldValue})';
       listOptions.add(ListTile(
         leading: Icon(Icons.content_copy),
         title: Text(I18n.getString(I18n.string.copy_to_clipboard_x, emailStr)),
         onTap: () {
-          Navigator.of(_context).pop();
-          psController.actionsManager.copyTextToClipBoard(ei.fieldValue);
+          Navigator.of(_context!).pop();
+          psController.actionsManager!.copyTextToClipBoard(ei.fieldValue);
         },
       ));
       listOptions.add(ListTile(
         leading: Icon(Icons.mail),
         title: Text(I18n.getString(I18n.string.email_x, emailStr)),
         onTap: () {
-          Navigator.of(_context).pop();
-          psController.actionsManager.startEmail(ei.fieldValue);
+          Navigator.of(_context!).pop();
+          psController.actionsManager!.startEmail(ei.fieldValue);
         },
       ));
     }
@@ -375,28 +376,28 @@ class MainController {
       leading: Icon(Icons.edit),
       title: Text(I18n.getString(I18n.string.edit_contact)),
       onTap: () {
-        Navigator.of(_context).pop();
-        MainController.get().startEditContact(contact.id);
+        Navigator.of(_context!).pop();
+        MainController.get()!.startEditContact(contact.id);
       },
     ));
     listOptions.add(ListTile(
       leading: Icon(Icons.delete),
       title: Text(I18n.getString(I18n.string.delete_contact)),
       onTap: () {
-        Navigator.of(_context).pop();
-        MainController.get().startDeleteContact(contact.id);
+        Navigator.of(_context!).pop();
+        MainController.get()!.startDeleteContact(contact.id);
       },
     ));
     listOptions.add(ListTile(
       leading: Icon(Icons.share),
       title: Text(I18n.getString(I18n.string.export_contact)),
       onTap: () {
-        Navigator.of(_context).pop();
-        MainController.get().startExportAsVCF(targetContactIds: [contact.id]);
+        Navigator.of(_context!).pop();
+        MainController.get()!.startExportAsVCF(targetContactIds: [contact.id]);
       },
     ));
     showDialog<Object>(
-        context: _context,
+        context: _context!,
         builder: (context) {
           return AlertDialog(
             title: Text(I18n.getString(I18n.string.quick_actions)),
@@ -422,7 +423,7 @@ class MainController {
       return;
     }
     showDialog<Object>(
-        context: _context,
+        context: _context!,
         builder: (context) {
           return AlertDialog(
             title: Text(I18n.getString(I18n.string.action_on_selected)),
@@ -433,7 +434,7 @@ class MainController {
                     leading: Icon(Icons.share),
                     title: Text(I18n.getString(I18n.string.export_selected_as_vcf)),
                     onTap: () {
-                      Navigator.of(_context).pop();
+                      Navigator.of(_context!).pop();
                       startExportAsVCF(targetContactIds: model.selectedContactIds);
                     },
                   ),
@@ -441,7 +442,7 @@ class MainController {
                     leading: Icon(Icons.delete),
                     title: Text(I18n.getString(I18n.string.delete_selected_contacts)),
                     onTap: () {
-                      Navigator.of(_context).pop();
+                      Navigator.of(_context!).pop();
                       startDeleteContacts(model.selectedContactIds);
                     },
                   ),
@@ -465,7 +466,7 @@ class MainController {
       return;
     }
     showSearch(
-      context: _context,
+      context: _context!,
       delegate: _contactsSearchDelegate,
       query: query,
     );
@@ -481,13 +482,13 @@ class MainController {
   }
 
   Future<bool> promptUserForYesNoQuestion({
-    @required final String titleText,
-    @required final String messageText,
+    required final String titleText,
+    required final String messageText,
     final bool barrierDismissible = false,
   }) {
     final Completer<bool> userResponseCompleter = Completer<bool>();
     showDialog<Object>(
-      context: _context,
+      context: _context!,
       barrierDismissible: barrierDismissible,
       builder: (final BuildContext context) {
         return AlertDialog(
@@ -521,16 +522,16 @@ class MainController {
     return userResponseCompleter.future;
   }
 
-  Future<FileEntity> createNewImageFile(final String fileExtension) async {
+  Future<FileEntity?> createNewImageFile(final String fileExtension) async {
     if (!MainController.ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
       return null;
     }
-    final String internalAppDirectoryPath = await psController.filesManager.getApplicationDocumentsDirectoryPath();
+    final String internalAppDirectoryPath = await psController.filesManager!.getApplicationDocumentsDirectoryPath();
     while (true) {
       final String targetFileName = '${Utils.currentTimeMillis()}$fileExtension';
-      final FileEntity fileEntity = await MainController.get()
+      final FileEntity fileEntity = await MainController.get()!
           .psController
-          .filesManager
+          .filesManager!
           .createFileEntityParentAndName(internalAppDirectoryPath, targetFileName);
       if (!await fileEntity.exists()) {
         await fileEntity.create();
@@ -539,8 +540,8 @@ class MainController {
     }
   }
 
-  Future<FileEntity> pickImageFile({final int maxSize = null}) async {
-    final FileEntity selectedImageFile = await _pickImageFileWithOS();
+  Future<FileEntity?> pickImageFile({final int? maxSize = null}) async {
+    final FileEntity? selectedImageFile = await _pickImageFileWithOS();
     if (selectedImageFile == null) {
       return null;
     }
@@ -559,7 +560,7 @@ class MainController {
 
   Future<void> _resizeImage(final FileEntity imageFile, final int maxSize) async {
     showDialog<Object>(
-      context: _context,
+      context: _context!,
       barrierDismissible: false,
       builder: (final BuildContext context) {
         return AlertDialog(
@@ -576,7 +577,7 @@ class MainController {
     );
     await Future<void>.delayed(const Duration(milliseconds: 300));
     try {
-      final dartImgLib.Image image = dartImgLib.decodeImage(await imageFile.readAsBinaryData());
+      final dartImgLib.Image image = dartImgLib.decodeImage(await imageFile.readAsBinaryData())!;
       if (image.width > maxSize || image.height > maxSize) {
         dartImgLib.Image thumbnail;
         if (image.width > image.height) {
@@ -584,23 +585,23 @@ class MainController {
         } else {
           thumbnail = dartImgLib.copyResize(image, height: maxSize);
         }
-        imageFile.writeAsUint8List(dartImgLib.encodePng(thumbnail));
+        imageFile.writeAsUint8List(dartImgLib.encodePng(thumbnail) as Uint8List?);
       }
     } finally {
-      Navigator.pop(context);
+      Navigator.pop(context!);
     }
   }
 
-  Future<FileEntity> _pickImageFileWithOS() async {
+  Future<FileEntity?> _pickImageFileWithOS() async {
     if (_context == null) {
       return null;
     }
-    if (psController.basicInfoManager.isDesktop) {
-      return psController.filesManager.pickImageFile(ImageFileSource.FILE_PICKER);
+    if (psController.basicInfoManager!.isDesktop!) {
+      return psController.filesManager!.pickImageFile(ImageFileSource.FILE_PICKER);
     }
     final Completer<FileEntity> futureSelectedFile = Completer<FileEntity>();
     showDialog<Object>(
-        context: _context,
+        context: _context!,
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
@@ -612,18 +613,18 @@ class MainController {
                     leading: Icon(Icons.image),
                     title: Text(I18n.getString(I18n.string.from_gallery)),
                     onTap: () async {
-                      Navigator.of(_context).pop();
-                      futureSelectedFile
-                          .complete(await psController.filesManager.pickImageFile(ImageFileSource.GALLERY));
+                      Navigator.of(_context!).pop();
+                      futureSelectedFile.complete(await (psController.filesManager!
+                          .pickImageFile(ImageFileSource.GALLERY) as Future<FileEntity>?));
                     },
                   ),
                   ListTile(
                     leading: Icon(Icons.camera),
                     title: Text(I18n.getString(I18n.string.from_camera)),
                     onTap: () async {
-                      Navigator.of(_context).pop();
-                      futureSelectedFile
-                          .complete(await psController.filesManager.pickImageFile(ImageFileSource.CAMERA));
+                      Navigator.of(_context!).pop();
+                      futureSelectedFile.complete(await (psController.filesManager!
+                          .pickImageFile(ImageFileSource.CAMERA) as Future<FileEntity>?));
                     },
                   )
                 ],
@@ -644,14 +645,14 @@ class MainController {
   }
 
   void startImportVCF() async {
-    if (psController.basicInfoManager.isNotDesktop) {
+    if (psController.basicInfoManager!.isNotDesktop) {
       showMessageDialog(
         I18n.getString(I18n.string.import_file_title),
         I18n.getString(I18n.string.import_file_mobile_helper_text),
       );
       return;
     }
-    await psController.fileTransitManager.getCopiedInboxFilePath(null);
+    await psController.fileTransitManager!.getCopiedInboxFilePath(null);
     _importController.startImportIfNeeded();
   }
 
@@ -659,7 +660,7 @@ class MainController {
     if (_context == null) {
       return;
     }
-    Navigator.push<Object>(_context, MaterialPageRoute(
+    Navigator.push<Object>(_context!, MaterialPageRoute(
       builder: (final BuildContext context) {
         return SettingsPage();
       },
@@ -673,18 +674,18 @@ class MainController {
     for (final MultiSelectionChoice c in availableEntries) {
       choicesWidgets.add(ListTile(
         leading: c.iconData == null ? null : Icon(c.iconData),
-        title: Text(c.entryLabel),
+        title: Text(c.entryLabel!),
         onTap: () async {
-          Navigator.of(_context).pop();
+          Navigator.of(_context!).pop();
           if (c.onSelected != null) {
-            c.onSelected();
+            c.onSelected!();
           }
           futureSelectedChoice.complete(c);
         },
       ));
     }
     showDialog<Object>(
-        context: _context,
+        context: _context!,
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(

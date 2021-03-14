@@ -25,13 +25,13 @@ class AddressInfo {
   final String country;
 
   AddressInfo(
-    final String postOfficeBox,
-    final String extendedAddress,
-    final String streetAddress,
-    final String locality,
-    final String region,
-    final String postalCode,
-    final String country,
+    final String? postOfficeBox,
+    final String? extendedAddress,
+    final String? streetAddress,
+    final String? locality,
+    final String? region,
+    final String? postalCode,
+    final String? country,
   )   : this.postOfficeBox = postOfficeBox ?? '',
         this.extendedAddress = extendedAddress ?? '',
         this.streetAddress = streetAddress ?? '',
@@ -40,56 +40,56 @@ class AddressInfo {
         this.postalCode = postalCode ?? '',
         this.country = country ?? '';
 
-  NormalizedString _nPostOfficeBox;
-  NormalizedString get nPostOfficeBox {
+  NormalizedString? _nPostOfficeBox;
+  NormalizedString? get nPostOfficeBox {
     if (_nPostOfficeBox == null) {
       _nPostOfficeBox = NormalizedString(postOfficeBox);
     }
     return _nPostOfficeBox;
   }
 
-  NormalizedString _nExtendedAddress;
-  NormalizedString get nExtendedAddress {
+  NormalizedString? _nExtendedAddress;
+  NormalizedString? get nExtendedAddress {
     if (_nExtendedAddress == null) {
       _nExtendedAddress = NormalizedString(extendedAddress);
     }
     return _nExtendedAddress;
   }
 
-  NormalizedString _nStreetAddress;
-  NormalizedString get nStreetAddress {
+  NormalizedString? _nStreetAddress;
+  NormalizedString? get nStreetAddress {
     if (_nStreetAddress == null) {
       _nStreetAddress = NormalizedString(streetAddress);
     }
     return _nStreetAddress;
   }
 
-  NormalizedString _nLocality;
-  NormalizedString get nLocality {
+  NormalizedString? _nLocality;
+  NormalizedString? get nLocality {
     if (_nLocality == null) {
       _nLocality = NormalizedString(locality);
     }
     return _nLocality;
   }
 
-  NormalizedString _nRegion;
-  NormalizedString get nRegion {
+  NormalizedString? _nRegion;
+  NormalizedString? get nRegion {
     if (_nRegion == null) {
       _nRegion = NormalizedString(region);
     }
     return _nRegion;
   }
 
-  NormalizedString _nPostalCode;
-  NormalizedString get nPostalCode {
+  NormalizedString? _nPostalCode;
+  NormalizedString? get nPostalCode {
     if (_nPostalCode == null) {
       _nPostalCode = NormalizedString(postalCode);
     }
     return _nPostalCode;
   }
 
-  NormalizedString _nCountry;
-  NormalizedString get nCountry {
+  NormalizedString? _nCountry;
+  NormalizedString? get nCountry {
     if (_nCountry == null) {
       _nCountry = NormalizedString(country);
     }
@@ -145,7 +145,7 @@ class AddressInfo {
     return res.toString();
   }
 
-  static bool areEqual(final AddressInfo item1, final AddressInfo item2) {
+  static bool areEqual(final AddressInfo? item1, final AddressInfo? item2) {
     if (item1 == item2) {
       return true;
     }

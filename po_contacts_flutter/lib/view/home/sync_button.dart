@@ -10,7 +10,7 @@ class SyncButton extends StatefulWidget {
 }
 
 class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return StreamedWidget<SyncState>(
-      MainController.get().syncController.syncStateSV,
+      MainController.get()!.syncController.syncStateSV,
       (BuildContext context, SyncState syncState) {
         if (syncState == SyncState.SYNC_IN_PROGRESS || syncState == SyncState.SYNC_CANCELING) {
           _animationController.repeat();
@@ -38,7 +38,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
           _animationController.stop();
           _animationController.reset();
         }
-        final IconData iconData = MainController.get().syncController.lastSyncError == null ||
+        final IconData iconData = MainController.get()!.syncController.lastSyncError == null ||
                 syncState == SyncState.SYNC_IN_PROGRESS ||
                 syncState == SyncState.SYNC_CANCELING
             ? Icons.sync
@@ -53,7 +53,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                     if (syncState == SyncState.SYNC_IN_PROGRESS || syncState == SyncState.SYNC_CANCELING) {
                       return;
                     }
-                    MainController.get().syncController.startSync();
+                    MainController.get()!.syncController.startSync();
                   },
           ),
         );

@@ -10,11 +10,11 @@ class PrefForSyncOnDataEdit extends BoolSettingEntry {
 
   @override
   bool readCurrentValue() {
-    return MainController.get().model.settings.appSettings.syncOnDataEdit;
+    return MainController.get()!.model.settings.appSettings!.syncOnDataEdit;
   }
 
   @override
-  void writeCurrentValue(final bool v) {
-    MainController.get().model.settings.setSyncOnDataEdit(v);
+  void writeCurrentValue(final bool? v) {
+    MainController.get()!.model.settings.setSyncOnDataEdit(v!);
   }
 }

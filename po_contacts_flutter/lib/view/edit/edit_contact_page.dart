@@ -5,21 +5,21 @@ import 'package:po_contacts_flutter/model/data/contact.dart';
 import 'package:po_contacts_flutter/view/edit/edit_contact_form.dart';
 
 class EditContactPage extends StatefulWidget {
-  final int contactId;
+  final int? contactId;
 
-  EditContactPage(this.contactId, {Key key}) : super(key: key);
+  EditContactPage(this.contactId, {Key? key}) : super(key: key);
 
   _EditContactPageState createState() => _EditContactPageState();
 }
 
 class _EditContactPageState extends State<EditContactPage> {
-  EditContactFormController editContactFormController;
+  EditContactFormController? editContactFormController;
 
   @override
   Widget build(BuildContext context) {
     final String titleStringKey = widget.contactId == null ? I18n.string.new_contact : I18n.string.edit_contact;
     final String titleText = I18n.getString(titleStringKey);
-    final Contact currentContact = MainController.get().model.getContactById(widget.contactId);
+    final Contact? currentContact = MainController.get()!.model.getContactById(widget.contactId);
     return Scaffold(
       appBar: AppBar(
         title: Text(titleText),
@@ -39,7 +39,7 @@ class _EditContactPageState extends State<EditContactPage> {
           editContactFormController = controller;
         },
         onContactSaveRequested: (final ContactData contactData) {
-          MainController.get().saveContact(widget.contactId, contactData);
+          MainController.get()!.saveContact(widget.contactId, contactData);
         },
       ),
     );

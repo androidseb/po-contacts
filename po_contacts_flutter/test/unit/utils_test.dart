@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class MD5TestEntry {
-  final String strInput;
-  final String expectedOutput;
+  final String? strInput;
+  final String? expectedOutput;
 
   const MD5TestEntry({this.strInput, this.expectedOutput});
 }
@@ -30,7 +30,7 @@ const TEST_DATA_SET = [
 void testAreListsEqual(
   final List<String> list1,
   final List<String> list2,
-  bool equalsFunction(final String a, final String b),
+  bool equalsFunction(final String a, final String b)?,
   bool expectedResult,
 ) {
   expect(Utils.areListsEqual(list1, list2, equalsFunction: equalsFunction), expectedResult);
@@ -39,8 +39,8 @@ void testAreListsEqual(
 void main() {
   test('Can convert a string to md5', () async {
     for (final MD5TestEntry testEntry in TEST_DATA_SET) {
-      final String strInput = testEntry.strInput;
-      final String expectedOutput = testEntry.expectedOutput;
+      final String strInput = testEntry.strInput!;
+      final String? expectedOutput = testEntry.expectedOutput;
       final String actualOutput = Utils.stringToMD5(strInput);
       expect(actualOutput, expectedOutput);
     }

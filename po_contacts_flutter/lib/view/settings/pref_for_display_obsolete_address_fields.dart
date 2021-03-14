@@ -10,11 +10,11 @@ class PrefForDisplayObsoleteAddressFields extends BoolSettingEntry {
 
   @override
   bool readCurrentValue() {
-    return MainController.get().model.settings.appSettings.displayObsoleteAddressFields;
+    return MainController.get()!.model.settings.appSettings!.displayObsoleteAddressFields;
   }
 
   @override
-  void writeCurrentValue(final bool v) {
-    MainController.get().model.settings.setDisplayObsoleteAddressFields(v);
+  void writeCurrentValue(final bool? v) {
+    MainController.get()!.model.settings.setDisplayObsoleteAddressFields(v!);
   }
 }

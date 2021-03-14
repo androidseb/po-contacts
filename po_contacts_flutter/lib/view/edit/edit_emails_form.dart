@@ -5,8 +5,8 @@ import 'package:po_contacts_flutter/model/data/string_labeled_field.dart';
 import 'package:po_contacts_flutter/view/edit/edit_cat_string_items_form.dart';
 
 class EditEmailsForm extends EditCategorizedStringItemsForm {
-  EditEmailsForm(final List<StringLabeledField> initialEmailInfos,
-      {final Function(List<StringLabeledField> updatedItems) onDataChanged})
+  EditEmailsForm(final List<StringLabeledField>? initialEmailInfos,
+      {final Function(List<StringLabeledField> updatedItems)? onDataChanged})
       : super(initialEmailInfos, onDataChanged: onDataChanged);
 
   @override
@@ -29,7 +29,7 @@ class EditEmailsForm extends EditCategorizedStringItemsForm {
   }
 
   @override
-  String validateValue(final String value) {
+  String? validateValue(final String? value) {
     if (value == null || value.trim().isEmpty) {
       return null;
     }

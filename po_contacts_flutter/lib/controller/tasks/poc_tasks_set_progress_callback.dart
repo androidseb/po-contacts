@@ -40,7 +40,7 @@ class POCTaskSetProgressCallback extends TaskSetProgressCallback {
   // display the message error for import errors
   // Calling the function with any other value will update the progress text with <value>%
   static POCTaskSetProgressCallback displayLoadingDialog(final List<POCTask> tasks) {
-    final BuildContext context = MainController.get().context;
+    final BuildContext context = MainController.get()!.context!;
     final TextEditingController titleTextController = TextEditingController();
     titleTextController.text = I18n.getString(I18n.string.task_preparing);
     final TextEditingController percentageTextController = TextEditingController();
@@ -83,7 +83,7 @@ class POCTaskSetProgressCallback extends TaskSetProgressCallback {
           Navigator.pop(context);
         }
         if (progress == POCTaskSetProgressCallback.TASK_PROGRESS_COMPLETED_ERROR_IMPORT) {
-          MainController.get().showMessageDialog(
+          MainController.get()!.showMessageDialog(
             I18n.getString(I18n.string.import_error_title),
             I18n.getString(I18n.string.import_error_message),
           );
@@ -94,6 +94,6 @@ class POCTaskSetProgressCallback extends TaskSetProgressCallback {
       }
     });
     percentageTextController.text = '0%';
-    return progressCallback;
+    return progressCallback as POCTaskSetProgressCallback;
   }
 }

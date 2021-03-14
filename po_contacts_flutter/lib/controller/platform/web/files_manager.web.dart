@@ -27,12 +27,12 @@ class WebAbstractFS {
     return result;
   }
 
-  String readFile(final String fileAbsPath) {
+  String? readFile(final String? fileAbsPath) {
     final String fileKey = '$_FILE_KEY_PREFIX://$fileAbsPath';
     return _htmlWindow.localStorage[fileKey];
   }
 
-  void writeFile(final String fileAbsPath, final String base64ContentString) {
+  void writeFile(final String? fileAbsPath, final String? base64ContentString) {
     final String fileKey = '$_FILE_KEY_PREFIX://$fileAbsPath';
     if (base64ContentString == null) {
       _htmlWindow.localStorage.remove(fileKey);
@@ -56,12 +56,12 @@ class FilesManagerWeb extends FilesManager {
   }
 
   @override
-  Future<FileEntity> createFileEntityAbsPath(final String fileAbsPath) async {
+  Future<FileEntity> createFileEntityAbsPath(final String? fileAbsPath) async {
     return FileEntityWeb(_webFS, fileAbsPath, null);
   }
 
   @override
-  Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName) {
+  Future<FileEntity> createFileEntityParentAndName(final String? parentFolderPath, final String fileName) {
     return createFileEntityAbsPath('$parentFolderPath/$fileName');
   }
 
@@ -71,16 +71,16 @@ class FilesManagerWeb extends FilesManager {
   }
 
   @override
-  Widget fileToImageWidget(
-    final FileEntity currentFile, {
-    final BoxFit fit,
-    final double imageWidth,
-    final double imageHeight,
+  Widget? fileToImageWidget(
+    final FileEntity? currentFile, {
+    final BoxFit? fit,
+    final double? imageWidth,
+    final double? imageHeight,
   }) {
     if (currentFile is FileEntityWeb) {
       final FileEntityWeb few = currentFile;
       return Image.memory(
-        few.binaryData,
+        few.binaryData!,
         fit: BoxFit.cover,
         height: imageWidth,
         width: imageHeight,
@@ -91,7 +91,7 @@ class FilesManagerWeb extends FilesManager {
   }
 
   @override
-  Future<FileEntity> pickImageFile(final ImageFileSource imageFileSource) async {
+  Future<FileEntity?> pickImageFile(final ImageFileSource imageFileSource) async {
     if (imageFileSource != ImageFileSource.FILE_PICKER) {
       return null;
     }
@@ -100,7 +100,7 @@ class FilesManagerWeb extends FilesManager {
       return null;
     }
     final String fileExtension = Utils.getFileExtension(selectedFile.fileName);
-    final FileEntity targetFile = await MainController.get().createNewImageFile(fileExtension);
+    final FileEntity? targetFile = await MainController.get()!.createNewImageFile(fileExtension);
     if (targetFile == null) {
       return null;
     }

@@ -11,11 +11,11 @@ import 'package:po_contacts_flutter/view/edit/edit_phones_form.dart';
 import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 
 class EditContactForm extends StatefulWidget {
-  final Contact initialContact;
-  final Function(EditContactFormController editContactFormController) onControllerReady;
-  final Function(ContactData contactData) onContactSaveRequested;
+  final Contact? initialContact;
+  final Function(EditContactFormController editContactFormController)? onControllerReady;
+  final Function(ContactData contactData)? onContactSaveRequested;
 
-  EditContactForm(this.initialContact, {Key key, this.onControllerReady, this.onContactSaveRequested})
+  EditContactForm(this.initialContact, {Key? key, this.onControllerReady, this.onContactSaveRequested})
       : super(key: key);
 
   @override
@@ -25,14 +25,14 @@ class EditContactForm extends StatefulWidget {
 class _EditContactFormState extends State<EditContactForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ContactBuilder _contactBuilder = ContactBuilder();
-  String _currentImage;
+  String? _currentImage;
   String _currentFirstName = '';
   String _currentLastName = '';
-  EditContactFormController editContactFormController;
+  EditContactFormController? editContactFormController;
 
   @override
   void initState() {
-    final Contact initialContact = widget.initialContact;
+    final Contact? initialContact = widget.initialContact;
     if (initialContact != null) {
       _contactBuilder.setUID(initialContact.uid);
       _currentImage = initialContact.image;
@@ -53,11 +53,11 @@ class _EditContactFormState extends State<EditContactForm> {
       _contactBuilder.setNotes(initialContact.notes);
     }
     editContactFormController = EditContactFormController(this, _formKey, _contactBuilder);
-    widget?.onControllerReady(editContactFormController);
+    widget?.onControllerReady!(editContactFormController!);
     super.initState();
   }
 
-  void autoFillFullName(final TextEditingController fullNameTextController) {
+  void autoFillFullName(final TextEditingController? fullNameTextController) {
     if (fullNameTextController == null) {
       return;
     }
@@ -67,12 +67,12 @@ class _EditContactFormState extends State<EditContactForm> {
   }
 
   void _onChangeImageButtonClicked() async {
-    final FileEntity selectedImageFile = await MainController.get().pickImageFile(maxSize: 384);
+    final FileEntity? selectedImageFile = await MainController.get()!.pickImageFile(maxSize: 384);
     if (selectedImageFile == null) {
       return;
     }
 
-    final String filePath = selectedImageFile.getAbsolutePath();
+    final String? filePath = selectedImageFile.getAbsolutePath();
     setState(() {
       _currentImage = filePath;
       _contactBuilder.setImage(_currentImage);
@@ -88,7 +88,7 @@ class _EditContactFormState extends State<EditContactForm> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController fullNameTextController;
+    TextEditingController? fullNameTextController;
     if (widget.initialContact == null) {
       fullNameTextController = TextEditingController();
     }
@@ -169,7 +169,7 @@ class _EditContactFormState extends State<EditContactForm> {
                 ),
                 controller: fullNameTextController,
                 validator: (textValue) {
-                  if (textValue.trim().isEmpty) {
+                  if (textValue!.trim().isEmpty) {
                     return I18n.getString(I18n.string.field_cannot_be_empty);
                   }
                   return null;
@@ -264,7 +264,7 @@ class _EditContactFormState extends State<EditContactForm> {
                   buttonStyle: POCButtonStyle.ELEVATED,
                   textI18nKey: I18n.string.save,
                   onPressed: () {
-                    editContactFormController.startSaveAction();
+                    editContactFormController!.startSaveAction();
                   },
                 ),
               ),
@@ -284,9 +284,9 @@ class EditContactFormController {
   EditContactFormController(this._parentState, this._formKey, this._contactBuilder);
 
   void startSaveAction() {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
-    _parentState.widget.onContactSaveRequested(_contactBuilder);
+    _parentState.widget.onContactSaveRequested!(_contactBuilder);
   }
 }

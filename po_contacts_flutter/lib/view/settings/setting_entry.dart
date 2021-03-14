@@ -17,9 +17,9 @@ abstract class SettingEntry<T> extends StatefulWidget {
 
 abstract class SettingEntryState<T> extends State<SettingEntry> {
   bool _firstReadOccured = false;
-  T _currentValue;
+  T? _currentValue;
 
-  T get currentValue {
+  T? get currentValue {
     if (!_firstReadOccured) {
       _currentValue = widget.readCurrentValue();
       _firstReadOccured = true;
@@ -34,7 +34,7 @@ abstract class SettingEntryState<T> extends State<SettingEntry> {
     });
   }
 
-  Widget buildSettingView(final T v);
+  Widget buildSettingView(final T? v);
 
   @override
   Widget build(BuildContext context) {

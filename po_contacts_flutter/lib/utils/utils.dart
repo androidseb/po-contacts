@@ -8,18 +8,18 @@ import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
 class NormalizedString {
   final String sourceStr;
-  String _normalizedStr;
+  String? _normalizedStr;
 
   NormalizedString(this.sourceStr);
 
-  String/*!*//*!*/ _getNormalizedStr() {
+  String/*!*/ _getNormalizedStr() {
     if (_normalizedStr == null) {
       _normalizedStr = Utils.normalizeString(sourceStr);
     }
-    return _normalizedStr;
+    return _normalizedStr!;
   }
 
-  String/*!*/ get normalized => _getNormalizedStr();
+  String get normalized => _getNormalizedStr();
 
   bool contains(final String str) {
     return normalized.contains(str);
@@ -31,14 +31,14 @@ class Utils {
     return number.toString().padLeft(digitsCount, '0');
   }
 
-  static String normalizeString(final String/*?*/ sourceString) {
+  static String normalizeString(final String? sourceString) {
     if (sourceString == null) {
       return '';
     }
     return removeDiacritics(sourceString).toLowerCase();
   }
 
-  static int stringCompare(final String/*?*/ str1, final String/*?*/ str2) {
+  static int stringCompare(final String? str1, final String? str2) {
     if (str1 == null && str2 == null) {
       return 0;
     }
@@ -69,7 +69,7 @@ class Utils {
     }
   }
 
-  static String getFileName(final String filePath) {
+  static String getFileName(final String? filePath) {
     if (filePath == null) {
       return '';
     }
@@ -77,7 +77,7 @@ class Utils {
     return filePathSplit[filePathSplit.length - 1];
   }
 
-  static String getFileExtension(final String filePath) {
+  static String getFileExtension(final String? filePath) {
     final String fileName = getFileName(filePath);
     if (fileName == null) {
       return '';
@@ -90,15 +90,15 @@ class Utils {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  static String/*?*/ strToBase64(final String/*?*/ str) {
+  static String? strToBase64(final String? str) {
     if (str == null) {
       return null;
     }
-    final Uint8List strBytes = utf8.encode(str);
+    final Uint8List strBytes = utf8.encode(str) as Uint8List;
     return base64.encode(strBytes);
   }
 
-  static String/*?*/ base64ToString(final String/*?*/ base64String) {
+  static String? base64ToString(final String? base64String) {
     if (base64String == null) {
       return null;
     }
@@ -162,7 +162,7 @@ class Utils {
   static bool areListsEqual<T>(
     final List<T> list1,
     final List<T> list2, {
-    bool equalsFunction(T a, T b),
+    bool equalsFunction(T a, T b)?,
   }) {
     if (list1 == list2) {
       return true;
@@ -188,11 +188,11 @@ class Utils {
     return true;
   }
 
-  static String getJSONMapString(final Map<String, dynamic> jsonObject, final String jsonKey) {
+  static String? getJSONMapString(final Map<String, dynamic>? jsonObject, final String jsonKey) {
     if (jsonObject == null) {
       return null;
     }
-    final Object foundValue = jsonObject[jsonKey];
+    final Object? foundValue = jsonObject[jsonKey];
     if (foundValue is String) {
       return foundValue;
     } else {
@@ -200,11 +200,11 @@ class Utils {
     }
   }
 
-  static int getJSONMapInt(final Map<String, dynamic> jsonObject, final String jsonKey) {
+  static int? getJSONMapInt(final Map<String, dynamic>? jsonObject, final String jsonKey) {
     if (jsonObject == null) {
       return null;
     }
-    final Object foundValue = jsonObject[jsonKey];
+    final Object? foundValue = jsonObject[jsonKey];
     if (foundValue is int) {
       return foundValue;
     } else {
@@ -212,11 +212,11 @@ class Utils {
     }
   }
 
-  static bool getJSONMapBool(final Map<String, dynamic> jsonObject, final String jsonKey) {
+  static bool? getJSONMapBool(final Map<String, dynamic>? jsonObject, final String jsonKey) {
     if (jsonObject == null) {
       return null;
     }
-    final Object foundValue = jsonObject[jsonKey];
+    final Object? foundValue = jsonObject[jsonKey];
     if (foundValue is bool) {
       return foundValue;
     } else {

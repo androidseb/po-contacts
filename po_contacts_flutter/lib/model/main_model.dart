@@ -8,7 +8,7 @@ import 'package:po_contacts_flutter/utils/streamable_value.dart';
 import 'package:po_contacts_flutter/utils/utils.dart';
 
 class MainModel {
-  static int compareContacts(final Contact c1, final Contact c2) {
+  static int compareContacts(final Contact? c1, final Contact? c2) {
     if (c1 == null && c2 == null) {
       return 0;
     }
@@ -19,26 +19,26 @@ class MainModel {
       return 1;
     }
     return Utils.stringCompare(
-      c1.nFullName.normalized,
-      c2.nFullName.normalized,
+      c1.nFullName!.normalized,
+      c2.nFullName!.normalized,
     );
   }
 
-  static void sortContactsList(final List<Contact> contactsList) {
+  static void sortContactsList(final List<Contact?> contactsList) {
     contactsList.sort(MainModel.compareContacts);
   }
 
   bool _storageInitialized = false;
   final SettingsModel _settingsModel = SettingsModel();
   final ContactsStorageController _contactsStorageController = ContactsStorageController();
-  final StreamableValue<List<Contact>> _contactsList = StreamableValue([]);
+  final StreamableValue<List<Contact?>> _contactsList = StreamableValue([]);
   final StreamableValue<Set<int>> _selectedContactIds = StreamableValue(Set<int>());
 
-  void initializeMainModel(final ContactsStorageManager contactsStorage) async {
+  void initializeMainModel(final ContactsStorageManager? contactsStorage) async {
     _contactsStorageController.initializeStorage(contactsStorage);
-    final List<Contact> loadedContacts = await _contactsStorageController.readAllContacts();
-    contactsList.addAll(loadedContacts);
-    sortContactsList(contactsList);
+    final List<Contact?> loadedContacts = await _contactsStorageController.readAllContacts();
+    contactsList!.addAll(loadedContacts);
+    sortContactsList(contactsList!);
     _storageInitialized = true;
     _contactsList.notifyDataChanged();
   }
@@ -47,17 +47,17 @@ class MainModel {
 
   bool get storageInitialized => _storageInitialized;
 
-  ReadOnlyStreamableValue<List<Contact>> get contactsListSV => _contactsList.readOnly;
-  List<Contact> get contactsList => _contactsList.currentValue;
-  ReadOnlyStreamableValue<Set<int>> get selectedContactIdsSV => _selectedContactIds.readOnly;
-  Set<int> get selectedContactIds => _selectedContactIds.readOnly.currentValue;
+  ReadOnlyStreamableValue<List<Contact?>>? get contactsListSV => _contactsList.readOnly;
+  List<Contact?>? get contactsList => _contactsList.currentValue;
+  ReadOnlyStreamableValue<Set<int>>? get selectedContactIdsSV => _selectedContactIds.readOnly;
+  Set<int>? get selectedContactIds => _selectedContactIds.readOnly!.currentValue;
 
-  Contact getContactById(final int contactId) {
+  Contact? getContactById(final int? contactId) {
     if (contactId == null) {
       return null;
     }
-    for (Contact c in contactsList) {
-      if (c.id == contactId) {
+    for (Contact? c in contactsList!) {
+      if (c!.id == contactId) {
         return c;
       }
     }
@@ -65,12 +65,12 @@ class MainModel {
   }
 
   Future<void> addContact(final ContactData contactData) async {
-    final Contact createdContact = await _contactsStorageController.createContact(contactData);
+    final Contact? createdContact = await _contactsStorageController.createContact(contactData);
     if (createdContact == null) {
       return;
     }
-    contactsList.add(createdContact);
-    sortContactsList(contactsList);
+    contactsList!.add(createdContact);
+    sortContactsList(contactsList!);
     _contactsList.notifyDataChanged();
   }
 
@@ -85,10 +85,10 @@ class MainModel {
     if (!deleteSuccessful) {
       return;
     }
-    for (int i = 0; i < contactsList.length; i++) {
-      final Contact contact = contactsList[i];
+    for (int i = 0; i < contactsList!.length; i++) {
+      final Contact contact = contactsList![i]!;
       if (contact.id == contactId) {
-        contactsList.removeAt(i);
+        contactsList!.removeAt(i);
       }
     }
     _selectedContactIds.currentValue = Set<int>();
@@ -96,63 +96,63 @@ class MainModel {
   }
 
   void overwriteContact(final int contactId, final ContactData contactData) async {
-    final Contact updatedContact = await _contactsStorageController.updateContact(contactId, contactData);
+    final Contact? updatedContact = await _contactsStorageController.updateContact(contactId, contactData);
     if (updatedContact == null) {
       return;
     }
-    for (int i = 0; i < contactsList.length; i++) {
-      final Contact contact = contactsList[i];
+    for (int i = 0; i < contactsList!.length; i++) {
+      final Contact contact = contactsList![i]!;
       if (contact.id == contactId) {
-        contactsList.removeAt(i);
-        contactsList.insert(i, updatedContact);
-        sortContactsList(contactsList);
+        contactsList!.removeAt(i);
+        contactsList!.insert(i, updatedContact);
+        sortContactsList(contactsList!);
         break;
       }
     }
     _contactsList.notifyDataChanged();
   }
 
-  void overwriteAllContacts(final List<Contact> contacts) async {
+  void overwriteAllContacts(final List<Contact?> contacts) async {
     // Initializing a list of new contacts
-    final List<Contact> newContacts = [];
+    final List<Contact?> newContacts = [];
 
     // Creating all the new contacts into the storage
-    for (final Contact c in contacts) {
-      newContacts.add(await _contactsStorageController.createContact(c));
+    for (final Contact? c in contacts) {
+      newContacts.add(await _contactsStorageController.createContact(c!));
     }
 
     // Deleting all old contacts from storage
-    for (final Contact c in contactsList) {
-      await _contactsStorageController.deleteContact(c.id);
+    for (final Contact? c in contactsList!) {
+      await _contactsStorageController.deleteContact(c!.id);
     }
 
     // Deleting all old contacts from memory
-    contactsList.clear();
+    contactsList!.clear();
 
     // Adding all the new contacts into memory
-    contactsList.addAll(newContacts);
-    sortContactsList(contactsList);
+    contactsList!.addAll(newContacts);
+    sortContactsList(contactsList!);
 
     _contactsList.notifyDataChanged();
   }
 
   Future<void> selectContact(final int contactId) async {
-    selectedContactIds.add(contactId);
+    selectedContactIds!.add(contactId);
     _selectedContactIds.notifyDataChanged();
   }
 
   Future<void> unselectContact(final int contactId) async {
-    selectedContactIds.remove(contactId);
+    selectedContactIds!.remove(contactId);
     _selectedContactIds.notifyDataChanged();
   }
 
   Future<void> selectAllContact() async {
-    selectedContactIds.addAll(contactsList.map((e) => e.id));
+    selectedContactIds!.addAll(contactsList!.map((e) => e!.id));
     _selectedContactIds.notifyDataChanged();
   }
 
   Future<void> selectNoContacts() async {
-    selectedContactIds.clear();
+    selectedContactIds!.clear();
     _selectedContactIds.notifyDataChanged();
   }
 }

@@ -29,7 +29,7 @@ abstract class EntriesGroupView extends StatelessWidget {
 
   List<EntriesGroupAction> getEntryAvailableActions(final StringLabeledField entry);
 
-  String getEntryTitle(final StringLabeledField entry) {
+  String? getEntryTitle(final StringLabeledField entry) {
     return entry.fieldValue;
   }
 
@@ -42,14 +42,14 @@ abstract class EntriesGroupView extends StatelessWidget {
 
     final List<Widget> colChildren = [];
     colChildren.add(ListSectionHeader(I18n.getString(getTitleKeyString())));
-    for (final StringLabeledField entry in entries) {
+    for (final StringLabeledField entry in entries as Iterable<StringLabeledField>) {
       final List<Widget> actionButtons = [];
       final List<EntriesGroupAction> actions = getEntryAvailableActions(entry);
       for (final EntriesGroupAction a in actions) {
         actionButtons.add(IconButton(
           tooltip: a.hintText,
           icon: Icon(a.iconData),
-          onPressed: a.onTap,
+          onPressed: a.onTap as void Function()?,
         ));
       }
       colChildren.add(
@@ -59,13 +59,13 @@ abstract class EntriesGroupView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SelectableText(
-                getEntryTitle(entry),
+                getEntryTitle(entry)!,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SelectableText(LabeledField.getLabelTypeDisplayText(entry)),
+              SelectableText(LabeledField.getLabelTypeDisplayText(entry)!),
             ],
           ),
           trailing: Row(

@@ -6,7 +6,7 @@ import 'package:po_contacts_flutter/utils/cloud_sync/interface/google/sync_inter
 import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 
 class GoogleOAuthMobile implements GoogleOAuth {
-  GoogleSignIn _createGoogleSignIn(final String clientId) {
+  GoogleSignIn _createGoogleSignIn(final String? clientId) {
     return GoogleSignIn(
       clientId: clientId,
       // Workaround for the bug in the google_sign_in library causing the app to crash on iOS:
@@ -21,11 +21,11 @@ class GoogleOAuthMobile implements GoogleOAuth {
   }
 
   @override
-  Future<String> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
+  Future<String?> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
     try {
       // We try if possible to use the native Google Sign-in SDK
       final GoogleSignIn googleSignIn = _createGoogleSignIn(gdsi.config.clientId);
-      GoogleSignInAccount googleSignInAccount;
+      GoogleSignInAccount? googleSignInAccount;
       if (allowUI) {
         googleSignInAccount = await googleSignIn.signIn();
       } else {

@@ -15,7 +15,7 @@ class ListSectionHeader extends StatelessWidget {
       child: Container(
         height: POCConstants.LIST_SECTION_DEFAULT_HEIGHT,
         decoration: BoxDecoration(
-            color: MainController.get().model.settings.appSettings.useDarkDisplay
+            color: MainController.get()!.model.settings.appSettings!.useDarkDisplay
                 ? Colors.green[900]
                 : Colors.lightGreen[100]),
         child: Center(

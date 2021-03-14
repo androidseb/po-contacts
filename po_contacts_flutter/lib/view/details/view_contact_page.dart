@@ -6,7 +6,7 @@ import 'package:po_contacts_flutter/view/details/contact_details.dart';
 class ViewContactPage extends StatelessWidget {
   final int contactId;
 
-  ViewContactPage(this.contactId, {Key key}) : super(key: key);
+  ViewContactPage(this.contactId, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +18,14 @@ class ViewContactPage extends StatelessWidget {
             icon: const Icon(Icons.delete),
             tooltip: I18n.getString(I18n.string.delete_contact),
             onPressed: () {
-              MainController.get().startDeleteContact(contactId);
+              MainController.get()!.startDeleteContact(contactId);
             },
           ),
           IconButton(
             icon: const Icon(Icons.edit),
             tooltip: I18n.getString(I18n.string.edit_contact),
             onPressed: () {
-              MainController.get().startEditContact(contactId);
+              MainController.get()!.startEditContact(contactId);
             },
           ),
         ],

@@ -17,16 +17,16 @@ class ImportController {
   bool _currentlyImporting = false;
 
   void startImportIfNeeded() {
-    _getImportableFileId().then((final String fileId) {
+    _getImportableFileId().then((final String? fileId) {
       _startImportProcedure(fileId);
     });
   }
 
-  Future<String> _getImportableFileId() async {
-    return await MainController.get().psController.fileTransitManager.getInboxFileId();
+  Future<String?> _getImportableFileId() async {
+    return await MainController.get()!.psController.fileTransitManager!.getInboxFileId();
   }
 
-  void _startImportProcedure(final String fileId) async {
+  void _startImportProcedure(final String? fileId) async {
     if (fileId == null) {
       return;
     }
@@ -35,7 +35,7 @@ class ImportController {
     }
     _currentlyImporting = true;
 
-    final bool userApprovedImport = await MainController.get().promptUserForYesNoQuestion(
+    final bool userApprovedImport = await MainController.get()!.promptUserForYesNoQuestion(
       titleText: I18n.getString(I18n.string.import_file_title),
       messageText: I18n.getString(I18n.string.import_file_question),
     );
@@ -50,12 +50,12 @@ class ImportController {
   }
 
   void _discardFileWithId(final String fileId) {
-    MainController.get().psController.fileTransitManager.discardInboxFileId(fileId);
+    MainController.get()!.psController.fileTransitManager!.discardInboxFileId(fileId);
   }
 
   static Future<bool> isFileEncrypted(final FileEntity file) async {
-    final String fileBase64String = await file.readAsBase64String();
-    final Uint8List encryptionFlagHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX);
+    final String fileBase64String = await (file.readAsBase64String() as Future<String>);
+    final Uint8List encryptionFlagHeaderContent = utf8.encode(VCFSerializer.ENCRYPTED_FILE_PREFIX) as Uint8List;
     final Uint8List fileRawContent = base64.decode(fileBase64String);
     if (fileRawContent.length < encryptionFlagHeaderContent.length) {
       return false;
@@ -64,21 +64,21 @@ class ImportController {
     return Utils.areUInt8ListsEqual(fileHeaderContent, encryptionFlagHeaderContent);
   }
 
-  Future<void> _importFileWithId(final String fileId) async {
+  Future<bool> _importFileWithId(final String fileId) async {
     bool importSuccessful = false;
-    TaskSetProgressCallback progressCallback;
+    TaskSetProgressCallback? progressCallback;
     try {
-      final String inboxFilePath =
-          await MainController.get().psController.fileTransitManager.getCopiedInboxFilePath(fileId);
+      final String? inboxFilePath =
+          await MainController.get()!.psController.fileTransitManager!.getCopiedInboxFilePath(fileId);
       final FileEntity file =
-          await MainController.get().psController.filesManager.createFileEntityAbsPath(inboxFilePath);
-      String encryptionKey;
+          await MainController.get()!.psController.filesManager!.createFileEntityAbsPath(inboxFilePath);
+      String? encryptionKey;
       final bool isEncrypted = await isFileEncrypted(file);
       if (isEncrypted) {
-        encryptionKey = await MainController.get()
+        encryptionKey = await MainController.get()!
             .showTextInputDialog(I18n.getString(I18n.string.enter_password), isPassword: true);
         if (encryptionKey == null || encryptionKey.isEmpty) {
-          return;
+          return false;
         }
       }
       List<POCTask> tasks = [];
@@ -98,10 +98,10 @@ class ImportController {
         ),
       );
       await progressCallback.reportOneTaskCompleted();
-       await MainQueueYielder.check();
+      await MainQueueYielder.check();
       int importedContactsCount = 0;
       for (final ContactBuilder cb in readContacts) {
-        await MainController.get().model.addContact(cb);
+        await MainController.get()!.model.addContact(cb);
         importedContactsCount++;
         await progressCallback.broadcastProgress(importedContactsCount / readContacts.length);
         await MainQueueYielder.check();

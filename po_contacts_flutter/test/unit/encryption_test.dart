@@ -42,7 +42,7 @@ void main() {
 
   test('Encryption modifies the source text', () async {
     for (final String plainText in TEST_DATA_SET) {
-      final Uint8List plainData = utf8.encode(plainText);
+      final Uint8List plainData = utf8.encode(plainText) as Uint8List;
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
         final Uint8List cipherData = await EncryptionUtils.encryptData(plainData, encryptionKey);
         expect(Utils.areUInt8ListsEqual(plainData, cipherData), false);
@@ -52,7 +52,7 @@ void main() {
 
   test('Decryption with the correct password of encrypted data restores the plain text', () async {
     for (final String plainText in TEST_DATA_SET) {
-      final Uint8List plainData = utf8.encode(plainText);
+      final Uint8List plainData = utf8.encode(plainText) as Uint8List;
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
         final Uint8List cipherData = await EncryptionUtils.encryptData(plainData, encryptionKey);
         final Uint8List decryptedData = await EncryptionUtils.decryptData(cipherData, encryptionKey);
@@ -63,7 +63,7 @@ void main() {
 
   test('Decryption with the wrong password of encrypted data does not restore the plain text', () async {
     for (final String plainText in TEST_DATA_SET) {
-      final Uint8List plainData = utf8.encode(plainText);
+      final Uint8List plainData = utf8.encode(plainText) as Uint8List;
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
         final String wrongEncryptionKey = encryptionKey + 'some other string';
         final Uint8List cipherData = await EncryptionUtils.encryptData(plainData, encryptionKey);
@@ -75,7 +75,7 @@ void main() {
 
   test('Encryption is random: different output every time, but same result for decryption', () async {
     for (final String plainText in TEST_DATA_SET) {
-      final Uint8List plainData = utf8.encode(plainText);
+      final Uint8List plainData = utf8.encode(plainText) as Uint8List;
       for (final String encryptionKey in TEST_PASSWORDS_SET) {
         final Uint8List cipherData = await EncryptionUtils.encryptData(plainData, encryptionKey);
         final Uint8List cipherData2 = await EncryptionUtils.encryptData(plainData, encryptionKey);

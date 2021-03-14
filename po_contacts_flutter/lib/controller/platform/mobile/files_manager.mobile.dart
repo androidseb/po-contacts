@@ -27,13 +27,13 @@ class FilesManagerMobile extends FilesManager {
   }
 
   @override
-  Future<FileEntity> createFileEntityParentAndName(final String parentFolderPath, final String fileName) async {
+  Future<FileEntity> createFileEntityParentAndName(final String? parentFolderPath, final String fileName) async {
     return createFileEntityAbsPath('$parentFolderPath/$fileName');
   }
 
   @override
-  Future<FileEntity> createFileEntityAbsPath(String fileAbsPath) async {
-    return FileEntityMobile(File(fileAbsPath));
+  Future<FileEntity> createFileEntityAbsPath(String? fileAbsPath) async {
+    return FileEntityMobile(File(fileAbsPath!));
   }
 
   @override
@@ -44,13 +44,13 @@ class FilesManagerMobile extends FilesManager {
 
   @override
   Widget fileToImageWidget(
-    final FileEntity currentFile, {
-    final BoxFit fit,
-    final double imageWidth,
-    final double imageHeight,
+    final FileEntity? currentFile, {
+    final BoxFit? fit,
+    final double? imageWidth,
+    final double? imageHeight,
   }) {
     return Image.file(
-      File(currentFile.getAbsolutePath()),
+      File(currentFile!.getAbsolutePath()!),
       fit: BoxFit.cover,
       height: imageWidth,
       width: imageHeight,
@@ -58,8 +58,8 @@ class FilesManagerMobile extends FilesManager {
   }
 
   @override
-  Future<FileEntity> pickImageFile(final ImageFileSource imageFileSource) async {
-    ImageSource imgSource;
+  Future<FileEntity?> pickImageFile(final ImageFileSource imageFileSource) async {
+    ImageSource? imgSource;
     switch (imageFileSource) {
       case ImageFileSource.CAMERA:
         imgSource = ImageSource.camera;
@@ -74,7 +74,7 @@ class FilesManagerMobile extends FilesManager {
     if (imgSource == null) {
       return null;
     }
-    final File selectedImageRawFile = File((await ImagePicker().getImage(source: imgSource)).path);
+    final File selectedImageRawFile = File((await ImagePicker().getImage(source: imgSource))!.path);
     if (selectedImageRawFile == null) {
       return null;
     }
@@ -83,12 +83,12 @@ class FilesManagerMobile extends FilesManager {
       final String fileExtension = Utils.getFileExtension(selectedImageFile.getAbsolutePath());
       //If the platform is Android, the file will not be in
       //the app's internal storage so we want to copy it there
-      final FileEntity targetFile = await MainController.get().createNewImageFile(fileExtension);
+      final FileEntity? targetFile = await MainController.get()!.createNewImageFile(fileExtension);
       await selectedImageFile.copy(targetFile);
 
       //Also, if the file was created in the app's public folder
       //we want to delete it from there
-      final Directory externalAppDirectory = await getExternalStorageDirectory();
+      final Directory externalAppDirectory = await (getExternalStorageDirectory() as Future<Directory>);
       final String selectedImageParentPath = selectedImageRawFile.parent.absolute.path;
       final String externalAppDirectoryPath = externalAppDirectory.absolute.path;
       if (selectedImageParentPath.startsWith(externalAppDirectoryPath)) {

@@ -8,8 +8,8 @@ class SyncResultData<T> {
   final bool hasRemoteChanges;
 
   SyncResultData({
-    @required this.initialData,
-    @required this.syncResultData,
+    required this.initialData,
+    required this.syncResultData,
     this.hasLocalChanges = false,
     this.hasRemoteChanges = false,
   });

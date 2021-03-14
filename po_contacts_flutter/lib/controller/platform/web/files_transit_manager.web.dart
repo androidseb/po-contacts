@@ -13,10 +13,10 @@ import 'package:po_contacts_flutter/utils/utils.dart';
 class FilesTransitManagerWeb implements FilesTransitManager {
   static const INBOX_FILE_ID = 'INBOX';
 
-  String _selectionAsBase64;
+  String? _selectionAsBase64;
 
   @override
-  Future<String> getInboxFileId() async {
+  Future<String?> getInboxFileId() async {
     if (_selectionAsBase64 == null) {
       return null;
     } else {
@@ -28,19 +28,19 @@ class FilesTransitManagerWeb implements FilesTransitManager {
   Future<void> discardInboxFileId(final String inboxFileId) async {
     _selectionAsBase64 = null;
     final FileEntity inboxFile =
-        await MainController.get().psController.filesManager.createFileEntityAbsPath(INBOX_FILE_ID);
+        await MainController.get()!.psController.filesManager!.createFileEntityAbsPath(INBOX_FILE_ID);
     inboxFile.delete();
   }
 
   @override
-  Future<String> getCopiedInboxFilePath(final String inboxFileId) async {
+  Future<String?> getCopiedInboxFilePath(final String? inboxFileId) async {
     if (inboxFileId == null) {
       final SelectedFileWeb selectedFile = await UtilsWeb.selectFile('text/vcard');
       if (selectedFile == null) {
         return null;
       }
       final FileEntity inboxFile =
-          await MainController.get().psController.filesManager.createFileEntityAbsPath(INBOX_FILE_ID);
+          await MainController.get()!.psController.filesManager!.createFileEntityAbsPath(INBOX_FILE_ID);
       inboxFile.writeAsBase64String(selectedFile.fileBase64ContentString);
       _selectionAsBase64 = selectedFile.fileBase64ContentString;
     }
@@ -59,7 +59,7 @@ class FilesTransitManagerWeb implements FilesTransitManager {
     }
     final FileEntityWeb few = file;
     final String fileName = Utils.getFileName(few.getAbsolutePath());
-    final String base64ContentString = base64Encode(few.binaryData);
+    final String base64ContentString = base64Encode(few.binaryData!);
     AnchorElement(href: 'data:application/octet-stream;charset=utf-8;base64,$base64ContentString')
       ..setAttribute('download', fileName)
       ..click();

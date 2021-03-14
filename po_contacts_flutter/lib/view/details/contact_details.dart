@@ -12,18 +12,18 @@ import 'package:po_contacts_flutter/view/misc/contact_picture.dart';
 class ContactDetails extends StatelessWidget {
   final int contactId;
 
-  ContactDetails(this.contactId, {Key key}) : super(key: key);
+  ContactDetails(this.contactId, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamedWidget<List<Contact>>(MainController.get().model.contactsListSV,
-        (final BuildContext context, final List<Contact> contacts) {
-      final Contact contact = MainController.get().model.getContactById(contactId);
+    return StreamedWidget<List<Contact?>>(MainController.get()!.model.contactsListSV,
+        (final BuildContext context, final List<Contact?> contacts) {
+      final Contact? contact = MainController.get()!.model.getContactById(contactId);
       return buildWithContact(context, contact);
     });
   }
 
-  Widget buildWithContact(final BuildContext context, final Contact contact) {
+  Widget buildWithContact(final BuildContext context, final Contact? contact) {
     if (contact == null) {
       return SizedBox.shrink();
     }

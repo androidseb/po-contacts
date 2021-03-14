@@ -5,9 +5,9 @@ enum RemoteFileType {
 
 class RemoteFile {
   final RemoteFileType fileType;
-  final String fileId;
-  final String fileName;
-  final String fileETag;
+  final String? fileId;
+  final String? fileName;
+  final String? fileETag;
 
   RemoteFile(
     this.fileType,
