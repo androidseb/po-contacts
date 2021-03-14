@@ -18,7 +18,8 @@ dependencies:
 
   # Common - flutter
   google_sign_in: ^4.4.6
-  draggable_scrollbar: ^0.0.4
+  # TODO draggable_scrollbar
+  # draggable_scrollbar: ^0.0.4
   shared_preferences: ^0.5.6+3
 
   # Flutter - Mobile only

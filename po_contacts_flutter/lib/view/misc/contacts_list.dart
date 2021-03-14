@@ -1,4 +1,5 @@
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+// TODO draggable_scrollbar
+//import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/assets/i18n.dart';
@@ -79,13 +80,15 @@ class _ContactsListState extends State<ContactsList> {
   }
 
   Widget _buildIfNonEmptyWithSB(final BuildContext context) {
-    final ScrollController sharedScrollScrollController = ScrollController();
-    return DraggableScrollbar.rrect(
-      controller: sharedScrollScrollController,
-      alwaysVisibleScrollThumb: true,
-      heightScrollThumb: 80,
-      backgroundColor: Colors.green[300],
-      child: _buildLVIfNonEmpty(context, sharedScrollScrollController),
-    );
+    return _buildIfNonEmptyWithoutSB(context);
+    // TODO draggable_scrollbar
+    //final ScrollController sharedScrollScrollController = ScrollController();
+    //return DraggableScrollbar.rrect(
+    //  controller: sharedScrollScrollController,
+    //  alwaysVisibleScrollThumb: true,
+    //  heightScrollThumb: 80,
+    //  backgroundColor: Colors.green[300],
+    //  child: _buildLVIfNonEmpty(context, sharedScrollScrollController),
+    //);
   }
 }
