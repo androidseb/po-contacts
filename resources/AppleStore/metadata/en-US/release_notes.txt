@@ -1,2 +1,3 @@
-Added the ability to export a single contact from the quick action menu
-Added the ability to select contacts for export and delete (long press on contact)
+- Tweaked search screen header design
+- Added support for Post Office Box and Extended Address fields in ADR (hidden by default)
+- Updated navigation to not close the search when clicking a search result
