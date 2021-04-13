@@ -108,4 +108,4 @@ You can look at the code to see exactly how it's implemented, but at a high leve
 * stevenroose, the author of the [Pointy Castle Library](https://pub.dev/packages/pointycastle).
 * [unsplash.com](https://unsplash.com/s/photos/human-face-smile) for the free showcase contacts photos
 * [theapplaunchpad.com](https://theapplaunchpad.com) for the landing page phone screen image generator
-* Lulu for designing the app landing page <3
+* [Lulu](https://github.com/luluvann) for designing the app landing page <3
