@@ -26,7 +26,7 @@ find . -type f -name '*.mobile.dart' -delete
 
 echo "Executing flutter build web..."
 flutter pub get
-flutter build web --web-renderer html --release
+flutter build web
 
 cd $(git rev-parse --show-toplevel)
 mv bin/tmp/build/web bin/web
