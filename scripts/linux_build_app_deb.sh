@@ -39,6 +39,7 @@ echo "Description: Privacy Oriented Contacts Manager">>$DEB_CONTROL_OUTPUT_FILE_
 echo " For a complete description, see the website: https://www.pocontacts.app">>$DEB_CONTROL_OUTPUT_FILE_PATH
 cp -r $OUTPUT_FOLDER_PATH/* $DEB_SHARE_OUTPUT_FOLDER_PATH/
 echo $DEB_BIN_OUTPUT_FILE_CONTENT>$DEB_BIN_OUTPUT_FILE_PATH
+chmod -R 0755 $DEB_SHARE_OUTPUT_FOLDER_PATH
 chmod 0755 $DEB_BIN_OUTPUT_FILE_PATH
 
 echo "#!/usr/bin/env xdg-open">$DEB_DESKTOP_FILE_PATH
