@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/view/settings/setting_entry.dart';
 
 abstract class BoolSettingEntry extends SettingEntry<bool> {

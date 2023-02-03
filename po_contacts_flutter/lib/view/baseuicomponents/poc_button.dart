@@ -47,7 +47,7 @@ class POCButton extends StatelessWidget {
   TextButton buildFlatFilledButton() {
     return TextButton(
       style: TextButton.styleFrom(
-        primary: Colors.white,
+        foregroundColor: Colors.white,
         backgroundColor: Colors.green,
         padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
       ),
