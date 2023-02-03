@@ -13,9 +13,9 @@ cd bin/tmp_macos
 
 echo "Creating a blank nwjs folder"
 #create a blank nwjs folder under $NWJS_FOLDER_NAME
-NWJS_FOLDER_NAME="nwjs-v0.44.5-osx-x64"
+NWJS_FOLDER_NAME="nwjs-v0.72.0-osx-x64"
 NWJS_FILE_NAME=$NWJS_FOLDER_NAME".zip"
-wget https://dl.nwjs.io/v0.44.5/$NWJS_FILE_NAME --continue
+wget https://dl.nwjs.io/v0.72.0/$NWJS_FILE_NAME --continue
 rm -rf $NWJS_FOLDER_NAME
 unzip -q $NWJS_FILE_NAME
 
