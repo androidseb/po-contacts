@@ -17,6 +17,7 @@ dependencies:
   image: ^2.1.12
 
   # Common - flutter
+  platform: ^3.1.0
   google_sign_in: ^4.4.6
   draggable_scrollbar: ^0.0.4
   shared_preferences: ^0.5.6+3
