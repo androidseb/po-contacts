@@ -6,7 +6,7 @@ class SyncInitialData<T> {
   final List<T> lastSyncedItems;
   final List<T> remoteItems;
   final bool hasRemoteDataFile;
-  final String remoteFileETag;
+  final String? remoteFileETag;
 
   SyncInitialData(
     this.candidateSyncFile,

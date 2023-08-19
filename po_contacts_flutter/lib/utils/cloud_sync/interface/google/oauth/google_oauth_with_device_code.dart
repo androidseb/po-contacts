@@ -37,7 +37,7 @@ class _OAuthCreateTokenData {
 class GoogleOAuthWithDeviceCode {
   static const String _GOOGLE_DRIVE_REFRESH_TOKEN = 'google_drive_refresh_token';
 
-  static Future<String> _getRefreshToken() async {
+  static Future<String?> _getRefreshToken() async {
     return SecureStorage.instance.getValue(_GOOGLE_DRIVE_REFRESH_TOKEN);
   }
 
@@ -45,16 +45,16 @@ class GoogleOAuthWithDeviceCode {
     return SecureStorage.instance.setValue(_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken);
   }
 
-  static Future<String> _getRefreshedAccessToken(
+  static Future<String?> _getRefreshedAccessToken(
     final String clientId,
     final String clientSecret,
-    final String refreshToken,
+    final String? refreshToken,
   ) async {
     if (refreshToken == null) {
       return null;
     }
     final http.Response httpPostResponse = await http.post(
-      'https://oauth2.googleapis.com/token',
+      Uri.parse('https://oauth2.googleapis.com/token'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -74,9 +74,9 @@ class GoogleOAuthWithDeviceCode {
     }
   }
 
-  static Future<_OAuthCodeData> _createNewOAuthCodeData(final String clientId) async {
+  static Future<_OAuthCodeData?> _createNewOAuthCodeData(final String clientId) async {
     final http.Response httpPostResponse = await http.post(
-      'https://oauth2.googleapis.com/device/code',
+      Uri.parse('https://oauth2.googleapis.com/device/code'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -99,16 +99,16 @@ class GoogleOAuthWithDeviceCode {
     }
   }
 
-  static Future<_OAuthCreateTokenData> _createNewOAuthToken(
+  static Future<_OAuthCreateTokenData?> _createNewOAuthToken(
     final String clientId,
     final String clientSecret,
-    final _OAuthCodeData oAuthCodeData,
+    final _OAuthCodeData? oAuthCodeData,
   ) async {
     if (oAuthCodeData == null) {
       return null;
     }
     final http.Response httpPostResponse = await http.post(
-      'https://oauth2.googleapis.com/token',
+      Uri.parse('https://oauth2.googleapis.com/token'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -195,10 +195,10 @@ class GoogleOAuthWithDeviceCode {
   /// If the user proceeds with continuing, the result will be true
   /// If the user requests to restart the process, the result will be false
   /// If the user requests to cancel, the result will be null
-  static Future<bool> _askForAuthContinuation(
+  static Future<bool?> _askForAuthContinuation(
       final SyncInterfaceForGoogleDrive gdsi, final _OAuthCodeData oAuthCodeData) {
     final BuildContext currentContext = gdsi.uiController.getUIBuildContext();
-    final Completer<bool> futureContinuationChoice = Completer<bool>();
+    final Completer<bool?> futureContinuationChoice = Completer<bool?>();
     showDialog<Object>(
         context: currentContext,
         barrierDismissible: false,
@@ -240,11 +240,11 @@ class GoogleOAuthWithDeviceCode {
     return futureContinuationChoice.future;
   }
 
-  static Future<String> authenticateWithCode(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
+  static Future<String?> authenticateWithCode(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
     final String clientId = gdsi.config.clientIdDesktop;
     final String clientSecret = gdsi.config.clientSecret;
-    final String refreshToken = await _getRefreshToken();
-    final String refreshedAccessToken = await _getRefreshedAccessToken(
+    final String? refreshToken = await _getRefreshToken();
+    final String? refreshedAccessToken = await _getRefreshedAccessToken(
       clientId,
       clientSecret,
       refreshToken,
@@ -258,7 +258,7 @@ class GoogleOAuthWithDeviceCode {
 
     bool retry = true;
 
-    final _OAuthCodeData oAuthCodeData = await _createNewOAuthCodeData(clientId);
+    final _OAuthCodeData? oAuthCodeData = await _createNewOAuthCodeData(clientId);
     if (oAuthCodeData == null) {
       return null;
     }
@@ -268,7 +268,7 @@ class GoogleOAuthWithDeviceCode {
       if (!browserOpen) {
         return null;
       }
-      final bool continuationChoice = await _askForAuthContinuation(gdsi, oAuthCodeData);
+      final bool? continuationChoice = await _askForAuthContinuation(gdsi, oAuthCodeData);
       if (continuationChoice == null) {
         return null;
       } else {
@@ -276,7 +276,7 @@ class GoogleOAuthWithDeviceCode {
       }
     }
 
-    final _OAuthCreateTokenData createdTokenData = await _createNewOAuthToken(clientId, clientSecret, oAuthCodeData);
+    final _OAuthCreateTokenData? createdTokenData = await _createNewOAuthToken(clientId, clientSecret, oAuthCodeData);
 
     if (createdTokenData == null) {
       return null;

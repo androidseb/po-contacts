@@ -28,7 +28,10 @@ class SyncDataMerger<T> {
     final Map<String, T> res = {};
     for (final String itemId in presentItems.keys) {
       if (!pastItems.containsKey(itemId)) {
-        res[itemId] = presentItems[itemId];
+        final item = presentItems[itemId];
+        if (item != null) {
+          res[itemId] = item;
+        }
       }
     }
     return res;
@@ -39,10 +42,12 @@ class SyncDataMerger<T> {
     final Map<String, T> res = {};
     for (final String itemId in pastItems.keys) {
       if (presentItems.containsKey(itemId)) {
-        final T pastItem = pastItems[itemId];
-        final T presentItem = presentItems[itemId];
+        final T? pastItem = pastItems[itemId];
+        final T? presentItem = presentItems[itemId];
         if (!_itemsHandler.itemsEqualExceptId(pastItem, presentItem)) {
-          res[itemId] = presentItem;
+          if (presentItem != null) {
+            res[itemId] = presentItem;
+          }
         }
       }
     }
@@ -54,7 +59,10 @@ class SyncDataMerger<T> {
     final Map<String, T> res = {};
     for (final String itemId in pastItems.keys) {
       if (!presentItems.containsKey(itemId)) {
-        res[itemId] = pastItems[itemId];
+        final item = pastItems[itemId];
+        if (item != null) {
+          res[itemId] = item;
+        }
       }
     }
     return res;
@@ -73,7 +81,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely modified item" vs "locally modified item"
       {
         // Checking for a locally modified item matching the remotely modified item id
-        final T lmItem = localModifiedItems[rmItemId];
+        final T? lmItem = localModifiedItems[rmItemId];
         // If the item has been modified both remotely and locally, we will keep both versions.
         // This is done by considering the local modification as a newly created item instead of a modified one.
         if (lmItem != null) {
@@ -90,7 +98,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely modified item" vs "locally deleted item"
       {
         // Checking for a locally deleted item matching the remotely modified item id
-        final T ldItem = localDeletedItems[rmItemId];
+        final T? ldItem = localDeletedItems[rmItemId];
         // If the item has been modified remotely and deleted locally, we will cancel its deletion.
         // This is done by ignoring the local deletion.
         if (ldItem != null) {
@@ -107,7 +115,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely deleted item" vs "locally modified item"
       {
         // Checking for a locally modified item matching the remotely deleted item id
-        final T lmItem = localModifiedItems[rdItemId];
+        final T? lmItem = localModifiedItems[rdItemId];
         // If the item has been deleted remotely and modified locally, we will cancel its deletion.
         // This is done by ignoring the remote deletion.
         if (lmItem != null) {
@@ -117,7 +125,7 @@ class SyncDataMerger<T> {
       // Handling conflict of "remotely deleted item" vs "locally deleted item"
       {
         // Checking for a locally deleted item matching the remotely deleted item id
-        final T ldItem = localDeletedItems[rdItemId];
+        final T? ldItem = localDeletedItems[rdItemId];
         // If the item has been deleted both remotely locally, we will delete it.
         // However we will avoid registering two deletions.
         // This is done by ignoring the local deletion, since the remote deletion will be enough.
@@ -133,8 +141,11 @@ class SyncDataMerger<T> {
   bool _appendMapEntries(final Map<String, T> destMap, final Map<String, T> mapToAdd) {
     bool mapChanged = false;
     for (final String itemId in mapToAdd.keys) {
-      destMap[itemId] = mapToAdd[itemId];
-      mapChanged = true;
+      final item = mapToAdd[itemId];
+      if (item != null) {
+        destMap[itemId] = item;
+        mapChanged = true;
+      }
     }
     return mapChanged;
   }

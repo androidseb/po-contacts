@@ -8,8 +8,8 @@ class SecureStorageWeb implements SecureStorage {
   final HtmlDocument _htmlDocument = document;
 
   @override
-  Future<String> getValue(final String key) async {
-    final String cookieRawValue = _htmlDocument.cookie;
+  Future<String?> getValue(final String key) async {
+    final String cookieRawValue = _htmlDocument.cookie ?? '';
     final List<String> cookieRawValues = cookieRawValue.split(';');
     for (final String rawKV in cookieRawValues) {
       final String kv = rawKV.trim();
@@ -34,9 +34,9 @@ class SecureStorageWeb implements SecureStorage {
 
   @override
   Future<void> setValue(final String key, final String value) async {
-    final Uint8List valueData = utf8.encode(value);
+    final Uint8List valueData = utf8.encode(value) as Uint8List;
     final String valueBase64 = base64.encode(valueData);
-    return _htmlDocument.cookie = '$key=$valueBase64; expires=Thu, 18 Dec 2037 12:00:00 UTC';
+    _htmlDocument.cookie = '$key=$valueBase64; expires=Thu, 18 Dec 2037 12:00:00 UTC';
   }
 }
 

@@ -29,7 +29,7 @@ class SyncCancelationHandler {
 }
 
 class SyncProcedureResult {
-  final String uploadedDataFileId;
+  final String? uploadedDataFileId;
   SyncProcedureResult(this.uploadedDataFileId);
 }
 
@@ -37,17 +37,15 @@ class SyncProcedure<T> {
   final SyncController<T> _syncController;
   final SyncModel _syncModel;
   final SyncInterface _syncInterface;
-  final String _restoreDataFileId;
-  SyncCancelationHandler _cancelationHandler;
+  final String? _restoreDataFileId;
+  final SyncCancelationHandler _cancelationHandler = SyncCancelationHandler();
 
   SyncProcedure(
     this._syncController,
     this._syncModel,
     this._syncInterface,
     this._restoreDataFileId,
-  ) {
-    _cancelationHandler = SyncCancelationHandler();
-  }
+  );
 
   void cancel() {
     _cancelationHandler.cancel();
@@ -58,20 +56,24 @@ class SyncProcedure<T> {
     _cancelationHandler.checkForCancelation();
     final List<T> localItems = await _syncController.getLocalItems();
     _cancelationHandler.checkForCancelation();
-    final String fileETag = await _syncInterface.getFileETag(_syncModel.cloudIndexFileId);
+    final cloudIndexFileId = _syncModel.cloudIndexFileId;
+    if (cloudIndexFileId == null) {
+      throw SyncException(SyncExceptionType.OTHER, message: '_initializeSync: cloudIndexFileId is null');
+    }
+    final String? fileETag = await _syncInterface.getFileETag(cloudIndexFileId);
     _cancelationHandler.checkForCancelation();
-    final FileEntity latestCloudFile = await _syncController.getLatestCloudFile(_syncInterface);
+    final FileEntity? latestCloudFile = await _syncController.getLatestCloudFile(_syncInterface);
     _cancelationHandler.checkForCancelation();
     await _syncController.requestEncryptionKeyIfNeeded(_syncInterface, latestCloudFile);
     _cancelationHandler.checkForCancelation();
-    final String encryptionKey = await _syncModel.getEncryptionKey();
+    final String? encryptionKey = await _syncModel.getEncryptionKey();
     _cancelationHandler.checkForCancelation();
     final List<T> remoteItems = await _syncController.fileEntityToItemsList(
       latestCloudFile,
       encryptionKey,
     );
     _cancelationHandler.checkForCancelation();
-    final FileEntity lastSyncedFile = await _syncController.getLastSyncedFile();
+    final FileEntity? lastSyncedFile = await _syncController.getLastSyncedFile();
     _cancelationHandler.checkForCancelation();
     final List<T> lastSyncedItems = await _syncController.fileEntityToItemsList(
       lastSyncedFile,
@@ -104,10 +106,16 @@ class SyncProcedure<T> {
       await _syncModel.getEncryptionKey(),
     );
     _cancelationHandler.checkForCancelation();
-    String uploadedDataFileId;
+    String? uploadedDataFileId;
     if (syncResult.hasRemoteChanges || !syncResult.initialData.hasRemoteDataFile) {
-      final String cloudIndexFileId = _syncModel.cloudIndexFileId;
-      final String cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
+      final String? cloudIndexFileId = _syncModel.cloudIndexFileId;
+      if (cloudIndexFileId == null) {
+        throw SyncException(SyncExceptionType.OTHER, message: '_finalizeSync: cloudIndexFileId is null');
+      }
+      final String? cloudFolderId = await _syncInterface.getParentFolderId(cloudIndexFileId);
+      if (cloudFolderId == null) {
+        throw SyncException(SyncExceptionType.OTHER, message: '_finalizeSync: cloudFolderId is null');
+      }
       final Uint8List fileToUploadContent = base64.decode(await fileToUpload.readAsBase64String());
       final RemoteFile newCloudFile = await _syncInterface.createNewFile(
         cloudFolderId,
@@ -142,7 +150,10 @@ class SyncProcedure<T> {
     if (this._restoreDataFileId == null) {
       return regularSyncResult;
     }
-    final String cloudIndexFileId = _syncModel.cloudIndexFileId;
+    final String? cloudIndexFileId = _syncModel.cloudIndexFileId;
+    if (cloudIndexFileId == null) {
+      throw SyncException(SyncExceptionType.OTHER, message: '_performFileRestore: cloudIndexFileId is null');
+    }
     await _syncInterface.updateIndexFile(
       cloudIndexFileId,
       this._restoreDataFileId,

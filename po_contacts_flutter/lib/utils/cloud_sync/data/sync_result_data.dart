@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:po_contacts_flutter/utils/cloud_sync/data/sync_initial_data.dart';
 
 class SyncResultData<T> {
@@ -8,8 +7,8 @@ class SyncResultData<T> {
   final bool hasRemoteChanges;
 
   SyncResultData({
-    @required this.initialData,
-    @required this.syncResultData,
+    required this.initialData,
+    required this.syncResultData,
     this.hasLocalChanges = false,
     this.hasRemoteChanges = false,
   });

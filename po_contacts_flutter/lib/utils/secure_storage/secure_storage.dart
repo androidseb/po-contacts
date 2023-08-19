@@ -6,17 +6,19 @@ import 'package:po_contacts_flutter/utils/secure_storage/secure_storage.stub.dar
 /// For mobile, uses flutter_secure_storage.
 /// For web, uses cookies, assuming you are using chromium, since cookies are encrypted.
 abstract class SecureStorage {
-  static SecureStorage _currentInstance;
+  static SecureStorage? _currentInstance;
   factory SecureStorage() => getInstanceImpl();
 
   static SecureStorage get instance {
-    if (_currentInstance == null) {
-      _currentInstance = getInstanceImpl();
+    SecureStorage? i = _currentInstance;
+    if (i == null) {
+      i = getInstanceImpl();
+      _currentInstance = i;
     }
-    return _currentInstance;
+    return i;
   }
 
   Future<void> setValue(final String key, final String value);
 
-  Future<String> getValue(final String key);
+  Future<String?> getValue(final String key);
 }

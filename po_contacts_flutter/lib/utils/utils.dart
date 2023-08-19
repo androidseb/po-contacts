@@ -8,15 +8,17 @@ import 'package:po_contacts_flutter/utils/remove_diacritics.dart';
 
 class NormalizedString {
   final String sourceStr;
-  String _normalizedStr;
+  String? _normalizedStr;
 
   NormalizedString(this.sourceStr);
 
   String _getNormalizedStr() {
-    if (_normalizedStr == null) {
-      _normalizedStr = Utils.normalizeString(sourceStr);
+    String? v = _normalizedStr;
+    if (v == null) {
+      v = Utils.normalizeString(sourceStr);
+      _normalizedStr = v;
     }
-    return _normalizedStr;
+    return v;
   }
 
   String get normalized => _getNormalizedStr();
@@ -90,15 +92,15 @@ class Utils {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  static String strToBase64(final String str) {
+  static String? strToBase64(final String? str) {
     if (str == null) {
       return null;
     }
-    final Uint8List strBytes = utf8.encode(str);
+    final Uint8List strBytes = utf8.encode(str) as Uint8List;
     return base64.encode(strBytes);
   }
 
-  static String base64ToString(final String base64String) {
+  static String? base64ToString(final String? base64String) {
     if (base64String == null) {
       return null;
     }
@@ -106,7 +108,7 @@ class Utils {
     return utf8.decode(strBytes);
   }
 
-  static bool areUInt8ListsEqual(final Uint8List list1, final Uint8List list2) {
+  static bool areUInt8ListsEqual(final Uint8List? list1, final Uint8List? list2) {
     if (list1 == list2) {
       return true;
     }
@@ -160,9 +162,9 @@ class Utils {
   }
 
   static bool areListsEqual<T>(
-    final List<T> list1,
-    final List<T> list2, {
-    bool equalsFunction(T a, T b),
+    final List<T>? list1,
+    final List<T>? list2, {
+    bool Function(T a, T b)? equalsFunction,
   }) {
     if (list1 == list2) {
       return true;
@@ -188,7 +190,7 @@ class Utils {
     return true;
   }
 
-  static String getJSONMapString(final Map<String, dynamic> jsonObject, final String jsonKey) {
+  static String? getJSONMapString(final Map<String, dynamic>? jsonObject, final String jsonKey) {
     if (jsonObject == null) {
       return null;
     }
@@ -200,7 +202,7 @@ class Utils {
     }
   }
 
-  static int getJSONMapInt(final Map<String, dynamic> jsonObject, final String jsonKey) {
+  static int? getJSONMapInt(final Map<String, dynamic>? jsonObject, final String jsonKey) {
     if (jsonObject == null) {
       return null;
     }
@@ -212,7 +214,7 @@ class Utils {
     }
   }
 
-  static bool getJSONMapBool(final Map<String, dynamic> jsonObject, final String jsonKey) {
+  static bool? getJSONMapBool(final Map<String, dynamic>? jsonObject, final String jsonKey) {
     if (jsonObject == null) {
       return null;
     }

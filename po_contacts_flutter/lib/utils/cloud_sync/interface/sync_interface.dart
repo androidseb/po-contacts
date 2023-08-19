@@ -17,12 +17,12 @@ class SyncInterfaceConfig {
   final String clientIdDesktop;
   final String clientSecret;
   SyncInterfaceConfig({
-    this.rootSyncFolderName,
-    this.indexFileName,
-    this.versionFileNameSuffix,
-    this.clientId,
-    this.clientIdDesktop,
-    this.clientSecret,
+    required this.rootSyncFolderName,
+    required this.indexFileName,
+    required this.versionFileNameSuffix,
+    required this.clientId,
+    required this.clientIdDesktop,
+    required this.clientSecret,
   });
 }
 
@@ -34,7 +34,7 @@ abstract class SyncInterfaceUIController {
   /// * the index of the user's choice
   /// * -1 if the user chose to create a new index
   /// * null if the user canceled
-  Future<int> pickIndexFile(final List<String> cloudIndexFileNames);
+  Future<int?> pickIndexFile(final List<String> cloudIndexFileNames);
 
   /// Select a history data file based on the name of that history data file.
   /// Returns 2 possible types of value:
@@ -44,9 +44,9 @@ abstract class SyncInterfaceUIController {
 
   void copyTextToClipBoard(final String text);
 
-  Future<String> promptUserForCreationSyncPassword();
+  Future<String?> promptUserForCreationSyncPassword();
 
-  Future<String> promptUserForResumeSyncPassword();
+  Future<String?> promptUserForResumeSyncPassword();
 
   Future<bool> promptUserForSyncPasswordRemember();
 
@@ -90,11 +90,11 @@ abstract class SyncInterface {
   Future<void> logout();
   Future<String> getAccountName();
   Future<RemoteFile> getRootFolder();
-  Future<RemoteFile> getFolder(
+  Future<RemoteFile?> getFolder(
     final RemoteFile parentFolder,
     final String folderName,
   );
-  Future<String> getParentFolderId(
+  Future<String?> getParentFolderId(
     final String fileId,
   );
   Future<RemoteFile> createFolder(
@@ -109,20 +109,24 @@ abstract class SyncInterface {
   Future<RemoteFile> overwriteFile(
     final String fileId,
     final Uint8List fileContent, {
-    String targetETag,
+    String? targetETag,
   });
   Future<List<RemoteFile>> fetchIndexFilesList();
-  Future<List<RemoteFile>> fetchFolderFilesList(final String cloudIndexFileId);
-  Future<String> getFileETag(final String fileId);
-  Future<Uint8List> downloadCloudFile(final String fileId);
+  Future<List<RemoteFile>?> fetchFolderFilesList(final String cloudIndexFileId);
+  Future<String?> getFileETag(final String fileId);
+  Future<Uint8List?> downloadCloudFile(final String fileId);
 
-  Future<String> getTextFileContent(final String fileId) async {
-    return utf8.decode(await downloadCloudFile(fileId));
+  Future<String?> getTextFileContent(final String fileId) async {
+    final fileContent = await downloadCloudFile(fileId);
+    if (fileContent == null) {
+      return null;
+    }
+    return utf8.decode(fileContent);
   }
 
   Future<RemoteFile> getOrCreateRootSyncFolder() async {
     final RemoteFile rootFolder = await getRootFolder();
-    final RemoteFile existingRootSyncFolder = await getFolder(rootFolder, config.rootSyncFolderName);
+    final RemoteFile? existingRootSyncFolder = await getFolder(rootFolder, config.rootSyncFolderName);
     if (existingRootSyncFolder != null) {
       return existingRootSyncFolder;
     }
@@ -146,31 +150,31 @@ abstract class SyncInterface {
       utf8.encode(jsonEncode({
         INDEX_FILE_KEY_NAME: Utils.dateTimeToString(),
         INDEX_FILE_KEY_FILE_ID: null,
-      })),
+      })) as Uint8List,
     );
   }
 
   Future<RemoteFile> updateIndexFile(
     final String indexFileId,
-    final String refDataFileId,
-    final String targetETag,
+    final String? refDataFileId,
+    final String? targetETag,
   ) async {
     return overwriteFile(
       indexFileId,
       utf8.encode(jsonEncode({
         INDEX_FILE_KEY_NAME: Utils.dateTimeToString(),
         INDEX_FILE_KEY_FILE_ID: refDataFileId,
-      })),
+      })) as Uint8List,
       targetETag: targetETag,
     );
   }
 
-  Future<Map<String, dynamic>> getIndexFileContent(final String fileId) async {
-    return jsonDecode(await getTextFileContent(fileId));
+  Future<Map<String, dynamic>?> getIndexFileContent(final String fileId) async {
+    return jsonDecode(await getTextFileContent(fileId) ?? '{}');
   }
 
-  Future<List<RemoteFile>> fetchHistoryAsDataFilesList(final String cloudIndexFileId) async {
-    final List<RemoteFile> rawFilesList = await fetchFolderFilesList(cloudIndexFileId);
+  Future<List<RemoteFile>?> fetchHistoryAsDataFilesList(final String cloudIndexFileId) async {
+    final List<RemoteFile>? rawFilesList = await fetchFolderFilesList(cloudIndexFileId);
     if (rawFilesList == null) {
       return null;
     }

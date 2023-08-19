@@ -21,11 +21,11 @@ class GoogleOAuthMobile implements GoogleOAuth {
   }
 
   @override
-  Future<String> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
+  Future<String?> obtainAccessToken(final SyncInterfaceForGoogleDrive gdsi, final bool allowUI) async {
     try {
       // We try if possible to use the native Google Sign-in SDK
       final GoogleSignIn googleSignIn = _createGoogleSignIn(gdsi.config.clientId);
-      GoogleSignInAccount googleSignInAccount;
+      GoogleSignInAccount? googleSignInAccount;
       if (allowUI) {
         googleSignInAccount = await googleSignIn.signIn();
       } else {

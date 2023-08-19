@@ -185,13 +185,17 @@ final RegExp _diacriticsRegExp = RegExp('[^\u0000-\u007E]', multiLine: true);
 String removeDiacritics(String str) {
   if (_diacriticsMap.isEmpty) {
     for (var i = 0; i < _DIACRITICS_REMOVAL_MAP.length; i++) {
-      var letters = _DIACRITICS_REMOVAL_MAP[i]['letters'];
+      String? letters = _DIACRITICS_REMOVAL_MAP[i]['letters'] ?? '';
       for (var j = 0; j < letters.length; j++) {
-        _diacriticsMap[letters[j]] = _DIACRITICS_REMOVAL_MAP[i]['base'];
+        final String? v = _DIACRITICS_REMOVAL_MAP[i]['base'];
+        if (v != null) {
+          _diacriticsMap[letters[j]] = v;
+        }
       }
     }
   }
   return str.replaceAllMapped(_diacriticsRegExp, (a) {
-    return _diacriticsMap[a.group(0)] != null ? _diacriticsMap[a.group(0)] : a.group(0);
+    final String? v = _diacriticsMap[a.group(0)];
+    return v ?? a.group(0) ?? '';
   });
 }

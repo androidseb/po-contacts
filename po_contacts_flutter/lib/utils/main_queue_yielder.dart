@@ -29,7 +29,7 @@ class MainQueueYielder {
       return;
     }
     _currentIterationsCount = 0;
-    final double frameRateEstimate = _frameRateProbe.consumeFrameRateEstimate;
+    final double? frameRateEstimate = _frameRateProbe.consumeFrameRateEstimate;
     if (frameRateEstimate != null) {
       if (frameRateEstimate < _MINIMUM_TARGET_FRAMERATE) {
         if (_targetIterationsCount > MIN_ITERATIONS_COUNT) {
@@ -47,7 +47,7 @@ class _FrameRateProbe {
   static const int _ONE_SECOND_IN_MICROSECONDS = 1000000;
   static const double _TARGET_FRAMERATE = 120;
   static const int _FRAME_INTERVAL_MICROSECONDS = _ONE_SECOND_IN_MICROSECONDS ~/ _TARGET_FRAMERATE;
-  static double _frameRateEstimate = _TARGET_FRAMERATE;
+  static double? _frameRateEstimate = _TARGET_FRAMERATE;
 
   static int currentTimeMicroSeconds() {
     return DateTime.now().microsecondsSinceEpoch;
@@ -57,8 +57,8 @@ class _FrameRateProbe {
     _measureFrameRate();
   }
 
-  double get consumeFrameRateEstimate {
-    final double res = _frameRateEstimate;
+  double? get consumeFrameRateEstimate {
+    final double? res = _frameRateEstimate;
     _frameRateEstimate = null;
     return res;
   }

@@ -10,7 +10,15 @@ import 'package:po_contacts_flutter/utils/cloud_sync/sync_exception.dart';
 class SyncInterfaceForGoogleDrive extends SyncInterface {
   static const String _MULTIPART_REQUESTS_BOUNDARY_STRING = '5408960f22bc432e938025d3e6034c33';
 
-  String _accessToken;
+  String? _accessToken;
+
+  String get accessToken {
+    final v = _accessToken;
+    if (v == null) {
+      throw SyncException(SyncExceptionType.OTHER, message: 'SyncInterfaceForGoogleDrive.accessToken is null');
+    }
+    return v;
+  }
 
   SyncInterfaceForGoogleDrive(final SyncInterfaceConfig config, final SyncInterfaceUIController uiController)
       : super(config, uiController);
@@ -21,7 +29,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   @override
   Future<bool> authenticateImplicitly() async {
-    final String resultingAccessToken = await GoogleOAuth.instance.obtainAccessToken(this, false);
+    final String? resultingAccessToken = await GoogleOAuth.instance.obtainAccessToken(this, false);
     if (resultingAccessToken != null) {
       _accessToken = resultingAccessToken;
     }
@@ -30,7 +38,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   @override
   Future<bool> authenticateExplicitly() async {
-    final String resultingAccessToken = await GoogleOAuth.instance.obtainAccessToken(this, true);
+    final String? resultingAccessToken = await GoogleOAuth.instance.obtainAccessToken(this, true);
     if (resultingAccessToken != null) {
       _accessToken = resultingAccessToken;
     }
@@ -44,9 +52,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   Future<Map<String, dynamic>> _getAboutData() async {
     final http.Response httpGetResponse = await http.get(
-      'https://www.googleapis.com/drive/v2/about',
+      Uri.parse('https://www.googleapis.com/drive/v2/about'),
       headers: {
-        'Authorization': _accessToken,
+        'Authorization': accessToken,
         'Accept': 'application/json',
       },
     );
@@ -89,9 +97,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final String folderName,
   ) async {
     final http.Response httpPostResponse = await http.post(
-      'https://www.googleapis.com/drive/v3/files',
+      Uri.parse('https://www.googleapis.com/drive/v3/files'),
       headers: {
-        'Authorization': _accessToken,
+        'Authorization': accessToken,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
@@ -126,10 +134,10 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
 
   Future<RemoteFile> _uploadFile(
     Uint8List fileContent, {
-    String fileId,
-    String targetETag,
-    String parentFolderId,
-    String fileName,
+    String? fileId,
+    String? targetETag,
+    String? parentFolderId,
+    String? fileName,
   }) async {
     final Map<String, dynamic> requestMetaData = <String, dynamic>{
       'mimeType': 'application/json',
@@ -152,7 +160,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
       Uri.parse(requestUrl),
     );
     fileStreamedRequest.headers.addAll({
-      'Authorization': _accessToken,
+      'Authorization': accessToken,
       'Accept': 'application/json',
       'Content-Type': 'multipart/related; boundary=$_MULTIPART_REQUESTS_BOUNDARY_STRING',
       'Content-Length': multiPartRequestBodyString.length.toString(),
@@ -197,7 +205,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   Future<RemoteFile> overwriteFile(
     final String fileId,
     final Uint8List fileContent, {
-    String targetETag,
+    String? targetETag,
   }) {
     return _uploadFile(
       fileContent,
@@ -207,7 +215,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
-  Future<RemoteFile> getFolder(
+  Future<RemoteFile?> getFolder(
     final RemoteFile parentFolder,
     final String folderName,
   ) async {
@@ -216,9 +224,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     );
     final String url = 'https://www.googleapis.com/drive/v3/files?q=$qParamValue';
     final http.Response httpGetResponse = await http.get(
-      url,
+      Uri.parse(url),
       headers: {
-        'Authorization': _accessToken,
+        'Authorization': accessToken,
         'Accept': 'application/json',
       },
     );
@@ -241,7 +249,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
-  Future<String> getParentFolderId(
+  Future<String?> getParentFolderId(
     final String fileId,
   ) async {
     final dynamic fileMetaData = await _getFileMetadata(fileId);
@@ -259,9 +267,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
     final String qParamValue = Uri.encodeComponent(rawQParamString);
     final String url = 'https://www.googleapis.com/drive/v3/files?q=$qParamValue';
     final http.Response httpGetResponse = await http.get(
-      url,
+      Uri.parse(url),
       headers: {
-        'Authorization': _accessToken,
+        'Authorization': accessToken,
         'Accept': 'application/json',
       },
     );
@@ -289,8 +297,8 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
-  Future<List<RemoteFile>> fetchFolderFilesList(final String cloudIndexFileId) async {
-    final String parentFolderId = await getParentFolderId(cloudIndexFileId);
+  Future<List<RemoteFile>?> fetchFolderFilesList(final String cloudIndexFileId) async {
+    final String? parentFolderId = await getParentFolderId(cloudIndexFileId);
     if (parentFolderId == null) {
       return null;
     }
@@ -300,9 +308,9 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   Future<dynamic> _getFileMetadata(final String fileId) async {
     final String url = 'https://www.googleapis.com/drive/v2/files/$fileId';
     final http.Response httpGetResponse = await http.get(
-      url,
+      Uri.parse(url),
       headers: {
-        'Authorization': _accessToken,
+        'Authorization': accessToken,
         'Accept': 'text/plain',
       },
     );
@@ -319,7 +327,7 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
-  Future<String> getFileETag(final String fileId) async {
+  Future<String?> getFileETag(final String fileId) async {
     final dynamic fileMetaData = await _getFileMetadata(fileId);
     if (!(fileMetaData is Map)) {
       return null;
@@ -328,12 +336,12 @@ class SyncInterfaceForGoogleDrive extends SyncInterface {
   }
 
   @override
-  Future<Uint8List> downloadCloudFile(final String fileId) async {
+  Future<Uint8List?> downloadCloudFile(final String fileId) async {
     final String url = 'https://www.googleapis.com/drive/v3/files/$fileId?alt=media';
     final http.Response httpGetResponse = await http.get(
-      url,
+      Uri.parse(url),
       headers: {
-        'Authorization': _accessToken,
+        'Authorization': accessToken,
         'Accept': 'text/plain',
       },
     );
