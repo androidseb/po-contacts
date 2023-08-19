@@ -2,35 +2,36 @@ name: po_contacts_flutter
 description: The PO contacts app built with flutter.
 version: 2.2.1+63
 
+publish_to: 'none'
+
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=3.0.6 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
   # Common - pure dart
-  pointycastle: 1.0.2
-  http: ^0.12.1
-  crypto: ^2.1.4
-  uuid: ^2.1.0
-  image: ^2.1.12
+  pointycastle: ^3.7.3
+  http: ^1.1.0
+  crypto: ^3.0.3
+  uuid: ^3.0.7
+  image: ^4.0.17
 
   # Common - flutter
-  google_sign_in: ^4.4.6
-  draggable_scrollbar: ^0.0.4
-  shared_preferences: ^0.5.6+3
+  google_sign_in: ^6.1.4
+  draggable_scrollbar: ^0.1.0
+  shared_preferences: ^2.2.0
 
   # Flutter - Mobile only
-  cupertino_icons: ^0.1.2
-  url_launcher: ^5.4.1
+  url_launcher: ^6.1.12
   sqflite:
-  path_provider: ^1.5.1
-  image_picker: ^0.6.3+1
-  flutter_secure_storage: ^3.3.3
+  path_provider: ^2.1.0
+  image_picker: ^1.0.2
+  flutter_secure_storage: ^8.0.0
 
   # Flutter - Web only
-  js: ^0.6.0
+  js: ^0.6.7
 
 dev_dependencies:
   flutter_test:
